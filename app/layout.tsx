@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     initialScale: 1,
     maximumScale: 1,
   },
-    generator: 'Daily Bias'
+  generator: 'Daily Bias'
 }
 
 export default function RootLayout({
@@ -65,12 +65,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon-192.jpg" />
         <link rel="apple-touch-icon" href="/icon-192.jpg" />
       </head>
-      <body className="min-h-screen bg-background text-foreground">
+      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning>
         <ErrorBoundary>
           <AppProvider>
             <ServiceWorkerRegistration />
