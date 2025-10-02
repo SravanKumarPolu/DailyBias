@@ -32,9 +32,18 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
     updateSize()
     window.addEventListener("resize", updateSize)
 
-    // Animated gradient background
+    // Track visibility to pause animation when tab is hidden
+    let isVisible = !document.hidden
     let frame = 0
+
+    // Animated gradient background
     const animate = () => {
+      if (!isVisible) {
+        // Pause animation when page is hidden
+        animationFrameRef.current = requestAnimationFrame(animate)
+        return
+      }
+
       frame++
       const time = frame * 0.01 + seed
 
@@ -55,10 +64,18 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
       animationFrameRef.current = requestAnimationFrame(animate)
     }
 
+    // Handle visibility change
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
     animate()
 
     return () => {
       window.removeEventListener("resize", updateSize)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
@@ -82,6 +99,7 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
     <motion.canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10"
+      style={{ willChange: "transform" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.3 }}
       transition={{ duration: 1 }}

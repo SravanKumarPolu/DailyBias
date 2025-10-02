@@ -9,6 +9,7 @@ import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
+import { haptics } from "@/lib/haptics"
 
 interface BiasCardProps {
   bias: Bias
@@ -30,13 +31,16 @@ export function BiasCard({
   const [copied, setCopied] = useState(false)
 
   const handleShare = async () => {
+    const shareText = `🧠 ${bias.title}\n\n${bias.summary}\n\n💡 Learn more cognitive biases at ${window.location.origin}`
+    
     if (navigator.share) {
       try {
         await navigator.share({
-          title: bias.title,
-          text: bias.summary,
+          title: `${bias.title} - Cognitive Bias`,
+          text: shareText,
           url: window.location.href,
         })
+        haptics.light()
       } catch (error) {
         console.log("[DailyBias] Share cancelled")
       }
@@ -46,8 +50,20 @@ export function BiasCard({
   }
 
   const handleCopy = async () => {
-    const text = `${bias.title}\n\n${bias.summary}\n\nWhy: ${bias.why}\n\nCounter: ${bias.counter}`
+    const text = `🧠 ${bias.title}
+
+📝 Summary: ${bias.summary}
+
+❓ Why it happens: ${bias.why}
+
+✅ How to counter it: ${bias.counter}
+
+🔗 Learn more: ${window.location.href}
+
+#CognitiveBias #Psychology #DailyBias`
+    
     await navigator.clipboard.writeText(text)
+    haptics.success()
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -55,12 +71,14 @@ export function BiasCard({
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    haptics.light()
     onToggleFavorite?.(e)
   }
 
   const handleMasteredClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    haptics.success()
     onToggleMastered?.(e)
   }
 
@@ -89,6 +107,7 @@ export function BiasCard({
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
                 tabIndex={0}
+                className="touch-target"
               >
                 <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
               </Button>
@@ -101,6 +120,7 @@ export function BiasCard({
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
                 tabIndex={0}
+                className="touch-target"
               >
                 <Star className={`h-5 w-5 ${isMastered ? "fill-yellow-500 text-yellow-500" : ""}`} />
               </Button>
@@ -137,6 +157,7 @@ export function BiasCard({
                 onClick={handleFavoriteClick}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
+                className="touch-target"
               >
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
               </Button>
@@ -148,6 +169,7 @@ export function BiasCard({
                 onClick={handleMasteredClick}
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
+                className="touch-target"
               >
                 <Star className={`h-6 w-6 ${isMastered ? "fill-yellow-500 text-yellow-500" : ""}`} />
               </Button>

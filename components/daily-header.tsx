@@ -53,12 +53,22 @@ export function DailyHeader() {
           <p className="text-sm text-muted-foreground">{today}</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {settings.theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleTheme}
+            aria-label={settings.theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="touch-target"
+          >
+            {settings.theme === "dark" ? (
+              <Sun className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Moon className="h-5 w-5" aria-hidden="true" />
+            )}
           </Button>
           <Link href="/settings">
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
+            <Button variant="ghost" size="icon" aria-label="Open settings" className="touch-target">
+              <Bell className="h-5 w-5" aria-hidden="true" />
             </Button>
           </Link>
         </div>

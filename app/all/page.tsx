@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect, useCallback } from "react"
-import { Search, Filter, Sparkles } from "lucide-react"
+import { Search, Filter, Sparkles, X } from "lucide-react"
 import { BiasCard } from "@/components/bias-card"
 import { DailyHeader } from "@/components/daily-header"
 import { BackgroundCanvas } from "@/components/background-canvas"
@@ -23,6 +23,7 @@ import { validateSearchQuery } from "@/lib/validation"
 import { searchBiases } from "@/lib/search-utils"
 import { getBalancedRecommendation } from "@/lib/daily-selector"
 import { Badge } from "@/components/ui/badge"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const categories: BiasCategory[] = ["decision", "memory", "social", "perception", "misc"]
 
@@ -40,6 +41,7 @@ export default function AllBiasesPage() {
     progressLoading,
   } = useApp()
   const [searchQuery, setSearchQuery] = useState("")
+  const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const [selectedCategories, setSelectedCategories] = useState<BiasCategory[]>([])
   const [favStates, setFavStates] = useState<Record<string, boolean>>({})
   const [masteredStates, setMasteredStates] = useState<Record<string, boolean>>({})
@@ -69,7 +71,7 @@ export default function AllBiasesPage() {
   }, [allBiases, progressList, progressLoading])
 
   const searchResults = useMemo(() => {
-    const sanitizedQuery = validateSearchQuery(searchQuery)
+    const sanitizedQuery = validateSearchQuery(debouncedSearchQuery)
 
     // Use enhanced search function
     const results = searchBiases(allBiases, sanitizedQuery)
@@ -79,7 +81,7 @@ export default function AllBiasesPage() {
       const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(result.bias.category)
       return matchesCategory
     })
-  }, [allBiases, searchQuery, selectedCategories])
+  }, [allBiases, debouncedSearchQuery, selectedCategories])
 
   const toggleCategory = useCallback((category: BiasCategory) => {
     setSelectedCategories((prev) =>
@@ -128,16 +130,27 @@ export default function AllBiasesPage() {
           {/* Search and Filter */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" aria-hidden="true" />
               <Input
                 type="search"
                 placeholder="Search titles, descriptions, and more..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 glass border-border/50"
+                className="pl-9 pr-9 glass border-border/50"
                 maxLength={200}
                 aria-label="Search biases"
               />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
