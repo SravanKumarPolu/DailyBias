@@ -135,14 +135,21 @@ export async function getSettings(): Promise<UserSettings> {
   return withErrorHandling(async () => {
     const db = await getDB()
     const settings = await db.get("settings", "user-settings")
-    return (
-      settings || {
-        theme: "system",
-        backgroundStyle: "gradient",
-        dailyReminder: false,
-        mixUserBiasesInDaily: true,
-      }
-    )
+    
+    // Default settings
+    const defaults: UserSettings = {
+      theme: "system",
+      backgroundStyle: "gradient",
+      dailyReminder: false,
+      mixUserBiasesInDaily: true,
+      voiceEnabled: true,
+      voiceRate: 1.0,
+      voicePitch: 1.0,
+      voiceName: undefined,
+    }
+    
+    // Merge with defaults to handle migration of new fields
+    return settings ? { ...defaults, ...settings } : defaults
   }, "Failed to load settings")
 }
 

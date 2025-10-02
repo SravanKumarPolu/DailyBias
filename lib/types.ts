@@ -19,6 +19,10 @@ export interface UserSettings {
   backgroundStyle: "gradient" | "glass" | "minimal"
   dailyReminder: boolean
   mixUserBiasesInDaily: boolean
+  voiceEnabled: boolean
+  voiceRate: number
+  voicePitch: number
+  voiceName?: string
 }
 
 export interface FavoriteItem {

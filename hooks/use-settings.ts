@@ -10,6 +10,10 @@ export function useSettings() {
     backgroundStyle: "gradient",
     dailyReminder: false,
     mixUserBiasesInDaily: true,
+    voiceEnabled: true,
+    voiceRate: 1.0,
+    voicePitch: 1.0,
+    voiceName: undefined,
   })
   const [loading, setLoading] = useState(true)
 

@@ -3,13 +3,14 @@
 import type React from "react"
 
 import { motion } from "framer-motion"
-import { Heart, Share2, Copy, Check, Star } from "lucide-react"
+import { Heart, Share2, Copy, Check, Star, Volume2, VolumeX } from "lucide-react"
 import { useState } from "react"
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
+import { useSpeech } from "@/hooks/use-speech"
 
 interface BiasCardProps {
   bias: Bias
@@ -29,6 +30,7 @@ export function BiasCard({
   onToggleMastered,
 }: BiasCardProps) {
   const [copied, setCopied] = useState(false)
+  const { speak, stop, isSpeaking, isEnabled } = useSpeech()
 
   const handleShare = async () => {
     const shareText = `🧠 ${bias.title}\n\n${bias.summary}\n\n💡 Learn more cognitive biases at ${window.location.origin}`
@@ -80,6 +82,16 @@ export function BiasCard({
     e.stopPropagation()
     haptics.success()
     onToggleMastered?.(e)
+  }
+
+  const handleSpeak = () => {
+    if (isSpeaking) {
+      stop()
+    } else {
+      const text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
+      speak(text)
+      haptics.light()
+    }
   }
 
   if (variant === "compact") {
@@ -200,6 +212,24 @@ export function BiasCard({
 
         {/* Actions */}
         <div className="flex gap-2 pt-4">
+          <Button
+            onClick={handleSpeak}
+            variant="outline"
+            className={`flex-1 bg-transparent ${isSpeaking ? "animate-pulse" : ""}`}
+            aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
+          >
+            {isSpeaking ? (
+              <>
+                <VolumeX className="h-4 w-4 mr-2" aria-hidden="true" />
+                Stop
+              </>
+            ) : (
+              <>
+                <Volume2 className="h-4 w-4 mr-2" aria-hidden="true" />
+                Listen
+              </>
+            )}
+          </Button>
           <Button
             onClick={handleShare}
             variant="outline"

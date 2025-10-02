@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { Download, Upload, Moon, Sun, Monitor, Palette, Bell, Database, Info } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Download, Upload, Moon, Sun, Monitor, Palette, Bell, Database, Info, Mic, RotateCcw } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { BackgroundCanvas } from "@/components/background-canvas"
 import { Navigation } from "@/components/navigation"
@@ -17,6 +17,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { exportAllData, importAllData } from "@/lib/db"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { haptics } from "@/lib/haptics"
 
 export default function SettingsPage() {
   const { settings, saveSetting, refresh } = useSettings()
@@ -25,6 +26,84 @@ export default function SettingsPage() {
   const [importing, setImporting] = useState(false)
   const [exportSuccess, setExportSuccess] = useState(false)
   const [importSuccess, setImportSuccess] = useState(false)
+  const [localVoiceRate, setLocalVoiceRate] = useState(settings.voiceRate || 1.0)
+  const [localVoicePitch, setLocalVoicePitch] = useState(settings.voicePitch || 1.0)
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
+
+  // Load available voices
+  useEffect(() => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices()
+        
+        // Blacklist of known poor quality/novelty voices
+        const blacklistedVoices = [
+          'albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles', 
+          'cellos', 'deranged', 'good news', 'jester', 'organ', 
+          'superstar', 'trinoids', 'whisper', 'wobble', 'zarvox',
+          'junior', 'ralph', 'fred', 'kathy', 'princess', 'bruce',
+          'flo', 'grandma', 'grandpa'
+        ]
+        
+        // Filter for high-quality English voices only
+        const englishVoices = voices
+          .filter(voice => {
+            // Must be English
+            if (!voice.lang.startsWith('en')) return false
+            
+            // Remove blacklisted voices
+            const voiceLower = voice.name.toLowerCase()
+            if (blacklistedVoices.some(bad => voiceLower.includes(bad))) return false
+            
+            // Keep premium/enhanced voices
+            const qualityTerms = ['premium', 'enhanced', 'neural', 'natural', 'hd', 'google', 'microsoft']
+            const hasQuality = qualityTerms.some(term => voiceLower.includes(term))
+            
+            // Keep standard voices with common names (Samantha, Alex, Victoria, Daniel, Karen, Moira, etc.)
+            const goodStandardVoices = [
+              'samantha', 'alex', 'victoria', 'daniel', 'karen', 'moira',
+              'tessa', 'serena', 'allison', 'ava', 'susan', 'vicki',
+              'tom', 'aaron', 'nicky', 'diego', 'jorge', 'paulina'
+            ]
+            const isGoodStandard = goodStandardVoices.some(good => voiceLower.includes(good))
+            
+            return hasQuality || isGoodStandard
+          })
+          .sort((a, b) => {
+            // Prioritize voices with quality indicators
+            const qualityTerms = ['premium', 'enhanced', 'neural', 'natural', 'hd']
+            const aHasQuality = qualityTerms.some(term => a.name.toLowerCase().includes(term))
+            const bHasQuality = qualityTerms.some(term => b.name.toLowerCase().includes(term))
+            
+            if (aHasQuality && !bHasQuality) return -1
+            if (!aHasQuality && bHasQuality) return 1
+            
+            // Prefer local voices over network
+            if (a.localService && !b.localService) return -1
+            if (!a.localService && b.localService) return 1
+            
+            return a.name.localeCompare(b.name)
+          })
+        
+        setAvailableVoices(englishVoices)
+        
+        // Auto-select best voice if none selected
+        if (!settings.voiceName && englishVoices.length > 0) {
+          const bestVoice = englishVoices[0]
+          saveSetting("voiceName", bestVoice.name)
+        }
+      }
+
+      loadVoices()
+      window.speechSynthesis.onvoiceschanged = loadVoices
+    }
+  }, [settings.voiceName, saveSetting])
+
+  // Sync local state with settings
+  useEffect(() => {
+    setLocalVoiceRate(settings.voiceRate || 1.0)
+    setLocalVoicePitch(settings.voicePitch || 1.0)
+  }, [settings.voiceRate, settings.voicePitch])
 
   const handleExport = async () => {
     try {
@@ -92,6 +171,30 @@ export default function SettingsPage() {
     } else {
       saveSetting("dailyReminder", false)
     }
+  }
+
+  const handleResetVoiceSettings = async () => {
+    setLocalVoiceRate(1.0)
+    setLocalVoicePitch(1.0)
+    await saveSetting("voiceRate", 1.0)
+    await saveSetting("voicePitch", 1.0)
+    haptics.success()
+  }
+
+  const handleVoiceRateChange = (value: number) => {
+    setLocalVoiceRate(value)
+  }
+
+  const handleVoiceRateCommit = () => {
+    saveSetting("voiceRate", localVoiceRate)
+  }
+
+  const handleVoicePitchChange = (value: number) => {
+    setLocalVoicePitch(value)
+  }
+
+  const handleVoicePitchCommit = () => {
+    saveSetting("voicePitch", localVoicePitch)
   }
 
   return (
@@ -203,6 +306,103 @@ export default function SettingsPage() {
               </div>
               <Switch id="daily-reminder" checked={settings.dailyReminder} onCheckedChange={handleReminderToggle} />
             </div>
+          </div>
+
+          {/* Voice Settings Section */}
+          <div className="glass rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
+                  <Mic className="h-5 w-5" />
+                  Voice Settings
+                </h2>
+                <p className="text-sm text-muted-foreground">Text-to-speech preferences</p>
+              </div>
+              {settings.voiceEnabled && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResetVoiceSettings}
+                  className="bg-transparent"
+                  aria-label="Reset voice settings to default"
+                >
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Reset
+                </Button>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="voice-enabled">Enable Voice</Label>
+                <p className="text-sm text-muted-foreground">Read bias content aloud</p>
+              </div>
+              <Switch
+                id="voice-enabled"
+                checked={settings.voiceEnabled}
+                onCheckedChange={(checked) => saveSetting("voiceEnabled", checked)}
+              />
+            </div>
+
+            {settings.voiceEnabled && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="voice-select">Voice</Label>
+                  <select
+                    id="voice-select"
+                    value={settings.voiceName || ""}
+                    onChange={(e) => saveSetting("voiceName", e.target.value)}
+                    className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
+                  >
+                    <option value="">System Default</option>
+                    {availableVoices.map((voice) => (
+                      <option key={voice.name} value={voice.name}>
+                        {voice.name} {voice.localService ? '⭐' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-muted-foreground">⭐ indicates high-quality local voices</p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="voice-rate">Speech Rate: {localVoiceRate.toFixed(1)}x</Label>
+                  </div>
+                  <input
+                    type="range"
+                    id="voice-rate"
+                    min="0.5"
+                    max="2"
+                    step="0.1"
+                    value={localVoiceRate}
+                    onInput={(e) => handleVoiceRateChange(parseFloat(e.currentTarget.value))}
+                    onChange={(e) => handleVoiceRateChange(parseFloat(e.currentTarget.value))}
+                    onMouseUp={handleVoiceRateCommit}
+                    onTouchEnd={handleVoiceRateCommit}
+                    className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="voice-pitch">Pitch: {localVoicePitch.toFixed(1)}x</Label>
+                  </div>
+                  <input
+                    type="range"
+                    id="voice-pitch"
+                    min="0.5"
+                    max="2"
+                    step="0.1"
+                    value={localVoicePitch}
+                    onInput={(e) => handleVoicePitchChange(parseFloat(e.currentTarget.value))}
+                    onChange={(e) => handleVoicePitchChange(parseFloat(e.currentTarget.value))}
+                    onMouseUp={handleVoicePitchCommit}
+                    onTouchEnd={handleVoicePitchCommit}
+                    className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                  />
+                </div>
+              </>
+            )}
           </div>
 
           {/* Daily Bias Section */}
