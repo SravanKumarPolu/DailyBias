@@ -18,35 +18,58 @@ export function useSpeech() {
 
   const speak = useCallback(
     (text: string) => {
-      if (!isSupported || !settings.voiceEnabled) return
-
-      // Cancel any ongoing speech
-      window.speechSynthesis.cancel()
-
-      const utterance = new SpeechSynthesisUtterance(text)
-      // Ensure valid finite numbers with fallbacks
-      const rate = typeof settings.voiceRate === 'number' && isFinite(settings.voiceRate) ? settings.voiceRate : 1.0
-      const pitch = typeof settings.voicePitch === 'number' && isFinite(settings.voicePitch) ? settings.voicePitch : 1.0
+      if (!isSupported) {
+        console.error("[Speech] Speech synthesis not supported in this browser")
+        return
+      }
       
-      utterance.rate = rate
-      utterance.pitch = pitch
-      utterance.lang = "en-US"
-
-      // Set voice if specified
-      if (settings.voiceName) {
-        const voices = window.speechSynthesis.getVoices()
-        const selectedVoice = voices.find(voice => voice.name === settings.voiceName)
-        if (selectedVoice) {
-          utterance.voice = selectedVoice
-        }
+      if (!settings.voiceEnabled) {
+        console.log("[Speech] Voice is disabled in settings. Go to Settings to enable it.")
+        return
       }
 
-      utterance.onstart = () => setIsSpeaking(true)
-      utterance.onend = () => setIsSpeaking(false)
-      utterance.onerror = () => setIsSpeaking(false)
+      try {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel()
 
-      utteranceRef.current = utterance
-      window.speechSynthesis.speak(utterance)
+        const utterance = new SpeechSynthesisUtterance(text)
+        // Ensure valid finite numbers with fallbacks
+        const rate = typeof settings.voiceRate === 'number' && isFinite(settings.voiceRate) ? settings.voiceRate : 1.0
+        const pitch = typeof settings.voicePitch === 'number' && isFinite(settings.voicePitch) ? settings.voicePitch : 1.0
+        
+        utterance.rate = rate
+        utterance.pitch = pitch
+        utterance.lang = "en-US"
+
+        // Set voice if specified
+        if (settings.voiceName) {
+          const voices = window.speechSynthesis.getVoices()
+          const selectedVoice = voices.find(voice => voice.name === settings.voiceName)
+          if (selectedVoice) {
+            utterance.voice = selectedVoice
+          }
+        }
+
+        utterance.onstart = () => {
+          console.log("[Speech] Started speaking")
+          setIsSpeaking(true)
+        }
+        utterance.onend = () => {
+          console.log("[Speech] Finished speaking")
+          setIsSpeaking(false)
+        }
+        utterance.onerror = (event) => {
+          console.error("[Speech] Error:", event)
+          setIsSpeaking(false)
+        }
+
+        utteranceRef.current = utterance
+        window.speechSynthesis.speak(utterance)
+        console.log("[Speech] Speech initiated")
+      } catch (error) {
+        console.error("[Speech] Failed to speak:", error)
+        setIsSpeaking(false)
+      }
     },
     [isSupported, settings.voiceEnabled, settings.voiceRate, settings.voicePitch, settings.voiceName]
   )

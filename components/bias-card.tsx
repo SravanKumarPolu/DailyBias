@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
+import { useToast } from "@/hooks/use-toast"
 
 interface BiasCardProps {
   bias: Bias
@@ -30,7 +31,8 @@ export function BiasCard({
   onToggleMastered,
 }: BiasCardProps) {
   const [copied, setCopied] = useState(false)
-  const { speak, stop, isSpeaking, isEnabled } = useSpeech()
+  const { speak, stop, isSpeaking, isEnabled, isSupported } = useSpeech()
+  const { toast } = useToast()
 
   const handleShare = async () => {
     const shareText = `🧠 ${bias.title}\n\n${bias.summary}\n\n💡 Learn more cognitive biases at ${window.location.origin}`
@@ -85,6 +87,23 @@ export function BiasCard({
   }
 
   const handleSpeak = () => {
+    if (!isSupported) {
+      toast({
+        title: "Not Supported",
+        description: "Your browser doesn't support text-to-speech functionality.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!isEnabled) {
+      toast({
+        title: "Voice Disabled",
+        description: "Enable voice in Settings to use this feature.",
+      })
+      return
+    }
+
     if (isSpeaking) {
       stop()
     } else {

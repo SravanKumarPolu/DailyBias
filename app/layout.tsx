@@ -1,5 +1,5 @@
-import type React from "react"
 import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { ErrorBoundary } from "@/components/error-boundary"
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`} suppressHydrationWarning>

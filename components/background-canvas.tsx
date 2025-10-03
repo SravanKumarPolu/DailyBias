@@ -10,7 +10,7 @@ interface BackgroundCanvasProps {
 
 export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     if (style !== "gradient") return

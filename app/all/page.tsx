@@ -63,7 +63,8 @@ export default function AllBiasesPage() {
     if (allBiases.length > 0) {
       loadStates()
     }
-  }, [allBiases, favorites, isFavorite, isMastered])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allBiases, favorites])
 
   const recommendation = useMemo(() => {
     if (progressLoading || allBiases.length === 0) return null

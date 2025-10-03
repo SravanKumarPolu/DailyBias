@@ -76,7 +76,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // Settings
     settings: settingsHook.settings,
     settingsLoading: settingsHook.loading,
-    settingsError: settingsHook.error,
+    settingsError: null, // Settings hook doesn't have error state
     saveSetting: settingsHook.saveSetting,
     refreshSettings: settingsHook.refresh,
 
