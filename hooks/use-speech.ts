@@ -3,21 +3,242 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useSettings } from "./use-settings"
 
+// Maximum character length per utterance (speech synthesis can fail on very long text)
+const MAX_CHUNK_LENGTH = 300
+
 export function useSpeech() {
   const { settings, saveSetting } = useSettings()
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isSupported, setIsSupported] = useState(false)
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const utteranceQueueRef = useRef<SpeechSynthesisUtterance[]>([])
+  const currentChunkIndexRef = useRef(0)
 
   useEffect(() => {
     // Check if speech synthesis is supported
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       setIsSupported(true)
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel()
+      }
+    }
   }, [])
 
+  // Split long text into manageable chunks
+  const splitTextIntoChunks = useCallback((text: string): string[] => {
+    // If text is short enough, return as single chunk
+    if (text.length <= MAX_CHUNK_LENGTH) {
+      return [text]
+    }
+
+    const chunks: string[] = []
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text]
+    let currentChunk = ""
+
+    for (const sentence of sentences) {
+      if ((currentChunk + sentence).length <= MAX_CHUNK_LENGTH) {
+        currentChunk += sentence
+      } else {
+        if (currentChunk) {
+          chunks.push(currentChunk.trim())
+        }
+        currentChunk = sentence
+      }
+    }
+
+    if (currentChunk) {
+      chunks.push(currentChunk.trim())
+    }
+
+    return chunks.length > 0 ? chunks : [text]
+  }, [])
+
+  const getVoices = useCallback((): Promise<SpeechSynthesisVoice[]> => {
+    return new Promise((resolve) => {
+      let voices = window.speechSynthesis.getVoices()
+      
+      if (voices.length > 0) {
+        resolve(voices)
+        return
+      }
+
+      // Wait for voices to load
+      const voiceschanged = () => {
+        voices = window.speechSynthesis.getVoices()
+        if (voices.length > 0) {
+          resolve(voices)
+        }
+      }
+
+      window.speechSynthesis.addEventListener('voiceschanged', voiceschanged, { once: true })
+
+      // Fallback timeout
+      setTimeout(() => {
+        voices = window.speechSynthesis.getVoices()
+        resolve(voices)
+      }, 1000)
+    })
+  }, [])
+
+  const selectBestVoice = useCallback((voices: SpeechSynthesisVoice[]) => {
+    let selectedVoice: SpeechSynthesisVoice | undefined
+
+    // 1. Try to find the exact voice name from settings
+    if (settings.voiceName) {
+      selectedVoice = voices.find(voice => voice.name === settings.voiceName)
+      if (selectedVoice) {
+        console.log("[Speech] Using saved voice:", selectedVoice.name)
+        return selectedVoice
+      }
+    }
+
+    // 2. If no voice found, try to find Daniel
+    selectedVoice = voices.find(voice => voice.name.toLowerCase().includes('daniel'))
+    if (selectedVoice) {
+      console.log("[Speech] Using Daniel voice as fallback:", selectedVoice.name)
+      return selectedVoice
+    }
+
+    // 3. Try to find a high-quality LOCAL English voice (avoid network voices)
+    selectedVoice = voices.find(voice => 
+      voice.lang.startsWith('en') && 
+      voice.localService === true &&
+      !voice.name.toLowerCase().match(/novelty|bells|bad news|albert|zarvox/)
+    )
+    
+    if (selectedVoice) {
+      console.log("[Speech] Using local fallback voice:", selectedVoice.name)
+      return selectedVoice
+    }
+
+    // 4. Final fallback - use any English voice
+    selectedVoice = voices.find(voice => voice.lang.startsWith('en'))
+    
+    if (selectedVoice) {
+      console.log("[Speech] Using any English voice:", selectedVoice.name, "- Local:", selectedVoice.localService)
+    } else {
+      console.warn("[Speech] No suitable voice found, using system default")
+    }
+
+    return selectedVoice
+  }, [settings.voiceName])
+
+  const speakChunks = useCallback((chunks: string[], voices: SpeechSynthesisVoice[]) => {
+    if (chunks.length === 0) {
+      setIsSpeaking(false)
+      return
+    }
+
+    currentChunkIndexRef.current = 0
+    utteranceQueueRef.current = []
+
+    const rate = typeof settings.voiceRate === 'number' && isFinite(settings.voiceRate) ? settings.voiceRate : 1.0
+    const pitch = typeof settings.voicePitch === 'number' && isFinite(settings.voicePitch) ? settings.voicePitch : 1.0
+    const selectedVoice = selectBestVoice(voices)
+
+    const speakNextChunk = () => {
+      if (currentChunkIndexRef.current >= chunks.length) {
+        console.log("[Speech] All chunks completed")
+        setIsSpeaking(false)
+        utteranceQueueRef.current = []
+        return
+      }
+
+      const chunk = chunks[currentChunkIndexRef.current]
+      const utterance = new SpeechSynthesisUtterance(chunk)
+      
+      utterance.rate = rate
+      utterance.pitch = pitch
+      utterance.lang = "en-US"
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice
+      }
+
+      utterance.onstart = () => {
+        if (currentChunkIndexRef.current === 0) {
+          console.log("[Speech] Started speaking with voice:", utterance.voice?.name || "default")
+          setIsSpeaking(true)
+        }
+      }
+
+      utterance.onend = () => {
+        currentChunkIndexRef.current++
+        console.log(`[Speech] Chunk ${currentChunkIndexRef.current}/${chunks.length} completed`)
+        
+        // Small delay between chunks to prevent issues
+        setTimeout(() => {
+          speakNextChunk()
+        }, 50)
+      }
+
+      utterance.onerror = (event: SpeechSynthesisErrorEvent) => {
+        const errorType = event.error || 'unknown'
+        const voiceName = utterance.voice?.name || 'default'
+        const isLocal = utterance.voice?.localService ?? false
+        
+        // Handle specific errors with appropriate log levels
+        if (errorType === 'interrupted' || errorType === 'cancelled') {
+          // This is normal behavior when user stops speech or starts new speech
+          console.log(
+            `[Speech] Speech ${errorType}: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+          )
+          setIsSpeaking(false)
+          utteranceQueueRef.current = []
+          return
+        }
+
+        if (errorType === 'not-allowed') {
+          console.warn(
+            `[Speech] Not allowed - user interaction required first: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+          )
+          setIsSpeaking(false)
+          utteranceQueueRef.current = []
+          return
+        }
+
+        // For network or synthesis errors, try to continue with next chunk
+        if (errorType === 'network' || errorType === 'synthesis-failed') {
+          console.warn(
+            `[Speech] ${errorType} - attempting next chunk: voice="${voiceName}", local=${isLocal}, chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+          )
+          currentChunkIndexRef.current++
+          setTimeout(() => {
+            speakNextChunk()
+          }, 100)
+          return
+        }
+
+        // Unknown/unexpected error - use console.error
+        console.error(
+          `[Speech] Unexpected error: type="${errorType}", voice="${voiceName}", local=${isLocal}, chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+        )
+        setIsSpeaking(false)
+        utteranceQueueRef.current = []
+      }
+
+      utteranceRef.current = utterance
+      utteranceQueueRef.current.push(utterance)
+
+      try {
+        window.speechSynthesis.speak(utterance)
+      } catch (error) {
+        console.error("[Speech] Exception while speaking:", error)
+        setIsSpeaking(false)
+        utteranceQueueRef.current = []
+      }
+    }
+
+    console.log(`[Speech] Speaking ${chunks.length} chunk(s) with voice:`, selectedVoice?.name || "default")
+    speakNextChunk()
+  }, [settings.voiceRate, settings.voicePitch, selectBestVoice])
+
   const speak = useCallback(
-    (text: string) => {
+    async (text: string) => {
       if (!isSupported) {
         console.error("[Speech] Speech synthesis not supported in this browser")
         return
@@ -31,53 +252,44 @@ export function useSpeech() {
       try {
         // Cancel any ongoing speech
         window.speechSynthesis.cancel()
+        utteranceQueueRef.current = []
+        currentChunkIndexRef.current = 0
 
-        const utterance = new SpeechSynthesisUtterance(text)
-        // Ensure valid finite numbers with fallbacks
-        const rate = typeof settings.voiceRate === 'number' && isFinite(settings.voiceRate) ? settings.voiceRate : 1.0
-        const pitch = typeof settings.voicePitch === 'number' && isFinite(settings.voicePitch) ? settings.voicePitch : 1.0
+        // Get voices
+        const voices = await getVoices()
         
-        utterance.rate = rate
-        utterance.pitch = pitch
-        utterance.lang = "en-US"
-
-        // Set voice if specified
-        if (settings.voiceName) {
-          const voices = window.speechSynthesis.getVoices()
-          const selectedVoice = voices.find(voice => voice.name === settings.voiceName)
-          if (selectedVoice) {
-            utterance.voice = selectedVoice
-          }
+        if (voices.length === 0) {
+          console.warn("[Speech] No voices available")
+          return
         }
 
-        utterance.onstart = () => {
-          console.log("[Speech] Started speaking")
-          setIsSpeaking(true)
-        }
-        utterance.onend = () => {
-          console.log("[Speech] Finished speaking")
-          setIsSpeaking(false)
-        }
-        utterance.onerror = (event) => {
-          console.error("[Speech] Error:", event)
-          setIsSpeaking(false)
-        }
+        // Split text into chunks
+        const chunks = splitTextIntoChunks(text)
+        console.log(`[Speech] Text split into ${chunks.length} chunk(s)`)
 
-        utteranceRef.current = utterance
-        window.speechSynthesis.speak(utterance)
-        console.log("[Speech] Speech initiated")
+        // Speak chunks
+        speakChunks(chunks, voices)
       } catch (error) {
         console.error("[Speech] Failed to speak:", error)
         setIsSpeaking(false)
       }
     },
-    [isSupported, settings.voiceEnabled, settings.voiceRate, settings.voicePitch, settings.voiceName]
+    [isSupported, settings.voiceEnabled, getVoices, splitTextIntoChunks, speakChunks]
   )
 
   const stop = useCallback(() => {
     if (!isSupported) return
-    window.speechSynthesis.cancel()
-    setIsSpeaking(false)
+    
+    try {
+      window.speechSynthesis.cancel()
+      utteranceQueueRef.current = []
+      currentChunkIndexRef.current = 0
+      setIsSpeaking(false)
+      console.log("[Speech] Stopped")
+    } catch (error) {
+      console.error("[Speech] Error stopping speech:", error)
+      setIsSpeaking(false)
+    }
   }, [isSupported])
 
   const toggleVoice = useCallback(() => {
@@ -90,12 +302,22 @@ export function useSpeech() {
 
   const pause = useCallback(() => {
     if (!isSupported) return
-    window.speechSynthesis.pause()
+    try {
+      window.speechSynthesis.pause()
+      console.log("[Speech] Paused")
+    } catch (error) {
+      console.error("[Speech] Error pausing speech:", error)
+    }
   }, [isSupported])
 
   const resume = useCallback(() => {
     if (!isSupported) return
-    window.speechSynthesis.resume()
+    try {
+      window.speechSynthesis.resume()
+      console.log("[Speech] Resumed")
+    } catch (error) {
+      console.error("[Speech] Error resuming speech:", error)
+    }
   }, [isSupported])
 
   return {
@@ -109,4 +331,3 @@ export function useSpeech() {
     isEnabled: settings.voiceEnabled,
   }
 }
-

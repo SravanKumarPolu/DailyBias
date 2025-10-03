@@ -145,7 +145,7 @@ export async function getSettings(): Promise<UserSettings> {
       voiceEnabled: true,
       voiceRate: 1.0,
       voicePitch: 1.0,
-      voiceName: undefined,
+      voiceName: "Daniel", // Default to Daniel voice
     }
     
     // Merge with defaults to handle migration of new fields

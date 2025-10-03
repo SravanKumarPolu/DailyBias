@@ -87,10 +87,12 @@ export default function SettingsPage() {
         
         setAvailableVoices(englishVoices)
         
-        // Auto-select best voice if none selected
+        // Auto-select Daniel as default voice, or fallback to best available
         if (!settings.voiceName && englishVoices.length > 0) {
-          const bestVoice = englishVoices[0]
-          saveSetting("voiceName", bestVoice.name)
+          // Prefer Daniel voice as default
+          const danielVoice = englishVoices.find(voice => voice.name.toLowerCase().includes('daniel'))
+          const defaultVoice = danielVoice || englishVoices[0]
+          saveSetting("voiceName", defaultVoice.name)
         }
       }
 

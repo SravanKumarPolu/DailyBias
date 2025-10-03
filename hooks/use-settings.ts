@@ -13,7 +13,7 @@ export function useSettings() {
     voiceEnabled: true,
     voiceRate: 1.0,
     voicePitch: 1.0,
-    voiceName: undefined,
+    voiceName: "Daniel", // Default to Daniel voice
   })
   const [loading, setLoading] = useState(true)
 
