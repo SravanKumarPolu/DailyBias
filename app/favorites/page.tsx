@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { Heart, Download } from "lucide-react"
-import { BiasCard } from "@/components/bias-card"
 import { DailyHeader } from "@/components/daily-header"
-import { BackgroundCanvas } from "@/components/background-canvas"
-import { Navigation } from "@/components/navigation"
+import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
+import { DynamicBiasCard } from "@/components/dynamic-bias-card"
+import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useApp } from "@/contexts/app-context"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -57,7 +57,7 @@ export default function FavoritesPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      <BackgroundCanvas style={settings.backgroundStyle} seed={123} />
+      <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={123} />
       <DailyHeader />
 
       <main className="w-full max-w-4xl mx-auto px-4 py-8">
@@ -69,7 +69,7 @@ export default function FavoritesPage() {
               <p className="text-muted-foreground">Your saved biases for quick reference</p>
             </div>
             {favoriteBiases.length > 0 && (
-              <Button onClick={handleExport} variant="outline" className="glass border-border/50 bg-transparent">
+              <Button onClick={handleExport} variant="outline" className="glass border-border/50 bg-transparent cursor-pointer">
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
@@ -92,16 +92,16 @@ export default function FavoritesPage() {
                 <p className="text-muted-foreground mb-4">
                   Start adding biases to your favorites to build your personal collection
                 </p>
-                <Link href="/all">
-                  <Button>Browse All Biases</Button>
+                <Link href="/all" className="cursor-pointer">
+                  <Button className="cursor-pointer">Browse All Biases</Button>
                 </Link>
               </div>
             </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {favoriteBiases.map((bias) => (
-                <Link key={bias.id} href={`/bias/${bias.id}`}>
-                  <BiasCard
+                <Link key={bias.id} href={`/bias/${bias.id}`} className="cursor-pointer">
+                  <DynamicBiasCard
                     bias={bias}
                     variant="compact"
                     isFavorite={true}
@@ -114,7 +114,7 @@ export default function FavoritesPage() {
         </div>
       </main>
 
-      <Navigation />
+      <DynamicNavigation />
     </div>
   )
 }

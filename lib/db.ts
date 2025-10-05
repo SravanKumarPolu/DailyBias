@@ -143,7 +143,7 @@ export async function getSettings(): Promise<UserSettings> {
       dailyReminder: false,
       mixUserBiasesInDaily: true,
       voiceEnabled: true,
-      voiceRate: 1.0,
+      voiceRate: 0.9, // Default to 0.9x for better comprehension
       voicePitch: 1.0,
       voiceName: "Daniel", // Default to Daniel voice
     }

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
-import { BiasCard } from "@/components/bias-card"
 import { DailyHeader } from "@/components/daily-header"
-import { BackgroundCanvas } from "@/components/background-canvas"
-import { Navigation } from "@/components/navigation"
+import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
+import { DynamicBiasCard } from "@/components/dynamic-bias-card"
+import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useApp } from "@/contexts/app-context"
 import { Button } from "@/components/ui/button"
 import type { Bias } from "@/lib/types"
@@ -58,14 +58,14 @@ export default function BiasDetailPage() {
   if (biasesLoading) {
     return (
       <div className="min-h-screen pb-24">
-        <BackgroundCanvas style={settings.backgroundStyle} seed={0} />
+        <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={0} />
         <DailyHeader />
         <main className="w-full max-w-2xl mx-auto px-4 py-8">
           <div className="glass rounded-2xl p-12 text-center">
             <p className="text-muted-foreground">Loading...</p>
           </div>
         </main>
-        <Navigation />
+        <DynamicNavigation />
       </div>
     )
   }
@@ -73,7 +73,7 @@ export default function BiasDetailPage() {
   if (!bias) {
     return (
       <div className="min-h-screen pb-24">
-        <BackgroundCanvas style={settings.backgroundStyle} seed={0} />
+        <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={0} />
         <DailyHeader />
         <main className="w-full max-w-2xl mx-auto px-4 py-8">
           <div className="glass rounded-2xl p-12 text-center space-y-4">
@@ -81,23 +81,23 @@ export default function BiasDetailPage() {
             <Button onClick={() => router.back()}>Go Back</Button>
           </div>
         </main>
-        <Navigation />
+        <DynamicNavigation />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen pb-24">
-      <BackgroundCanvas style={settings.backgroundStyle} seed={bias.id.length} />
+      <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={bias.id.length} />
       <DailyHeader />
 
       <main className="w-full max-w-2xl mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => router.back()} className="mb-6">
+        <Button variant="ghost" onClick={() => router.back()} className="mb-6 cursor-pointer">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
 
-        <BiasCard
+        <DynamicBiasCard
           bias={bias}
           variant="detailed"
           isFavorite={isFav}
@@ -107,7 +107,7 @@ export default function BiasDetailPage() {
         />
       </main>
 
-      <Navigation />
+      <DynamicNavigation />
     </div>
   )
 }

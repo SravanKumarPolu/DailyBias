@@ -2,8 +2,8 @@
 
 import { ArrowLeft, Shield, Zap, Heart, Download } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
-import { BackgroundCanvas } from "@/components/background-canvas"
-import { Navigation } from "@/components/navigation"
+import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
+import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useSettings } from "@/hooks/use-settings"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
@@ -14,11 +14,11 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      <BackgroundCanvas style={settings.backgroundStyle} seed={999} />
+      <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={999} />
       <DailyHeader />
 
       <main className="w-full max-w-2xl mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => router.back()} className="mb-6">
+        <Button variant="ghost" onClick={() => router.back()} className="mb-6 cursor-pointer">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
@@ -128,8 +128,15 @@ export default function AboutPage() {
                 <li>Framer Motion for animations</li>
                 <li>IndexedDB for local storage</li>
                 <li>PWA with Service Worker</li>
+                <li>Advanced code splitting for optimal performance</li>
               </ul>
             </div>
+            <Button asChild variant="outline" className="w-full bg-transparent">
+              <a href="/code-splitting-demo">
+                <Zap className="h-4 w-4 mr-2" />
+                View Code Splitting Demo
+              </a>
+            </Button>
           </div>
 
           {/* Footer */}
@@ -140,7 +147,7 @@ export default function AboutPage() {
         </div>
       </main>
 
-      <Navigation />
+      <DynamicNavigation />
     </div>
   )
 }

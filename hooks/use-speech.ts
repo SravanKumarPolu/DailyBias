@@ -13,6 +13,7 @@ export function useSpeech() {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const utteranceQueueRef = useRef<SpeechSynthesisUtterance[]>([])
   const currentChunkIndexRef = useRef(0)
+  const isIntentionallyStoppingRef = useRef(false)
 
   useEffect(() => {
     // Check if speech synthesis is supported
@@ -182,10 +183,11 @@ export function useSpeech() {
         const isLocal = utterance.voice?.localService ?? false
         
         // Handle specific errors with appropriate log levels
-        if (errorType === 'interrupted' || errorType === 'cancelled') {
+        if (errorType === 'interrupted' || errorType === 'cancelled' || errorType === 'canceled') {
           // This is normal behavior when user stops speech or starts new speech
-          console.log(
-            `[Speech] Speech ${errorType}: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+          const logLevel = isIntentionallyStoppingRef.current ? 'log' : 'warn'
+          console[logLevel](
+            `[Speech] Speech ${errorType}: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}${isIntentionallyStoppingRef.current ? ' (intentional stop)' : ''}`
           )
           setIsSpeaking(false)
           utteranceQueueRef.current = []
@@ -281,14 +283,29 @@ export function useSpeech() {
     if (!isSupported) return
     
     try {
-      window.speechSynthesis.cancel()
+      // Set flag to indicate we're intentionally stopping
+      isIntentionallyStoppingRef.current = true
+      
+      // Clear the queue first to prevent new utterances from starting
       utteranceQueueRef.current = []
       currentChunkIndexRef.current = 0
+      
+      // Cancel any ongoing speech synthesis
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+        window.speechSynthesis.cancel()
+      }
+      
       setIsSpeaking(false)
       console.log("[Speech] Stopped")
+      
+      // Reset the flag after a short delay
+      setTimeout(() => {
+        isIntentionallyStoppingRef.current = false
+      }, 100)
     } catch (error) {
       console.error("[Speech] Error stopping speech:", error)
       setIsSpeaking(false)
+      isIntentionallyStoppingRef.current = false
     }
   }, [isSupported])
 

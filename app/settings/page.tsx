@@ -5,9 +5,9 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Download, Upload, Moon, Sun, Monitor, Palette, Bell, Database, Info, Mic, RotateCcw } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
-import { BackgroundCanvas } from "@/components/background-canvas"
-import { Navigation } from "@/components/navigation"
-import { ProgressStatsComponent } from "@/components/progress-stats"
+import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
+import { DynamicNavigation } from "@/components/dynamic-navigation"
+import { DynamicProgressStats } from "@/components/dynamic-progress-stats"
 import { useSettings } from "@/hooks/use-settings"
 import { useApp } from "@/contexts/app-context"
 import { Button } from "@/components/ui/button"
@@ -26,7 +26,7 @@ export default function SettingsPage() {
   const [importing, setImporting] = useState(false)
   const [exportSuccess, setExportSuccess] = useState(false)
   const [importSuccess, setImportSuccess] = useState(false)
-  const [localVoiceRate, setLocalVoiceRate] = useState(settings.voiceRate || 1.0)
+  const [localVoiceRate, setLocalVoiceRate] = useState(settings.voiceRate || 0.9)
   const [localVoicePitch, setLocalVoicePitch] = useState(settings.voicePitch || 1.0)
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
 
@@ -103,7 +103,7 @@ export default function SettingsPage() {
 
   // Sync local state with settings
   useEffect(() => {
-    setLocalVoiceRate(settings.voiceRate || 1.0)
+    setLocalVoiceRate(settings.voiceRate || 0.9)
     setLocalVoicePitch(settings.voicePitch || 1.0)
   }, [settings.voiceRate, settings.voicePitch])
 
@@ -152,18 +152,29 @@ export default function SettingsPage() {
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
       alert("This browser does not support notifications")
-      return
+      return false
     }
 
-    const permission = await Notification.requestPermission()
-    if (permission === "granted") {
-      saveSetting("dailyReminder", true)
-      new Notification("Bias Daily", {
-        body: "Daily reminders enabled! You'll be notified when a new bias is available.",
-        icon: "/icon-192.jpg",
-      })
-    } else {
-      saveSetting("dailyReminder", false)
+    try {
+      const permission = await Notification.requestPermission()
+      if (permission === "granted") {
+        await saveSetting("dailyReminder", true)
+        new Notification("Bias Daily", {
+          body: "Daily reminders enabled! You'll be notified when a new bias is available.",
+          icon: "/icon-192.jpg",
+        })
+        return true
+      } else {
+        await saveSetting("dailyReminder", false)
+        if (permission === "denied") {
+          alert("Notifications were denied. Please enable them in your browser settings to receive daily reminders.")
+        }
+        return false
+      }
+    } catch (error) {
+      console.error("[DailyBias] Notification permission error:", error)
+      await saveSetting("dailyReminder", false)
+      return false
     }
   }
 
@@ -171,16 +182,28 @@ export default function SettingsPage() {
     if (checked) {
       await requestNotificationPermission()
     } else {
-      saveSetting("dailyReminder", false)
+      await saveSetting("dailyReminder", false)
     }
   }
 
   const handleResetVoiceSettings = async () => {
-    setLocalVoiceRate(1.0)
-    setLocalVoicePitch(1.0)
-    await saveSetting("voiceRate", 1.0)
-    await saveSetting("voicePitch", 1.0)
+    // Reset to defaults
+    const defaultRate = 0.9
+    const defaultPitch = 1.0
+    
+    // Update local state immediately for instant UI feedback
+    setLocalVoiceRate(defaultRate)
+    setLocalVoicePitch(defaultPitch)
+    
+    // Save to database (don't wait to avoid blocking UI update)
+    saveSetting("voiceRate", defaultRate)
+    saveSetting("voicePitch", defaultPitch)
+    
+    // Provide haptic feedback
     haptics.success()
+    
+    // Log for debugging
+    console.log(`[DailyBias] Voice settings reset to defaults: rate=${defaultRate}x, pitch=${defaultPitch}x`)
   }
 
   const handleVoiceRateChange = (value: number) => {
@@ -200,35 +223,35 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24">
-      <BackgroundCanvas style={settings.backgroundStyle} seed={456} />
+    <div className="min-h-screen pb-20 sm:pb-24">
+      <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={456} />
       <DailyHeader />
 
-      <main className="w-full max-w-2xl mx-auto px-4 py-8">
-        <div className="space-y-6">
+      <main className="w-full max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div>
-            <h1 className="text-3xl font-bold mb-2">Settings</h1>
-            <p className="text-muted-foreground">Customize your Bias Daily experience</p>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Settings</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Customize your Bias Daily experience</p>
           </div>
 
           {/* Progress Stats Section */}
-          <div className="glass rounded-2xl p-6 space-y-4">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
             <div>
-              <h2 className="text-xl font-semibold mb-1">Your Progress</h2>
-              <p className="text-sm text-muted-foreground">Track your learning journey</p>
+              <h2 className="text-lg sm:text-xl font-semibold mb-1">Your Progress</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">Track your learning journey</p>
             </div>
-            <ProgressStatsComponent stats={progressStats} />
+            <DynamicProgressStats stats={progressStats} />
           </div>
 
           {/* Appearance Section */}
-          <div className="glass rounded-2xl p-6 space-y-6">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
             <div>
-              <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
-                <Palette className="h-5 w-5" />
+              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+                <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
                 Appearance
               </h2>
-              <p className="text-sm text-muted-foreground">Customize the look and feel</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Customize the look and feel</p>
             </div>
 
             {/* Theme */}
@@ -292,40 +315,40 @@ export default function SettingsPage() {
           </div>
 
           {/* Notifications Section */}
-          <div className="glass rounded-2xl p-6 space-y-4">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
             <div>
-              <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
-                <Bell className="h-5 w-5" />
+              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 Notifications
               </h2>
-              <p className="text-sm text-muted-foreground">Get reminded about daily biases</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Get reminded about daily biases</p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="daily-reminder">Daily Reminder</Label>
+                <Label htmlFor="daily-reminder" className="cursor-pointer">Daily Reminder</Label>
                 <p className="text-sm text-muted-foreground">Receive a notification when a new bias is available</p>
               </div>
-              <Switch id="daily-reminder" checked={settings.dailyReminder} onCheckedChange={handleReminderToggle} />
+              <Switch id="daily-reminder" checked={settings.dailyReminder} onCheckedChange={handleReminderToggle} className="cursor-pointer" />
             </div>
           </div>
 
           {/* Voice Settings Section */}
-          <div className="glass rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
-                  <Mic className="h-5 w-5" />
+                <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+                  <Mic className="h-4 w-4 sm:h-5 sm:w-5" />
                   Voice Settings
                 </h2>
-                <p className="text-sm text-muted-foreground">Text-to-speech preferences</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Text-to-speech preferences</p>
               </div>
               {settings.voiceEnabled && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleResetVoiceSettings}
-                  className="bg-transparent"
+                  className="bg-transparent cursor-pointer"
                   aria-label="Reset voice settings to default"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
@@ -336,13 +359,14 @@ export default function SettingsPage() {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="voice-enabled">Enable Voice</Label>
+                <Label htmlFor="voice-enabled" className="cursor-pointer">Enable Voice</Label>
                 <p className="text-sm text-muted-foreground">Read bias content aloud</p>
               </div>
               <Switch
                 id="voice-enabled"
                 checked={settings.voiceEnabled}
                 onCheckedChange={(checked) => saveSetting("voiceEnabled", checked)}
+                className="cursor-pointer"
               />
             </div>
 
@@ -357,8 +381,8 @@ export default function SettingsPage() {
                     className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
                   >
                     <option value="">System Default</option>
-                    {availableVoices.map((voice) => (
-                      <option key={voice.name} value={voice.name}>
+                    {availableVoices.map((voice, index) => (
+                      <option key={`${voice.name}-${voice.voiceURI || index}`} value={voice.name}>
                         {voice.name} {voice.localService ? '⭐' : ''}
                       </option>
                     ))}
@@ -408,33 +432,34 @@ export default function SettingsPage() {
           </div>
 
           {/* Daily Bias Section */}
-          <div className="glass rounded-2xl p-6 space-y-4">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
             <div>
-              <h2 className="text-xl font-semibold mb-1">Daily Bias</h2>
-              <p className="text-sm text-muted-foreground">Configure daily bias selection</p>
+              <h2 className="text-lg sm:text-xl font-semibold mb-1">Daily Bias</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">Configure daily bias selection</p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="mix-user-biases">Include Custom Biases</Label>
+                <Label htmlFor="mix-user-biases" className="cursor-pointer">Include Custom Biases</Label>
                 <p className="text-sm text-muted-foreground">Mix your custom biases into the daily selection</p>
               </div>
               <Switch
                 id="mix-user-biases"
                 checked={settings.mixUserBiasesInDaily}
                 onCheckedChange={(checked) => saveSetting("mixUserBiasesInDaily", checked)}
+                className="cursor-pointer"
               />
             </div>
           </div>
 
           {/* Data Management Section */}
-          <div className="glass rounded-2xl p-6 space-y-4">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
             <div>
-              <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
-                <Database className="h-5 w-5" />
+              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+                <Database className="h-4 w-4 sm:h-5 sm:w-5" />
                 Data Management
               </h2>
-              <p className="text-sm text-muted-foreground">Export or import your data</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Export or import your data</p>
             </div>
 
             <div className="space-y-3">
@@ -480,15 +505,15 @@ export default function SettingsPage() {
           </div>
 
           {/* About Section */}
-          <div className="glass rounded-2xl p-6 space-y-4">
+          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
             <div>
-              <h2 className="text-xl font-semibold mb-1 flex items-center gap-2">
-                <Info className="h-5 w-5" />
+              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+                <Info className="h-4 w-4 sm:h-5 sm:w-5" />
                 About
               </h2>
             </div>
 
-            <div className="space-y-2 text-sm text-muted-foreground">
+            <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
               <p>
                 <strong className="text-foreground">Bias Daily</strong> helps you learn one cognitive bias every day
                 from Elon Musk's curated list of 50 biases.
@@ -498,7 +523,7 @@ export default function SettingsPage() {
                 offline after the first load.
               </p>
               <p>Version 1.0.0</p>
-              <Link href="/about" className="text-primary hover:underline">
+              <Link href="/about" className="text-primary hover:underline inline-block">
                 Learn more
               </Link>
             </div>
@@ -506,7 +531,7 @@ export default function SettingsPage() {
         </div>
       </main>
 
-      <Navigation />
+      <DynamicNavigation />
     </div>
   )
 }

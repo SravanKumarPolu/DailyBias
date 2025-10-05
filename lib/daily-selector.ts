@@ -1,5 +1,8 @@
-import coreBiases from "@/data/biases.json"
 import type { Bias, BiasProgress } from "./types"
+import coreBiasesData from "@/data/biases.json"
+
+// Ensure the data is properly typed
+const coreBiases = coreBiasesData as Bias[]
 
 // Simple hash function for deterministic selection
 function hashString(str: string): number {
@@ -147,7 +150,17 @@ export function getBalancedRecommendation(allBiases: Bias[], progressList: BiasP
 }
 
 export function getCoreBiases(): Bias[] {
-  return coreBiases as Bias[]
+  // Add error handling and logging
+  if (!coreBiases || !Array.isArray(coreBiases) || coreBiases.length === 0) {
+    console.error("[DailyBias] Core biases not loaded properly", {
+      coreBiases,
+      isArray: Array.isArray(coreBiases),
+      length: coreBiases?.length
+    })
+    return []
+  }
+  console.log(`[DailyBias] Loaded ${coreBiases.length} core biases`)
+  return coreBiases
 }
 
 export function getAllBiases(userBiases: Bias[]): Bias[] {

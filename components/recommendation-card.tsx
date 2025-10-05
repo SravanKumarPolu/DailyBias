@@ -29,8 +29,8 @@ export function RecommendationCard({ bias, reason = "Recommended for you" }: Rec
           <Badge className={`mb-2 ${getCategoryColor(bias.category)}`}>{getCategoryLabel(bias.category)}</Badge>
           <h3 className="text-xl font-bold mb-2 font-serif text-balance">{bias.title}</h3>
           <p className="text-sm text-muted-foreground mb-4 text-pretty line-clamp-2">{bias.summary}</p>
-          <Link href={`/bias/${bias.id}`}>
-            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+          <Link href={`/bias/${bias.id}`} className="cursor-pointer">
+            <Button variant="outline" size="sm" className="gap-2 bg-transparent cursor-pointer">
               Learn more
               <ArrowRight className="h-4 w-4" />
             </Button>

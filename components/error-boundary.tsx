@@ -70,7 +70,7 @@ Timestamp: ${new Date().toISOString()}
                   this.setState({ hasError: false, error: null, errorInfo: null })
                   window.location.reload()
                 }}
-                className="w-full"
+                className="w-full cursor-pointer"
                 size="lg"
               >
                 <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
@@ -82,7 +82,7 @@ Timestamp: ${new Date().toISOString()}
                   window.location.href = "/"
                 }}
                 variant="outline"
-                className="w-full"
+                className="w-full cursor-pointer"
               >
                 <Home className="w-4 h-4 mr-2" aria-hidden="true" />
                 Go to Home
@@ -91,7 +91,7 @@ Timestamp: ${new Date().toISOString()}
               <Button
                 onClick={this.copyErrorDetails}
                 variant="ghost"
-                className="w-full"
+                className="w-full cursor-pointer"
                 disabled={this.state.copied}
               >
                 {this.state.copied ? (

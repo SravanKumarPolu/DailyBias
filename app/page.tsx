@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState, useMemo, useRef } from "react"
-import { BiasCard } from "@/components/bias-card"
 import { DailyHeader } from "@/components/daily-header"
-import { BackgroundCanvas } from "@/components/background-canvas"
-import { Navigation } from "@/components/navigation"
+import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
+import { DynamicBiasCard } from "@/components/dynamic-bias-card"
+import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useApp } from "@/contexts/app-context"
 import { getPersonalizedDailyBias, getTodayDateString } from "@/lib/daily-selector"
 import type { Bias } from "@/lib/types"
@@ -144,40 +144,40 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen pb-24">
-      <BackgroundCanvas style={settings.backgroundStyle} seed={seed} />
+    <div className="min-h-screen pb-20 sm:pb-24">
+      <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={seed} />
       <DailyHeader 
         isVoiceListening={isListening}
         onToggleVoiceCommands={handleToggleVoiceCommands}
         voiceCommandsSupported={voiceCommandsSupported}
       />
 
-      <main className="w-full max-w-2xl mx-auto px-4 py-8" aria-label="Daily cognitive bias">
+      <main className="w-full max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8" aria-label="Daily cognitive bias">
         {loading || !dailyBias ? (
-          <div className="space-y-6" role="status" aria-label="Loading daily bias">
-            <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="space-y-4 sm:space-y-6" role="status" aria-label="Loading daily bias">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
               {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-20 w-full" />
+                <Skeleton key={i} className="h-16 sm:h-20 w-full" />
               ))}
             </div>
 
-            <div className="glass rounded-3xl p-6 border-2 border-primary/20">
-              <Skeleton className="h-6 w-40 mb-4" />
-              <Skeleton className="h-8 w-48 mb-2" />
-              <Skeleton className="h-20 w-full" />
+            <div className="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-primary/20">
+              <Skeleton className="h-5 sm:h-6 w-32 sm:w-40 mb-3 sm:mb-4" />
+              <Skeleton className="h-7 sm:h-8 w-40 sm:w-48 mb-2" />
+              <Skeleton className="h-16 sm:h-20 w-full" />
             </div>
 
-            <div className="glass rounded-2xl p-8 space-y-6">
-              <Skeleton className="h-8 w-32" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-24 w-full" />
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
+            <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+              <Skeleton className="h-6 sm:h-8 w-24 sm:w-32" />
+              <Skeleton className="h-10 sm:h-12 w-full" />
+              <Skeleton className="h-20 sm:h-24 w-full" />
+              <Skeleton className="h-24 sm:h-32 w-full" />
+              <Skeleton className="h-24 sm:h-32 w-full" />
             </div>
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>
         ) : (
-          <BiasCard
+          <DynamicBiasCard
             bias={dailyBias}
             variant="detailed"
             isFavorite={isFav}
@@ -188,7 +188,7 @@ export default function HomePage() {
         )}
       </main>
 
-      <Navigation />
+      <DynamicNavigation />
     </div>
   )
 }

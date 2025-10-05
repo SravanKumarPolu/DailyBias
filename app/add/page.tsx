@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, Trash2, Edit } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
-import { BackgroundCanvas } from "@/components/background-canvas"
-import { Navigation } from "@/components/navigation"
+import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
+import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useBiases } from "@/hooks/use-biases"
 import { useSettings } from "@/hooks/use-settings"
 import { Button } from "@/components/ui/button"
@@ -158,7 +158,7 @@ export default function AddBiasPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      <BackgroundCanvas style={settings.backgroundStyle} seed={789} />
+      <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={789} />
       <DailyHeader />
 
       <main className="w-full max-w-4xl mx-auto px-4 py-8">
@@ -223,7 +223,7 @@ export default function AddBiasPage() {
         </div>
       </main>
 
-      <Navigation />
+      <DynamicNavigation />
 
       {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -11,7 +11,7 @@ export function useSettings() {
     dailyReminder: false,
     mixUserBiasesInDaily: true,
     voiceEnabled: true,
-    voiceRate: 1.0,
+    voiceRate: 0.9,
     voicePitch: 1.0,
     voiceName: "Daniel", // Default to Daniel voice
   })
