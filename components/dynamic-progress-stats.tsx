@@ -9,7 +9,7 @@ import dynamic from "next/dynamic"
 import { ProgressStatsLoader } from "./loading-fallback"
 
 export const DynamicProgressStats = dynamic(
-  () => import("./progress-stats").then((mod) => mod.ProgressStatsComponent),
+  () => import("./progress-stats").then((mod) => ({ default: mod.ProgressStatsComponent })),
   {
     loading: () => <ProgressStatsLoader />,
     ssr: true,
