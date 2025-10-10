@@ -45,6 +45,14 @@ export default function SettingsPage() {
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
   const [testingVoice, setTestingVoice] = useState(false)
 
+  // Basic platform detection for contextual hints
+  const isiOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/i.test(navigator.userAgent)
+  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)
+  const isStandalone =
+    typeof window !== "undefined" &&
+    ((window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+      (navigator as unknown as { standalone?: boolean })?.standalone === true)
+
   // Helper to fetch and filter voices consistently
   const fetchAndFilterVoices = () => {
     const voices = window.speechSynthesis.getVoices()
@@ -531,6 +539,19 @@ export default function SettingsPage() {
                       </option>
                     ))}
                   </select>
+                  {(availableVoices.length <= 1 && (isiOS || isAndroid)) && (
+                    <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-100 text-xs">
+                      {isiOS ? (
+                        <>
+                          On iOS, web apps (especially installed PWAs) may only expose the system voice. To enable more voices: open this site in Safari, go to iOS Settings → Accessibility → Spoken Content → Voices and download additional English voices. Then reopen the site and tap <strong>Refresh voices</strong>.
+                        </>
+                      ) : (
+                        <>
+                          On Android, make sure <strong>Google Text-to-speech</strong> is installed/updated and set as the preferred TTS engine. Then tap <strong>Refresh voices</strong>.
+                        </>
+                      )}
+                    </div>
+                  )}
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-muted-foreground text-xs">
                       ⭐ indicates high-quality local voices
