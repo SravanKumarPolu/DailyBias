@@ -5,6 +5,7 @@
 **Issue**: When you select different voices and click "Test voice", you always hear the **same voice** (usually System Default), not the voice you selected.
 
 **Why it happens**:
+
 1. **Settings cache delay** - When you change the dropdown, it saves to IndexedDB, but React state (`settings.voiceName`) hasn't updated yet when you click Test
 2. **Browser voice caching** - Some browsers (especially iOS/Safari) ignore voice changes if synthesis is already queued
 3. **Language mismatch** - If `utterance.lang` doesn't match the voice's language, browsers silently fall back to system default
@@ -20,13 +21,14 @@ Added ability to pass voice name directly to `speak()` function:
 
 ```typescript
 // Before
-speak(text)  // Always uses settings.voiceName (might be stale)
+speak(text) // Always uses settings.voiceName (might be stale)
 
 // After
-speak(text, "Samantha")  // Uses specified voice immediately
+speak(text, "Samantha") // Uses specified voice immediately
 ```
 
 **Changes**:
+
 - `speak()` now accepts `overrideVoiceName?: string`
 - `speakChunks()` now accepts `overrideVoiceName?: string`
 - `selectBestVoice()` now accepts `overrideVoiceName?: string`
@@ -40,7 +42,7 @@ const handleTestVoice = async () => {
   // Get current selection from DOM (bypasses React state delay)
   const selectElement = document.getElementById("voice-select")
   const selectedVoiceName = selectElement?.value || ""
-  
+
   // Pass directly to speak function
   speak(sample, selectedVoiceName || undefined)
 }
@@ -52,12 +54,12 @@ Set utterance language to match the voice:
 
 ```typescript
 // Before
-utterance.lang = "en-US"  // Always US English
+utterance.lang = "en-US" // Always US English
 utterance.voice = selectedVoice
 
 // After
 if (selectedVoice) {
-  utterance.lang = selectedVoice.lang  // Match voice language!
+  utterance.lang = selectedVoice.lang // Match voice language!
   utterance.voice = selectedVoice
 }
 ```
@@ -88,6 +90,7 @@ const sample = `Hello. This is ${voiceLabel}.`
 ## 🧪 How to Test
 
 ### Desktop (Chrome/Edge)
+
 1. Open Settings → Voice
 2. You should see multiple voices (Samantha, Alex, Victoria, etc.)
 3. Select a different voice
@@ -96,6 +99,7 @@ const sample = `Hello. This is ${voiceLabel}.`
 6. Try different voices - each should sound different
 
 ### Mobile (iOS Safari)
+
 1. Open Settings → Voice
 2. You might only see "System Default" (iOS limitation)
 3. Click **"Refresh voices"** - might add 1-2 more voices
@@ -106,6 +110,7 @@ const sample = `Hello. This is ${voiceLabel}.`
 **Note**: iOS in standalone PWA mode often limits voices to just the system default. This is an Apple platform restriction, not a bug in your app.
 
 ### Mobile (Android Chrome)
+
 1. Open Settings → Voice
 2. Should see Google voices (en-US, en-GB, etc.)
 3. Select different voices
@@ -128,6 +133,7 @@ When you click "Test voice", look for:
 ```
 
 If you see:
+
 - `"Using Daniel voice as fallback"` - Your selected voice wasn't found
 - `"Using any English voice"` - Falling back to default
 - `"No suitable voice found"` - No voices available
@@ -138,7 +144,7 @@ In browser console:
 
 ```javascript
 // List all available voices
-window.speechSynthesis.getVoices().forEach(v => {
+window.speechSynthesis.getVoices().forEach((v) => {
   console.log(v.name, v.lang, v.localService)
 })
 ```
@@ -151,7 +157,7 @@ In browser console:
 // Force test a specific voice
 const utterance = new SpeechSynthesisUtterance("Test")
 const voices = window.speechSynthesis.getVoices()
-utterance.voice = voices.find(v => v.name === "Samantha")
+utterance.voice = voices.find((v) => v.name === "Samantha")
 utterance.lang = utterance.voice?.lang || "en-US"
 window.speechSynthesis.speak(utterance)
 ```
@@ -179,18 +185,21 @@ window.speechSynthesis.speak(utterance)
 ## 🚨 Platform Limitations
 
 ### iOS Safari / iOS PWA
+
 - **Limited voices**: Often shows only "System Default" or 1-2 voices
 - **Why**: Apple restricts Web Speech API in web apps
-- **Workaround**: 
+- **Workaround**:
   - Click "Refresh voices" after user interaction
   - Try opening in Safari (non-PWA) to compare
   - Install voices in iOS Settings → Accessibility → Spoken Content → Voices
 
 ### Android Chrome
+
 - **Good support**: Usually shows 10-20 Google voices
 - **Should work**: Different voices should be clearly audible
 
 ### Desktop Browsers
+
 - **Best support**: Chrome/Edge show many voices
 - **macOS**: Samantha, Alex, Victoria, Daniel, Karen, etc.
 - **Windows**: Microsoft David, Zira, Mark, etc.
@@ -216,7 +225,7 @@ const select = document.getElementById("voice-select")
 console.log("Selected:", select.value)
 
 const voices = window.speechSynthesis.getVoices()
-const voice = voices.find(v => v.name === select.value)
+const voice = voices.find((v) => v.name === select.value)
 console.log("Voice object:", voice)
 ```
 
@@ -248,6 +257,7 @@ After deploying:
 9. **Listen** - should hear male voice saying "Hello. This is Alex."
 
 If all voices sound the same:
+
 - Check console logs for which voice is actually being used
 - Check if voices are actually available: `window.speechSynthesis.getVoices()`
 - Try on a different device/browser
@@ -258,12 +268,14 @@ If all voices sound the same:
 ## 🔧 Code Changes Summary
 
 ### hooks/use-speech.ts
+
 - ✅ Added `overrideVoiceName` parameter to `speak()`, `speakChunks()`, `selectBestVoice()`
 - ✅ Set `utterance.lang` to match selected voice's language
 - ✅ Cancel pending speech before new utterance
 - ✅ Improved voice selection priority logic
 
 ### app/settings/page.tsx
+
 - ✅ Added `testingVoice` state for button feedback
 - ✅ Read dropdown value directly from DOM
 - ✅ Pass voice name explicitly to `speak()`
@@ -274,19 +286,20 @@ If all voices sound the same:
 
 ## 📊 Expected Results
 
-| Platform | Voices Available | Will Test Button Work? |
-|----------|------------------|------------------------|
-| **Desktop Chrome (macOS)** | 20+ voices | ✅ YES - Different voices |
-| **Desktop Chrome (Windows)** | 15+ voices | ✅ YES - Different voices |
-| **Android Chrome** | 10-20 Google voices | ✅ YES - Different voices |
-| **iOS Safari (browser)** | 1-5 voices | ⚠️ MAYBE - Limited by iOS |
-| **iOS PWA (installed)** | 1-2 voices | ⚠️ MAYBE - Very limited |
+| Platform                     | Voices Available    | Will Test Button Work?    |
+| ---------------------------- | ------------------- | ------------------------- |
+| **Desktop Chrome (macOS)**   | 20+ voices          | ✅ YES - Different voices |
+| **Desktop Chrome (Windows)** | 15+ voices          | ✅ YES - Different voices |
+| **Android Chrome**           | 10-20 Google voices | ✅ YES - Different voices |
+| **iOS Safari (browser)**     | 1-5 voices          | ⚠️ MAYBE - Limited by iOS |
+| **iOS PWA (installed)**      | 1-2 voices          | ⚠️ MAYBE - Very limited   |
 
 ---
 
 ## 🎯 Next Steps
 
 1. **Deploy the fix**:
+
    ```bash
    cd /Users/sravanpolu/Projects/DailyBias
    pnpm build

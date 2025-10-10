@@ -42,7 +42,7 @@ export function getPersonalizedDailyBias(
 
   const now = Date.now()
   const oneDayMs = 24 * 60 * 60 * 1000
-  const oneWeekMs = 7 * oneDayMs
+  // const oneWeekMs = 7 * oneDayMs // not used; keeping day granularity
 
   // Score each bias based on multiple factors
   const scoredBiases = allBiases.map((bias) => {

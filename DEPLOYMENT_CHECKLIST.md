@@ -7,20 +7,23 @@
 ## ✅ Pre-Deployment
 
 ### 1. Update Version Number
+
 ```json
 // public/manifest.json
 {
-  "version": "1.0.2",  // ← Increment this!
+  "version": "1.0.2" // ← Increment this!
   // ...
 }
 ```
 
 **Version Format:**
+
 - Major changes: `2.0.0`
 - New features: `1.1.0`
 - Bug fixes: `1.0.1`
 
 ### 2. Run Full Build
+
 ```bash
 cd /Users/sravanpolu/Projects/DailyBias
 
@@ -40,6 +43,7 @@ pnpm start
 ```
 
 ### 3. Check Service Worker
+
 ```bash
 # Verify new SW files generated
 ls -la public/sw.js public/workbox-*.js
@@ -48,6 +52,7 @@ ls -la public/sw.js public/workbox-*.js
 ```
 
 ### 4. Test PWA Locally
+
 1. Open Chrome DevTools → Application → Service Workers
 2. Check "Update on reload"
 3. Test your changes
@@ -86,11 +91,13 @@ git push origin main
 ## 🧪 Post-Deployment Verification
 
 ### 1. Clear Your Cache First
+
 ```
 Chrome DevTools → Application → Storage → Clear site data
 ```
 
 ### 2. Test Desktop
+
 1. Visit your deployed URL
 2. Open DevTools → Application → Service Workers
 3. Verify new service worker is active
@@ -98,6 +105,7 @@ Chrome DevTools → Application → Storage → Clear site data
 5. Test navigation
 
 ### 3. Test Mobile
+
 1. Open in mobile browser (not PWA yet)
 2. Clear browser cache/data
 3. Visit site
@@ -105,6 +113,7 @@ Chrome DevTools → Application → Storage → Clear site data
 5. Test functionality
 
 ### 4. Check Manifest
+
 ```
 DevTools → Application → Manifest
 Verify version matches: 1.0.2 (or whatever you set)
@@ -148,6 +157,7 @@ Users will see: "Update available! Refresh to get the latest version"
 ### Problem: Users Still See Old Version
 
 **Solution 1: Clear Everything**
+
 ```bash
 # In browser console:
 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -160,15 +170,17 @@ navigator.serviceWorker.getRegistrations().then(function(registrations) {
 ```
 
 **Solution 2: Change Start URL**
+
 ```json
 // manifest.json
 "start_url": "/?cache_bust=20251005"
 ```
 
 **Solution 3: Force SW Update**
+
 ```javascript
 // In browser console
-navigator.serviceWorker.getRegistration().then(reg => {
+navigator.serviceWorker.getRegistration().then((reg) => {
   reg.update()
 })
 ```
@@ -176,12 +188,14 @@ navigator.serviceWorker.getRegistration().then(reg => {
 ### Problem: Service Worker Not Updating
 
 **Check:**
+
 1. ✅ Version changed in manifest.json?
 2. ✅ New build deployed (check timestamp)?
 3. ✅ Service worker files regenerated?
 4. ✅ Browser cache cleared?
 
 **Fix:**
+
 ```bash
 # 1. Remove old service worker files
 rm -rf public/sw.js public/workbox-*.js
@@ -201,6 +215,7 @@ ls -la public/sw.js
 **Cause:** Mobile has PWA installed with old cache
 
 **Fix:**
+
 ```
 Mobile → Settings → Apps → Bias Daily → Storage → Clear data
 Then reinstall PWA
@@ -211,26 +226,31 @@ Then reinstall PWA
 ## 🎯 Best Practices
 
 ### 1. **ALWAYS increment version on changes**
+
 ```json
 "version": "1.0.X"  // X++ every deployment
 ```
 
 ### 2. **Test in incognito first**
+
 ```
 Before declaring "it works", test in incognito/private mode
 ```
 
 ### 3. **Document what changed**
+
 ```bash
 git commit -m "feat: new feature - v1.0.3"
 ```
 
 ### 4. **Monitor Service Worker**
+
 ```
 Keep DevTools → Application → Service Workers open during testing
 ```
 
 ### 5. **Cache Strategies**
+
 - **HTML/Pages**: NetworkFirst (get updates)
 - **JS/CSS**: StaleWhileRevalidate (fast + updates)
 - **Images**: CacheFirst (rarely change)
@@ -251,6 +271,7 @@ Everything:    NetworkFirst, 24 hr
 ```
 
 This means:
+
 - ✅ Users get updates quickly (NetworkFirst)
 - ✅ Offline still works (fallback to cache)
 - ✅ Images cached longer (rarely change)
@@ -263,6 +284,7 @@ This means:
 ### Immediate Action Plan
 
 1. **Update version to force refresh**
+
 ```json
 // manifest.json
 "version": "1.0.999",
@@ -270,17 +292,20 @@ This means:
 ```
 
 2. **Remove old service worker**
+
 ```bash
 rm -rf public/sw.js public/workbox-*.js
 rm -rf .next
 ```
 
 3. **Rebuild**
+
 ```bash
 pnpm build
 ```
 
 4. **Deploy immediately**
+
 ```bash
 netlify deploy --prod
 # or
@@ -288,19 +313,21 @@ vercel --prod
 ```
 
 5. **Add prominent update banner** (optional)
+
 ```tsx
 // Add to app/layout.tsx
-{isOldVersion && (
-  <div className="fixed top-0 z-50 w-full bg-red-500 text-white p-3 text-center">
-    🚨 Update Available! Please refresh or reinstall the app.
-    <button onClick={() => window.location.reload(true)}>
-      Refresh Now
-    </button>
-  </div>
-)}
+{
+  isOldVersion && (
+    <div className="fixed top-0 z-50 w-full bg-red-500 p-3 text-center text-white">
+      🚨 Update Available! Please refresh or reinstall the app.
+      <button onClick={() => window.location.reload(true)}>Refresh Now</button>
+    </div>
+  )
+}
 ```
 
 6. **Instruct users**
+
 ```
 "Settings → Apps → Bias Daily → Clear Data → Reinstall"
 or
@@ -312,6 +339,7 @@ or
 ## ✅ Quick Deployment Commands
 
 ### Full Deployment
+
 ```bash
 # From project root
 cd /Users/sravanpolu/Projects/DailyBias
@@ -327,12 +355,14 @@ netlify deploy --prod
 ```
 
 ### Quick Deploy (skip checks)
+
 ```bash
 cd /Users/sravanpolu/Projects/DailyBias
 rm -rf .next && pnpm build && netlify deploy --prod
 ```
 
 ### Emergency Deploy (cache bust)
+
 ```bash
 cd /Users/sravanpolu/Projects/DailyBias
 

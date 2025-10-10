@@ -263,12 +263,12 @@ export function useSpeech() {
         utteranceQueueRef.current.push(utterance)
 
         try {
-        // Cancel any pending utterances to ensure voice switch takes effect
-        // Some browsers queue synthesis and ignore new voice assignments.
-        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-          window.speechSynthesis.cancel()
-        }
-        window.speechSynthesis.speak(utterance)
+          // Cancel any pending utterances to ensure voice switch takes effect
+          // Some browsers queue synthesis and ignore new voice assignments.
+          if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+            window.speechSynthesis.cancel()
+          }
+          window.speechSynthesis.speak(utterance)
         } catch (error) {
           console.error("[Speech] Exception while speaking:", error)
           setIsSpeaking(false)

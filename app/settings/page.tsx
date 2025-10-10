@@ -57,109 +57,107 @@ export default function SettingsPage() {
   const fetchAndFilterVoices = () => {
     const voices = window.speechSynthesis.getVoices()
 
-        // Blacklist of known poor quality/novelty voices
-        const blacklistedVoices = [
-          "albert",
-          "bad news",
-          "bahh",
-          "bells",
-          "boing",
-          "bubbles",
-          "cellos",
-          "deranged",
-          "good news",
-          "jester",
-          "organ",
-          "superstar",
-          "trinoids",
-          "whisper",
-          "wobble",
-          "zarvox",
-          "junior",
-          "ralph",
-          "fred",
-          "kathy",
-          "princess",
-          "bruce",
-          "flo",
-          "grandma",
-          "grandpa",
+    // Blacklist of known poor quality/novelty voices
+    const blacklistedVoices = [
+      "albert",
+      "bad news",
+      "bahh",
+      "bells",
+      "boing",
+      "bubbles",
+      "cellos",
+      "deranged",
+      "good news",
+      "jester",
+      "organ",
+      "superstar",
+      "trinoids",
+      "whisper",
+      "wobble",
+      "zarvox",
+      "junior",
+      "ralph",
+      "fred",
+      "kathy",
+      "princess",
+      "bruce",
+      "flo",
+      "grandma",
+      "grandpa",
+    ]
+
+    // Filter for high-quality English voices only
+    const englishVoices = voices
+      .filter((voice) => {
+        // Must be English
+        if (!voice.lang.startsWith("en")) return false
+
+        // Remove blacklisted voices
+        const voiceLower = voice.name.toLowerCase()
+        if (blacklistedVoices.some((bad) => voiceLower.includes(bad))) return false
+
+        // Keep premium/enhanced voices
+        const qualityTerms = [
+          "premium",
+          "enhanced",
+          "neural",
+          "natural",
+          "hd",
+          "google",
+          "microsoft",
         ]
+        const hasQuality = qualityTerms.some((term) => voiceLower.includes(term))
 
-        // Filter for high-quality English voices only
-        const englishVoices = voices
-          .filter((voice) => {
-            // Must be English
-            if (!voice.lang.startsWith("en")) return false
+        // Keep standard voices with common names (Samantha, Alex, Victoria, Daniel, Karen, Moira, etc.)
+        const goodStandardVoices = [
+          "samantha",
+          "alex",
+          "victoria",
+          "daniel",
+          "karen",
+          "moira",
+          "tessa",
+          "serena",
+          "allison",
+          "ava",
+          "susan",
+          "vicki",
+          "tom",
+          "aaron",
+          "nicky",
+          "diego",
+          "jorge",
+          "paulina",
+        ]
+        const isGoodStandard = goodStandardVoices.some((good) => voiceLower.includes(good))
 
-            // Remove blacklisted voices
-            const voiceLower = voice.name.toLowerCase()
-            if (blacklistedVoices.some((bad) => voiceLower.includes(bad))) return false
+        return hasQuality || isGoodStandard
+      })
+      .sort((a, b) => {
+        // Prioritize voices with quality indicators
+        const qualityTerms = ["premium", "enhanced", "neural", "natural", "hd"]
+        const aHasQuality = qualityTerms.some((term) => a.name.toLowerCase().includes(term))
+        const bHasQuality = qualityTerms.some((term) => b.name.toLowerCase().includes(term))
 
-            // Keep premium/enhanced voices
-            const qualityTerms = [
-              "premium",
-              "enhanced",
-              "neural",
-              "natural",
-              "hd",
-              "google",
-              "microsoft",
-            ]
-            const hasQuality = qualityTerms.some((term) => voiceLower.includes(term))
+        if (aHasQuality && !bHasQuality) return -1
+        if (!aHasQuality && bHasQuality) return 1
 
-            // Keep standard voices with common names (Samantha, Alex, Victoria, Daniel, Karen, Moira, etc.)
-            const goodStandardVoices = [
-              "samantha",
-              "alex",
-              "victoria",
-              "daniel",
-              "karen",
-              "moira",
-              "tessa",
-              "serena",
-              "allison",
-              "ava",
-              "susan",
-              "vicki",
-              "tom",
-              "aaron",
-              "nicky",
-              "diego",
-              "jorge",
-              "paulina",
-            ]
-            const isGoodStandard = goodStandardVoices.some((good) => voiceLower.includes(good))
+        // Prefer local voices over network
+        if (a.localService && !b.localService) return -1
+        if (!a.localService && b.localService) return 1
 
-            return hasQuality || isGoodStandard
-          })
-          .sort((a, b) => {
-            // Prioritize voices with quality indicators
-            const qualityTerms = ["premium", "enhanced", "neural", "natural", "hd"]
-            const aHasQuality = qualityTerms.some((term) => a.name.toLowerCase().includes(term))
-            const bHasQuality = qualityTerms.some((term) => b.name.toLowerCase().includes(term))
-
-            if (aHasQuality && !bHasQuality) return -1
-            if (!aHasQuality && bHasQuality) return 1
-
-            // Prefer local voices over network
-            if (a.localService && !b.localService) return -1
-            if (!a.localService && b.localService) return 1
-
-            return a.name.localeCompare(b.name)
-          })
+        return a.name.localeCompare(b.name)
+      })
 
     setAvailableVoices(englishVoices)
 
-        // Auto-select Daniel as default voice, or fallback to best available
+    // Auto-select Daniel as default voice, or fallback to best available
     if (!settings.voiceName && englishVoices.length > 0) {
-          // Prefer Daniel voice as default
-          const danielVoice = englishVoices.find((voice) =>
-            voice.name.toLowerCase().includes("daniel")
-          )
-          const defaultVoice = danielVoice || englishVoices[0]
-          saveSetting("voiceName", defaultVoice.name)
-        }
+      // Prefer Daniel voice as default
+      const danielVoice = englishVoices.find((voice) => voice.name.toLowerCase().includes("daniel"))
+      const defaultVoice = danielVoice || englishVoices[0]
+      saveSetting("voiceName", defaultVoice.name)
+    }
   }
 
   // Load available voices
@@ -539,15 +537,36 @@ export default function SettingsPage() {
                       </option>
                     ))}
                   </select>
-                  {(availableVoices.length <= 1 && (isiOS || isAndroid)) && (
-                    <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-100 text-xs">
+                  {availableVoices.length <= 1 && (isiOS || isAndroid) && (
+                    <div className="mt-2 space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-100">
                       {isiOS ? (
                         <>
-                          On iOS, web apps (especially installed PWAs) may only expose the system voice. To enable more voices: open this site in Safari, go to iOS Settings → Accessibility → Spoken Content → Voices and download additional English voices. Then reopen the site and tap <strong>Refresh voices</strong>.
+                          On iOS, web apps (especially installed PWAs) may only expose the system
+                          voice. To enable more voices: open this site in Safari, go to iOS Settings
+                          → Accessibility → Spoken Content → Voices and download additional English
+                          voices. Then reopen the site and tap <strong>Refresh voices</strong>.
                         </>
                       ) : (
                         <>
-                          On Android, make sure <strong>Google Text-to-speech</strong> is installed/updated and set as the preferred TTS engine. Then tap <strong>Refresh voices</strong>.
+                          On Android, make sure <strong>Google Text-to-speech</strong> is
+                          installed/updated and set as the preferred TTS engine. Then tap{" "}
+                          <strong>Refresh voices</strong>.
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <a
+                              href="https://play.google.com/store/apps/details?id=com.google.android.tts"
+                              target="_blank"
+                              rel="noreferrer noopener"
+                              className="rounded-md border border-amber-300 bg-amber-100 px-2 py-1 text-amber-900 hover:bg-amber-200 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-100"
+                            >
+                              Open Google TTS in Play Store
+                            </a>
+                            <a
+                              href="intent://#Intent;action=android.settings.TTS_SETTINGS;end"
+                              className="rounded-md border border-amber-300 bg-amber-100 px-2 py-1 text-amber-900 hover:bg-amber-200 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-100"
+                            >
+                              Open TTS settings
+                            </a>
+                          </div>
                         </>
                       )}
                     </div>
@@ -556,7 +575,12 @@ export default function SettingsPage() {
                     <p className="text-muted-foreground text-xs">
                       ⭐ indicates high-quality local voices
                     </p>
-                    <Button size="sm" variant="ghost" className="cursor-pointer" onClick={handleRefreshVoices}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="cursor-pointer"
+                      onClick={handleRefreshVoices}
+                    >
                       Refresh voices
                     </Button>
                     <Button

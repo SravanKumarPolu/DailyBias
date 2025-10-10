@@ -6,7 +6,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { BiasCardDetailedLoader, BiasCardCompactLoader } from "./loading-fallback"
+import { BiasCardDetailedLoader } from "./loading-fallback"
 import type { ComponentProps } from "react"
 import type { BiasCard } from "./bias-card"
 
