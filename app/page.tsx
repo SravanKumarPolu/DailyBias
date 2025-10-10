@@ -61,7 +61,12 @@ export default function HomePage() {
   }
 
   // Voice commands
-  const { isListening, isSupported: voiceCommandsSupported, toggleListening, transcript } = useVoiceCommands({
+  const {
+    isListening,
+    isSupported: voiceCommandsSupported,
+    toggleListening,
+    transcript,
+  } = useVoiceCommands({
     onReadCommand: handleReadCommand,
     onStopCommand: handleStopCommand,
     enabled: true,
@@ -146,33 +151,36 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-20 sm:pb-24">
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={seed} />
-      <DailyHeader 
+      <DailyHeader
         isVoiceListening={isListening}
         onToggleVoiceCommands={handleToggleVoiceCommands}
         voiceCommandsSupported={voiceCommandsSupported}
       />
 
-      <main className="w-full max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8" aria-label="Daily cognitive bias">
+      <main
+        className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-4 sm:py-6 md:py-8"
+        aria-label="Daily cognitive bias"
+      >
         {loading || !dailyBias ? (
           <div className="space-y-4 sm:space-y-6" role="status" aria-label="Loading daily bias">
-            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-16 sm:h-20 w-full" />
+                <Skeleton key={i} className="h-16 w-full sm:h-20" />
               ))}
             </div>
 
-            <div className="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-primary/20">
-              <Skeleton className="h-5 sm:h-6 w-32 sm:w-40 mb-3 sm:mb-4" />
-              <Skeleton className="h-7 sm:h-8 w-40 sm:w-48 mb-2" />
-              <Skeleton className="h-16 sm:h-20 w-full" />
+            <div className="glass border-primary/20 rounded-2xl border-2 p-4 sm:rounded-3xl sm:p-6">
+              <Skeleton className="mb-3 h-5 w-32 sm:mb-4 sm:h-6 sm:w-40" />
+              <Skeleton className="mb-2 h-7 w-40 sm:h-8 sm:w-48" />
+              <Skeleton className="h-16 w-full sm:h-20" />
             </div>
 
-            <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
-              <Skeleton className="h-6 sm:h-8 w-24 sm:w-32" />
-              <Skeleton className="h-10 sm:h-12 w-full" />
-              <Skeleton className="h-20 sm:h-24 w-full" />
-              <Skeleton className="h-24 sm:h-32 w-full" />
-              <Skeleton className="h-24 sm:h-32 w-full" />
+            <div className="glass space-y-4 rounded-xl p-4 sm:space-y-6 sm:rounded-2xl sm:p-6 md:p-8">
+              <Skeleton className="h-6 w-24 sm:h-8 sm:w-32" />
+              <Skeleton className="h-10 w-full sm:h-12" />
+              <Skeleton className="h-20 w-full sm:h-24" />
+              <Skeleton className="h-24 w-full sm:h-32" />
+              <Skeleton className="h-24 w-full sm:h-32" />
             </div>
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>

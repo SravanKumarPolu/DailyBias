@@ -15,7 +15,7 @@ export function registerServiceWorker() {
           () => {
             registration.update()
           },
-          60 * 60 * 1000,
+          60 * 60 * 1000
         ) // Check every hour
 
         // Handle updates

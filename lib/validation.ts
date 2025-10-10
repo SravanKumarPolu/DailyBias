@@ -68,7 +68,10 @@ export function validateSummary(summary: string): { valid: boolean; error?: stri
 /**
  * Validates optional text fields (why, counter)
  */
-export function validateOptionalText(text: string, maxLength = 1000): { valid: boolean; error?: string } {
+export function validateOptionalText(
+  text: string,
+  maxLength = 1000
+): { valid: boolean; error?: string } {
   if (!text) {
     return { valid: true }
   }

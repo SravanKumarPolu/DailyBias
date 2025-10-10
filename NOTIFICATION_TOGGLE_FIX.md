@@ -9,8 +9,9 @@ The Daily Reminder notification toggle in the settings page was not providing cl
 ### 1. Added Cursor Pointer to All Toggles
 
 Added `cursor-pointer` class to all 3 switches in settings:
+
 - ✅ **Daily Reminder** toggle
-- ✅ **Enable Voice** toggle  
+- ✅ **Enable Voice** toggle
 - ✅ **Include Custom Biases** toggle
 
 Also added `cursor-pointer` to all Labels for better UX.
@@ -18,6 +19,7 @@ Also added `cursor-pointer` to all Labels for better UX.
 ### 2. Improved Notification Permission Handling
 
 **Before:**
+
 ```tsx
 const requestNotificationPermission = async () => {
   const permission = await Notification.requestPermission()
@@ -30,6 +32,7 @@ const requestNotificationPermission = async () => {
 ```
 
 **After:**
+
 ```tsx
 const requestNotificationPermission = async () => {
   try {
@@ -66,16 +69,17 @@ const requestNotificationPermission = async () => {
 
 **Permission States:**
 
-| State | What Happens | User Sees |
-|-------|-------------|-----------|
-| **Granted** | Toggle ON, notification sent | ✅ Test notification appears |
-| **Denied** | Toggle stays OFF, alert shown | ⚠️ "Please enable in browser settings" |
-| **Default** | Browser shows permission dialog | 🔔 Permission prompt |
-| **Error** | Toggle stays OFF, logged to console | Settings saved safely |
+| State       | What Happens                        | User Sees                              |
+| ----------- | ----------------------------------- | -------------------------------------- |
+| **Granted** | Toggle ON, notification sent        | ✅ Test notification appears           |
+| **Denied**  | Toggle stays OFF, alert shown       | ⚠️ "Please enable in browser settings" |
+| **Default** | Browser shows permission dialog     | 🔔 Permission prompt                   |
+| **Error**   | Toggle stays OFF, logged to console | Settings saved safely                  |
 
 ## How It Works Now
 
 ### Step 1: User Clicks Toggle ON
+
 ```
 User clicks → handleReminderToggle(true)
               ↓
@@ -87,6 +91,7 @@ User clicks → handleReminderToggle(true)
 ### Step 2: User Responds to Permission
 
 **If ALLOW:**
+
 ```
 Permission granted
     ↓
@@ -98,6 +103,7 @@ Toggle stays ON ✅
 ```
 
 **If BLOCK:**
+
 ```
 Permission denied
     ↓
@@ -109,6 +115,7 @@ Toggle returns to OFF ❌
 ```
 
 ### Step 3: User Clicks Toggle OFF
+
 ```
 User clicks → handleReminderToggle(false)
               ↓
@@ -123,11 +130,12 @@ User clicks → handleReminderToggle(false)
 ✅ Firefox - Works perfectly  
 ✅ Safari - Works with permission prompt  
 ⚠️ iOS Safari - Requires user action (button click)  
-❌ Incognito/Private - Usually blocked by browser  
+❌ Incognito/Private - Usually blocked by browser
 
 ## Testing Instructions
 
 ### Test 1: First Time Permission
+
 1. Open Settings page
 2. Turn ON "Daily Reminder" toggle
 3. **Expected**: Browser shows permission dialog
@@ -135,39 +143,47 @@ User clicks → handleReminderToggle(false)
 5. **Expected**: Test notification appears, toggle stays ON
 
 ### Test 2: Permission Already Granted
+
 1. Toggle should work instantly
 2. **Expected**: Toggle ON, notification appears
 
 ### Test 3: Permission Denied
+
 1. Turn ON toggle
 2. Click "Block" in permission dialog
 3. **Expected**: Alert appears, toggle returns to OFF
 4. **To fix**: Enable notifications in browser settings
 
 ### Test 4: Turn OFF
+
 1. Turn OFF toggle
 2. **Expected**: Toggle OFF immediately, no dialog
 
 ### Test 5: Browser Not Supported
+
 1. Use old browser without Notification API
 2. **Expected**: Alert: "This browser does not support notifications"
 
 ## Troubleshooting
 
 ### Toggle doesn't respond
+
 ✅ **Fixed**: Added `cursor-pointer` to show it's clickable
 
 ### Permission dialog doesn't appear
+
 - Check if notifications are already blocked
 - Check if in incognito/private mode
 - Try in a regular browser window
 
 ### Toggle turns ON but no notification
+
 - Permission might be "default" state
 - Check browser console for errors
 - Verify `/icon-192.jpg` exists
 
 ### Toggle turns OFF automatically
+
 - This is correct if permission was denied
 - User needs to enable in browser settings
 
@@ -204,7 +220,7 @@ await saveSetting("dailyReminder", value)
 ✅ **Error Handling** - Gracefully handles permission denied  
 ✅ **User Guidance** - Clear messages when blocked  
 ✅ **Debugging** - Console logs for troubleshooting  
-✅ **Reliability** - Try-catch prevents crashes  
+✅ **Reliability** - Try-catch prevents crashes
 
 ---
 

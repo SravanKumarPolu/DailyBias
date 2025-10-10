@@ -17,8 +17,8 @@ function calculateStreak(progressList: BiasProgress[]): { current: number; longe
       sorted.map((p) => {
         const date = new Date(p.viewedAt)
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-      }),
-    ),
+      })
+    )
   )
 
   // Calculate current streak
@@ -114,7 +114,7 @@ export function useProgress() {
         throw error
       }
     },
-    [loadProgress],
+    [loadProgress]
   )
 
   const toggleMastered = useCallback(
@@ -137,7 +137,7 @@ export function useProgress() {
         throw error
       }
     },
-    [loadProgress],
+    [loadProgress]
   )
 
   const isViewed = useCallback(async (biasId: string): Promise<boolean> => {

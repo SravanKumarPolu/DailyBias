@@ -60,7 +60,7 @@ export default function BiasDetailPage() {
       <div className="min-h-screen pb-24">
         <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={0} />
         <DailyHeader />
-        <main className="w-full max-w-2xl mx-auto px-4 py-8">
+        <main className="mx-auto w-full max-w-2xl px-4 py-8">
           <div className="glass rounded-2xl p-12 text-center">
             <p className="text-muted-foreground">Loading...</p>
           </div>
@@ -75,8 +75,8 @@ export default function BiasDetailPage() {
       <div className="min-h-screen pb-24">
         <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={0} />
         <DailyHeader />
-        <main className="w-full max-w-2xl mx-auto px-4 py-8">
-          <div className="glass rounded-2xl p-12 text-center space-y-4">
+        <main className="mx-auto w-full max-w-2xl px-4 py-8">
+          <div className="glass space-y-4 rounded-2xl p-12 text-center">
             <p className="text-lg font-medium">Bias not found</p>
             <Button onClick={() => router.back()}>Go Back</Button>
           </div>
@@ -91,9 +91,9 @@ export default function BiasDetailPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={bias.id.length} />
       <DailyHeader />
 
-      <main className="w-full max-w-2xl mx-auto px-4 py-8">
+      <main className="mx-auto w-full max-w-2xl px-4 py-8">
         <Button variant="ghost" onClick={() => router.back()} className="mb-6 cursor-pointer">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
 

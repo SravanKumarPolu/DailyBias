@@ -54,7 +54,7 @@ export function useBiases() {
         throw error
       }
     },
-    [loadBiases],
+    [loadBiases]
   )
 
   const updateBias = useCallback(
@@ -76,7 +76,7 @@ export function useBiases() {
         throw error
       }
     },
-    [loadBiases],
+    [loadBiases]
   )
 
   const deleteBias = useCallback(
@@ -98,7 +98,7 @@ export function useBiases() {
         throw error
       }
     },
-    [loadBiases],
+    [loadBiases]
   )
 
   return {

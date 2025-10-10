@@ -56,10 +56,12 @@ These provide visual feedback while components are loading, improving perceived 
 Components are configured based on their requirements:
 
 **Client-Side Only (ssr: false):**
+
 - `BackgroundCanvas` - Requires browser canvas API
 - `Navigation` - Uses client-side routing
 
 **Server-Side Compatible (ssr: true):**
+
 - `BiasCard` - Can be pre-rendered
 - `ProgressStats` - Static content
 - `RecommendationCard` - Can be server-rendered
@@ -84,13 +86,21 @@ The `next.config.mjs` includes optimized webpack configuration:
 webpack: (config, { isServer }) => {
   if (!isServer) {
     config.optimization.splitChunks = {
-      chunks: 'all',
+      chunks: "all",
       cacheGroups: {
-        framework: { /* React, React-DOM */ },
-        lib: { /* Other npm packages */ },
-        commons: { /* Shared components */ },
-        shared: { /* Reusable chunks */ }
-      }
+        framework: {
+          /* React, React-DOM */
+        },
+        lib: {
+          /* Other npm packages */
+        },
+        commons: {
+          /* Shared components */
+        },
+        shared: {
+          /* Reusable chunks */
+        },
+      },
     }
   }
   return config
@@ -98,6 +108,7 @@ webpack: (config, { isServer }) => {
 ```
 
 This creates separate chunks for:
+
 - **framework** - React core libraries
 - **lib** - Third-party npm packages
 - **commons** - Components used across 2+ pages
@@ -109,7 +120,7 @@ The configuration also includes experimental optimizations:
 
 ```javascript
 experimental: {
-  optimizePackageImports: ['lucide-react', '@radix-ui/react-icons']
+  optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"]
 }
 ```
 
@@ -154,7 +165,7 @@ import dynamic from "next/dynamic"
 import { MyComponentLoader } from "./loading-fallback"
 
 export const DynamicMyComponent = dynamic(
-  () => import("./my-component").then(mod => mod.MyComponent),
+  () => import("./my-component").then((mod) => mod.MyComponent),
   {
     loading: () => <MyComponentLoader />,
     ssr: true, // or false if client-only
@@ -175,6 +186,7 @@ export default function Page() {
 ## Demo Page
 
 Visit `/code-splitting-demo` to see:
+
 - Interactive examples of code splitting
 - Performance metrics
 - Loading state demonstrations
@@ -202,6 +214,7 @@ Monitor these metrics in production:
 - **Largest Contentful Paint (LCP)** - Time to largest content element
 
 Use tools like:
+
 - Google Lighthouse
 - Chrome DevTools Performance tab
 - WebPageTest
@@ -229,6 +242,7 @@ Use tools like:
 ### Component Not Loading
 
 Check that:
+
 1. The import path is correct
 2. The component is exported properly
 3. There are no circular dependencies
@@ -236,6 +250,7 @@ Check that:
 ### Flash of Unstyled Content
 
 Ensure:
+
 1. Loading fallback matches component layout
 2. SSR is enabled if appropriate
 3. Loading state is visually similar to final state
@@ -243,6 +258,7 @@ Ensure:
 ### Increased Load Times
 
 Review:
+
 1. Are you splitting too granularly?
 2. Is network waterfall efficient?
 3. Are preload hints needed?

@@ -15,5 +15,5 @@ export const DynamicProgressStats = dynamic<ComponentProps<typeof ProgressStatsC
   {
     loading: () => <ProgressStatsLoader />,
     ssr: true, // Can be server-rendered since it's mostly static content
-  },
+  }
 )

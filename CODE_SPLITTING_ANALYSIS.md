@@ -6,16 +6,16 @@
 
 All pages now use dynamic imports:
 
-| Page | Status | Components Split |
-|------|--------|-----------------|
-| `/` (Home) | ✅ Done | BackgroundCanvas, BiasCard, Navigation |
-| `/all` (All Biases) | ✅ Done | BackgroundCanvas, BiasCard, Navigation, RecommendationCard |
-| `/favorites` | ✅ Done | BackgroundCanvas, BiasCard, Navigation |
-| `/settings` | ✅ Done | BackgroundCanvas, Navigation, ProgressStats |
-| `/bias/[id]` | ✅ Done | BackgroundCanvas, BiasCard, Navigation |
-| `/about` | ✅ Done | BackgroundCanvas, Navigation |
-| `/add` | ✅ Just Fixed! | BackgroundCanvas, Navigation |
-| `/code-splitting-demo` | ✅ Done | Demo page with examples |
+| Page                   | Status         | Components Split                                           |
+| ---------------------- | -------------- | ---------------------------------------------------------- |
+| `/` (Home)             | ✅ Done        | BackgroundCanvas, BiasCard, Navigation                     |
+| `/all` (All Biases)    | ✅ Done        | BackgroundCanvas, BiasCard, Navigation, RecommendationCard |
+| `/favorites`           | ✅ Done        | BackgroundCanvas, BiasCard, Navigation                     |
+| `/settings`            | ✅ Done        | BackgroundCanvas, Navigation, ProgressStats                |
+| `/bias/[id]`           | ✅ Done        | BackgroundCanvas, BiasCard, Navigation                     |
+| `/about`               | ✅ Done        | BackgroundCanvas, Navigation                               |
+| `/add`                 | ✅ Just Fixed! | BackgroundCanvas, Navigation                               |
+| `/code-splitting-demo` | ✅ Done        | Demo page with examples                                    |
 
 ### 2. Dynamic Components Created (8 components)
 
@@ -26,14 +26,14 @@ All pages now use dynamic imports:
 ✅ `DynamicRecommendationCard` - Personalized suggestions  
 ✅ Loading fallbacks for all components  
 ✅ Page-level loaders  
-✅ Smart preloading helper  
+✅ Smart preloading helper
 
 ### 3. Configuration Optimized
 
 ✅ Webpack bundle splitting configured  
 ✅ Separate chunks for React, libraries, commons  
 ✅ Package import optimization (lucide-react)  
-✅ Tree-shaking enabled  
+✅ Tree-shaking enabled
 
 ## 📊 Current Bundle Analysis
 
@@ -62,11 +62,13 @@ Shared Chunks:
 ### Option 1: Virtual List for Long Lists ⚠️ **Probably Not Needed**
 
 **When useful:**
+
 - Lists with 100+ items
 - Mobile devices with slow performance
 - Infinite scrolling scenarios
 
 **Your app status:**
+
 - All Biases page: ~50 items
 - Favorites: Usually <20 items
 - **Recommendation: Not needed** unless you add 500+ biases
@@ -80,18 +82,17 @@ Shared Chunks:
 Next.js automatically prefetches linked pages when they appear in viewport.
 
 **Current behavior:**
+
 ```tsx
 <Link href="/all">All Biases</Link>
 // ✅ Automatically prefetches when link is visible
 ```
 
 **Custom prefetching (if needed):**
+
 ```tsx
 // Prefetch on hover for instant navigation
-<Link 
-  href="/all" 
-  onMouseEnter={() => router.prefetch('/all')}
->
+<Link href="/all" onMouseEnter={() => router.prefetch("/all")}>
   All Biases
 </Link>
 ```
@@ -106,8 +107,8 @@ Next.js automatically prefetches linked pages when they appear in viewport.
 
 ```tsx
 // Next.js Image component already lazy loads
-import Image from 'next/image'
-<Image src="/icon.jpg" loading="lazy" />
+import Image from "next/image"
+;<Image src="/icon.jpg" loading="lazy" />
 ```
 
 ---
@@ -115,17 +116,19 @@ import Image from 'next/image'
 ### Option 4: Dialog/Modal Lazy Loading ⭐ **Worth Considering**
 
 **Current situation:**
+
 - Add/Edit Dialog in `/add` page
 - Delete Confirmation Dialog
 - These are loaded upfront even if user never clicks "Add"
 
 **Potential optimization:**
+
 ```tsx
 // Current: Dialog imported statically
 import { Dialog } from "@/components/ui/dialog"
 
 // Optimized: Load dialog only when needed
-const DynamicDialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog))
+const DynamicDialog = dynamic(() => import("@/components/ui/dialog").then((mod) => mod.Dialog))
 
 // Or load entire form on click
 const openAddDialog = async () => {
@@ -143,6 +146,7 @@ const openAddDialog = async () => {
 ### Option 5: Component-Level Code Splitting 🎯 **Recommended for Large Components**
 
 **Already done for:**
+
 - ✅ BackgroundCanvas (framer-motion animations)
 - ✅ BiasCard (complex component)
 - ✅ Navigation (icons + routing)
@@ -150,6 +154,7 @@ const openAddDialog = async () => {
 - ✅ RecommendationCard
 
 **Could also split (if they get large):**
+
 - ❓ DailyHeader - Currently small, no need
 - ❓ UI components - Too small to split
 - ❓ Toast/Sonner - Loaded on first toast, already lazy
@@ -161,19 +166,20 @@ const openAddDialog = async () => {
 ### Option 6: Third-Party Library Optimization 📦 **Partially Done**
 
 **Already optimized:**
+
 - ✅ lucide-react - Tree-shaken (only used icons imported)
 - ✅ framer-motion - Dynamically loaded with BackgroundCanvas
 - ✅ React/React-DOM - Separate chunk
 
 **Large libraries in your app:**
 
-| Library | Size | Current Status | Action Needed? |
-|---------|------|----------------|----------------|
-| `@radix-ui/*` | ~150 KB | Used in many UI components | ✅ Already tree-shaken by Next.js |
-| `framer-motion` | ~60 KB | Used in BackgroundCanvas | ✅ Dynamically loaded |
-| `lucide-react` | ~40 KB | Used everywhere | ✅ Optimized imports configured |
-| `idb` (IndexedDB) | ~8 KB | Used in storage | ✅ Small, loaded on demand |
-| `date-fns` | ~5 KB | Used sparingly | ✅ Small enough |
+| Library           | Size    | Current Status             | Action Needed?                    |
+| ----------------- | ------- | -------------------------- | --------------------------------- |
+| `@radix-ui/*`     | ~150 KB | Used in many UI components | ✅ Already tree-shaken by Next.js |
+| `framer-motion`   | ~60 KB  | Used in BackgroundCanvas   | ✅ Dynamically loaded             |
+| `lucide-react`    | ~40 KB  | Used everywhere            | ✅ Optimized imports configured   |
+| `idb` (IndexedDB) | ~8 KB   | Used in storage            | ✅ Small, loaded on demand        |
+| `date-fns`        | ~5 KB   | Used sparingly             | ✅ Small enough                   |
 
 **Recommendation: No action needed!** ✅ Everything is optimized.
 
@@ -187,12 +193,12 @@ Your `next-pwa` configuration already handles this:
 runtimeCaching: [
   {
     urlPattern: /^https?.*/,
-    handler: 'NetworkFirst',
+    handler: "NetworkFirst",
     options: {
-      cacheName: 'offlineCache',
-      expiration: { maxEntries: 200 }
-    }
-  }
+      cacheName: "offlineCache",
+      expiration: { maxEntries: 200 },
+    },
+  },
 ]
 ```
 
@@ -203,6 +209,7 @@ runtimeCaching: [
 ### Option 8: CSS Code Splitting 🎨 **Already Handled by Next.js**
 
 Next.js automatically:
+
 - Splits CSS by route
 - Removes unused CSS
 - Minifies CSS in production
@@ -216,7 +223,7 @@ Next.js automatically:
 Using Geist font from `next/font`:
 
 ```tsx
-import { GeistSans } from 'geist/font/sans'
+import { GeistSans } from "geist/font/sans"
 // ✅ Automatically optimized by Next.js
 ```
 
@@ -229,14 +236,15 @@ import { GeistSans } from 'geist/font/sans'
 Currently using Vercel Analytics:
 
 ```tsx
-import { Analytics } from '@vercel/analytics'
+import { Analytics } from "@vercel/analytics"
 ```
 
 **Potential optimization:**
+
 ```tsx
 // Load analytics after page is interactive
-const DynamicAnalytics = dynamic(() => import('@vercel/analytics').then(mod => mod.Analytics), {
-  ssr: false
+const DynamicAnalytics = dynamic(() => import("@vercel/analytics").then((mod) => mod.Analytics), {
+  ssr: false,
 })
 ```
 
@@ -291,20 +299,21 @@ These are **not worth implementing** for your app:
 
 ### Current Status: ⭐⭐⭐⭐⭐ Excellent!
 
-| Metric | Target | Your App | Status |
-|--------|--------|----------|--------|
-| First Contentful Paint | <1.5s | ~1.2s | ✅ Excellent |
-| Time to Interactive | <3s | ~2s | ✅ Excellent |
-| Total Blocking Time | <200ms | ~150ms | ✅ Excellent |
-| Initial Bundle | <300 KB | ~267 KB | ✅ Excellent |
-| Page-specific Code | <10 KB | 1-4 KB | ✅ Outstanding! |
-| Lighthouse Score | >90 | 95+ | ✅ Excellent |
+| Metric                 | Target  | Your App | Status          |
+| ---------------------- | ------- | -------- | --------------- |
+| First Contentful Paint | <1.5s   | ~1.2s    | ✅ Excellent    |
+| Time to Interactive    | <3s     | ~2s      | ✅ Excellent    |
+| Total Blocking Time    | <200ms  | ~150ms   | ✅ Excellent    |
+| Initial Bundle         | <300 KB | ~267 KB  | ✅ Excellent    |
+| Page-specific Code     | <10 KB  | 1-4 KB   | ✅ Outstanding! |
+| Lighthouse Score       | >90     | 95+      | ✅ Excellent    |
 
 ---
 
 ## 🎓 What You've Achieved
 
 ### Performance Improvements:
+
 - ✅ **30-40% smaller** initial bundle
 - ✅ **25-35% faster** time to interactive
 - ✅ **20-30% faster** first contentful paint
@@ -312,6 +321,7 @@ These are **not worth implementing** for your app:
 - ✅ **Excellent** mobile performance
 
 ### Code Quality:
+
 - ✅ 8 dynamic component wrappers
 - ✅ All 8 pages optimized
 - ✅ Comprehensive loading states
@@ -320,6 +330,7 @@ These are **not worth implementing** for your app:
 - ✅ Build verified and passing
 
 ### User Experience:
+
 - ✅ Smooth loading animations
 - ✅ No flash of unstyled content
 - ✅ Fast page loads
@@ -336,7 +347,7 @@ These are **not worth implementing** for your app:
 
 **Additional optimizations available:** 2-3 minor ones (very low priority)
 
-**Recommendation:** 
+**Recommendation:**
 ✅ **Deploy as-is!** Your app is production-ready with excellent performance.
 
 The optional optimizations listed above would provide only **marginal improvements** (~15-20 KB total) at the cost of additional complexity. The **current implementation is optimal** for an app of this size.
@@ -362,6 +373,7 @@ npm run dev
 ```
 
 ### Documentation:
+
 - `QUICK_START_CODE_SPLITTING.md` - Quick start guide
 - `CODE_SPLITTING.md` - Full technical documentation
 - `CODE_SPLITTING_SUMMARY.md` - Implementation overview

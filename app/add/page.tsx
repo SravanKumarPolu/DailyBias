@@ -12,7 +12,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Dialog,
   DialogContent,
@@ -23,7 +29,12 @@ import {
 } from "@/components/ui/dialog"
 import type { Bias, BiasCategory } from "@/lib/types"
 import { Badge } from "@/components/ui/badge"
-import { sanitizeText, validateTitle, validateSummary, validateOptionalText } from "@/lib/validation"
+import {
+  sanitizeText,
+  validateTitle,
+  validateSummary,
+  validateOptionalText,
+} from "@/lib/validation"
 
 const categories: BiasCategory[] = ["decision", "memory", "social", "perception", "misc"]
 
@@ -98,7 +109,7 @@ export default function AddBiasPage() {
     // Check for duplicate title (excluding current bias if editing)
     const sanitizedTitle = sanitizeText(title, 100)
     const duplicateTitle = userBiases.find(
-      (b) => b.title.toLowerCase() === sanitizedTitle.toLowerCase() && b.id !== editingBias?.id,
+      (b) => b.title.toLowerCase() === sanitizedTitle.toLowerCase() && b.id !== editingBias?.id
     )
     if (duplicateTitle) {
       newErrors.title = "A bias with this title already exists"
@@ -161,34 +172,36 @@ export default function AddBiasPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={789} />
       <DailyHeader />
 
-      <main className="w-full max-w-4xl mx-auto px-4 py-8">
+      <main className="mx-auto w-full max-w-4xl px-4 py-8">
         <div className="space-y-6">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Your Biases</h1>
-              <p className="text-muted-foreground">Create and manage your custom cognitive biases</p>
+              <h1 className="mb-2 text-3xl font-bold">Your Biases</h1>
+              <p className="text-muted-foreground">
+                Create and manage your custom cognitive biases
+              </p>
             </div>
             <Button onClick={openAddDialog}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Add Bias
             </Button>
           </div>
 
           {/* User biases count */}
-          <div className="text-sm text-muted-foreground">{userBiases.length} custom biases</div>
+          <div className="text-muted-foreground text-sm">{userBiases.length} custom biases</div>
 
           {/* User biases list */}
           {userBiases.length === 0 ? (
-            <div className="glass rounded-2xl p-12 text-center space-y-4">
-              <Plus className="h-12 w-12 mx-auto text-muted-foreground" />
+            <div className="glass space-y-4 rounded-2xl p-12 text-center">
+              <Plus className="text-muted-foreground mx-auto h-12 w-12" />
               <div>
-                <p className="text-lg font-medium mb-2">No custom biases yet</p>
+                <p className="mb-2 text-lg font-medium">No custom biases yet</p>
                 <p className="text-muted-foreground mb-4">
                   Create your own cognitive biases to add to your personal collection
                 </p>
                 <Button onClick={openAddDialog}>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Add Your First Bias
                 </Button>
               </div>
@@ -205,16 +218,20 @@ export default function AddBiasPage() {
                         </Badge>
                         <h3 className="text-lg font-semibold text-balance">{bias.title}</h3>
                       </div>
-                      <div className="flex gap-1 shrink-0">
+                      <div className="flex shrink-0 gap-1">
                         <Button variant="ghost" size="icon" onClick={() => openEditDialog(bias)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeleteConfirmId(bias.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleteConfirmId(bias.id)}
+                        >
+                          <Trash2 className="text-destructive h-4 w-4" />
                         </Button>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground text-pretty">{bias.summary}</p>
+                    <p className="text-muted-foreground text-sm text-pretty">{bias.summary}</p>
                   </div>
                 </div>
               ))}
@@ -227,11 +244,13 @@ export default function AddBiasPage() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingBias ? "Edit Bias" : "Add New Bias"}</DialogTitle>
             <DialogDescription>
-              {editingBias ? "Update your custom bias details" : "Create a new cognitive bias for your collection"}
+              {editingBias
+                ? "Update your custom bias details"
+                : "Create a new cognitive bias for your collection"}
             </DialogDescription>
           </DialogHeader>
 
@@ -249,14 +268,17 @@ export default function AddBiasPage() {
                 className={errors.title ? "border-destructive" : ""}
                 maxLength={100}
               />
-              {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
-              <p className="text-xs text-muted-foreground">{title.length}/100 characters</p>
+              {errors.title && <p className="text-destructive text-sm">{errors.title}</p>}
+              <p className="text-muted-foreground text-xs">{title.length}/100 characters</p>
             </div>
 
             {/* Category */}
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Select value={category} onValueChange={(value) => setCategory(value as BiasCategory)}>
+              <Select
+                value={category}
+                onValueChange={(value) => setCategory(value as BiasCategory)}
+              >
                 <SelectTrigger id="category">
                   <SelectValue />
                 </SelectTrigger>
@@ -284,8 +306,8 @@ export default function AddBiasPage() {
                 className={errors.summary ? "border-destructive" : ""}
                 maxLength={500}
               />
-              {errors.summary && <p className="text-sm text-destructive">{errors.summary}</p>}
-              <p className="text-xs text-muted-foreground">{summary.length}/500 characters</p>
+              {errors.summary && <p className="text-destructive text-sm">{errors.summary}</p>}
+              <p className="text-muted-foreground text-xs">{summary.length}/500 characters</p>
             </div>
 
             {/* Why */}
@@ -299,8 +321,8 @@ export default function AddBiasPage() {
                 rows={3}
                 maxLength={1000}
               />
-              {errors.why && <p className="text-sm text-destructive">{errors.why}</p>}
-              <p className="text-xs text-muted-foreground">{why.length}/1000 characters</p>
+              {errors.why && <p className="text-destructive text-sm">{errors.why}</p>}
+              <p className="text-muted-foreground text-xs">{why.length}/1000 characters</p>
             </div>
 
             {/* Counter */}
@@ -314,11 +336,11 @@ export default function AddBiasPage() {
                 rows={3}
                 maxLength={1000}
               />
-              {errors.counter && <p className="text-sm text-destructive">{errors.counter}</p>}
-              <p className="text-xs text-muted-foreground">{counter.length}/1000 characters</p>
+              {errors.counter && <p className="text-destructive text-sm">{errors.counter}</p>}
+              <p className="text-muted-foreground text-xs">{counter.length}/1000 characters</p>
             </div>
 
-            {errors.submit && <p className="text-sm text-destructive">{errors.submit}</p>}
+            {errors.submit && <p className="text-destructive text-sm">{errors.submit}</p>}
           </div>
 
           <DialogFooter>
@@ -343,7 +365,10 @@ export default function AddBiasPage() {
             <Button variant="outline" onClick={() => setDeleteConfirmId(null)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={() => deleteConfirmId && handleDelete(deleteConfirmId)}>
+            <Button
+              variant="destructive"
+              onClick={() => deleteConfirmId && handleDelete(deleteConfirmId)}
+            >
               Delete
             </Button>
           </DialogFooter>

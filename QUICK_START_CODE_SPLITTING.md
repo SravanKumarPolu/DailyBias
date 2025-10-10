@@ -34,6 +34,7 @@ All major pages and components are now optimized!
 ### Updated Pages
 
 All pages now use dynamic imports:
+
 - ✅ Home (`app/page.tsx`)
 - ✅ All Biases (`app/all/page.tsx`)
 - ✅ Favorites (`app/favorites/page.tsx`)
@@ -44,6 +45,7 @@ All pages now use dynamic imports:
 ### New Demo Page
 
 Visit `/code-splitting-demo` to see:
+
 - Live examples with load time measurements
 - Interactive component loading demonstrations
 - Implementation code snippets
@@ -69,6 +71,7 @@ npm run build
 ```
 
 Look for output like:
+
 ```
 Route (app)                              Size     First Load JS
 ┌ ○ /                                   142 kB          212 kB
@@ -96,12 +99,14 @@ Use Chrome DevTools:
 When creating new components, decide if they should be code-split:
 
 **Should Code Split:**
+
 - Heavy components (animations, charts, etc.)
 - Components used on specific pages only
 - Third-party libraries with large bundles
 - Components below the fold
 
 **Should NOT Code Split:**
+
 - Very small components (<1KB)
 - Components used on every page
 - Critical above-the-fold content
@@ -122,7 +127,7 @@ import dynamic from "next/dynamic"
 import { MyHeavyComponentLoader } from "./loading-fallback"
 
 export const DynamicMyHeavyComponent = dynamic(
-  () => import("./my-heavy-component").then(mod => mod.MyHeavyComponent),
+  () => import("./my-heavy-component").then((mod) => mod.MyHeavyComponent),
   {
     loading: () => <MyHeavyComponentLoader />,
     ssr: true,
@@ -143,11 +148,13 @@ export default function MyPage() {
 ### Before vs After
 
 **Before Code Splitting:**
+
 - Initial bundle: ~400-500 KB
 - Time to Interactive: ~2-3 seconds
 - All code loaded upfront
 
 **After Code Splitting:**
+
 - Initial bundle: ~250-300 KB (30-40% smaller!)
 - Time to Interactive: ~1.5-2 seconds (25-35% faster!)
 - Code loaded on demand
@@ -155,28 +162,32 @@ export default function MyPage() {
 ### Tools to Measure
 
 1. **Lighthouse** (Chrome DevTools)
+
    ```bash
    # Run Lighthouse audit
    # DevTools > Lighthouse > Analyze page load
    ```
 
 2. **Bundle Analyzer** (Install if needed)
+
    ```bash
    npm install -D @next/bundle-analyzer
    ```
-   
+
    Add to `next.config.mjs`:
+
    ```javascript
-   import analyzer from '@next/bundle-analyzer'
-   
+   import analyzer from "@next/bundle-analyzer"
+
    const withBundleAnalyzer = analyzer({
-     enabled: process.env.ANALYZE === 'true',
+     enabled: process.env.ANALYZE === "true",
    })
-   
+
    export default withBundleAnalyzer(nextConfig)
    ```
-   
+
    Run analysis:
+
    ```bash
    ANALYZE=true npm run build
    ```
@@ -193,31 +204,35 @@ Good loading states are crucial for perceived performance:
 ### Best Practices
 
 ✅ **Match the layout**
+
 ```tsx
 // Loading state should mirror final component
 export function BiasCardLoader() {
   return (
-    <div className="glass rounded-2xl p-6 space-y-3">
-      <Skeleton className="h-5 w-20" />      {/* Category badge */}
-      <Skeleton className="h-7 w-full" />    {/* Title */}
-      <Skeleton className="h-16 w-full" />   {/* Description */}
+    <div className="glass space-y-3 rounded-2xl p-6">
+      <Skeleton className="h-5 w-20" /> {/* Category badge */}
+      <Skeleton className="h-7 w-full" /> {/* Title */}
+      <Skeleton className="h-16 w-full" /> {/* Description */}
     </div>
   )
 }
 ```
 
 ✅ **Use animation**
+
 ```tsx
 <Skeleton className="animate-pulse" />
 ```
 
 ✅ **Show immediately**
+
 ```tsx
 // No delay in loading state
 loading: () => <MyLoader />
 ```
 
 ❌ **Don't use spinners for large components**
+
 ```tsx
 // Bad - spinner doesn't indicate size
 loading: () => <Spinner />
@@ -236,12 +251,18 @@ The `next.config.mjs` includes:
 webpack: (config, { isServer }) => {
   if (!isServer) {
     config.optimization.splitChunks = {
-      chunks: 'all',
+      chunks: "all",
       cacheGroups: {
-        framework: { /* React */ },
-        lib: { /* npm packages */ },
-        commons: { /* shared code */ },
-      }
+        framework: {
+          /* React */
+        },
+        lib: {
+          /* npm packages */
+        },
+        commons: {
+          /* shared code */
+        },
+      },
     }
   }
   return config
@@ -252,7 +273,7 @@ webpack: (config, { isServer }) => {
 
 ```javascript
 experimental: {
-  optimizePackageImports: ['lucide-react']
+  optimizePackageImports: ["lucide-react"]
 }
 ```
 
@@ -263,6 +284,7 @@ This tree-shakes icon libraries automatically!
 ### Issue: Component doesn't load
 
 **Solution:** Check the console for errors. Ensure:
+
 - Import path is correct
 - Component is properly exported
 - No circular dependencies
@@ -270,6 +292,7 @@ This tree-shakes icon libraries automatically!
 ### Issue: Flash of unstyled content
 
 **Solution:** Improve loading skeleton:
+
 ```tsx
 // Match dimensions and layout of final component
 <Skeleton className="h-[exact-height] w-[exact-width]" />
@@ -278,6 +301,7 @@ This tree-shakes icon libraries automatically!
 ### Issue: Slower than before
 
 **Solution:** You might be over-splitting. Don't split:
+
 - Very small components
 - Components used on every page
 - Above-the-fold content

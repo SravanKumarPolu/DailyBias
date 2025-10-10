@@ -135,7 +135,7 @@ export async function getSettings(): Promise<UserSettings> {
   return withErrorHandling(async () => {
     const db = await getDB()
     const settings = await db.get("settings", "user-settings")
-    
+
     // Default settings
     const defaults: UserSettings = {
       theme: "system",
@@ -147,7 +147,7 @@ export async function getSettings(): Promise<UserSettings> {
       voicePitch: 1.0,
       voiceName: "Daniel", // Default to Daniel voice
     }
-    
+
     // Merge with defaults to handle migration of new fields
     return settings ? { ...defaults, ...settings } : defaults
   }, "Failed to load settings")

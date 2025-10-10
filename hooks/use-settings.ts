@@ -38,7 +38,7 @@ export function useSettings() {
       setSettings(newSettings)
       await updateSettings(newSettings)
     },
-    [settings],
+    [settings]
   )
 
   const saveAllSettings = useCallback(async (newSettings: UserSettings) => {

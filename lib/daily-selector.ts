@@ -28,7 +28,7 @@ export function getDailyBias(allBiases: Bias[], dateString: string = getTodayDat
 export function getPersonalizedDailyBias(
   allBiases: Bias[],
   progressList: BiasProgress[],
-  dateString: string = getTodayDateString(),
+  dateString: string = getTodayDateString()
 ): Bias {
   if (allBiases.length === 0) {
     throw new Error("No biases available")
@@ -107,7 +107,10 @@ export function getPersonalizedDailyBias(
   return topCandidates[selectedIndex].bias
 }
 
-export function getCategoryDistribution(progressList: BiasProgress[], allBiases: Bias[]): Record<string, number> {
+export function getCategoryDistribution(
+  progressList: BiasProgress[],
+  allBiases: Bias[]
+): Record<string, number> {
   const distribution: Record<string, number> = {
     decision: 0,
     memory: 0,
@@ -127,7 +130,10 @@ export function getCategoryDistribution(progressList: BiasProgress[], allBiases:
   return distribution
 }
 
-export function getBalancedRecommendation(allBiases: Bias[], progressList: BiasProgress[]): Bias | null {
+export function getBalancedRecommendation(
+  allBiases: Bias[],
+  progressList: BiasProgress[]
+): Bias | null {
   const distribution = getCategoryDistribution(progressList, allBiases)
   const progressMap = new Map(progressList.map((p) => [p.biasId, p]))
 
@@ -137,7 +143,7 @@ export function getBalancedRecommendation(allBiases: Bias[], progressList: BiasP
 
   // Find unviewed biases in that category
   const unviewedInCategory = allBiases.filter(
-    (bias) => bias.category === leastExploredCategory && !progressMap.has(bias.id),
+    (bias) => bias.category === leastExploredCategory && !progressMap.has(bias.id)
   )
 
   if (unviewedInCategory.length > 0) {
@@ -155,7 +161,7 @@ export function getCoreBiases(): Bias[] {
     console.error("[DailyBias] Core biases not loaded properly", {
       coreBiases,
       isArray: Array.isArray(coreBiases),
-      length: coreBiases?.length
+      length: coreBiases?.length,
     })
     return []
   }

@@ -36,10 +36,13 @@ npm start
 Deploy to Vercel or Netlify:
 
 \`\`\`bash
+
 # Vercel
+
 vercel
 
 # Netlify
+
 netlify deploy --prod
 \`\`\`
 

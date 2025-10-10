@@ -15,5 +15,5 @@ export const DynamicBackgroundCanvas = dynamic<ComponentProps<typeof BackgroundC
   {
     loading: () => <BackgroundCanvasLoader />,
     ssr: false, // Canvas requires client-side rendering
-  },
+  }
 )

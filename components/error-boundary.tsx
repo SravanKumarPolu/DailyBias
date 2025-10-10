@@ -11,7 +11,10 @@ interface ErrorBoundaryState {
   copied: boolean
 }
 
-export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, ErrorBoundaryState> {
+export class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  ErrorBoundaryState
+> {
   constructor(props: { children: React.ReactNode }) {
     super(props)
     this.state = { hasError: false, error: null, errorInfo: null, copied: false }
@@ -47,20 +50,25 @@ Timestamp: ${new Date().toISOString()}
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950">
-          <div className="max-w-md w-full bg-white/90 dark:bg-black/90 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-red-200 dark:border-red-800">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 rounded-full bg-red-100 dark:bg-red-900">
-                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" aria-hidden="true" />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 p-4 dark:from-red-950 dark:to-orange-950">
+          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white/90 p-8 shadow-2xl backdrop-blur-xl dark:border-red-800 dark:bg-black/90">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="rounded-full bg-red-100 p-3 dark:bg-red-900">
+                <AlertTriangle
+                  className="h-6 w-6 text-red-600 dark:text-red-400"
+                  aria-hidden="true"
+                />
               </div>
-              <h1 className="text-2xl font-bold text-red-900 dark:text-red-100">Something went wrong</h1>
+              <h1 className="text-2xl font-bold text-red-900 dark:text-red-100">
+                Something went wrong
+              </h1>
             </div>
-            
-            <p className="text-red-700 dark:text-red-300 mb-2">
+
+            <p className="mb-2 text-red-700 dark:text-red-300">
               {this.state.error?.message || "An unexpected error occurred while loading the app."}
             </p>
-            
-            <p className="text-sm text-red-600 dark:text-red-400 mb-6">
+
+            <p className="mb-6 text-sm text-red-600 dark:text-red-400">
               Don't worry, your data is safe. Try reloading the app or return to the home page.
             </p>
 
@@ -73,7 +81,7 @@ Timestamp: ${new Date().toISOString()}
                 className="w-full cursor-pointer"
                 size="lg"
               >
-                <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
+                <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />
                 Reload App
               </Button>
 
@@ -84,7 +92,7 @@ Timestamp: ${new Date().toISOString()}
                 variant="outline"
                 className="w-full cursor-pointer"
               >
-                <Home className="w-4 h-4 mr-2" aria-hidden="true" />
+                <Home className="mr-2 h-4 w-4" aria-hidden="true" />
                 Go to Home
               </Button>
 
@@ -96,19 +104,19 @@ Timestamp: ${new Date().toISOString()}
               >
                 {this.state.copied ? (
                   <>
-                    <Check className="w-4 h-4 mr-2" aria-hidden="true" />
+                    <Check className="mr-2 h-4 w-4" aria-hidden="true" />
                     Error Details Copied
                   </>
                 ) : (
                   <>
-                    <Copy className="w-4 h-4 mr-2" aria-hidden="true" />
+                    <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
                     Copy Error Details
                   </>
                 )}
               </Button>
             </div>
 
-            <p className="text-xs text-red-600/70 dark:text-red-400/70 mt-4 text-center">
+            <p className="mt-4 text-center text-xs text-red-600/70 dark:text-red-400/70">
               If this keeps happening, try clearing your browser cache or contact support.
             </p>
           </div>

@@ -9,7 +9,9 @@ import { Skeleton } from "@/components/ui/skeleton"
  * Fallback for BackgroundCanvas
  */
 export function BackgroundCanvasLoader() {
-  return <div className="fixed inset-0 -z-10 bg-gradient-to-br from-background via-background to-muted animate-pulse" />
+  return (
+    <div className="from-background via-background to-muted fixed inset-0 -z-10 animate-pulse bg-gradient-to-br" />
+  )
 }
 
 /**
@@ -38,17 +40,17 @@ export function ProgressStatsLoader() {
  */
 export function BiasCardDetailedLoader() {
   return (
-    <div className="glass rounded-2xl p-8 space-y-6">
+    <div className="glass space-y-6 rounded-2xl p-8">
       <Skeleton className="h-6 w-24" />
       <Skeleton className="h-10 w-3/4" />
       <Skeleton className="h-24 w-full" />
       <div className="space-y-4">
         <div>
-          <Skeleton className="h-6 w-32 mb-2" />
+          <Skeleton className="mb-2 h-6 w-32" />
           <Skeleton className="h-20 w-full" />
         </div>
         <div>
-          <Skeleton className="h-6 w-32 mb-2" />
+          <Skeleton className="mb-2 h-6 w-32" />
           <Skeleton className="h-20 w-full" />
         </div>
       </div>
@@ -61,7 +63,7 @@ export function BiasCardDetailedLoader() {
  */
 export function BiasCardCompactLoader() {
   return (
-    <div className="glass rounded-2xl p-6 space-y-3">
+    <div className="glass space-y-3 rounded-2xl p-6">
       <Skeleton className="h-5 w-20" />
       <Skeleton className="h-7 w-full" />
       <Skeleton className="h-16 w-full" />
@@ -74,8 +76,8 @@ export function BiasCardCompactLoader() {
  */
 export function NavigationLoader() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-border/50">
-      <div className="max-w-2xl mx-auto px-4 py-3">
+    <nav className="glass border-border/50 fixed right-0 bottom-0 left-0 z-50 border-t">
+      <div className="mx-auto max-w-2xl px-4 py-3">
         <div className="flex items-center justify-around">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
@@ -94,7 +96,7 @@ export function NavigationLoader() {
  */
 export function RecommendationCardLoader() {
   return (
-    <div className="glass rounded-2xl p-6 border-2 border-primary/20">
+    <div className="glass border-primary/20 rounded-2xl border-2 p-6">
       <div className="flex items-start gap-4">
         <Skeleton className="h-10 w-10 rounded-full" />
         <div className="flex-1 space-y-3">
@@ -110,7 +112,13 @@ export function RecommendationCardLoader() {
 /**
  * Generic component loader with custom dimensions
  */
-export function GenericLoader({ height = "h-32", className = "" }: { height?: string; className?: string }) {
+export function GenericLoader({
+  height = "h-32",
+  className = "",
+}: {
+  height?: string
+  className?: string
+}) {
   return <Skeleton className={`${height} w-full ${className}`} />
 }
 
@@ -119,7 +127,7 @@ export function GenericLoader({ height = "h-32", className = "" }: { height?: st
  */
 export function PageSectionLoader() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="animate-pulse space-y-6">
       <div className="space-y-3">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-64" />

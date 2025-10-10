@@ -11,24 +11,31 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### 1. **Fade Animations** 🌫️
 
 #### Simple Fade In
+
 ```css
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 ```
 
 **Where it's used:**
+
 - ✅ Badge tooltips appearing
 - ✅ Success messages
 - ✅ Dropdown menus
 - ✅ Toast notifications
 
 #### Fade In Up (Entry Animation)
+
 ```css
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out forwards;
@@ -47,12 +54,14 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Bias cards on page load
 - ✅ Search results appearing
 - ✅ Settings sections
 - ✅ Modal content
 
 **Example in Code:**
+
 ```tsx
 // Bias cards with staggered fade-in-up
 <motion.div
@@ -69,6 +78,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### 2. **Scale Animations** 📐
 
 #### Scale In (Pop Effect)
+
 ```css
 .animate-scale-in {
   animation: scale-in 0.2s ease-out;
@@ -87,12 +97,14 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ "Copied!" confirmation message
 - ✅ Success badges
 - ✅ Notification pop-ups
 - ✅ Quick feedback elements
 
 #### Hover Scale (Interactive Growth)
+
 ```css
 .hover-grow {
   transition: transform 0.2s ease;
@@ -108,6 +120,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Favorite heart icon
 - ✅ Mastered star icon
 - ✅ Navigation icons
@@ -115,6 +128,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 - ✅ Header icon buttons
 
 **Example in Code:**
+
 ```tsx
 // Icon button with hover-grow
 <Button className="hover-grow transition-all duration-200">
@@ -123,6 +137,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 #### Button Press Scale
+
 ```css
 .button-press:active {
   transform: scale(0.96);
@@ -131,6 +146,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ All buttons
 - ✅ Navigation items
 - ✅ Interactive cards
@@ -141,9 +157,12 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### 3. **Glow Effects** ✨
 
 #### Hover Glow
+
 ```css
 .hover-glow {
-  transition: box-shadow 0.3s ease, filter 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    filter 0.3s ease;
 }
 
 .hover-glow:hover {
@@ -153,27 +172,29 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Primary action buttons
 - ✅ Featured cards
 - ✅ Call-to-action elements
 - ✅ Important notifications
 
 **Example in Code:**
+
 ```tsx
 // Primary button with glow
-<Button className="hover-glow">
-  Get Started
-</Button>
+<Button className="hover-glow">Get Started</Button>
 ```
 
 #### Pulse Glow (Breathing Effect)
+
 ```css
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
   }
@@ -185,12 +206,14 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Voice command active indicator
 - ✅ Recording states
 - ✅ Live notifications
 - ✅ Active voice mode
 
 **Example in Code:**
+
 ```tsx
 // Voice button with pulse when active
 <Button className={isListening ? "animate-pulse-glow" : ""}>
@@ -203,9 +226,12 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### 4. **Hover Effects** 🎯
 
 #### Lift Effect (Card Elevation)
+
 ```css
 .hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .hover-lift:hover {
@@ -219,20 +245,23 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Bias cards in grid
 - ✅ Compact bias cards
 - ✅ Action buttons (Listen, Share, Copy)
 - ✅ Settings cards
 
 **Example in Code:**
+
 ```tsx
 // Card with lift effect
-<div className="glass rounded-2xl hover-lift transition-shadow duration-300">
+<div className="glass hover-lift rounded-2xl transition-shadow duration-300">
   <BiasCard variant="compact" />
 </div>
 ```
 
 #### Brighten Effect
+
 ```css
 .hover-brighten {
   transition: filter 0.2s ease;
@@ -244,12 +273,14 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Category badges
 - ✅ Icon overlays
 - ✅ Image thumbnails
 - ✅ Avatar elements
 
 #### Slide Right
+
 ```css
 .hover-slide-right {
   transition: transform 0.2s ease;
@@ -261,6 +292,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Where it's used:**
+
 - ✅ Navigation links
 - ✅ "Learn more" links
 - ✅ Arrow indicators
@@ -273,16 +305,17 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### Navigation Bar 🧭
 
 **Active Tab Indicator**
+
 ```tsx
 // Smooth morphing background
 <motion.div
   layoutId="activeTab"
-  className="absolute inset-0 bg-accent rounded-xl"
-  transition={{ 
-    type: "spring", 
-    stiffness: 400, 
+  className="bg-accent absolute inset-0 rounded-xl"
+  transition={{
+    type: "spring",
+    stiffness: 400,
     damping: 30,
-    mass: 0.8
+    mass: 0.8,
   }}
   initial={{ opacity: 0, scale: 0.9 }}
   animate={{ opacity: 1, scale: 1 }}
@@ -290,12 +323,13 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Icon Animation**
+
 ```tsx
 // Scale and lift when active
 <motion.div
-  animate={{ 
+  animate={{
     scale: isActive ? 1.1 : 1,
-    y: isActive ? -1 : 0
+    y: isActive ? -1 : 0,
   }}
   transition={{ type: "spring", stiffness: 400, damping: 20 }}
 >
@@ -304,6 +338,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Complete Effect:**
+
 - Tab click → Background morphs smoothly → Icon scales up → Label becomes bold → Color transitions
 
 ---
@@ -311,30 +346,33 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### Bias Cards 🃏
 
 **Card Entry**
+
 ```tsx
 <motion.div
   className="hover-lift transition-shadow duration-300"
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
-  transition={{ 
+  transition={{
     type: "spring",
     stiffness: 300,
-    damping: 25 
+    damping: 25
   }}
 >
 ```
 
 **Favorite Heart Animation**
+
 ```tsx
 // Heart-beat on click
-<Heart 
+<Heart
   className={`transition-all duration-200 ${
     isFavorite ? "fill-red-500 text-red-500" : ""
-  } ${favoriteAnimating ? "animate-heart-beat" : ""}`} 
+  } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
 />
 ```
 
 **Complete Flow:**
+
 1. **Hover** → Card lifts 4px + shadow appears
 2. **Click heart** → Heart beats (scales 1.2x) + fills red
 3. **Click star** → Star bounces + fills yellow
@@ -345,6 +383,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### Action Buttons 🔘
 
 **Listen Button**
+
 ```tsx
 <Button
   className={`button-press hover-lift transition-all duration-200 ${
@@ -360,6 +399,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Share Button**
+
 ```tsx
 <Button className="button-press hover-lift transition-all duration-200">
   <Share2 className="transition-transform duration-200" />
@@ -368,8 +408,9 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Copy Button (with success state)**
+
 ```tsx
-<Button 
+<Button
   className={`button-press hover-lift transition-all duration-200 ${
     copied ? "animate-scale-in" : ""
   }`}
@@ -383,6 +424,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Complete Flow:**
+
 - **Idle** → Smooth hover lift with shadow
 - **Hover** → Lifts 4px, shadow grows
 - **Click** → Scales to 96%, inset shadow
@@ -393,15 +435,17 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### Daily Header 🏠
 
 **Title Hover**
+
 ```tsx
-<Link href="/" className="cursor-pointer group inline-block">
-  <h1 className="transition-all duration-200 group-hover:text-primary group-hover:scale-105">
+<Link href="/" className="group inline-block cursor-pointer">
+  <h1 className="group-hover:text-primary transition-all duration-200 group-hover:scale-105">
     Daily Bias
   </h1>
 </Link>
 ```
 
 **Icon Buttons**
+
 ```tsx
 <Button className="hover-grow button-press transition-all duration-200">
   <Bell className="transition-all duration-200" />
@@ -409,6 +453,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Complete Flow:**
+
 - **Hover title** → Color shifts to primary + scales 1.05x
 - **Hover icons** → Icons grow 1.05x
 - **Click** → Scales down to 0.98x with press effect
@@ -418,28 +463,31 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ### Search & Grid 🔍
 
 **Staggered Grid Entry**
+
 ```tsx
-{searchResults.map(({ bias }, index) => (
-  <Link 
-    key={bias.id}
-    className="cursor-pointer group"
-    style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
-  >
-    <div className="transition-transform duration-200 group-hover:scale-[1.02]">
-      <BiasCard variant="compact" />
-    </div>
-  </Link>
-))}
+{
+  searchResults.map(({ bias }, index) => (
+    <Link
+      key={bias.id}
+      className="group cursor-pointer"
+      style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
+    >
+      <div className="transition-transform duration-200 group-hover:scale-[1.02]">
+        <BiasCard variant="compact" />
+      </div>
+    </Link>
+  ))
+}
 ```
 
 **Badge Appearance**
+
 ```tsx
-<Badge className="animate-fade-in shadow-sm">
-  Best match
-</Badge>
+<Badge className="animate-fade-in shadow-sm">Best match</Badge>
 ```
 
 **Complete Flow:**
+
 1. Search submitted
 2. Results fade in with staggered timing (50ms apart)
 3. Each card slides up from below
@@ -451,6 +499,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ## 🎨 Animation Combinations
 
 ### Combo 1: **Card Interaction Suite**
+
 ```tsx
 <motion.div
   className="glass hover-lift transition-shadow duration-300"
@@ -464,6 +513,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 ```
 
 **Effect Chain:**
+
 1. Card fades in from below (fade-in-up)
 2. Hover lifts card with shadow (hover-lift)
 3. Button grows on hover (hover-grow)
@@ -471,6 +521,7 @@ This guide demonstrates all the smooth animations implemented in DailyBias, incl
 5. Heart beats on toggle (heart-beat)
 
 ### Combo 2: **Success Feedback Chain**
+
 ```tsx
 const handleCopy = async () => {
   await copyToClipboard()
@@ -482,6 +533,7 @@ const handleCopy = async () => {
 ```
 
 **Effect Chain:**
+
 1. Button press (scale 0.96)
 2. Text copied
 3. Haptic feedback (vibration)
@@ -490,6 +542,7 @@ const handleCopy = async () => {
 6. Resets after 2 seconds
 
 ### Combo 3: **Navigation Transition**
+
 ```tsx
 // Tab switching sequence
 <motion.div layoutId="activeTab" /> // Background morphs
@@ -498,6 +551,7 @@ const handleCopy = async () => {
 ```
 
 **Effect Chain:**
+
 1. Click new tab
 2. Background indicator slides and morphs
 3. Old icon scales down
@@ -510,6 +564,7 @@ const handleCopy = async () => {
 ## ⚡ Performance Optimization
 
 ### GPU-Accelerated Properties Only
+
 ```css
 /* ✅ FAST - GPU Accelerated */
 transform: translate3d(), scale(), rotate()
@@ -523,6 +578,7 @@ background-position
 ```
 
 ### Optimized Timing
+
 ```css
 /* Quick feedback - feels instant */
 transition: transform 0.1s ease;
@@ -535,6 +591,7 @@ transition: all 0.5s ease;
 ```
 
 ### Layer Promotion (Use Sparingly)
+
 ```css
 /* For frequently animated elements */
 .frequently-animated {
@@ -550,6 +607,7 @@ transition: all 0.5s ease;
 ### Example 1: Favoriting a Bias
 
 **Visual Flow:**
+
 ```
 1. Card is visible (fade-in-up on page load)
 2. User hovers → Card lifts (hover-lift)
@@ -561,12 +619,13 @@ transition: all 0.5s ease;
 ```
 
 **Code:**
+
 ```tsx
-<Button 
+<Button
   onClick={handleFavoriteClick}
   className="hover-grow button-press transition-all duration-200"
 >
-  <Heart 
+  <Heart
     className={`transition-all duration-200 ${
       isFavorite ? "fill-red-500" : ""
     } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
@@ -577,6 +636,7 @@ transition: all 0.5s ease;
 ### Example 2: Loading Search Results
 
 **Visual Flow:**
+
 ```
 1. User types in search
 2. Loading skeletons appear (shimmer effect)
@@ -588,34 +648,38 @@ transition: all 0.5s ease;
 ```
 
 **Code:**
+
 ```tsx
-{biasesLoading ? (
-  <div className="grid gap-4">
-    {[...Array(6)].map((_, i) => (
-      <div key={i} className="loading-shimmer">
-        <Skeleton className="h-20" />
-      </div>
-    ))}
-  </div>
-) : (
-  <div className="grid gap-4">
-    {results.map(({ bias }, index) => (
-      <motion.div
-        key={bias.id}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.05 }}
-      >
-        <BiasCard {...props} />
-      </motion.div>
-    ))}
-  </div>
-)}
+{
+  biasesLoading ? (
+    <div className="grid gap-4">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="loading-shimmer">
+          <Skeleton className="h-20" />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="grid gap-4">
+      {results.map(({ bias }, index) => (
+        <motion.div
+          key={bias.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.05 }}
+        >
+          <BiasCard {...props} />
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 ```
 
 ### Example 3: Page Navigation
 
 **Visual Flow:**
+
 ```
 1. User clicks tab in navigation
 2. Background indicator starts sliding
@@ -628,33 +692,36 @@ transition: all 0.5s ease;
 ```
 
 **Code:**
+
 ```tsx
-{navItems.map((item) => {
-  const isActive = pathname === item.href
-  
-  return (
-    <Link href={item.href} className="button-press">
-      {isActive && (
+{
+  navItems.map((item) => {
+    const isActive = pathname === item.href
+
+    return (
+      <Link href={item.href} className="button-press">
+        {isActive && (
+          <motion.div
+            layoutId="activeTab"
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 30,
+            }}
+          />
+        )}
         <motion.div
-          layoutId="activeTab"
-          transition={{ 
-            type: "spring",
-            stiffness: 400,
-            damping: 30
+          animate={{
+            scale: isActive ? 1.1 : 1,
+            y: isActive ? -1 : 0,
           }}
-        />
-      )}
-      <motion.div
-        animate={{ 
-          scale: isActive ? 1.1 : 1,
-          y: isActive ? -1 : 0
-        }}
-      >
-        <Icon />
-      </motion.div>
-    </Link>
-  )
-})}
+        >
+          <Icon />
+        </motion.div>
+      </Link>
+    )
+  })
+}
 ```
 
 ---
@@ -662,6 +729,7 @@ transition: all 0.5s ease;
 ## 🧪 Testing Your Animations
 
 ### Visual Checklist
+
 - [ ] All animations complete without stuttering
 - [ ] 60fps maintained on target devices
 - [ ] No janky transitions
@@ -669,6 +737,7 @@ transition: all 0.5s ease;
 - [ ] Animations don't overlap awkwardly
 
 ### Interactive Testing
+
 1. **Hover rapidly** over multiple cards → Should handle gracefully
 2. **Click buttons repeatedly** → Should queue properly
 3. **Navigate quickly** → Should complete smoothly
@@ -676,6 +745,7 @@ transition: all 0.5s ease;
 5. **Resize window** → Should adapt responsively
 
 ### Performance Testing
+
 ```javascript
 // Chrome DevTools Performance
 1. Open Performance tab
@@ -689,6 +759,7 @@ transition: all 0.5s ease;
 ```
 
 ### Accessibility Testing
+
 ```bash
 # Enable reduced motion
 # macOS: System Settings → Accessibility → Display → Reduce motion
@@ -705,29 +776,32 @@ transition: all 0.5s ease;
 ## 🎨 Design Tokens
 
 ### Animation Durations
+
 ```typescript
 export const animations = {
-  instant: '0.1s',
-  fast: '0.2s',
-  normal: '0.3s',
-  slow: '0.5s',
-  verySlow: '1s',
-  loading: '2s',
+  instant: "0.1s",
+  fast: "0.2s",
+  normal: "0.3s",
+  slow: "0.5s",
+  verySlow: "1s",
+  loading: "2s",
 }
 ```
 
 ### Easing Functions
+
 ```typescript
 export const easings = {
-  easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
-  easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
-  easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  spring: { type: 'spring', stiffness: 300, damping: 25 },
+  easeOut: "cubic-bezier(0, 0, 0.2, 1)",
+  easeIn: "cubic-bezier(0.4, 0, 1, 1)",
+  easeInOut: "cubic-bezier(0.4, 0, 0.2, 1)",
+  bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+  spring: { type: "spring", stiffness: 300, damping: 25 },
 }
 ```
 
 ### Scale Values
+
 ```typescript
 export const scales = {
   press: 0.96,
@@ -768,12 +842,14 @@ export const scales = {
 ## ✅ Complete Implementation Summary
 
 ### Fade Animations: ✅ Fully Implemented
+
 - Simple fade-in
 - Fade-in-up (entry)
 - Fade-in-right (slide)
 - Smooth opacity transitions
 
 ### Scale Animations: ✅ Fully Implemented
+
 - Scale-in (pop effect)
 - Hover grow (1.05x)
 - Button press (0.96x)
@@ -781,12 +857,14 @@ export const scales = {
 - Bounce (subtle spring)
 
 ### Glow Effects: ✅ Fully Implemented
+
 - Hover glow (shadow + brightness)
 - Pulse glow (breathing effect)
 - Shimmer (loading state)
 - Focus glow (accessibility)
 
 ### Hover Effects: ✅ Fully Implemented
+
 - Lift (translateY + shadow)
 - Grow (scale 1.05x)
 - Brighten (filter brightness)

@@ -113,11 +113,11 @@ Created 3 comprehensive documentation files:
 
 ### Bundle Size Reduction
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Initial Bundle | ~400-500 KB | ~250-300 KB | **30-40% smaller** |
-| Time to Interactive | 2-3s | 1.5-2s | **25-35% faster** |
-| First Contentful Paint | - | - | **20-30% faster** |
+| Metric                 | Before      | After       | Improvement        |
+| ---------------------- | ----------- | ----------- | ------------------ |
+| Initial Bundle         | ~400-500 KB | ~250-300 KB | **30-40% smaller** |
+| Time to Interactive    | 2-3s        | 1.5-2s      | **25-35% faster**  |
+| First Contentful Paint | -           | -           | **20-30% faster**  |
 
 ### Bundle Splitting
 
@@ -227,6 +227,7 @@ npm run build
 ```
 
 Look for output showing optimized bundles:
+
 - Separate chunks for each page
 - Shared chunks for common code
 - Small initial bundle size
@@ -241,6 +242,7 @@ Look for output showing optimized bundles:
 ### 4. Performance Audit
 
 Run Lighthouse in Chrome DevTools:
+
 - Performance score should be 90+
 - FCP should be under 1.5s
 - TTI should be under 3s
@@ -257,7 +259,7 @@ import { BiasCard } from "@/components/bias-card"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 
 // Usage remains the same!
-<DynamicBiasCard bias={bias} variant="detailed" />
+;<DynamicBiasCard bias={bias} variant="detailed" />
 ```
 
 ### Example 2: Creating New Dynamic Component
@@ -269,10 +271,10 @@ export function MyLoader() {
 }
 
 // 2. Create dynamic-my-component.tsx
-export const DynamicMyComponent = dynamic(
-  () => import("./my-component"),
-  { loading: () => <MyLoader />, ssr: true }
-)
+export const DynamicMyComponent = dynamic(() => import("./my-component"), {
+  loading: () => <MyLoader />,
+  ssr: true,
+})
 
 // 3. Use it
 import { DynamicMyComponent } from "@/components/dynamic-my-component"
@@ -282,7 +284,9 @@ import { DynamicMyComponent } from "@/components/dynamic-my-component"
 
 ```tsx
 // Only load component when condition is met
-{showAdvanced && <DynamicAdvancedSettings />}
+{
+  showAdvanced && <DynamicAdvancedSettings />
+}
 ```
 
 ## 🎓 Learning Resources
@@ -301,7 +305,7 @@ import { DynamicMyComponent } from "@/components/dynamic-my-component"
 ✅ Optimized webpack configuration  
 ✅ Provided comprehensive documentation  
 ✅ Created interactive demo  
-✅ No breaking changes to existing APIs  
+✅ No breaking changes to existing APIs
 
 ## 🔮 Future Enhancements
 

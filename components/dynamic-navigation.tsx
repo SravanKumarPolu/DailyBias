@@ -15,5 +15,5 @@ export const DynamicNavigation = dynamic<ComponentProps<typeof Navigation>>(
   {
     loading: () => <NavigationLoader />,
     ssr: false, // Navigation uses client-side routing
-  },
+  }
 )

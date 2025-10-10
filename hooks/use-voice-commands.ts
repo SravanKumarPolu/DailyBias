@@ -8,7 +8,11 @@ interface VoiceCommandsOptions {
   enabled?: boolean
 }
 
-export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true }: VoiceCommandsOptions) {
+export function useVoiceCommands({
+  onReadCommand,
+  onStopCommand,
+  enabled = true,
+}: VoiceCommandsOptions) {
   const [isListening, setIsListening] = useState(false)
   const [isSupported, setIsSupported] = useState(false)
   const [transcript, setTranscript] = useState("")
@@ -18,7 +22,8 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
   useEffect(() => {
     // Check if speech recognition is supported
     if (typeof window !== "undefined") {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      const SpeechRecognition =
+        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
       if (SpeechRecognition) {
         setIsSupported(true)
         recognitionRef.current = new SpeechRecognition()
@@ -49,13 +54,13 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
     try {
       recognitionRef.current.stop()
       setIsListening(false)
-      
+
       // Clear any pending command timeout
       if (commandTimeoutRef.current) {
         clearTimeout(commandTimeoutRef.current)
         commandTimeoutRef.current = null
       }
-      
+
       console.log("[Voice Commands] Stopped listening")
     } catch (error) {
       console.error("[Voice Commands] Error stopping:", error)
@@ -73,15 +78,24 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
         const result = event.results[i]
         const transcript = result[0].transcript.toLowerCase().trim()
         const confidence = result[0].confidence || 0
-        
+
         // Only process results with reasonable confidence (if available)
-        if (confidence > 0 || !confidence) { // confidence might not be available on all browsers
+        if (confidence > 0 || !confidence) {
+          // confidence might not be available on all browsers
           if (result.isFinal) {
             finalTranscript += transcript + " "
-            console.log("[Voice Commands] Final result:", transcript, confidence ? `(confidence: ${confidence.toFixed(2)})` : "")
+            console.log(
+              "[Voice Commands] Final result:",
+              transcript,
+              confidence ? `(confidence: ${confidence.toFixed(2)})` : ""
+            )
           } else {
             interimTranscript += transcript
-            console.log("[Voice Commands] Interim result:", transcript, confidence ? `(confidence: ${confidence.toFixed(2)})` : "")
+            console.log(
+              "[Voice Commands] Interim result:",
+              transcript,
+              confidence ? `(confidence: ${confidence.toFixed(2)})` : ""
+            )
           }
         }
       }
@@ -92,7 +106,7 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
       // Check for commands in both final and interim transcript
       // This ensures we catch commands even if they don't get final results
       const transcriptToCheck = (finalTranscript || interimTranscript).trim()
-      
+
       if (transcriptToCheck) {
         console.log("[Voice Commands] Processing transcript:", transcriptToCheck)
 
@@ -102,7 +116,7 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
           /\b(listen|listening)\b/,
           /\b(play|playing)\b/,
           /\b(speak|speaking)\b/,
-          /\b(start)\b/
+          /\b(start)\b/,
         ]
 
         const stopPatterns = [
@@ -115,11 +129,11 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
           /\b(halt|halting)\b/,
           /\b(quit|quitting)\b/,
           /\b(cancel|canceling)\b/,
-          /\b(abort|aborting)\b/
+          /\b(abort|aborting)\b/,
         ]
 
         // Check for read commands
-        const hasReadCommand = readPatterns.some(pattern => pattern.test(transcriptToCheck))
+        const hasReadCommand = readPatterns.some((pattern) => pattern.test(transcriptToCheck))
         if (hasReadCommand) {
           console.log("[Voice Commands] READ command detected!")
           onReadCommand?.()
@@ -129,7 +143,7 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
         }
 
         // Check for stop commands - be more aggressive with stop commands
-        const hasStopCommand = stopPatterns.some(pattern => pattern.test(transcriptToCheck))
+        const hasStopCommand = stopPatterns.some((pattern) => pattern.test(transcriptToCheck))
         if (hasStopCommand) {
           console.log("[Voice Commands] STOP command detected!")
           onStopCommand?.()
@@ -140,8 +154,8 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
 
         // Also check for very short stop commands that might be missed
         const shortStopWords = ["stop", "pause", "quiet", "end", "halt"]
-        const hasShortStopCommand = shortStopWords.some(word => 
-          transcriptToCheck === word || transcriptToCheck.endsWith(word)
+        const hasShortStopCommand = shortStopWords.some(
+          (word) => transcriptToCheck === word || transcriptToCheck.endsWith(word)
         )
         if (hasShortStopCommand) {
           console.log("[Voice Commands] SHORT STOP command detected!")
@@ -155,14 +169,14 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
         if (commandTimeoutRef.current) {
           clearTimeout(commandTimeoutRef.current)
         }
-        
+
         commandTimeoutRef.current = setTimeout(() => {
           // Check again after a short delay for commands that might not have been processed
           const currentTranscript = transcriptToCheck
           if (currentTranscript) {
             console.log("[Voice Commands] Timeout check for:", currentTranscript)
-            
-            const hasReadCommand = readPatterns.some(pattern => pattern.test(currentTranscript))
+
+            const hasReadCommand = readPatterns.some((pattern) => pattern.test(currentTranscript))
             if (hasReadCommand) {
               console.log("[Voice Commands] READ command detected via timeout!")
               onReadCommand?.()
@@ -170,7 +184,7 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
               return
             }
 
-            const hasStopCommand = stopPatterns.some(pattern => pattern.test(currentTranscript))
+            const hasStopCommand = stopPatterns.some((pattern) => pattern.test(currentTranscript))
             if (hasStopCommand) {
               console.log("[Voice Commands] STOP command detected via timeout!")
               onStopCommand?.()
@@ -184,7 +198,7 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
 
     recognitionRef.current.onerror = (event: any) => {
       console.error("[Voice Commands] Error:", event.error)
-      
+
       // Handle different error types
       switch (event.error) {
         case "no-speech":
@@ -247,4 +261,3 @@ export function useVoiceCommands({ onReadCommand, onStopCommand, enabled = true 
     toggleListening,
   }
 }
-

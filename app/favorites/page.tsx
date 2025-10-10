@@ -12,7 +12,8 @@ import Link from "next/link"
 import type { Bias } from "@/lib/types"
 
 export default function FavoritesPage() {
-  const { allBiases, biasesLoading, favorites, toggleFavorite, favoritesLoading, settings } = useApp()
+  const { allBiases, biasesLoading, favorites, toggleFavorite, favoritesLoading, settings } =
+    useApp()
   const [favoriteBiases, setFavoriteBiases] = useState<Bias[]>([])
 
   useEffect(() => {
@@ -60,24 +61,32 @@ export default function FavoritesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={123} />
       <DailyHeader />
 
-      <main className="w-full max-w-4xl mx-auto px-4 py-8">
+      <main className="mx-auto w-full max-w-4xl px-4 py-8">
         <div className="space-y-6">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Favorites</h1>
+              <h1 className="mb-2 text-3xl font-bold">Favorites</h1>
               <p className="text-muted-foreground">Your saved biases for quick reference</p>
             </div>
             {favoriteBiases.length > 0 && (
-              <Button onClick={handleExport} variant="outline" className="glass border-border/50 bg-transparent cursor-pointer">
-                <Download className="h-4 w-4 mr-2" />
+              <Button
+                onClick={handleExport}
+                variant="outline"
+                className="glass border-border/50 cursor-pointer bg-transparent"
+              >
+                <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
             )}
           </div>
 
           {/* Favorites count */}
-          {!loading && <div className="text-sm text-muted-foreground">{favoriteBiases.length} saved biases</div>}
+          {!loading && (
+            <div className="text-muted-foreground text-sm">
+              {favoriteBiases.length} saved biases
+            </div>
+          )}
 
           {/* Favorites list */}
           {loading ? (
@@ -85,10 +94,10 @@ export default function FavoritesPage() {
               <p className="text-muted-foreground">Loading favorites...</p>
             </div>
           ) : favoriteBiases.length === 0 ? (
-            <div className="glass rounded-2xl p-12 text-center space-y-4">
-              <Heart className="h-12 w-12 mx-auto text-muted-foreground" />
+            <div className="glass space-y-4 rounded-2xl p-12 text-center">
+              <Heart className="text-muted-foreground mx-auto h-12 w-12" />
               <div>
-                <p className="text-lg font-medium mb-2">No favorites yet</p>
+                <p className="mb-2 text-lg font-medium">No favorites yet</p>
                 <p className="text-muted-foreground mb-4">
                   Start adding biases to your favorites to build your personal collection
                 </p>

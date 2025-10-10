@@ -10,12 +10,11 @@ import { BiasCardDetailedLoader, BiasCardCompactLoader } from "./loading-fallbac
 import type { ComponentProps } from "react"
 import type { BiasCard } from "./bias-card"
 
-// Dynamic import with variant-specific loaders
+// Dynamic import with default loader (detailed version)
 export const DynamicBiasCard = dynamic<ComponentProps<typeof BiasCard>>(
   () => import("./bias-card").then((mod) => ({ default: mod.BiasCard })),
   {
-    loading: ({ variant }: { variant?: "detailed" | "compact" }) => 
-      variant === "detailed" ? <BiasCardDetailedLoader /> : <BiasCardCompactLoader />,
+    loading: () => <BiasCardDetailedLoader />,
     ssr: true,
-  },
+  }
 )

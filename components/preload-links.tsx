@@ -1,6 +1,6 @@
 /**
  * Preload Links Component
- * 
+ *
  * This component preloads critical chunks and resources to improve performance.
  * Use this in your root layout to start loading chunks before they're needed.
  */
@@ -18,7 +18,7 @@ export function PreloadLinks() {
     const preloadComponents = () => {
       // Preload BiasCard component (used on most pages)
       import("@/components/bias-card")
-      
+
       // Preload Navigation (shown on all pages after initial load)
       import("@/components/navigation")
     }
@@ -53,9 +53,9 @@ export function PreloadLinks() {
 
 /**
  * Usage in app/layout.tsx:
- * 
+ *
  * import { PreloadLinks } from "@/components/preload-links"
- * 
+ *
  * export default function RootLayout({ children }) {
  *   return (
  *     <html>

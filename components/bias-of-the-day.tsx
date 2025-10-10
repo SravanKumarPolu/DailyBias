@@ -12,15 +12,18 @@ interface BiasOfTheDayProps {
 export function BiasOfTheDay({ bias }: BiasOfTheDayProps) {
   return (
     <div
-      className="glass rounded-3xl p-6 mb-8 border-2 border-primary/20 animate-in fade-in zoom-in-95 duration-500"
+      className="glass border-primary/20 animate-in fade-in zoom-in-95 mb-8 rounded-3xl border-2 p-6 duration-500"
       role="region"
       aria-labelledby="bias-of-day-title"
     >
-      <div className="flex items-center gap-2 mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <div className="animate-wiggle">
-          <Sparkles className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Sparkles className="text-primary h-5 w-5" aria-hidden="true" />
         </div>
-        <h2 id="bias-of-day-title" className="text-sm font-bold uppercase tracking-wider text-primary font-serif">
+        <h2
+          id="bias-of-day-title"
+          className="text-primary font-serif text-sm font-bold tracking-wider uppercase"
+        >
           Bias of the Day
         </h2>
       </div>
@@ -31,32 +34,26 @@ export function BiasOfTheDay({ bias }: BiasOfTheDayProps) {
           <Badge className={`mb-3 ${getCategoryColor(bias.category)}`}>
             {getCategoryLabel(bias.category)}
           </Badge>
-          <h3 className="text-2xl font-bold text-balance font-serif mb-3">
-            {bias.title}
-          </h3>
+          <h3 className="mb-3 font-serif text-2xl font-bold text-balance">{bias.title}</h3>
         </div>
 
         {/* Summary */}
-        <p className="text-base leading-relaxed text-pretty">
-          {bias.summary}
-        </p>
+        <p className="text-base leading-relaxed text-pretty">{bias.summary}</p>
 
         {/* Why it happens */}
         <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 font-serif">
+          <h4 className="text-muted-foreground mb-2 font-serif text-xs font-semibold tracking-wide uppercase">
             Why it happens
           </h4>
-          <p className="text-sm leading-relaxed text-pretty text-muted-foreground">
-            {bias.why}
-          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed text-pretty">{bias.why}</p>
         </div>
 
         {/* How to counter */}
         <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 font-serif">
+          <h4 className="text-muted-foreground mb-2 font-serif text-xs font-semibold tracking-wide uppercase">
             How to counter it
           </h4>
-          <p className="text-sm leading-relaxed text-pretty text-muted-foreground">
+          <p className="text-muted-foreground text-sm leading-relaxed text-pretty">
             {bias.counter}
           </p>
         </div>

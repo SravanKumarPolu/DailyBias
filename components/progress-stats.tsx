@@ -43,16 +43,21 @@ export function ProgressStatsComponent({ stats }: ProgressStatsProps) {
   return (
     <div className="grid grid-cols-2 gap-3">
       {statItems.map((item, index) => (
-        <div key={item.label} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+        <div
+          key={item.label}
+          className="animate-fade-in-up"
+          style={{ animationDelay: `${index * 100}ms` }}
+        >
           <Card className="glass p-4">
             <div className="flex items-center gap-3">
               <div className={`${item.color}`}>
                 <item.icon className="h-5 w-5" aria-hidden="true" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground truncate">{item.label}</p>
-                <p className="text-lg font-bold font-serif">
-                  {item.value} {item.suffix && <span className="text-sm font-normal">{item.suffix}</span>}
+              <div className="min-w-0 flex-1">
+                <p className="text-muted-foreground truncate text-xs">{item.label}</p>
+                <p className="font-serif text-lg font-bold">
+                  {item.value}{" "}
+                  {item.suffix && <span className="text-sm font-normal">{item.suffix}</span>}
                 </p>
               </div>
             </div>

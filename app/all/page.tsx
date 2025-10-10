@@ -55,7 +55,7 @@ export default function AllBiasesPage() {
         allBiases.map(async (bias) => {
           favs[bias.id] = await isFavorite(bias.id)
           masts[bias.id] = await isMastered(bias.id)
-        }),
+        })
       )
       setFavStates(favs)
       setMasteredStates(masts)
@@ -79,14 +79,15 @@ export default function AllBiasesPage() {
 
     // Filter by category
     return results.filter((result) => {
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(result.bias.category)
+      const matchesCategory =
+        selectedCategories.length === 0 || selectedCategories.includes(result.bias.category)
       return matchesCategory
     })
   }, [allBiases, debouncedSearchQuery, selectedCategories])
 
   const toggleCategory = useCallback((category: BiasCategory) => {
     setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
     )
   }, [])
 
@@ -95,7 +96,7 @@ export default function AllBiasesPage() {
       await toggleFavorite(biasId)
       setFavStates((prev) => ({ ...prev, [biasId]: !prev[biasId] }))
     },
-    [toggleFavorite],
+    [toggleFavorite]
   )
 
   const handleToggleMastered = useCallback(
@@ -103,7 +104,7 @@ export default function AllBiasesPage() {
       const newState = await toggleMastered(biasId)
       setMasteredStates((prev) => ({ ...prev, [biasId]: newState }))
     },
-    [toggleMastered],
+    [toggleMastered]
   )
 
   const hasActiveSearch = searchQuery.trim().length > 0
@@ -116,30 +117,36 @@ export default function AllBiasesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={42} />
       <DailyHeader />
 
-      <main className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 font-serif">All Biases</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
+            <h1 className="mb-1 font-serif text-2xl font-bold sm:mb-2 sm:text-3xl">All Biases</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Browse all {allBiases.length} cognitive biases from the collection
             </p>
           </div>
 
           {!hasActiveSearch && recommendation && (
-            <DynamicRecommendationCard bias={recommendation} reason="Continue your learning journey" />
+            <DynamicRecommendationCard
+              bias={recommendation}
+              reason="Continue your learning journey"
+            />
           )}
 
           {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" aria-hidden="true" />
+              <Search
+                className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+                aria-hidden="true"
+              />
               <Input
                 type="search"
                 placeholder="Search titles, descriptions..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-9 glass border-border/50 text-sm sm:text-base"
+                className="glass border-border/50 pr-9 pl-9 text-sm sm:text-base"
                 maxLength={200}
                 aria-label="Search biases"
               />
@@ -147,7 +154,7 @@ export default function AllBiasesPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 cursor-pointer"
+                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2 cursor-pointer"
                   onClick={() => setSearchQuery("")}
                   aria-label="Clear search"
                 >
@@ -157,8 +164,11 @@ export default function AllBiasesPage() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="glass border-border/50 bg-transparent cursor-pointer text-sm sm:text-base w-full sm:w-auto">
-                  <Filter className="h-4 w-4 mr-2" />
+                <Button
+                  variant="outline"
+                  className="glass border-border/50 w-full cursor-pointer bg-transparent text-sm sm:w-auto sm:text-base"
+                >
+                  <Filter className="mr-2 h-4 w-4" />
                   Filter
                   {selectedCategories.length > 0 && ` (${selectedCategories.length})`}
                 </Button>
@@ -178,14 +188,14 @@ export default function AllBiasesPage() {
           </div>
 
           {/* Results count and search quality */}
-          <div className="flex items-center justify-between text-xs sm:text-sm gap-2">
+          <div className="flex items-center justify-between gap-2 text-xs sm:text-sm">
             <p className="text-muted-foreground">
               Showing {searchResults.length} of {allBiases.length}
             </p>
             {hasActiveSearch && avgScore > 0.7 && (
               <Badge variant="secondary" className="gap-1 text-xs">
                 <Sparkles className="h-3 w-3" />
-                <span className="hidden xs:inline">High relevance</span>
+                <span className="xs:inline hidden">High relevance</span>
                 <span className="xs:hidden">Relevant</span>
               </Badge>
             )}
@@ -195,27 +205,31 @@ export default function AllBiasesPage() {
           {biasesLoading ? (
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3">
-                  <Skeleton className="h-5 sm:h-6 w-16 sm:w-20" />
-                  <Skeleton className="h-6 sm:h-8 w-full" />
-                  <Skeleton className="h-12 sm:h-16 w-full" />
+                <div key={i} className="glass space-y-3 rounded-xl p-4 sm:rounded-2xl sm:p-6">
+                  <Skeleton className="h-5 w-16 sm:h-6 sm:w-20" />
+                  <Skeleton className="h-6 w-full sm:h-8" />
+                  <Skeleton className="h-12 w-full sm:h-16" />
                 </div>
               ))}
             </div>
           ) : searchResults.length === 0 ? (
-            <div className="glass rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center">
-              <p className="text-sm sm:text-base text-muted-foreground mb-2">No biases found matching your criteria.</p>
+            <div className="glass rounded-xl p-8 text-center sm:rounded-2xl sm:p-12">
+              <p className="text-muted-foreground mb-2 text-sm sm:text-base">
+                No biases found matching your criteria.
+              </p>
               {hasActiveSearch && (
-                <p className="text-xs sm:text-sm text-muted-foreground">Try adjusting your search terms or filters.</p>
+                <p className="text-muted-foreground text-xs sm:text-sm">
+                  Try adjusting your search terms or filters.
+                </p>
               )}
             </div>
           ) : (
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
               {searchResults.map(({ bias, score, matchedFields }, index) => (
-                <Link 
-                  key={bias.id} 
-                  href={`/bias/${bias.id}`} 
-                  className="cursor-pointer group"
+                <Link
+                  key={bias.id}
+                  href={`/bias/${bias.id}`}
+                  className="group cursor-pointer"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                 >
                   <div className="relative transition-transform duration-200 group-hover:scale-[1.02]">
@@ -228,7 +242,7 @@ export default function AllBiasesPage() {
                       onToggleMastered={() => handleToggleMastered(bias.id)}
                     />
                     {hasActiveSearch && score > 0.8 && (
-                      <div className="absolute top-2 right-2 pointer-events-none animate-fade-in">
+                      <div className="animate-fade-in pointer-events-none absolute top-2 right-2">
                         <Badge variant="secondary" className="text-xs shadow-sm">
                           Best match
                         </Badge>

@@ -3,7 +3,19 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Download, Upload, Moon, Sun, Monitor, Palette, Bell, Database, Info, Mic, RotateCcw } from "lucide-react"
+import {
+  Download,
+  Upload,
+  Moon,
+  Sun,
+  Monitor,
+  Palette,
+  Bell,
+  Database,
+  Info,
+  Mic,
+  RotateCcw,
+} from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
@@ -35,62 +47,107 @@ export default function SettingsPage() {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       const loadVoices = () => {
         const voices = window.speechSynthesis.getVoices()
-        
+
         // Blacklist of known poor quality/novelty voices
         const blacklistedVoices = [
-          'albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles', 
-          'cellos', 'deranged', 'good news', 'jester', 'organ', 
-          'superstar', 'trinoids', 'whisper', 'wobble', 'zarvox',
-          'junior', 'ralph', 'fred', 'kathy', 'princess', 'bruce',
-          'flo', 'grandma', 'grandpa'
+          "albert",
+          "bad news",
+          "bahh",
+          "bells",
+          "boing",
+          "bubbles",
+          "cellos",
+          "deranged",
+          "good news",
+          "jester",
+          "organ",
+          "superstar",
+          "trinoids",
+          "whisper",
+          "wobble",
+          "zarvox",
+          "junior",
+          "ralph",
+          "fred",
+          "kathy",
+          "princess",
+          "bruce",
+          "flo",
+          "grandma",
+          "grandpa",
         ]
-        
+
         // Filter for high-quality English voices only
         const englishVoices = voices
-          .filter(voice => {
+          .filter((voice) => {
             // Must be English
-            if (!voice.lang.startsWith('en')) return false
-            
+            if (!voice.lang.startsWith("en")) return false
+
             // Remove blacklisted voices
             const voiceLower = voice.name.toLowerCase()
-            if (blacklistedVoices.some(bad => voiceLower.includes(bad))) return false
-            
+            if (blacklistedVoices.some((bad) => voiceLower.includes(bad))) return false
+
             // Keep premium/enhanced voices
-            const qualityTerms = ['premium', 'enhanced', 'neural', 'natural', 'hd', 'google', 'microsoft']
-            const hasQuality = qualityTerms.some(term => voiceLower.includes(term))
-            
+            const qualityTerms = [
+              "premium",
+              "enhanced",
+              "neural",
+              "natural",
+              "hd",
+              "google",
+              "microsoft",
+            ]
+            const hasQuality = qualityTerms.some((term) => voiceLower.includes(term))
+
             // Keep standard voices with common names (Samantha, Alex, Victoria, Daniel, Karen, Moira, etc.)
             const goodStandardVoices = [
-              'samantha', 'alex', 'victoria', 'daniel', 'karen', 'moira',
-              'tessa', 'serena', 'allison', 'ava', 'susan', 'vicki',
-              'tom', 'aaron', 'nicky', 'diego', 'jorge', 'paulina'
+              "samantha",
+              "alex",
+              "victoria",
+              "daniel",
+              "karen",
+              "moira",
+              "tessa",
+              "serena",
+              "allison",
+              "ava",
+              "susan",
+              "vicki",
+              "tom",
+              "aaron",
+              "nicky",
+              "diego",
+              "jorge",
+              "paulina",
             ]
-            const isGoodStandard = goodStandardVoices.some(good => voiceLower.includes(good))
-            
+            const isGoodStandard = goodStandardVoices.some((good) => voiceLower.includes(good))
+
             return hasQuality || isGoodStandard
           })
           .sort((a, b) => {
             // Prioritize voices with quality indicators
-            const qualityTerms = ['premium', 'enhanced', 'neural', 'natural', 'hd']
-            const aHasQuality = qualityTerms.some(term => a.name.toLowerCase().includes(term))
-            const bHasQuality = qualityTerms.some(term => b.name.toLowerCase().includes(term))
-            
+            const qualityTerms = ["premium", "enhanced", "neural", "natural", "hd"]
+            const aHasQuality = qualityTerms.some((term) => a.name.toLowerCase().includes(term))
+            const bHasQuality = qualityTerms.some((term) => b.name.toLowerCase().includes(term))
+
             if (aHasQuality && !bHasQuality) return -1
             if (!aHasQuality && bHasQuality) return 1
-            
+
             // Prefer local voices over network
             if (a.localService && !b.localService) return -1
             if (!a.localService && b.localService) return 1
-            
+
             return a.name.localeCompare(b.name)
           })
-        
+
         setAvailableVoices(englishVoices)
-        
+
         // Auto-select Daniel as default voice, or fallback to best available
         if (!settings.voiceName && englishVoices.length > 0) {
           // Prefer Daniel voice as default
-          const danielVoice = englishVoices.find(voice => voice.name.toLowerCase().includes('daniel'))
+          const danielVoice = englishVoices.find((voice) =>
+            voice.name.toLowerCase().includes("daniel")
+          )
           const defaultVoice = danielVoice || englishVoices[0]
           saveSetting("voiceName", defaultVoice.name)
         }
@@ -167,7 +224,9 @@ export default function SettingsPage() {
       } else {
         await saveSetting("dailyReminder", false)
         if (permission === "denied") {
-          alert("Notifications were denied. Please enable them in your browser settings to receive daily reminders.")
+          alert(
+            "Notifications were denied. Please enable them in your browser settings to receive daily reminders."
+          )
         }
         return false
       }
@@ -190,20 +249,22 @@ export default function SettingsPage() {
     // Reset to defaults
     const defaultRate = 0.9
     const defaultPitch = 1.0
-    
+
     // Update local state immediately for instant UI feedback
     setLocalVoiceRate(defaultRate)
     setLocalVoicePitch(defaultPitch)
-    
+
     // Save to database (don't wait to avoid blocking UI update)
     saveSetting("voiceRate", defaultRate)
     saveSetting("voicePitch", defaultPitch)
-    
+
     // Provide haptic feedback
     haptics.success()
-    
+
     // Log for debugging
-    console.log(`[DailyBias] Voice settings reset to defaults: rate=${defaultRate}x, pitch=${defaultPitch}x`)
+    console.log(
+      `[DailyBias] Voice settings reset to defaults: rate=${defaultRate}x, pitch=${defaultPitch}x`
+    )
   }
 
   const handleVoiceRateChange = (value: number) => {
@@ -227,31 +288,37 @@ export default function SettingsPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={456} />
       <DailyHeader />
 
-      <main className="w-full max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+      <main className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Settings</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">Customize your Bias Daily experience</p>
+            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">Settings</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
+              Customize your Bias Daily experience
+            </p>
           </div>
 
           {/* Progress Stats Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-1">Your Progress</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">Track your learning journey</p>
+              <h2 className="mb-1 text-lg font-semibold sm:text-xl">Your Progress</h2>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Track your learning journey
+              </p>
             </div>
             <DynamicProgressStats stats={progressStats} />
           </div>
 
           {/* Appearance Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <div className="glass space-y-4 rounded-xl p-4 sm:space-y-6 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
                 <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
                 Appearance
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">Customize the look and feel</p>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Customize the look and feel
+              </p>
             </div>
 
             {/* Theme */}
@@ -259,25 +326,36 @@ export default function SettingsPage() {
               <Label>Theme</Label>
               <RadioGroup
                 value={settings.theme}
-                onValueChange={(value) => saveSetting("theme", value as "light" | "dark" | "system")}
+                onValueChange={(value) =>
+                  saveSetting("theme", value as "light" | "dark" | "system")
+                }
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="light" id="light" />
-                  <Label htmlFor="light" className="flex items-center gap-2 cursor-pointer font-normal">
+                  <Label
+                    htmlFor="light"
+                    className="flex cursor-pointer items-center gap-2 font-normal"
+                  >
                     <Sun className="h-4 w-4" />
                     Light
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="dark" id="dark" />
-                  <Label htmlFor="dark" className="flex items-center gap-2 cursor-pointer font-normal">
+                  <Label
+                    htmlFor="dark"
+                    className="flex cursor-pointer items-center gap-2 font-normal"
+                  >
                     <Moon className="h-4 w-4" />
                     Dark
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="system" id="system" />
-                  <Label htmlFor="system" className="flex items-center gap-2 cursor-pointer font-normal">
+                  <Label
+                    htmlFor="system"
+                    className="flex cursor-pointer items-center gap-2 font-normal"
+                  >
                     <Monitor className="h-4 w-4" />
                     System
                   </Label>
@@ -290,7 +368,9 @@ export default function SettingsPage() {
               <Label>Background Style</Label>
               <RadioGroup
                 value={settings.backgroundStyle}
-                onValueChange={(value) => saveSetting("backgroundStyle", value as "gradient" | "glass" | "minimal")}
+                onValueChange={(value) =>
+                  saveSetting("backgroundStyle", value as "gradient" | "glass" | "minimal")
+                }
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="gradient" id="gradient" />
@@ -315,43 +395,56 @@ export default function SettingsPage() {
           </div>
 
           {/* Notifications Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
                 <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 Notifications
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">Get reminded about daily biases</p>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Get reminded about daily biases
+              </p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="daily-reminder" className="cursor-pointer">Daily Reminder</Label>
-                <p className="text-sm text-muted-foreground">Receive a notification when a new bias is available</p>
+                <Label htmlFor="daily-reminder" className="cursor-pointer">
+                  Daily Reminder
+                </Label>
+                <p className="text-muted-foreground text-sm">
+                  Receive a notification when a new bias is available
+                </p>
               </div>
-              <Switch id="daily-reminder" checked={settings.dailyReminder} onCheckedChange={handleReminderToggle} className="cursor-pointer" />
+              <Switch
+                id="daily-reminder"
+                checked={settings.dailyReminder}
+                onCheckedChange={handleReminderToggle}
+                className="cursor-pointer"
+              />
             </div>
           </div>
 
           {/* Voice Settings Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+                <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
                   <Mic className="h-4 w-4 sm:h-5 sm:w-5" />
                   Voice Settings
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground">Text-to-speech preferences</p>
+                <p className="text-muted-foreground text-xs sm:text-sm">
+                  Text-to-speech preferences
+                </p>
               </div>
               {settings.voiceEnabled && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleResetVoiceSettings}
-                  className="bg-transparent cursor-pointer"
+                  className="cursor-pointer bg-transparent"
                   aria-label="Reset voice settings to default"
                 >
-                  <RotateCcw className="h-4 w-4 mr-2" />
+                  <RotateCcw className="mr-2 h-4 w-4" />
                   Reset
                 </Button>
               )}
@@ -359,8 +452,10 @@ export default function SettingsPage() {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="voice-enabled" className="cursor-pointer">Enable Voice</Label>
-                <p className="text-sm text-muted-foreground">Read bias content aloud</p>
+                <Label htmlFor="voice-enabled" className="cursor-pointer">
+                  Enable Voice
+                </Label>
+                <p className="text-muted-foreground text-sm">Read bias content aloud</p>
               </div>
               <Switch
                 id="voice-enabled"
@@ -378,16 +473,18 @@ export default function SettingsPage() {
                     id="voice-select"
                     value={settings.voiceName || ""}
                     onChange={(e) => saveSetting("voiceName", e.target.value)}
-                    className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
+                    className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
                   >
                     <option value="">System Default</option>
                     {availableVoices.map((voice, index) => (
                       <option key={`${voice.name}-${voice.voiceURI || index}`} value={voice.name}>
-                        {voice.name} {voice.localService ? '⭐' : ''}
+                        {voice.name} {voice.localService ? "⭐" : ""}
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-muted-foreground">⭐ indicates high-quality local voices</p>
+                  <p className="text-muted-foreground text-xs">
+                    ⭐ indicates high-quality local voices
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -405,7 +502,7 @@ export default function SettingsPage() {
                     onChange={(e) => handleVoiceRateChange(parseFloat(e.currentTarget.value))}
                     onMouseUp={handleVoiceRateCommit}
                     onTouchEnd={handleVoiceRateCommit}
-                    className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                    className="bg-secondary accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg"
                   />
                 </div>
 
@@ -424,7 +521,7 @@ export default function SettingsPage() {
                     onChange={(e) => handleVoicePitchChange(parseFloat(e.currentTarget.value))}
                     onMouseUp={handleVoicePitchCommit}
                     onTouchEnd={handleVoicePitchCommit}
-                    className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                    className="bg-secondary accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg"
                   />
                 </div>
               </>
@@ -432,16 +529,22 @@ export default function SettingsPage() {
           </div>
 
           {/* Daily Bias Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-1">Daily Bias</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">Configure daily bias selection</p>
+              <h2 className="mb-1 text-lg font-semibold sm:text-xl">Daily Bias</h2>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Configure daily bias selection
+              </p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="mix-user-biases" className="cursor-pointer">Include Custom Biases</Label>
-                <p className="text-sm text-muted-foreground">Mix your custom biases into the daily selection</p>
+                <Label htmlFor="mix-user-biases" className="cursor-pointer">
+                  Include Custom Biases
+                </Label>
+                <p className="text-muted-foreground text-sm">
+                  Mix your custom biases into the daily selection
+                </p>
               </div>
               <Switch
                 id="mix-user-biases"
@@ -453,22 +556,28 @@ export default function SettingsPage() {
           </div>
 
           {/* Data Management Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
                 <Database className="h-4 w-4 sm:h-5 sm:w-5" />
                 Data Management
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">Export or import your data</p>
+              <p className="text-muted-foreground text-xs sm:text-sm">Export or import your data</p>
             </div>
 
             <div className="space-y-3">
-              <Button onClick={handleExport} variant="outline" className="w-full justify-start bg-transparent">
-                <Download className="h-4 w-4 mr-2" />
+              <Button
+                onClick={handleExport}
+                variant="outline"
+                className="w-full justify-start bg-transparent"
+              >
+                <Download className="mr-2 h-4 w-4" />
                 Export All Data
               </Button>
               {exportSuccess && (
-                <p className="text-sm text-green-600 dark:text-green-400">Data exported successfully!</p>
+                <p className="text-sm text-green-600 dark:text-green-400">
+                  Data exported successfully!
+                </p>
               )}
 
               <div>
@@ -488,42 +597,45 @@ export default function SettingsPage() {
                     asChild
                   >
                     <span>
-                      <Upload className="h-4 w-4 mr-2" />
+                      <Upload className="mr-2 h-4 w-4" />
                       {importing ? "Importing..." : "Import Data"}
                     </span>
                   </Button>
                 </Label>
               </div>
               {importSuccess && (
-                <p className="text-sm text-green-600 dark:text-green-400">Data imported successfully!</p>
+                <p className="text-sm text-green-600 dark:text-green-400">
+                  Data imported successfully!
+                </p>
               )}
 
-              <p className="text-xs text-muted-foreground">
-                Export includes your custom biases, favorites, and settings. Import will merge with existing data.
+              <p className="text-muted-foreground text-xs">
+                Export includes your custom biases, favorites, and settings. Import will merge with
+                existing data.
               </p>
             </div>
           </div>
 
           {/* About Section */}
-          <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold mb-1 flex items-center gap-2">
+              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
                 <Info className="h-4 w-4 sm:h-5 sm:w-5" />
                 About
               </h2>
             </div>
 
-            <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
+            <div className="text-muted-foreground space-y-2 text-xs sm:text-sm">
               <p>
-                <strong className="text-foreground">Bias Daily</strong> helps you learn one cognitive bias every day
-                from Elon Musk's curated list of 50 biases.
+                <strong className="text-foreground">Bias Daily</strong> helps you learn one
+                cognitive bias every day from Elon Musk's curated list of 50 biases.
               </p>
               <p>
-                All your data is stored locally on your device. Nothing is sent to any server. The app works completely
-                offline after the first load.
+                All your data is stored locally on your device. Nothing is sent to any server. The
+                app works completely offline after the first load.
               </p>
               <p>Version 1.0.0</p>
-              <Link href="/about" className="text-primary hover:underline inline-block">
+              <Link href="/about" className="text-primary inline-block hover:underline">
                 Learn more
               </Link>
             </div>

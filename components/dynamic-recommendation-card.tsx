@@ -15,5 +15,5 @@ export const DynamicRecommendationCard = dynamic<ComponentProps<typeof Recommend
   {
     loading: () => <RecommendationCardLoader />,
     ssr: true,
-  },
+  }
 )

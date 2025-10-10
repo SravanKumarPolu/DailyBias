@@ -40,7 +40,7 @@ export function BiasCard({
 
   const handleShare = async () => {
     const shareText = `🧠 ${bias.title}\n\n${bias.summary}\n\n💡 Learn more cognitive biases at ${window.location.origin}`
-    
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -69,7 +69,7 @@ export function BiasCard({
 🔗 Learn more: ${window.location.href}
 
 #CognitiveBias #Psychology #DailyBias`
-    
+
     await navigator.clipboard.writeText(text)
     haptics.success()
     setCopied(true)
@@ -80,11 +80,11 @@ export function BiasCard({
     e.preventDefault()
     e.stopPropagation()
     haptics.light()
-    
+
     // Trigger heart-beat animation
     setFavoriteAnimating(true)
     setTimeout(() => setFavoriteAnimating(false), 500)
-    
+
     onToggleFavorite?.(e)
   }
 
@@ -92,11 +92,11 @@ export function BiasCard({
     e.preventDefault()
     e.stopPropagation()
     haptics.success()
-    
+
     // Trigger bounce animation
     setMasteredAnimating(true)
     setTimeout(() => setMasteredAnimating(false), 600)
-    
+
     onToggleMastered?.(e)
   }
 
@@ -130,7 +130,7 @@ export function BiasCard({
   if (variant === "compact") {
     return (
       <motion.div
-        className="glass rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 hover:shadow-lg transition-shadow duration-300 hover-lift"
+        className="glass hover-lift rounded-xl p-4 transition-shadow duration-300 hover:shadow-lg sm:rounded-2xl sm:p-5 md:p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
@@ -139,18 +139,18 @@ export function BiasCard({
         aria-label={`${bias.title} - ${bias.category} bias`}
       >
         <div className="flex items-start justify-between gap-3 sm:gap-4">
-          <div className="flex-1 min-w-0">
-            <Badge className={`mb-1.5 sm:mb-2 text-xs ${getCategoryColor(bias.category)}`}>
+          <div className="min-w-0 flex-1">
+            <Badge className={`mb-1.5 text-xs sm:mb-2 ${getCategoryColor(bias.category)}`}>
               {getCategoryLabel(bias.category)}
             </Badge>
-            <h3 className="text-base sm:text-lg font-semibold text-balance font-serif leading-tight mb-1.5 sm:mb-2">
+            <h3 className="mb-1.5 font-serif text-base leading-tight font-semibold text-balance sm:mb-2 sm:text-lg">
               {bias.title}
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground text-pretty leading-relaxed">
+            <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm">
               {bias.summary}
             </p>
           </div>
-          <div className="flex flex-col gap-1 sm:gap-2 shrink-0">
+          <div className="flex shrink-0 flex-col gap-1 sm:gap-2">
             {onToggleFavorite && (
               <Button
                 ref={favoriteRef}
@@ -160,12 +160,12 @@ export function BiasCard({
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
                 tabIndex={0}
-                className="touch-target cursor-pointer h-8 w-8 sm:h-10 sm:w-10 hover-grow transition-all duration-200"
+                className="touch-target hover-grow h-8 w-8 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
               >
-                <Heart 
-                  className={`h-4 w-4 sm:h-5 sm:w-5 transition-all duration-200 ${
+                <Heart
+                  className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
                     isFavorite ? "fill-red-500 text-red-500" : ""
-                  } ${favoriteAnimating ? "animate-heart-beat" : ""}`} 
+                  } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
                 />
               </Button>
             )}
@@ -178,12 +178,12 @@ export function BiasCard({
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
                 tabIndex={0}
-                className="touch-target cursor-pointer h-8 w-8 sm:h-10 sm:w-10 hover-grow transition-all duration-200"
+                className="touch-target hover-grow h-8 w-8 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
               >
-                <Star 
-                  className={`h-4 w-4 sm:h-5 sm:w-5 transition-all duration-200 ${
+                <Star
+                  className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
                     isMastered ? "fill-yellow-500 text-yellow-500" : ""
-                  } ${masteredAnimating ? "animate-bounce-subtle" : ""}`} 
+                  } ${masteredAnimating ? "animate-bounce-subtle" : ""}`}
                 />
               </Button>
             )}
@@ -195,14 +195,14 @@ export function BiasCard({
 
   return (
     <motion.div
-      className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto transition-shadow duration-300"
+      className="glass mx-auto max-w-2xl rounded-xl p-4 transition-shadow duration-300 sm:rounded-2xl sm:p-6 md:p-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ 
+      transition={{
         duration: 0.5,
         type: "spring",
         stiffness: 100,
-        damping: 15
+        damping: 15,
       }}
       role="article"
       aria-labelledby="bias-title"
@@ -210,15 +210,18 @@ export function BiasCard({
       <div className="space-y-4 sm:space-y-5 md:space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 sm:gap-4">
-          <div className="flex-1 min-w-0">
-            <Badge className={`mb-2 sm:mb-3 text-xs ${getCategoryColor(bias.category)}`}>
+          <div className="min-w-0 flex-1">
+            <Badge className={`mb-2 text-xs sm:mb-3 ${getCategoryColor(bias.category)}`}>
               {getCategoryLabel(bias.category)}
             </Badge>
-            <h1 id="bias-title" className="text-xl sm:text-2xl md:text-3xl font-bold text-balance font-serif">
+            <h1
+              id="bias-title"
+              className="font-serif text-xl font-bold text-balance sm:text-2xl md:text-3xl"
+            >
               {bias.title}
             </h1>
           </div>
-          <div className="flex gap-1 sm:gap-2 shrink-0">
+          <div className="flex shrink-0 gap-1 sm:gap-2">
             {onToggleFavorite && (
               <Button
                 variant="ghost"
@@ -226,12 +229,12 @@ export function BiasCard({
                 onClick={handleFavoriteClick}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
-                className="touch-target cursor-pointer h-9 w-9 sm:h-10 sm:w-10 hover-grow transition-all duration-200"
+                className="touch-target hover-grow h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
               >
-                <Heart 
-                  className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-200 ${
+                <Heart
+                  className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
                     isFavorite ? "fill-red-500 text-red-500" : ""
-                  } ${favoriteAnimating ? "animate-heart-beat" : ""}`} 
+                  } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
                 />
               </Button>
             )}
@@ -242,12 +245,12 @@ export function BiasCard({
                 onClick={handleMasteredClick}
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
-                className="touch-target cursor-pointer h-9 w-9 sm:h-10 sm:w-10 hover-grow transition-all duration-200"
+                className="touch-target hover-grow h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
               >
-                <Star 
-                  className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-200 ${
+                <Star
+                  className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
                     isMastered ? "fill-yellow-500 text-yellow-500" : ""
-                  } ${masteredAnimating ? "animate-bounce-subtle" : ""}`} 
+                  } ${masteredAnimating ? "animate-bounce-subtle" : ""}`}
                 />
               </Button>
             )}
@@ -256,45 +259,53 @@ export function BiasCard({
 
         {/* Summary */}
         <div>
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-pretty">{bias.summary}</p>
+          <p className="text-sm leading-relaxed text-pretty sm:text-base md:text-lg">
+            {bias.summary}
+          </p>
         </div>
 
         {/* Why it happens */}
         <div>
-          <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-1.5 sm:mb-2 font-serif">
+          <h2 className="text-muted-foreground mb-1.5 font-serif text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
             Why it happens
           </h2>
-          <p className="text-sm sm:text-base leading-relaxed text-pretty">{bias.why}</p>
+          <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.why}</p>
         </div>
 
         {/* How to counter */}
         <div>
-          <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-1.5 sm:mb-2 font-serif">
+          <h2 className="text-muted-foreground mb-1.5 font-serif text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
             How to counter it
           </h2>
-          <p className="text-sm sm:text-base leading-relaxed text-pretty">{bias.counter}</p>
+          <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.counter}</p>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-2 pt-2 sm:pt-4">
+        <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:pt-4">
           <Button
             onClick={handleSpeak}
             variant="outline"
-            className={`flex-1 bg-transparent cursor-pointer text-sm sm:text-base button-press hover-lift transition-all duration-200 ${
+            className={`button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base ${
               isSpeaking ? "animate-pulse" : ""
             }`}
             aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
           >
             {isSpeaking ? (
               <>
-                <VolumeX className="h-4 w-4 mr-2 transition-transform duration-200" aria-hidden="true" />
-                <span className="hidden xs:inline">Stop</span>
+                <VolumeX
+                  className="mr-2 h-4 w-4 transition-transform duration-200"
+                  aria-hidden="true"
+                />
+                <span className="xs:inline hidden">Stop</span>
                 <span className="xs:hidden">Stop</span>
               </>
             ) : (
               <>
-                <Volume2 className="h-4 w-4 mr-2 transition-transform duration-200" aria-hidden="true" />
-                <span className="hidden xs:inline">Listen</span>
+                <Volume2
+                  className="mr-2 h-4 w-4 transition-transform duration-200"
+                  aria-hidden="true"
+                />
+                <span className="xs:inline hidden">Listen</span>
                 <span className="xs:hidden">Listen</span>
               </>
             )}
@@ -302,28 +313,34 @@ export function BiasCard({
           <Button
             onClick={handleShare}
             variant="outline"
-            className="flex-1 bg-transparent cursor-pointer text-sm sm:text-base button-press hover-lift transition-all duration-200"
+            className="button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base"
             aria-label="Share this bias"
           >
-            <Share2 className="h-4 w-4 mr-2 transition-transform duration-200" aria-hidden="true" />
+            <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
             Share
           </Button>
           <Button
             onClick={handleCopy}
             variant="outline"
-            className={`flex-1 bg-transparent cursor-pointer text-sm sm:text-base button-press hover-lift transition-all duration-200 ${
+            className={`button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base ${
               copied ? "animate-scale-in" : ""
             }`}
             aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
           >
             {copied ? (
               <>
-                <Check className="h-4 w-4 mr-2 text-green-500 transition-all duration-200" aria-hidden="true" />
+                <Check
+                  className="mr-2 h-4 w-4 text-green-500 transition-all duration-200"
+                  aria-hidden="true"
+                />
                 Copied
               </>
             ) : (
               <>
-                <Copy className="h-4 w-4 mr-2 transition-transform duration-200" aria-hidden="true" />
+                <Copy
+                  className="mr-2 h-4 w-4 transition-transform duration-200"
+                  aria-hidden="true"
+                />
                 Copy
               </>
             )}
@@ -333,7 +350,9 @@ export function BiasCard({
         {/* Source badge */}
         {bias.source === "user" && (
           <div className="pt-2">
-            <Badge variant="outline" className="text-xs">Custom Bias</Badge>
+            <Badge variant="outline" className="text-xs">
+              Custom Bias
+            </Badge>
           </div>
         )}
       </div>

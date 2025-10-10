@@ -7,6 +7,7 @@ After clicking Reset, the speech rate value resets to 0.9x in the database, but 
 ## Root Cause Analysis
 
 ### State Flow
+
 ```
 1. User clicks Reset
    ↓
@@ -40,15 +41,15 @@ Changed the reset function to update local state directly:
 const handleResetVoiceSettings = async () => {
   const defaultRate = 0.9
   const defaultPitch = 1.0
-  
+
   // Update local state IMMEDIATELY for instant UI feedback
-  setLocalVoiceRate(defaultRate)  // ← This makes UI show 0.9x instantly
+  setLocalVoiceRate(defaultRate) // ← This makes UI show 0.9x instantly
   setLocalVoicePitch(defaultPitch)
-  
+
   // Save to database (fire-and-forget)
   saveSetting("voiceRate", defaultRate)
   saveSetting("voicePitch", defaultPitch)
-  
+
   // Feedback
   haptics.success()
   console.log(`Reset to: rate=${defaultRate}x, pitch=${defaultPitch}x`)
@@ -58,12 +59,14 @@ const handleResetVoiceSettings = async () => {
 ## Testing Instructions
 
 ### Test 1: Check Current Value
+
 1. Open browser console (F12)
 2. Go to Settings page
 3. Check what's displayed: "Speech Rate: X.Xx"
 4. This shows your current saved value
 
 ### Test 2: Test Reset
+
 1. Change speech rate to 1.5x (move slider)
 2. Open console to watch logs
 3. Click "Reset" button
@@ -77,14 +80,16 @@ const handleResetVoiceSettings = async () => {
    - Pitch should show: "Pitch: 1.0x"
 
 ### Test 3: Verify Persistence
+
 1. After reset, refresh the page
 2. Check Speech Rate display
 3. **Expected:** Should still show 0.9x (saved to database)
 
 ### Test 4: Clear Browser Data (For Clean Test)
+
 ```javascript
 // In browser console
-indexedDB.deleteDatabase('bias-daily-db')
+indexedDB.deleteDatabase("bias-daily-db")
 // Then refresh page
 // Should see default 0.9x
 ```
@@ -94,6 +99,7 @@ indexedDB.deleteDatabase('bias-daily-db')
 If the issue persists, run these in browser console:
 
 ### Check Current Settings
+
 ```javascript
 // Open IndexedDB in DevTools
 // Application tab → IndexedDB → bias-daily-db → settings
@@ -102,6 +108,7 @@ If the issue persists, run these in browser console:
 ```
 
 ### Force Update
+
 ```javascript
 // In console while on settings page
 // This will show current value
@@ -116,18 +123,18 @@ If the display still shows 1.0x after reset, try this enhanced version:
 const handleResetVoiceSettings = async () => {
   const defaultRate = 0.9
   const defaultPitch = 1.0
-  
+
   // Force immediate update
   setLocalVoiceRate(defaultRate)
   setLocalVoicePitch(defaultPitch)
-  
+
   // Save to database
   await saveSetting("voiceRate", defaultRate)
   await saveSetting("voicePitch", defaultPitch)
-  
+
   // Force re-render by refreshing settings
   await refresh()
-  
+
   // Feedback
   haptics.success()
 }
@@ -135,7 +142,7 @@ const handleResetVoiceSettings = async () => {
 
 ## What Each Fix Does
 
-1. **`setLocalVoiceRate(0.9)`** 
+1. **`setLocalVoiceRate(0.9)`**
    - Updates the local state immediately
    - Makes UI show 0.9x right away
    - No waiting for async operations
@@ -162,18 +169,18 @@ const handleResetVoiceSettings = async () => {
 
 ## Expected Behavior Now
 
-| Action | UI Response | Database | Display |
-|--------|------------|----------|---------|
-| **Load page** | Shows current saved value | Reads from DB | 0.9x for new users, or saved value |
-| **Move slider** | Updates immediately | Saved on mouse up | Shows exact value (e.g., 1.3x) |
-| **Click Reset** | **Instantly shows 0.9x** | Saves 0.9 | **Speech Rate: 0.9x** |
-| **Refresh page** | Loads from DB | Contains 0.9 | Shows 0.9x |
+| Action           | UI Response               | Database          | Display                            |
+| ---------------- | ------------------------- | ----------------- | ---------------------------------- |
+| **Load page**    | Shows current saved value | Reads from DB     | 0.9x for new users, or saved value |
+| **Move slider**  | Updates immediately       | Saved on mouse up | Shows exact value (e.g., 1.3x)     |
+| **Click Reset**  | **Instantly shows 0.9x**  | Saves 0.9         | **Speech Rate: 0.9x**              |
+| **Refresh page** | Loads from DB             | Contains 0.9      | Shows 0.9x                         |
 
 ---
 
 **Status**: ✅ Fixed  
 **Key Change**: Local state updates immediately, no async wait  
 **Default**: 0.9x (optimal for learning)  
-**Testing**: Check console for confirmation log  
+**Testing**: Check console for confirmation log
 
 **Please refresh and test the Reset button now!** 🎯

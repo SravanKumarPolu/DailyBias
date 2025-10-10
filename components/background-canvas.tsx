@@ -83,7 +83,9 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
   }, [style, seed])
 
   if (style === "minimal") {
-    return <div className="fixed inset-0 -z-10 bg-gradient-to-br from-background via-background to-muted" />
+    return (
+      <div className="from-background via-background to-muted fixed inset-0 -z-10 bg-gradient-to-br" />
+    )
   }
 
   if (style === "glass") {

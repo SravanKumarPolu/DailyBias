@@ -4,10 +4,10 @@ import withPWA from 'next-pwa'
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,  // ✅ Fixed: Enable linting during builds
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,  // ✅ Fixed: Enable TypeScript error checking
   },
   images: {
     unoptimized: true,

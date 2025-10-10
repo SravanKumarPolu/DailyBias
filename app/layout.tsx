@@ -39,33 +39,32 @@ export const metadata: Metadata = {
   creator: "Bias Daily",
   publisher: "Bias Daily",
   category: "education",
-  
+
   // PWA & Theme
   manifest: "/manifest.json",
   themeColor: "#000000",
-  
+
   // Icons (Next.js way - replaces manual <link> tags)
   icons: {
     icon: [
       { url: "/icon-192.jpg", sizes: "192x192", type: "image/jpeg" },
       { url: "/icon-512.jpg", sizes: "512x512", type: "image/jpeg" },
     ],
-    apple: [
-      { url: "/icon-192.jpg", sizes: "192x192", type: "image/jpeg" },
-    ],
+    apple: [{ url: "/icon-192.jpg", sizes: "192x192", type: "image/jpeg" }],
   },
-  
+
   // Apple Web App
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Bias Daily",
   },
-  
+
   // Open Graph (Facebook, LinkedIn, etc.)
   openGraph: {
     title: "Bias Daily - Learn One Cognitive Bias Every Day",
-    description: "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Free, offline-first PWA.",
+    description:
+      "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Free, offline-first PWA.",
     url: "https://biasdaily.app",
     siteName: "Bias Daily",
     images: [
@@ -80,7 +79,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
-  
+
   // Twitter Card
   twitter: {
     card: "summary",
@@ -89,7 +88,7 @@ export const metadata: Metadata = {
     images: ["/icon-512.jpg"],
     creator: "@biasdaily",
   },
-  
+
   // Viewport & Mobile
   viewport: {
     width: "device-width",
@@ -97,7 +96,7 @@ export const metadata: Metadata = {
     maximumScale: 1,
     userScalable: false,
   },
-  
+
   // SEO & Indexing
   robots: {
     index: true,
@@ -110,12 +109,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  
+
   // Canonical URL (prevents duplicate content)
   alternates: {
     canonical: "https://biasdaily.app",
   },
-  
+
   // Format Detection (disable auto-detection of phone numbers, etc.)
   formatDetection: {
     telephone: false,
@@ -124,14 +123,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`} suppressHydrationWarning>
-      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${playfair.variable} antialiased`}
+      suppressHydrationWarning
+    >
+      <body className="bg-background text-foreground min-h-screen" suppressHydrationWarning>
         <ErrorBoundary>
           <AppProvider>
             <ServiceWorkerRegistration />
