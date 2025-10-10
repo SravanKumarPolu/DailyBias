@@ -60,40 +60,51 @@ export function useSpeech() {
 
   const getVoices = useCallback((): Promise<SpeechSynthesisVoice[]> => {
     return new Promise((resolve) => {
-      let voices = window.speechSynthesis.getVoices()
+      const synth = window.speechSynthesis
+      let voices = synth.getVoices()
 
+      // Voices may already be ready
       if (voices.length > 0) {
         resolve(voices)
         return
       }
 
-      // Wait for voices to load
-      const voiceschanged = () => {
-        voices = window.speechSynthesis.getVoices()
-        if (voices.length > 0) {
+      // iOS Safari (including installed PWAs) is notorious for delaying
+      // voice availability and sometimes not firing 'voiceschanged'. We
+      // poll for a short period to increase reliability.
+      const maxWaitMs = 3000
+      const start = Date.now()
+
+      const tryResolve = () => {
+        voices = synth.getVoices()
+        if (voices.length > 0 || Date.now() - start >= maxWaitMs) {
+          clearInterval(poller)
           resolve(voices)
         }
       }
 
-      window.speechSynthesis.addEventListener("voiceschanged", voiceschanged, { once: true })
+      const onVoicesChanged = () => {
+        tryResolve()
+      }
 
-      // Fallback timeout
-      setTimeout(() => {
-        voices = window.speechSynthesis.getVoices()
-        resolve(voices)
-      }, 1000)
+      const poller = setInterval(tryResolve, 100)
+      synth.addEventListener("voiceschanged", onVoicesChanged, { once: true })
+
+      // Final safety timeout
+      setTimeout(tryResolve, maxWaitMs)
     })
   }, [])
 
   const selectBestVoice = useCallback(
-    (voices: SpeechSynthesisVoice[]) => {
+    (voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
       let selectedVoice: SpeechSynthesisVoice | undefined
 
-      // 1. Try to find the exact voice name from settings
-      if (settings.voiceName) {
-        selectedVoice = voices.find((voice) => voice.name === settings.voiceName)
+      // 1. Try to find the exact voice name from override or settings
+      const targetVoiceName = overrideVoiceName || settings.voiceName
+      if (targetVoiceName) {
+        selectedVoice = voices.find((voice) => voice.name === targetVoiceName)
         if (selectedVoice) {
-          console.log("[Speech] Using saved voice:", selectedVoice.name)
+          console.log("[Speech] Using selected voice:", selectedVoice.name)
           return selectedVoice
         }
       }
@@ -138,7 +149,7 @@ export function useSpeech() {
   )
 
   const speakChunks = useCallback(
-    (chunks: string[], voices: SpeechSynthesisVoice[]) => {
+    (chunks: string[], voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
       if (chunks.length === 0) {
         setIsSpeaking(false)
         return
@@ -155,7 +166,7 @@ export function useSpeech() {
         typeof settings.voicePitch === "number" && isFinite(settings.voicePitch)
           ? settings.voicePitch
           : 1.0
-      const selectedVoice = selectBestVoice(voices)
+      const selectedVoice = selectBestVoice(voices, overrideVoiceName)
 
       const speakNextChunk = () => {
         if (currentChunkIndexRef.current >= chunks.length) {
@@ -170,10 +181,14 @@ export function useSpeech() {
 
         utterance.rate = rate
         utterance.pitch = pitch
-        utterance.lang = "en-US"
-
+        // Always align utterance language with the selected voice to avoid
+        // browsers (notably iOS) silently falling back to the system default.
         if (selectedVoice) {
+          utterance.lang = selectedVoice.lang
           utterance.voice = selectedVoice
+        } else {
+          // Fallback language
+          utterance.lang = "en-US"
         }
 
         utterance.onstart = () => {
@@ -248,7 +263,12 @@ export function useSpeech() {
         utteranceQueueRef.current.push(utterance)
 
         try {
-          window.speechSynthesis.speak(utterance)
+        // Cancel any pending utterances to ensure voice switch takes effect
+        // Some browsers queue synthesis and ignore new voice assignments.
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel()
+        }
+        window.speechSynthesis.speak(utterance)
         } catch (error) {
           console.error("[Speech] Exception while speaking:", error)
           setIsSpeaking(false)
@@ -266,7 +286,7 @@ export function useSpeech() {
   )
 
   const speak = useCallback(
-    async (text: string) => {
+    async (text: string, overrideVoiceName?: string) => {
       if (!isSupported) {
         console.error("[Speech] Speech synthesis not supported in this browser")
         return
@@ -295,8 +315,8 @@ export function useSpeech() {
         const chunks = splitTextIntoChunks(text)
         console.log(`[Speech] Text split into ${chunks.length} chunk(s)`)
 
-        // Speak chunks
-        speakChunks(chunks, voices)
+        // Speak chunks with optional voice override
+        speakChunks(chunks, voices, overrideVoiceName)
       } catch (error) {
         console.error("[Speech] Failed to speak:", error)
         setIsSpeaking(false)
@@ -372,5 +392,7 @@ export function useSpeech() {
     isSpeaking,
     isSupported,
     isEnabled: settings.voiceEnabled,
+    // Allow UI to explicitly warm up voices after a user gesture if needed
+    ensureVoicesLoaded: getVoices,
   }
 }

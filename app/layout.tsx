@@ -7,7 +7,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { NetworkStatus } from "@/components/network-status"
 import { AppProvider } from "@/contexts/app-context"
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
-import { CacheBuster, CacheClearButton } from "@/components/cache-buster"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -134,12 +133,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="bg-background text-foreground min-h-screen" suppressHydrationWarning>
         <ErrorBoundary>
           <AppProvider>
-            <CacheBuster />
             <ServiceWorkerRegistration />
             <NetworkStatus />
             {children}
             <Toaster />
-            <CacheClearButton />
           </AppProvider>
         </ErrorBoundary>
       </body>

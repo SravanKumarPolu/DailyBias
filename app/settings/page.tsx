@@ -22,6 +22,7 @@ import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { DynamicProgressStats } from "@/components/dynamic-progress-stats"
 import { useSettings } from "@/hooks/use-settings"
 import { useApp } from "@/contexts/app-context"
+import { useSpeech } from "@/hooks/use-speech"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -34,6 +35,7 @@ import { haptics } from "@/lib/haptics"
 export default function SettingsPage() {
   const { settings, saveSetting, refresh } = useSettings()
   const { progressStats } = useApp()
+  const { ensureVoicesLoaded, isSupported: speechSupported, speak, stop } = useSpeech()
   const router = useRouter()
   const [importing, setImporting] = useState(false)
   const [exportSuccess, setExportSuccess] = useState(false)
@@ -41,12 +43,11 @@ export default function SettingsPage() {
   const [localVoiceRate, setLocalVoiceRate] = useState(settings.voiceRate || 0.9)
   const [localVoicePitch, setLocalVoicePitch] = useState(settings.voicePitch || 1.0)
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
+  const [testingVoice, setTestingVoice] = useState(false)
 
-  // Load available voices
-  useEffect(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      const loadVoices = () => {
-        const voices = window.speechSynthesis.getVoices()
+  // Helper to fetch and filter voices consistently
+  const fetchAndFilterVoices = () => {
+    const voices = window.speechSynthesis.getVoices()
 
         // Blacklist of known poor quality/novelty voices
         const blacklistedVoices = [
@@ -140,10 +141,10 @@ export default function SettingsPage() {
             return a.name.localeCompare(b.name)
           })
 
-        setAvailableVoices(englishVoices)
+    setAvailableVoices(englishVoices)
 
         // Auto-select Daniel as default voice, or fallback to best available
-        if (!settings.voiceName && englishVoices.length > 0) {
+    if (!settings.voiceName && englishVoices.length > 0) {
           // Prefer Daniel voice as default
           const danielVoice = englishVoices.find((voice) =>
             voice.name.toLowerCase().includes("daniel")
@@ -151,12 +152,29 @@ export default function SettingsPage() {
           const defaultVoice = danielVoice || englishVoices[0]
           saveSetting("voiceName", defaultVoice.name)
         }
-      }
+  }
 
-      loadVoices()
-      window.speechSynthesis.onvoiceschanged = loadVoices
+  // Load available voices
+  useEffect(() => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      fetchAndFilterVoices()
+      window.speechSynthesis.onvoiceschanged = fetchAndFilterVoices
     }
-  }, [settings.voiceName, saveSetting])
+  }, [settings.voiceName])
+
+  const handleRefreshVoices = async () => {
+    try {
+      // Ensure voices are populated (especially on iOS/PWA) after a user gesture
+      if (speechSupported) {
+        await ensureVoicesLoaded()
+      }
+      fetchAndFilterVoices()
+      haptics.selection()
+    } catch (e) {
+      // no-op; we still attempt to refresh list
+      fetchAndFilterVoices()
+    }
+  }
 
   // Sync local state with settings
   useEffect(() => {
@@ -281,6 +299,36 @@ export default function SettingsPage() {
 
   const handleVoicePitchCommit = () => {
     saveSetting("voicePitch", localVoicePitch)
+  }
+
+  const handleTestVoice = async () => {
+    try {
+      setTestingVoice(true)
+      if (!speechSupported) return
+      await ensureVoicesLoaded()
+
+      // Get the currently selected voice from the DOM (most up-to-date)
+      const selectElement = document.getElementById("voice-select") as HTMLSelectElement
+      const selectedVoiceName = selectElement?.value || ""
+
+      // Short sample that announces the voice name
+      const voiceLabel = selectedVoiceName || "System Default"
+      const sample = `Hello. This is ${voiceLabel}.`
+
+      // Pass the selected voice name explicitly to bypass settings cache
+      speak(sample, selectedVoiceName || undefined)
+
+      // Stop after ~2.5 seconds to keep it short
+      setTimeout(() => {
+        stop()
+        setTestingVoice(false)
+      }, 2500)
+
+      haptics.selection()
+    } catch (e) {
+      // ignored
+      setTestingVoice(false)
+    }
   }
 
   return (
@@ -474,6 +522,7 @@ export default function SettingsPage() {
                     value={settings.voiceName || ""}
                     onChange={(e) => saveSetting("voiceName", e.target.value)}
                     className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                    onFocus={handleRefreshVoices}
                   >
                     <option value="">System Default</option>
                     {availableVoices.map((voice, index) => (
@@ -482,9 +531,22 @@ export default function SettingsPage() {
                       </option>
                     ))}
                   </select>
-                  <p className="text-muted-foreground text-xs">
-                    ⭐ indicates high-quality local voices
-                  </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-muted-foreground text-xs">
+                      ⭐ indicates high-quality local voices
+                    </p>
+                    <Button size="sm" variant="ghost" className="cursor-pointer" onClick={handleRefreshVoices}>
+                      Refresh voices
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="cursor-pointer"
+                      onClick={handleTestVoice}
+                      disabled={testingVoice}
+                    >
+                      {testingVoice ? "Testing..." : "Test voice"}
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
