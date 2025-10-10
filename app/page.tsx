@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo, useRef } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
@@ -22,7 +22,6 @@ export default function HomePage() {
     isFavorite,
     settings,
     settingsLoading,
-    progressStats,
     progressList,
     progressLoading,
     markAsViewed,
@@ -65,7 +64,6 @@ export default function HomePage() {
     isListening,
     isSupported: voiceCommandsSupported,
     toggleListening,
-    transcript,
   } = useVoiceCommands({
     onReadCommand: handleReadCommand,
     onStopCommand: handleStopCommand,
@@ -94,7 +92,7 @@ export default function HomePage() {
     const newDailyBias = getPersonalizedDailyBias(allBiases, progressList, today)
     cacheDailyBias(today, newDailyBias.id)
     return newDailyBias
-  }, [allBiases, progressLoading])
+  }, [allBiases, progressList, progressLoading])
 
   useEffect(() => {
     if (selectedDailyBias) {
@@ -111,7 +109,7 @@ export default function HomePage() {
       // Mark as viewed
       markAsViewed(dailyBias.id)
     }
-  }, [dailyBias])
+  }, [dailyBias, isFavorite, isMastered, markAsViewed])
 
   const handleToggleFavorite = async () => {
     if (!dailyBias) return

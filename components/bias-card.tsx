@@ -49,7 +49,7 @@ export function BiasCard({
           url: window.location.href,
         })
         haptics.light()
-      } catch (error) {
+      } catch {
         console.log("[DailyBias] Share cancelled")
       }
     } else {

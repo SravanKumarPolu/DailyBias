@@ -7,7 +7,7 @@
  * performance improvements from dynamic imports.
  */
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ArrowLeft, Code, Zap, Package, Info, Play, CheckCircle2, Clock } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
@@ -19,7 +19,6 @@ import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
 import {
-  BiasCardDetailedLoader,
   BiasCardCompactLoader,
   ProgressStatsLoader,
   RecommendationCardLoader,

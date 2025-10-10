@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Plus, Trash2, Edit } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
@@ -39,7 +38,6 @@ import {
 const categories: BiasCategory[] = ["decision", "memory", "social", "perception", "misc"]
 
 export default function AddBiasPage() {
-  const router = useRouter()
   const { userBiases, addBias, updateBias, deleteBias } = useBiases()
   const { settings } = useSettings()
   const [isDialogOpen, setIsDialogOpen] = useState(false)

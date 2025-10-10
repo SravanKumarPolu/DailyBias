@@ -34,7 +34,6 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
 
     // Track visibility to pause animation when tab is hidden
     let isVisible = !document.hidden
-    let frame = 0
 
     // Animated gradient background
     const animate = () => {
@@ -43,9 +42,6 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
         animationFrameRef.current = requestAnimationFrame(animate)
         return
       }
-
-      frame++
-      const time = frame * 0.01 + seed
 
       // Create gradient
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)

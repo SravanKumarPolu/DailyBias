@@ -48,10 +48,6 @@ export default function SettingsPage() {
   // Basic platform detection for contextual hints
   const isiOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/i.test(navigator.userAgent)
   const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)
-  const isStandalone =
-    typeof window !== "undefined" &&
-    ((window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
-      (navigator as unknown as { standalone?: boolean })?.standalone === true)
 
   // Helper to fetch and filter voices consistently
   const fetchAndFilterVoices = () => {
@@ -166,6 +162,7 @@ export default function SettingsPage() {
       fetchAndFilterVoices()
       window.speechSynthesis.onvoiceschanged = fetchAndFilterVoices
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.voiceName])
 
   const handleRefreshVoices = async () => {
@@ -176,7 +173,7 @@ export default function SettingsPage() {
       }
       fetchAndFilterVoices()
       haptics.selection()
-    } catch (e) {
+    } catch {
       // no-op; we still attempt to refresh list
       fetchAndFilterVoices()
     }
@@ -331,7 +328,7 @@ export default function SettingsPage() {
       }, 2500)
 
       haptics.selection()
-    } catch (e) {
+    } catch {
       // ignored
       setTestingVoice(false)
     }

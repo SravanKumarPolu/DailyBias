@@ -225,7 +225,7 @@ export default function AllBiasesPage() {
             </div>
           ) : (
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-              {searchResults.map(({ bias, score, matchedFields }, index) => (
+              {searchResults.map(({ bias, score }, index) => (
                 <Link
                   key={bias.id}
                   href={`/bias/${bias.id}`}
