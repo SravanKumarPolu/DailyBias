@@ -57,65 +57,83 @@ export default function FavoritesPage() {
   const loading = biasesLoading || favoritesLoading
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20 sm:pb-24">
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={123} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-4xl px-4 py-8">
-        <div className="space-y-6">
+      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="mb-2 text-3xl font-bold">Favorites</h1>
-              <p className="text-muted-foreground">Your saved biases for quick reference</p>
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl md:text-4xl">Favorites</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">Your saved biases for quick reference</p>
             </div>
             {favoriteBiases.length > 0 && (
               <Button
                 onClick={handleExport}
                 variant="outline"
-                className="glass border-border/50 cursor-pointer bg-transparent"
+                size="sm"
+                className="glass border-border/50 touch-target hover-lift button-press shrink-0 cursor-pointer bg-transparent transition-all duration-200 sm:size-default"
+                aria-label="Export favorites as JSON"
               >
-                <Download className="mr-2 h-4 w-4" />
-                Export
+                <Download className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Export</span>
               </Button>
             )}
           </div>
 
           {/* Favorites count */}
-          {!loading && (
-            <div className="text-muted-foreground text-sm">
-              {favoriteBiases.length} saved biases
+          {!loading && favoriteBiases.length > 0 && (
+            <div className="text-muted-foreground flex items-center gap-2 text-sm sm:text-base">
+              <Heart className="h-4 w-4 text-red-500" aria-hidden="true" />
+              <span>
+                {favoriteBiases.length} {favoriteBiases.length === 1 ? "favorite" : "favorites"}
+              </span>
             </div>
           )}
 
           {/* Favorites list */}
           {loading ? (
-            <div className="glass rounded-2xl p-12 text-center">
-              <p className="text-muted-foreground">Loading favorites...</p>
+            <div className="glass animate-pulse rounded-xl p-8 text-center sm:rounded-2xl sm:p-12" role="status" aria-label="Loading favorites">
+              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-muted/50"></div>
+              <p className="text-muted-foreground text-sm sm:text-base">Loading favorites...</p>
+              <span className="sr-only">Loading your saved biases...</span>
             </div>
           ) : favoriteBiases.length === 0 ? (
-            <div className="glass space-y-4 rounded-2xl p-12 text-center">
-              <Heart className="text-muted-foreground mx-auto h-12 w-12" />
+            <div className="glass space-y-4 rounded-xl p-8 text-center sm:space-y-6 sm:rounded-2xl sm:p-12">
+              <div className="animate-float">
+                <Heart className="text-muted-foreground mx-auto h-10 w-10 sm:h-12 sm:w-12" aria-hidden="true" />
+              </div>
               <div>
-                <p className="mb-2 text-lg font-medium">No favorites yet</p>
-                <p className="text-muted-foreground mb-4">
+                <p className="mb-1 text-lg font-semibold sm:mb-2 sm:text-xl">No favorites yet</p>
+                <p className="text-muted-foreground mb-4 text-sm sm:mb-6 sm:text-base text-balance">
                   Start adding biases to your favorites to build your personal collection
                 </p>
                 <Link href="/all" className="cursor-pointer">
-                  <Button className="cursor-pointer">Browse All Biases</Button>
+                  <Button className="touch-target hover-lift button-press cursor-pointer transition-all duration-200">
+                    Browse All Biases
+                  </Button>
                 </Link>
               </div>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {favoriteBiases.map((bias) => (
-                <Link key={bias.id} href={`/bias/${bias.id}`} className="cursor-pointer">
-                  <DynamicBiasCard
-                    bias={bias}
-                    variant="compact"
-                    isFavorite={true}
-                    onToggleFavorite={() => handleToggleFavorite(bias.id)}
-                  />
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+              {favoriteBiases.map((bias, index) => (
+                <Link 
+                  key={bias.id} 
+                  href={`/bias/${bias.id}`} 
+                  className="group cursor-pointer"
+                  style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
+                >
+                  <div className="animate-fade-in-up transition-transform duration-200 group-hover:scale-[1.02]">
+                    <DynamicBiasCard
+                      bias={bias}
+                      variant="compact"
+                      isFavorite={true}
+                      onToggleFavorite={() => handleToggleFavorite(bias.id)}
+                    />
+                  </div>
                 </Link>
               ))}
             </div>

@@ -166,66 +166,96 @@ export default function AddBiasPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20 sm:pb-24">
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={789} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-4xl px-4 py-8">
-        <div className="space-y-6">
+      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="mb-2 text-3xl font-bold">Your Biases</h1>
-              <p className="text-muted-foreground">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl md:text-4xl">Your Biases</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
                 Create and manage your custom cognitive biases
               </p>
             </div>
-            <Button onClick={openAddDialog}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Bias
+            <Button 
+              onClick={openAddDialog}
+              size="sm"
+              className="touch-target hover-lift button-press shrink-0 cursor-pointer transition-all duration-200 sm:size-default"
+              aria-label="Add new bias"
+            >
+              <Plus className="h-4 w-4 sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Add Bias</span>
             </Button>
           </div>
 
           {/* User biases count */}
-          <div className="text-muted-foreground text-sm">{userBiases.length} custom biases</div>
+          {userBiases.length > 0 && (
+            <div className="text-muted-foreground flex items-center gap-2 text-sm sm:text-base">
+              <span className="bg-primary/10 text-primary inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-medium sm:h-6 sm:w-6" aria-hidden="true">
+                {userBiases.length}
+              </span>
+              <span>custom {userBiases.length === 1 ? "bias" : "biases"}</span>
+            </div>
+          )}
 
           {/* User biases list */}
           {userBiases.length === 0 ? (
-            <div className="glass space-y-4 rounded-2xl p-12 text-center">
-              <Plus className="text-muted-foreground mx-auto h-12 w-12" />
+            <div className="glass space-y-4 rounded-xl p-8 text-center sm:space-y-6 sm:rounded-2xl sm:p-12">
+              <div className="animate-float">
+                <Plus className="text-muted-foreground mx-auto h-10 w-10 sm:h-12 sm:w-12" aria-hidden="true" />
+              </div>
               <div>
-                <p className="mb-2 text-lg font-medium">No custom biases yet</p>
-                <p className="text-muted-foreground mb-4">
+                <p className="mb-1 text-lg font-semibold sm:mb-2 sm:text-xl">No custom biases yet</p>
+                <p className="text-muted-foreground mb-4 text-sm sm:mb-6 sm:text-base text-balance">
                   Create your own cognitive biases to add to your personal collection
                 </p>
-                <Button onClick={openAddDialog}>
-                  <Plus className="mr-2 h-4 w-4" />
+                <Button 
+                  onClick={openAddDialog}
+                  className="touch-target hover-lift button-press cursor-pointer transition-all duration-200"
+                  aria-label="Add your first bias"
+                >
+                  <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
                   Add Your First Bias
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {userBiases.map((bias) => (
-                <div key={bias.id} className="glass rounded-2xl p-6">
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+              {userBiases.map((bias, index) => (
+                <div 
+                  key={bias.id} 
+                  className="glass hover-lift animate-fade-in-up shadow-soft rounded-xl p-4 transition-all duration-200 sm:rounded-2xl sm:p-6"
+                  style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
+                >
                   <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
+                    <div className="flex items-start justify-between gap-3 sm:gap-4">
+                      <div className="min-w-0 flex-1">
                         <Badge variant="secondary" className="mb-2">
                           {bias.category}
                         </Badge>
-                        <h3 className="text-lg font-semibold text-balance">{bias.title}</h3>
+                        <h3 className="text-base font-semibold text-balance sm:text-lg">{bias.title}</h3>
                       </div>
                       <div className="flex shrink-0 gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(bias)}>
-                          <Edit className="h-4 w-4" />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => openEditDialog(bias)}
+                          className="touch-target hover-grow button-press h-8 w-8 cursor-pointer transition-all duration-200 sm:h-9 sm:w-9"
+                          aria-label={`Edit ${bias.title}`}
+                        >
+                          <Edit className="h-4 w-4" aria-hidden="true" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => setDeleteConfirmId(bias.id)}
+                          className="touch-target hover-grow button-press h-8 w-8 cursor-pointer transition-all duration-200 sm:h-9 sm:w-9"
+                          aria-label={`Delete ${bias.title}`}
                         >
-                          <Trash2 className="text-destructive h-4 w-4" />
+                          <Trash2 className="text-destructive h-4 w-4" aria-hidden="true" />
                         </Button>
                       </div>
                     </div>
