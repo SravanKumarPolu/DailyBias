@@ -8,7 +8,6 @@ import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useApp } from "@/contexts/app-context"
 import { getPersonalizedDailyBias, getTodayDateString } from "@/lib/daily-selector"
 import type { Bias } from "@/lib/types"
-import { Skeleton } from "@/components/ui/skeleton"
 import { getCachedDailyBias, cacheDailyBias } from "@/lib/storage"
 import { useVoiceCommands } from "@/hooks/use-voice-commands"
 import { useSpeech } from "@/hooks/use-speech"
@@ -161,24 +160,55 @@ export default function HomePage() {
       >
         {loading || !dailyBias ? (
           <div className="space-y-4 sm:space-y-6" role="status" aria-label="Loading daily bias">
+            {/* Stats grid skeleton */}
             <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-16 w-full sm:h-20" />
+                <div 
+                  key={i} 
+                  className="group relative overflow-hidden rounded-lg bg-card/50 backdrop-blur-sm border border-border/50 p-4 shadow-depth-1"
+                >
+                  <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/5 to-transparent" 
+                       style={{ animationDelay: `${i * 100}ms` }} />
+                  <div className="relative">
+                    <div className="h-12 w-full rounded bg-muted/50 sm:h-16" />
+                  </div>
+                </div>
               ))}
             </div>
 
-            <div className="glass border-primary/20 rounded-2xl border-2 p-4 sm:rounded-3xl sm:p-6">
-              <Skeleton className="mb-3 h-5 w-32 sm:mb-4 sm:h-6 sm:w-40" />
-              <Skeleton className="mb-2 h-7 w-40 sm:h-8 sm:w-48" />
-              <Skeleton className="h-16 w-full sm:h-20" />
+            {/* Featured card skeleton */}
+            <div className="group relative overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-primary/20 p-4 shadow-depth-2 sm:rounded-3xl sm:p-6">
+              <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/10 to-transparent" 
+                   style={{ animationDuration: '2s' }} />
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent animate-pulse" />
+              
+              <div className="relative space-y-3 sm:space-y-4">
+                <div className="h-5 w-32 rounded bg-muted/50 sm:h-6 sm:w-40" />
+                <div className="h-7 w-40 rounded bg-muted/50 sm:h-8 sm:w-48" />
+                <div className="h-16 w-full rounded bg-muted/50 sm:h-20" />
+              </div>
             </div>
 
-            <div className="glass space-y-4 rounded-xl p-4 sm:space-y-6 sm:rounded-2xl sm:p-6 md:p-8">
-              <Skeleton className="h-6 w-24 sm:h-8 sm:w-32" />
-              <Skeleton className="h-10 w-full sm:h-12" />
-              <Skeleton className="h-20 w-full sm:h-24" />
-              <Skeleton className="h-24 w-full sm:h-32" />
-              <Skeleton className="h-24 w-full sm:h-32" />
+            {/* Main card skeleton */}
+            <div className="group relative overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-4 shadow-depth-2 sm:rounded-2xl sm:p-6 md:p-8">
+              <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/8 to-transparent" 
+                   style={{ animationDuration: '2s' }} />
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-pulse" />
+              
+              <div className="relative space-y-4 sm:space-y-6">
+                <div className="h-6 w-24 rounded bg-muted/50 sm:h-8 sm:w-32" />
+                <div className="h-10 w-full rounded bg-muted/50 sm:h-12" />
+                <div className="h-20 w-full rounded bg-muted/50 sm:h-24" />
+                <div className="h-24 w-full rounded bg-muted/50 sm:h-32" />
+                <div className="h-24 w-full rounded bg-muted/50 sm:h-32" />
+                
+                {/* Action buttons skeleton */}
+                <div className="flex gap-3 pt-2">
+                  <div className="h-10 flex-1 rounded bg-muted/50" />
+                  <div className="h-10 flex-1 rounded bg-muted/50" />
+                  <div className="h-10 flex-1 rounded bg-muted/50" />
+                </div>
+              </div>
             </div>
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>

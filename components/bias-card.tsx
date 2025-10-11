@@ -130,14 +130,20 @@ export function BiasCard({
   if (variant === "compact") {
     return (
       <motion.div
-        className="glass hover-lift rounded-xl p-4 transition-shadow duration-300 hover:shadow-lg sm:rounded-2xl sm:p-5 md:p-6"
+        className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all duration-300 hover:border-primary/30 hover:shadow-depth-3 sm:rounded-2xl sm:p-5 md:p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        whileHover={{ y: -4, scale: 1.01 }}
         role="article"
         tabIndex={0}
         aria-label={`${bias.title} - ${bias.category} bias`}
       >
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        
+        {/* Inner highlight */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1">
             <Badge className={`mb-1.5 text-xs sm:mb-2 ${getCategoryColor(bias.category)}`}>
@@ -195,7 +201,7 @@ export function BiasCard({
 
   return (
     <motion.div
-      className="glass mx-auto max-w-2xl rounded-xl p-4 transition-shadow duration-300 sm:rounded-2xl sm:p-6 md:p-8"
+      className="group relative mx-auto max-w-2xl overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-4 shadow-depth-2 transition-all duration-300 hover:border-primary/40 hover:shadow-depth-4 sm:rounded-2xl sm:p-6 md:p-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -204,12 +210,22 @@ export function BiasCard({
         stiffness: 100,
         damping: 15,
       }}
+      whileHover={{ y: -2 }}
       role="article"
       aria-labelledby="bias-title"
     >
-      <div className="space-y-4 sm:space-y-5 md:space-y-6">
+      {/* Gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      
+      {/* Top highlight */}
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      
+      {/* Side glow effect */}
+      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="relative space-y-4 sm:space-y-5 md:space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 sm:gap-4">
+        <div className="relative flex items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1">
             <Badge className={`mb-2 text-xs sm:mb-3 ${getCategoryColor(bias.category)}`}>
               {getCategoryLabel(bias.category)}

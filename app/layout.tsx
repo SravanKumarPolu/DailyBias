@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Inter, Playfair_Display } from "next/font/google"
+import { Inter, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Toaster } from "@/components/ui/toaster"
@@ -8,14 +8,22 @@ import { NetworkStatus } from "@/components/network-status"
 import { AppProvider } from "@/contexts/app-context"
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
 
+// Inter: Modern, highly legible sans-serif
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
+  preload: true,
 })
 
-const playfair = Playfair_Display({
+// Instrument Serif: Elegant, modern serif for headings
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-serif",
+  weight: "400",
+  display: "swap",
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -127,10 +135,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} antialiased`}
+      className={`${inter.variable} ${instrumentSerif.variable} font-sans antialiased`}
       suppressHydrationWarning
     >
-      <body className="bg-background text-foreground min-h-screen" suppressHydrationWarning>
+      <body className="bg-background text-foreground min-h-screen font-sans" suppressHydrationWarning>
         <ErrorBoundary>
           <AppProvider>
             <ServiceWorkerRegistration />

@@ -2,78 +2,141 @@
 @import "tw-animate-css";
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Base colors - Light mode */
+  --background: oklch(0.99 0.005 264);
+  --foreground: oklch(0.145 0.01 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.145 0.01 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --popover-foreground: oklch(0.145 0.01 264);
+  
+  /* Brand colors - Vibrant Blue/Purple */
+  --primary: oklch(0.55 0.25 264);
+  --primary-foreground: oklch(0.99 0.01 264);
+  
+  /* Secondary - Vibrant Teal/Cyan */
+  --secondary: oklch(0.88 0.08 200);
+  --secondary-foreground: oklch(0.25 0.05 200);
+  
+  /* Muted - Subtle gray with hint of primary */
+  --muted: oklch(0.96 0.01 264);
+  --muted-foreground: oklch(0.5 0.03 264);
+  
+  /* Accent - Vibrant Purple */
+  --accent: oklch(0.92 0.06 300);
+  --accent-foreground: oklch(0.35 0.15 280);
+  
+  /* Destructive - Vibrant Red */
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  
+  /* Success - Vibrant Green */
+  --success: oklch(0.65 0.2 145);
+  --success-foreground: oklch(0.99 0.01 145);
+  
+  /* Warning - Vibrant Orange/Yellow */
+  --warning: oklch(0.75 0.18 85);
+  --warning-foreground: oklch(0.2 0.05 85);
+  
+  /* Info - Vibrant Blue */
+  --info: oklch(0.6 0.2 240);
+  --info-foreground: oklch(0.99 0.01 240);
+  
+  /* UI Elements */
+  --border: oklch(0.9 0.01 264);
+  --input: oklch(0.9 0.01 264);
+  --ring: oklch(0.55 0.25 264);
+  
+  /* Charts - Vibrant colors */
+  --chart-1: oklch(0.65 0.24 264);  /* Purple */
+  --chart-2: oklch(0.7 0.22 180);   /* Cyan */
+  --chart-3: oklch(0.68 0.20 145);  /* Green */
+  --chart-4: oklch(0.72 0.20 85);   /* Orange */
+  --chart-5: oklch(0.65 0.22 340);  /* Pink */
+  
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Sidebar */
+  --sidebar: oklch(0.98 0.005 264);
+  --sidebar-foreground: oklch(0.2 0.01 264);
+  --sidebar-primary: oklch(0.55 0.25 264);
+  --sidebar-primary-foreground: oklch(0.99 0.01 264);
+  --sidebar-accent: oklch(0.92 0.06 300);
+  --sidebar-accent-foreground: oklch(0.35 0.15 280);
+  --sidebar-border: oklch(0.9 0.01 264);
+  --sidebar-ring: oklch(0.55 0.25 264);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  /* Base colors - Dark mode */
+  --background: oklch(0.15 0.01 264);
+  --foreground: oklch(0.98 0.005 264);
+  --card: oklch(0.18 0.015 264);
+  --card-foreground: oklch(0.98 0.005 264);
+  --popover: oklch(0.18 0.015 264);
+  --popover-foreground: oklch(0.98 0.005 264);
+  
+  /* Brand colors - Brighter in dark mode */
+  --primary: oklch(0.7 0.28 264);
+  --primary-foreground: oklch(0.15 0.01 264);
+  
+  /* Secondary - Brighter Teal */
+  --secondary: oklch(0.35 0.08 200);
+  --secondary-foreground: oklch(0.9 0.05 200);
+  
+  /* Muted */
+  --muted: oklch(0.25 0.015 264);
+  --muted-foreground: oklch(0.65 0.03 264);
+  
+  /* Accent - Vibrant Purple */
+  --accent: oklch(0.35 0.1 300);
+  --accent-foreground: oklch(0.88 0.08 300);
+  
+  /* Destructive - Vibrant Red */
+  --destructive: oklch(0.55 0.25 25);
+  --destructive-foreground: oklch(0.98 0.01 25);
+  
+  /* Success - Vibrant Green */
+  --success: oklch(0.65 0.22 145);
+  --success-foreground: oklch(0.15 0.01 145);
+  
+  /* Warning - Vibrant Orange */
+  --warning: oklch(0.75 0.2 85);
+  --warning-foreground: oklch(0.15 0.02 85);
+  
+  /* Info - Vibrant Blue */
+  --info: oklch(0.65 0.22 240);
+  --info-foreground: oklch(0.15 0.01 240);
+  
+  /* UI Elements */
+  --border: oklch(0.3 0.02 264);
+  --input: oklch(0.3 0.02 264);
+  --ring: oklch(0.7 0.28 264);
+  
+  /* Charts - Vibrant colors for dark mode */
+  --chart-1: oklch(0.7 0.26 264);   /* Purple */
+  --chart-2: oklch(0.75 0.24 180);  /* Cyan */
+  --chart-3: oklch(0.72 0.22 145);  /* Green */
+  --chart-4: oklch(0.75 0.22 85);   /* Orange */
+  --chart-5: oklch(0.7 0.24 340);   /* Pink */
+  
+  /* Sidebar */
+  --sidebar: oklch(0.2 0.015 264);
+  --sidebar-foreground: oklch(0.95 0.005 264);
+  --sidebar-primary: oklch(0.7 0.28 264);
+  --sidebar-primary-foreground: oklch(0.15 0.01 264);
+  --sidebar-accent: oklch(0.35 0.1 300);
+  --sidebar-accent-foreground: oklch(0.88 0.08 300);
+  --sidebar-border: oklch(0.3 0.02 264);
+  --sidebar-ring: oklch(0.7 0.28 264);
 }
 
 @theme inline {
-  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  /* Font families */
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-serif);
+  
+  /* Color system */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -90,18 +153,34 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  
+  /* Semantic colors */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  
+  /* UI elements */
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  
+  /* Border radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -336,11 +415,419 @@
   }
 }
 
-/* Better font rendering */
+/* ==========================================
+   REFINED TYPOGRAPHY SYSTEM
+   ========================================== */
+
+/* Better font rendering with OpenType features */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  letter-spacing: -0.011em;
+}
+
+/* Heading typography with proper hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
+  text-wrap: balance;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw + 1rem, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw + 0.5rem, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw + 0.5rem, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h4 {
+  font-size: clamp(1.125rem, 2vw + 0.5rem, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+h5 {
+  font-size: clamp(1rem, 1.5vw + 0.5rem, 1.25rem);
+  font-weight: 600;
+}
+
+h6 {
+  font-size: clamp(0.875rem, 1vw + 0.5rem, 1rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Paragraph typography with optimal readability */
+p {
+  font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+  line-height: 1.65;
+  max-width: 65ch;
+  text-wrap: pretty;
+  letter-spacing: -0.011em;
+}
+
+/* Lead paragraph for emphasis */
+.lead {
+  font-size: clamp(1.125rem, 1vw + 1rem, 1.5rem);
+  line-height: 1.6;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Small text with proper sizing */
+small, .text-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: -0.006em;
+}
+
+/* Code and monospace */
+code, pre, kbd {
+  font-feature-settings: "liga" 0, "calt" 0;
+  letter-spacing: 0;
+}
+
+/* Refined link styles */
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Blockquote styling */
+blockquote {
+  font-style: italic;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  letter-spacing: -0.015em;
+  border-left: 3px solid hsl(var(--primary));
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+/* List styling with proper spacing */
+ul, ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+li {
+  line-height: 1.65;
+  margin: 0.5rem 0;
+}
+
+/* Emphasis and strong */
+strong, b {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+em, i {
+  font-style: italic;
+}
+
+/* Refined quote marks */
+q::before {
+  content: "\201C";
+}
+
+q::after {
+  content: "\201D";
+}
+
+/* Caption text */
+figcaption, .caption {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* ==========================================
+   ADVANCED TYPOGRAPHY UTILITIES
+   ========================================== */
+
+/* Fluid typography classes with perfect scaling */
+.text-fluid-xs {
+  font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  line-height: 1.5;
+}
+
+.text-fluid-sm {
+  font-size: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  line-height: 1.5;
+}
+
+.text-fluid-base {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  line-height: 1.65;
+}
+
+.text-fluid-lg {
+  font-size: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
+  line-height: 1.6;
+}
+
+.text-fluid-xl {
+  font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.875rem);
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+
+.text-fluid-2xl {
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+}
+
+.text-fluid-3xl {
+  font-size: clamp(1.875rem, 1.5rem + 2vw, 3.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+/* Display typography for hero sections */
+.text-display {
+  font-size: clamp(2.5rem, 5vw + 1rem, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+/* Optimized reading width */
+.prose {
+  max-width: 65ch;
+}
+
+.prose-wide {
+  max-width: 80ch;
+}
+
+.prose-narrow {
+  max-width: 45ch;
+}
+
+/* Typography weights with proper letter spacing */
+.font-light {
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.font-normal {
+  font-weight: 400;
+  letter-spacing: -0.011em;
+}
+
+.font-medium {
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.font-semibold {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.font-bold {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Serif font with optimized settings */
+.font-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Sans font with optimized settings */
+.font-sans {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+/* Number formatting for tabular data */
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Old-style figures for body text */
+.font-oldstyle {
+  font-variant-numeric: oldstyle-nums;
+  font-feature-settings: "onum" 1;
+}
+
+/* Text balance for headings */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Text pretty for paragraphs */
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Gradient text effect */
+.text-gradient {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Text shadows for depth */
+.text-depth-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.text-depth {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.text-depth-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Highlighted text */
+.text-highlight {
+  background: linear-gradient(180deg, transparent 50%, hsl(var(--primary) / 0.2) 50%);
+  padding: 0 0.25em;
+  border-radius: 0.125em;
+}
+
+/* Uppercase with proper tracking */
+.text-uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+/* Small caps with OpenType */
+.text-smallcaps {
+  font-variant: small-caps;
+  font-feature-settings: "smcp" 1;
+  letter-spacing: 0.05em;
+}
+
+/* Optimized line heights for different contexts */
+.leading-none {
+  line-height: 1;
+}
+
+.leading-tight {
+  line-height: 1.25;
+}
+
+.leading-snug {
+  line-height: 1.375;
+}
+
+.leading-normal {
+  line-height: 1.5;
+}
+
+.leading-relaxed {
+  line-height: 1.65;
+}
+
+.leading-loose {
+  line-height: 1.85;
+}
+
+/* Letter spacing utilities */
+.tracking-tighter {
+  letter-spacing: -0.05em;
+}
+
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
+.tracking-normal {
+  letter-spacing: 0;
+}
+
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+.tracking-widest {
+  letter-spacing: 0.1em;
+}
+
+/* ==========================================
+   RESPONSIVE TYPOGRAPHY
+   ========================================== */
+
+/* Mobile-optimized text sizes */
+@media (max-width: 640px) {
+  h1 {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+  
+  h3 {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+  }
+  
+  p {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .text-display {
+    font-size: clamp(3rem, 6vw, 4rem);
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  body {
+    letter-spacing: -0.014em;
+  }
+  
+  .text-display {
+    font-size: clamp(4rem, 5vw, 5rem);
+  }
 }
 
 /* Ensure minimum font size for iOS (prevent zoom on focus) */
