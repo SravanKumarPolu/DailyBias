@@ -8,6 +8,7 @@ import { useState, useRef } from "react"
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { BiasExamples } from "@/components/bias-examples"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
@@ -362,6 +363,9 @@ export function BiasCard({
             )}
           </Button>
         </div>
+
+        {/* Examples and Tips */}
+        <BiasExamples bias={bias} />
 
         {/* Source badge */}
         {bias.source === "user" && (

@@ -7,6 +7,7 @@ import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
+import { RelatedBiases } from "@/components/related-biases"
 import { useApp } from "@/contexts/app-context"
 import { Button } from "@/components/ui/button"
 import type { Bias } from "@/lib/types"
@@ -105,6 +106,9 @@ export default function BiasDetailPage() {
           isMastered={isMast}
           onToggleMastered={handleToggleMastered}
         />
+
+        {/* Related biases */}
+        <RelatedBiases currentBias={bias} allBiases={allBiases} maxResults={3} />
       </main>
 
       <DynamicNavigation />

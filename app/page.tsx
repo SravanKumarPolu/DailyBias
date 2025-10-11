@@ -5,6 +5,8 @@ import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
+import { TiltCard } from "@/components/tilt-card"
+import { PullToRefresh } from "@/components/pull-to-refresh"
 import { useApp } from "@/contexts/app-context"
 import { getPersonalizedDailyBias, getTodayDateString } from "@/lib/daily-selector"
 import type { Bias } from "@/lib/types"
@@ -32,6 +34,16 @@ export default function HomePage() {
   const [isMast, setIsMast] = useState(false)
   const { toast } = useToast()
   const { speak: speakBias, stop: stopSpeaking } = useSpeech()
+
+  // Check if user needs onboarding
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hasSeenOnboarding = localStorage.getItem("onboarding-completed")
+      if (!hasSeenOnboarding) {
+        window.location.href = "/onboarding"
+      }
+    }
+  }, [])
 
   // Voice commands handlers
   const handleReadCommand = () => {
@@ -145,8 +157,19 @@ export default function HomePage() {
     }
   }
 
+  const handleRefresh = async () => {
+    // Refresh the page to get new content
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        window.location.reload()
+        resolve()
+      }, 500)
+    })
+  }
+
   return (
     <div className="min-h-screen pb-20 sm:pb-24">
+      <PullToRefresh onRefresh={handleRefresh} enabled={!loading} />
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={seed} />
       <DailyHeader
         isVoiceListening={isListening}
@@ -213,14 +236,16 @@ export default function HomePage() {
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>
         ) : (
-          <DynamicBiasCard
-            bias={dailyBias}
-            variant="detailed"
-            isFavorite={isFav}
-            onToggleFavorite={handleToggleFavorite}
-            isMastered={isMast}
-            onToggleMastered={handleToggleMastered}
-          />
+          <TiltCard className="mb-6" tiltStrength={8} glareEnabled>
+            <DynamicBiasCard
+              bias={dailyBias}
+              variant="detailed"
+              isFavorite={isFav}
+              onToggleFavorite={handleToggleFavorite}
+              isMastered={isMast}
+              onToggleMastered={handleToggleMastered}
+            />
+          </TiltCard>
         )}
       </main>
 

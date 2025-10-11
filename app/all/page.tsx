@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useMemo, useEffect, useCallback } from "react"
-import { Search, Filter, Sparkles, X } from "lucide-react"
+import { Search, Filter, Sparkles, X, SearchX, Loader2 } from "lucide-react"
+import { useLazyLoad } from "@/hooks/use-virtual-scroll"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { DynamicRecommendationCard } from "@/components/dynamic-recommendation-card"
+import { EmptyState } from "@/components/empty-state"
 import { useApp } from "@/contexts/app-context"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -112,6 +114,13 @@ export default function AllBiasesPage() {
     ? searchResults.reduce((sum, r) => sum + r.score, 0) / Math.max(searchResults.length, 1)
     : 1
 
+  // Use lazy loading for better performance
+  const { visibleItems: visibleResults, hasMore, loadMoreRef } = useLazyLoad(
+    searchResults,
+    20, // Initial count
+    10  // Increment
+  )
+
   return (
     <div className="min-h-screen pb-20 sm:pb-24">
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={42} />
@@ -213,19 +222,32 @@ export default function AllBiasesPage() {
               ))}
             </div>
           ) : searchResults.length === 0 ? (
-            <div className="glass rounded-xl p-8 text-center sm:rounded-2xl sm:p-12">
-              <p className="text-muted-foreground mb-2 text-sm sm:text-base">
-                No biases found matching your criteria.
-              </p>
-              {hasActiveSearch && (
-                <p className="text-muted-foreground text-xs sm:text-sm">
-                  Try adjusting your search terms or filters.
-                </p>
-              )}
-            </div>
+            <EmptyState
+              icon={SearchX}
+              title="No results found"
+              description={hasActiveSearch 
+                ? `No biases match "${searchQuery}". Try adjusting your search terms or filters.`
+                : "No biases match your current filters. Try selecting different categories."
+              }
+              action={
+                (hasActiveSearch || selectedCategories.length > 0) && (
+                  <Button
+                    onClick={() => {
+                      setSearchQuery("")
+                      setSelectedCategories([])
+                    }}
+                    variant="outline"
+                    className="cursor-pointer"
+                  >
+                    Clear Filters
+                  </Button>
+                )
+              }
+            />
           ) : (
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-              {searchResults.map(({ bias, score }, index) => (
+            <>
+              <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+                {visibleResults.map(({ bias, score }, index) => (
                 <Link
                   key={bias.id}
                   href={`/bias/${bias.id}`}
@@ -252,6 +274,20 @@ export default function AllBiasesPage() {
                 </Link>
               ))}
             </div>
+
+            {/* Load more indicator */}
+            {hasMore && (
+              <div
+                ref={loadMoreRef}
+                className="flex items-center justify-center py-8"
+              >
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span className="text-sm">Loading more biases...</span>
+                </div>
+              </div>
+            )}
+          </>
           )}
         </div>
       </main>

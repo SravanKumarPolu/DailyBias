@@ -6,6 +6,7 @@ import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
+import { EmptyState } from "@/components/empty-state"
 import { useApp } from "@/contexts/app-context"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -101,22 +102,18 @@ export default function FavoritesPage() {
               <span className="sr-only">Loading your saved biases...</span>
             </div>
           ) : favoriteBiases.length === 0 ? (
-            <div className="glass space-y-4 rounded-xl p-8 text-center sm:space-y-6 sm:rounded-2xl sm:p-12">
-              <div className="animate-float">
-                <Heart className="text-muted-foreground mx-auto h-10 w-10 sm:h-12 sm:w-12" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="mb-1 text-lg font-semibold sm:mb-2 sm:text-xl">No favorites yet</p>
-                <p className="text-muted-foreground mb-4 text-sm sm:mb-6 sm:text-base text-balance">
-                  Start adding biases to your favorites to build your personal collection
-                </p>
-                <Link href="/all" className="cursor-pointer">
+            <EmptyState
+              icon={Heart}
+              title="No favorites yet"
+              description="Start adding biases to your favorites to build your personal collection for quick reference"
+              action={
+                <Link href="/all">
                   <Button className="touch-target hover-lift button-press cursor-pointer transition-all duration-200">
                     Browse All Biases
                   </Button>
                 </Link>
-              </div>
-            </div>
+              }
+            />
           ) : (
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
               {favoriteBiases.map((bias, index) => (

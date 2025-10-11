@@ -1,7 +1,8 @@
 "use client"
 
 import React from "react"
-import { AlertTriangle, RefreshCw, Home, Copy, Check } from "lucide-react"
+import { motion } from "framer-motion"
+import { AlertTriangle, RefreshCw, Home, Copy, Check, Bug } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface ErrorBoundaryState {
@@ -50,75 +51,134 @@ Timestamp: ${new Date().toISOString()}
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 p-4 dark:from-red-950 dark:to-orange-950">
-          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white/90 p-8 shadow-2xl backdrop-blur-xl dark:border-red-800 dark:bg-black/90">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="rounded-full bg-red-100 p-3 dark:bg-red-900">
-                <AlertTriangle
-                  className="h-6 w-6 text-red-600 dark:text-red-400"
-                  aria-hidden="true"
-                />
+        <div className="relative min-h-screen overflow-hidden bg-background">
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-destructive/10 via-transparent to-destructive/5 opacity-50" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(239,68,68,0.1),rgba(255,255,255,0))]" />
+          </div>
+
+          {/* Content */}
+          <div className="relative flex min-h-screen items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+              className="w-full max-w-lg"
+            >
+              <div className="relative overflow-hidden rounded-2xl bg-card/90 backdrop-blur-xl border-2 border-destructive/30 p-8 shadow-depth-4 sm:p-10">
+                {/* Top glow */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-destructive/50 to-transparent" />
+                
+                {/* Icon */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.4, type: "spring" }}
+                  className="mb-6 flex justify-center"
+                >
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full bg-destructive/20 blur-xl animate-pulse" />
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10 border-2 border-destructive/30 sm:h-20 sm:w-20">
+                      <AlertTriangle className="h-8 w-8 text-destructive sm:h-10 sm:w-10" />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Content */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  className="space-y-4 text-center"
+                >
+                  <h2 className="font-serif text-2xl font-bold sm:text-3xl">
+                    Something went wrong
+                  </h2>
+                  <p className="text-muted-foreground text-sm leading-relaxed sm:text-base">
+                    {this.state.error?.message || "An unexpected error occurred while loading the app."}
+                  </p>
+                  <p className="text-muted-foreground text-xs sm:text-sm">
+                    Don't worry, your data is safe. Try reloading or return to home.
+                  </p>
+
+                  {/* Error details (development only) */}
+                  {process.env.NODE_ENV === "development" && this.state.error && (
+                    <details className="mt-4 rounded-lg bg-muted/30 p-4 text-left">
+                      <summary className="cursor-pointer text-sm font-medium flex items-center gap-2 hover:text-primary transition-colors">
+                        <Bug className="h-4 w-4" />
+                        Error Details (Dev Mode)
+                      </summary>
+                      <pre className="mt-3 overflow-x-auto text-xs text-muted-foreground whitespace-pre-wrap break-words">
+                        {this.state.error.stack}
+                      </pre>
+                    </details>
+                  )}
+                </motion.div>
+
+                {/* Actions */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                  className="mt-8 space-y-3"
+                >
+                  <Button
+                    onClick={() => {
+                      this.setState({ hasError: false, error: null, errorInfo: null })
+                      window.location.reload()
+                    }}
+                    className="w-full cursor-pointer hover-lift button-press"
+                    size="lg"
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Reload App
+                  </Button>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      onClick={() => {
+                        window.location.href = "/"
+                      }}
+                      variant="outline"
+                      className="cursor-pointer hover-lift button-press"
+                    >
+                      <Home className="mr-2 h-4 w-4" />
+                      Home
+                    </Button>
+
+                    <Button
+                      onClick={this.copyErrorDetails}
+                      variant="outline"
+                      className="cursor-pointer hover-lift button-press"
+                      disabled={this.state.copied}
+                    >
+                      {this.state.copied ? (
+                        <>
+                          <Check className="mr-2 h-4 w-4 text-success" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="mr-2 h-4 w-4" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </motion.div>
+
+                {/* Help text */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.4 }}
+                  className="mt-6 text-center text-xs text-muted-foreground"
+                >
+                  If this keeps happening, try clearing your browser cache
+                </motion.p>
               </div>
-              <h1 className="text-2xl font-bold text-red-900 dark:text-red-100">
-                Something went wrong
-              </h1>
-            </div>
-
-            <p className="mb-2 text-red-700 dark:text-red-300">
-              {this.state.error?.message || "An unexpected error occurred while loading the app."}
-            </p>
-
-            <p className="mb-6 text-sm text-red-600 dark:text-red-400">
-              Don't worry, your data is safe. Try reloading the app or return to the home page.
-            </p>
-
-            <div className="space-y-2">
-              <Button
-                onClick={() => {
-                  this.setState({ hasError: false, error: null, errorInfo: null })
-                  window.location.reload()
-                }}
-                className="w-full cursor-pointer"
-                size="lg"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />
-                Reload App
-              </Button>
-
-              <Button
-                onClick={() => {
-                  window.location.href = "/"
-                }}
-                variant="outline"
-                className="w-full cursor-pointer"
-              >
-                <Home className="mr-2 h-4 w-4" aria-hidden="true" />
-                Go to Home
-              </Button>
-
-              <Button
-                onClick={this.copyErrorDetails}
-                variant="ghost"
-                className="w-full cursor-pointer"
-                disabled={this.state.copied}
-              >
-                {this.state.copied ? (
-                  <>
-                    <Check className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Error Details Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Copy Error Details
-                  </>
-                )}
-              </Button>
-            </div>
-
-            <p className="mt-4 text-center text-xs text-red-600/70 dark:text-red-400/70">
-              If this keeps happening, try clearing your browser cache or contact support.
-            </p>
+            </motion.div>
           </div>
         </div>
       )
