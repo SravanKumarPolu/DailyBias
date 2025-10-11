@@ -8,7 +8,7 @@ import { useState, useRef } from "react"
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { BiasExamples } from "@/components/bias-examples"
+import { BiasExamples, generateExamples, generateTips } from "@/components/bias-examples"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
@@ -122,7 +122,23 @@ export function BiasCard({
     if (isSpeaking) {
       stop()
     } else {
-      const text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
+      // Generate examples and tips
+      const examples = generateExamples(bias)
+      const tips = generateTips()
+      
+      // Build comprehensive text including examples and tips
+      let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
+      
+      // Add real-world examples
+      if (examples.length > 0) {
+        text += ` Real world examples: ${examples.join('. ')}.`
+      }
+      
+      // Add quick tips
+      if (tips.length > 0) {
+        text += ` Quick tips: ${tips.join('. ')}.`
+      }
+      
       speak(text)
       haptics.light()
     }

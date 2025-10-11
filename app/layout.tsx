@@ -28,6 +28,7 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   // Basic Metadata
+  metadataBase: new URL("https://biasdaily.app"),
   title: "Bias Daily - Learn One Cognitive Bias Every Day",
   description:
     "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Free, offline-first PWA with no tracking.",
@@ -50,7 +51,6 @@ export const metadata: Metadata = {
 
   // PWA & Theme
   manifest: "/manifest.json",
-  themeColor: "#000000",
 
   // Icons (Next.js way - replaces manual <link> tags)
   icons: {
@@ -97,14 +97,6 @@ export const metadata: Metadata = {
     creator: "@biasdaily",
   },
 
-  // Viewport & Mobile
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
-
   // SEO & Indexing
   robots: {
     index: true,
@@ -129,6 +121,14 @@ export const metadata: Metadata = {
     email: false,
     address: false,
   },
+}
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#000000",
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

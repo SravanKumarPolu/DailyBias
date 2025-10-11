@@ -6,9 +6,6 @@ import { useState, useEffect } from "react"
 import {
   Download,
   Upload,
-  Moon,
-  Sun,
-  Monitor,
   Palette,
   Bell,
   Database,
@@ -423,47 +420,6 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            {/* Theme */}
-            <div className="space-y-3">
-              <Label>Theme</Label>
-              <RadioGroup
-                value={settings.theme}
-                onValueChange={(value) =>
-                  saveSetting("theme", value as "light" | "dark" | "system")
-                }
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="light" id="light" />
-                  <Label
-                    htmlFor="light"
-                    className="flex cursor-pointer items-center gap-2 font-normal"
-                  >
-                    <Sun className="h-4 w-4" />
-                    Light
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="dark" id="dark" />
-                  <Label
-                    htmlFor="dark"
-                    className="flex cursor-pointer items-center gap-2 font-normal"
-                  >
-                    <Moon className="h-4 w-4" />
-                    Dark
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="system" id="system" />
-                  <Label
-                    htmlFor="system"
-                    className="flex cursor-pointer items-center gap-2 font-normal"
-                  >
-                    <Monitor className="h-4 w-4" />
-                    System
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
 
             {/* Background Style */}
             <div className="space-y-3">

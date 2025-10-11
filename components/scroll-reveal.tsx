@@ -61,11 +61,9 @@ export function ScrollReveal({
 
 export function ParallaxSection({
   children,
-  speed = 50,
   className,
 }: {
   children: React.ReactNode
-  speed?: number
   className?: string
 }) {
   const { ref, y } = useScrollFade()

@@ -9,7 +9,7 @@ interface BiasExamplesProps {
 }
 
 // Generate contextual examples based on bias type
-function generateExamples(bias: Bias): string[] {
+export function generateExamples(bias: Bias): string[] {
   const examples: { [key: string]: string[] } = {
     "confirmation-bias": [
       "Only reading news sources that align with your political views",
@@ -75,7 +75,7 @@ function generateExamples(bias: Bias): string[] {
   return categoryExamples[bias.category] || categoryExamples.misc
 }
 
-function generateTips(): string[] {
+export function generateTips(): string[] {
   return [
     "Actively seek out contradictory information",
     "Take time to reflect before making important decisions",
