@@ -101,7 +101,7 @@ export function BiasCard({
     onToggleMastered?.(e)
   }
 
-  const handleSpeak = () => {
+  const handleSpeak = async () => {
     if (!isSupported) {
       toast({
         title: "Not Supported",
@@ -119,9 +119,28 @@ export function BiasCard({
       return
     }
 
+    // MOBILE FIX: Add haptic feedback immediately on user interaction
+    // This ensures the user knows their touch was registered
+    haptics.light()
+
     if (isSpeaking) {
       stop()
+      toast({
+        title: "Stopped",
+        description: "Speech has been stopped.",
+      })
     } else {
+      // Show immediate feedback to user
+      toast({
+        title: "Loading...",
+        description: "Preparing to read the bias aloud.",
+        duration: 2000,
+      })
+      
+      // MOBILE FIX: Small delay to ensure toast appears before speech starts
+      // This gives user feedback that something is happening
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       // Generate examples and tips
       const examples = generateExamples(bias)
       const tips = generateTips(bias)
@@ -139,8 +158,17 @@ export function BiasCard({
         text += ` Quick tips: ${tips.join('. ')}.`
       }
       
-      speak(text)
-      haptics.light()
+      // MOBILE FIX: Speak is now awaited to catch any errors
+      try {
+        await speak(text)
+      } catch (error) {
+        console.error('[BiasCard] Speech error:', error)
+        toast({
+          title: "Speech Error",
+          description: "Could not start speech. Try again or check Settings.",
+          variant: "destructive",
+        })
+      }
     }
   }
 
@@ -317,11 +345,27 @@ export function BiasCard({
         <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:pt-4">
           <Button
             onClick={handleSpeak}
+            onTouchStart={(e) => {
+              // MOBILE FIX: Ensure touch events work properly
+              // Prevent double-tap zoom on mobile
+              e.currentTarget.style.touchAction = 'manipulation'
+            }}
             variant="outline"
             className={`button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base ${
               isSpeaking ? "animate-pulse" : ""
             }`}
+            style={{ touchAction: 'manipulation' }}
             aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
+            title={
+              !isSupported 
+                ? "Speech not supported in this browser" 
+                : !isEnabled 
+                ? "Enable voice in Settings first" 
+                : isSpeaking 
+                ? "Stop reading" 
+                : "Read this bias aloud"
+            }
+            disabled={!isSupported || !isEnabled}
           >
             {isSpeaking ? (
               <>
@@ -335,11 +379,13 @@ export function BiasCard({
             ) : (
               <>
                 <Volume2
-                  className="mr-2 h-4 w-4 transition-transform duration-200"
+                  className={`mr-2 h-4 w-4 transition-transform duration-200 ${
+                    !isEnabled ? "opacity-50" : ""
+                  }`}
                   aria-hidden="true"
                 />
-                <span className="xs:inline hidden">Listen</span>
-                <span className="xs:hidden">Listen</span>
+                <span className="xs:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
+                <span className="xs:hidden">{!isEnabled ? "Off" : "Listen"}</span>
               </>
             )}
           </Button>

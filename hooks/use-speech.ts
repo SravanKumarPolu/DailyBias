@@ -19,6 +19,39 @@ export function useSpeech() {
     // Check if speech synthesis is supported
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       setIsSupported(true)
+      
+      // MOBILE FIX: Initialize speech synthesis on page load
+      // This helps with iOS Safari and mobile browsers
+      // Some browsers need the API to be "touched" early to work properly
+      const initSpeech = () => {
+        try {
+          // Get voices to initialize the API
+          const voices = window.speechSynthesis.getVoices()
+          if (voices.length === 0) {
+            // Voices not loaded yet, wait for event
+            window.speechSynthesis.addEventListener('voiceschanged', () => {
+              console.log('[Speech] Voices loaded:', window.speechSynthesis.getVoices().length)
+            }, { once: true })
+          } else {
+            console.log('[Speech] Speech API initialized with', voices.length, 'voices')
+          }
+        } catch (error) {
+          console.warn('[Speech] Failed to initialize:', error)
+        }
+      }
+      
+      // Initialize immediately
+      initSpeech()
+      
+      // Also try on first user interaction (important for mobile)
+      const initOnInteraction = () => {
+        initSpeech()
+        document.removeEventListener('touchstart', initOnInteraction)
+        document.removeEventListener('click', initOnInteraction)
+      }
+      
+      document.addEventListener('touchstart', initOnInteraction, { once: true, passive: true })
+      document.addEventListener('click', initOnInteraction, { once: true })
     }
 
     // Cleanup on unmount
@@ -298,16 +331,31 @@ export function useSpeech() {
       }
 
       try {
-        // Cancel any ongoing speech
-        window.speechSynthesis.cancel()
+        // MOBILE FIX: Cancel any ongoing speech first
+        // This is crucial for mobile browsers, especially iOS
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel()
+          // Add a small delay to ensure cancellation completes on mobile
+          await new Promise(resolve => setTimeout(resolve, 100))
+        }
+        
         utteranceQueueRef.current = []
         currentChunkIndexRef.current = 0
 
-        // Get voices
+        // Get voices with mobile-specific handling
         const voices = await getVoices()
 
         if (voices.length === 0) {
-          console.warn("[Speech] No voices available")
+          console.warn("[Speech] No voices available - may need user interaction on mobile")
+          // MOBILE FIX: Try to initialize speech synthesis with empty utterance
+          // This helps "warm up" the API on iOS
+          try {
+            const warmup = new SpeechSynthesisUtterance("")
+            window.speechSynthesis.speak(warmup)
+            window.speechSynthesis.cancel()
+          } catch (e) {
+            console.log("[Speech] Warmup failed, continuing anyway")
+          }
           return
         }
 
