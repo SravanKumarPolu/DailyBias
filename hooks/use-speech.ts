@@ -20,6 +20,24 @@ export function useSpeech() {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       setIsSupported(true)
       
+      // Check if we're in an in-app browser
+      const userAgent = navigator.userAgent.toLowerCase()
+      const isInAppBrowser = 
+        userAgent.includes('telegram') ||
+        userAgent.includes('whatsapp') ||
+        userAgent.includes('fbav') ||
+        userAgent.includes('fban') ||
+        userAgent.includes('instagram') ||
+        userAgent.includes('twitterandroid') ||
+        userAgent.includes('twitterios') ||
+        userAgent.includes('linkedinapp') ||
+        (userAgent.includes('wv') && !userAgent.includes('chrome')) ||
+        (userAgent.includes('webkit') && !userAgent.includes('safari') && !userAgent.includes('chrome'))
+      
+      if (isInAppBrowser) {
+        console.log('[Speech] Detected in-app browser - speech may not work properly')
+      }
+      
       // MOBILE FIX: Initialize speech synthesis on page load
       // This helps with iOS Safari and mobile browsers
       // Some browsers need the API to be "touched" early to work properly

@@ -103,11 +103,31 @@ export function BiasCard({
 
   const handleSpeak = async () => {
     if (!isSupported) {
-      toast({
-        title: "Not Supported",
-        description: "Your browser doesn't support text-to-speech functionality.",
-        variant: "destructive",
-      })
+      // Check if we're in an in-app browser
+      const userAgent = navigator.userAgent.toLowerCase()
+      const isInAppBrowser = 
+        userAgent.includes('telegram') ||
+        userAgent.includes('whatsapp') ||
+        userAgent.includes('fbav') ||
+        userAgent.includes('fban') ||
+        userAgent.includes('instagram') ||
+        userAgent.includes('twitterandroid') ||
+        userAgent.includes('twitterios') ||
+        userAgent.includes('linkedinapp')
+      
+      if (isInAppBrowser) {
+        toast({
+          title: "Open in Browser",
+          description: "Voice reading works better in Chrome or Safari. Tap the banner above to open in your browser.",
+          duration: 5000,
+        })
+      } else {
+        toast({
+          title: "Not Supported",
+          description: "Your browser doesn't support text-to-speech functionality.",
+          variant: "destructive",
+        })
+      }
       return
     }
 

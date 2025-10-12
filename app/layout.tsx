@@ -5,6 +5,7 @@ import "./globals.css"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Toaster } from "@/components/ui/toaster"
 import { NetworkStatus } from "@/components/network-status"
+import { TelegramRedirectBanner } from "@/components/telegram-redirect-banner"
 import { AppProvider } from "@/contexts/app-context"
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
 
@@ -150,6 +151,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <AppProvider>
             <ServiceWorkerRegistration />
             <NetworkStatus />
+            <TelegramRedirectBanner />
             {children}
             <Toaster />
           </AppProvider>
