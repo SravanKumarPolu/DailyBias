@@ -124,7 +124,7 @@ export function BiasCard({
     } else {
       // Generate examples and tips
       const examples = generateExamples(bias)
-      const tips = generateTips()
+      const tips = generateTips(bias)
       
       // Build comprehensive text including examples and tips
       let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
