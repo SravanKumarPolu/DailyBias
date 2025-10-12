@@ -126,7 +126,7 @@ export default function AllBiasesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={42} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div>
@@ -212,7 +212,7 @@ export default function AllBiasesPage() {
 
           {/* Biases grid */}
           {biasesLoading ? (
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2" role="status" aria-live="polite" aria-busy="true" aria-label="Loading biases">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="glass space-y-3 rounded-xl p-4 sm:rounded-2xl sm:p-6">
                   <Skeleton className="h-5 w-16 sm:h-6 sm:w-20" />

@@ -85,18 +85,18 @@ export function DailyHeader({
 
   return (
     <header className="mx-auto w-full max-w-2xl px-3 py-3 sm:px-4 sm:py-4 md:py-6">
-      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-spacing-xs sm:gap-spacing-sm">
         <div className="min-w-0 flex-1">
           <Link href="/" className="group inline-block cursor-pointer">
-            <h1 className="group-hover:text-primary inline-block truncate text-lg font-bold transition-all duration-200 group-hover:scale-105 sm:text-xl md:text-2xl">
+            <h1 className="group-hover:text-primary inline-block truncate text-lg font-bold transition-all duration-fast group-hover:scale-105 sm:text-xl md:text-2xl">
               Daily Bias
             </h1>
           </Link>
-          <p className="text-muted-foreground truncate text-xs transition-colors duration-200 sm:text-sm">
+          <p className="text-muted-foreground truncate text-xs transition-colors duration-fast sm:text-sm">
             {today}
           </p>
         </div>
-        <div className="flex shrink-0 gap-1 sm:gap-2">
+        <div className="flex shrink-0 gap-spacing-xs sm:gap-spacing-sm">
           {voiceCommandsSupported && (
             <Button
               variant="ghost"
@@ -107,7 +107,7 @@ export function DailyHeader({
                   ? "Voice commands active - Click to stop"
                   : "Click to enable voice commands"
               }
-              className={`touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10 ${
+              className={`touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-fast sm:h-10 sm:w-10 ${
                 isVoiceListening ? "animate-pulse" : ""
               }`}
               title={
@@ -118,12 +118,12 @@ export function DailyHeader({
             >
               {isVoiceListening ? (
                 <Mic
-                  className="h-4 w-4 text-green-500 transition-all duration-200 sm:h-5 sm:w-5"
+                  className="h-4 w-4 text-green-500 transition-all duration-fast sm:h-5 sm:w-5"
                   aria-hidden="true"
                 />
               ) : (
                 <MicOff
-                  className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
+                  className="h-4 w-4 transition-all duration-fast sm:h-5 sm:w-5"
                   aria-hidden="true"
                 />
               )}
@@ -135,9 +135,9 @@ export function DailyHeader({
             onClick={toggleTheme}
             aria-label={themeDisplay.label}
             title={themeDisplay.label}
-            className="touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
+            className="touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-fast sm:h-10 sm:w-10"
           >
-            <span className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5">
+            <span className="h-4 w-4 transition-all duration-fast sm:h-5 sm:w-5">
               {themeDisplay.icon}
             </span>
           </Button>
@@ -146,10 +146,10 @@ export function DailyHeader({
               variant="ghost"
               size="icon"
               aria-label="Open settings"
-              className="touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
+              className="touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-fast sm:h-10 sm:w-10"
             >
               <Bell
-                className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
+                className="h-4 w-4 transition-all duration-fast sm:h-5 sm:w-5"
                 aria-hidden="true"
               />
             </Button>

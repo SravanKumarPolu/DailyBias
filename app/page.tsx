@@ -178,11 +178,12 @@ export default function HomePage() {
       />
 
       <main
+        id="main-content"
         className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-4 sm:py-6 md:py-8"
         aria-label="Daily cognitive bias"
       >
         {loading || !dailyBias ? (
-          <div className="space-y-4 sm:space-y-6" role="status" aria-label="Loading daily bias">
+          <div className="space-y-4 sm:space-y-6" role="status" aria-live="polite" aria-busy="true" aria-label="Loading daily bias">
             {/* Stats grid skeleton */}
             <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-3">
               {[1, 2, 3, 4].map((i) => (

@@ -137,7 +137,7 @@ const config = {
         'smooth-out': 'cubic-bezier(0, 0, 0.2, 1)',
       },
 
-      // Animation durations
+      // Animation durations (standardized)
       transitionDuration: {
         '0': '0ms',
         '75': '75ms',
@@ -149,6 +149,13 @@ const config = {
         '500': '500ms',
         '700': '700ms',
         '1000': '1000ms',
+        
+        // Semantic animation duration tokens
+        'instant': '0ms',       // Instant (no animation)
+        'fast': '150ms',        // Fast interactions (hover, focus)
+        'normal': '250ms',      // Normal transitions (default)
+        'slow': '400ms',        // Slow, noticeable animations
+        'slower': '600ms',      // Very slow, dramatic animations
       },
 
       // Custom keyframes
@@ -226,11 +233,27 @@ const config = {
 
       // Spacing scale (extended for more granular control)
       spacing: {
+        // Extended numeric scale
         '18': '4.5rem',
         '88': '22rem',
         '112': '28rem',
         '128': '32rem',
         '144': '36rem',
+        
+        // Semantic spacing tokens for consistency
+        'spacing-xs': '0.5rem',    // 8px - Tight spacing
+        'spacing-sm': '0.75rem',   // 12px - Small spacing
+        'spacing-md': '1rem',      // 16px - Medium spacing (default)
+        'spacing-lg': '1.5rem',    // 24px - Large spacing
+        'spacing-xl': '2rem',      // 32px - Extra large spacing
+        'spacing-2xl': '3rem',     // 48px - 2x large spacing
+        'spacing-3xl': '4rem',     // 64px - 3x large spacing
+        
+        // Component-specific spacing
+        'gap-card': '1rem',        // 16px - Gap between cards
+        'gap-section': '1.5rem',   // 24px - Gap between sections
+        'padding-card': '1.5rem',  // 24px - Card padding
+        'padding-page': '1rem',    // 16px - Page padding (mobile)
       },
 
       // Z-index scale for layering

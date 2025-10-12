@@ -62,7 +62,7 @@ export default function FavoritesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={123} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div className="flex items-start justify-between gap-3 sm:gap-4">
@@ -96,7 +96,7 @@ export default function FavoritesPage() {
 
           {/* Favorites list */}
           {loading ? (
-            <div className="glass animate-pulse rounded-xl p-8 text-center sm:rounded-2xl sm:p-12" role="status" aria-label="Loading favorites">
+            <div className="glass animate-pulse rounded-xl p-8 text-center sm:rounded-2xl sm:p-12" role="status" aria-live="polite" aria-busy="true" aria-label="Loading favorites">
               <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-muted/50"></div>
               <p className="text-muted-foreground text-sm sm:text-base">Loading favorites...</p>
               <span className="sr-only">Loading your saved biases...</span>

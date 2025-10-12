@@ -92,7 +92,7 @@ export default function BiasDetailPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={bias.id.length} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-2xl px-4 py-8">
+      <main id="main-content" className="mx-auto w-full max-w-2xl px-4 py-8">
         <Button variant="ghost" onClick={() => router.back()} className="mb-6 cursor-pointer">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back

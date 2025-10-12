@@ -29,7 +29,7 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="hover:bg-accent focus:ring-ring touch-target button-press relative flex cursor-pointer flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 transition-all duration-300 hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 sm:gap-1 sm:px-4 sm:py-2"
+                  className="hover:bg-accent focus:ring-ring touch-target button-press relative flex cursor-pointer flex-col items-center gap-spacing-xs rounded-xl px-2 py-1.5 transition-all duration-normal hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 sm:gap-spacing-sm sm:px-4 sm:py-2"
                   aria-label={`${item.label} page`}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -57,14 +57,14 @@ export function Navigation() {
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   >
                     <Icon
-                      className={`h-5 w-5 transition-colors duration-200 sm:h-6 sm:w-6 ${
+                      className={`h-5 w-5 transition-colors duration-fast sm:h-6 sm:w-6 ${
                         isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                       }`}
                       aria-hidden="true"
                     />
                   </motion.div>
                   <span
-                    className={`relative z-10 text-[10px] transition-all duration-200 sm:text-xs ${
+                    className={`relative z-10 text-[10px] transition-all duration-fast sm:text-xs ${
                       isActive
                         ? "text-foreground font-medium"
                         : "text-muted-foreground hover:text-foreground"
