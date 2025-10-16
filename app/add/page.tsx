@@ -118,7 +118,13 @@ export default function AddBiasPage() {
   }
 
   const handleSubmit = async () => {
-    if (!validateForm()) return
+    console.log("[AddPage] Submitting bias form")
+    console.log("[AddPage] Form data:", { title, category, summary: summary.substring(0, 50) + "...", why: why.substring(0, 50) + "...", counter: counter.substring(0, 50) + "..." })
+    
+    if (!validateForm()) {
+      console.log("[AddPage] Form validation failed")
+      return
+    }
 
     const sanitizedTitle = sanitizeText(title, 100)
     const sanitizedSummary = sanitizeText(summary, 500)
@@ -142,26 +148,34 @@ export default function AddBiasPage() {
       updatedAt: Date.now(),
     }
 
+    console.log("[AddPage] Prepared bias data:", { ...biasData, summary: biasData.summary.substring(0, 50) + "...", why: biasData.why.substring(0, 50) + "...", counter: biasData.counter.substring(0, 50) + "..." })
+
     try {
       if (editingBias) {
+        console.log("[AddPage] Updating existing bias:", editingBias.id)
         await updateBias(biasData)
+        console.log("[AddPage] Successfully updated bias")
       } else {
+        console.log("[AddPage] Creating new bias")
         await addBias(biasData)
+        console.log("[AddPage] Successfully created bias")
       }
       setIsDialogOpen(false)
       resetForm()
     } catch (error) {
-      console.error("[DailyBias] Failed to save bias:", error)
+      console.error("[AddPage] Failed to save bias:", error)
       setErrors({ submit: "Failed to save bias. Please try again." })
     }
   }
 
   const handleDelete = async (id: string) => {
+    console.log("[AddPage] Deleting bias:", id)
     try {
       await deleteBias(id)
       setDeleteConfirmId(null)
+      console.log("[AddPage] Successfully deleted bias")
     } catch (error) {
-      console.error("[DailyBias] Failed to delete bias:", error)
+      console.error("[AddPage] Failed to delete bias:", error)
     }
   }
 
@@ -233,7 +247,7 @@ export default function AddBiasPage() {
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3 sm:gap-4">
                       <div className="min-w-0 flex-1">
-                        <Badge variant="secondary" className="mb-2">
+                        <Badge variant="secondary" className="mb-2 capitalize">
                           {bias.category}
                         </Badge>
                         <h3 className="text-base font-semibold text-balance sm:text-lg">{bias.title}</h3>
@@ -313,7 +327,7 @@ export default function AddBiasPage() {
                 <SelectContent>
                   {categories.map((cat) => (
                     <SelectItem key={cat} value={cat}>
-                      {cat}
+                      <span className="capitalize">{cat}</span>
                     </SelectItem>
                   ))}
                 </SelectContent>

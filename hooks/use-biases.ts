@@ -14,12 +14,17 @@ export function useBiases() {
 
   const loadBiases = useCallback(async () => {
     try {
+      console.log("[BiasesHook] Loading user biases...")
       setError(null)
       const userBiasesData = await getUserBiases()
+      console.log("[BiasesHook] Loaded user biases:", userBiasesData.length, userBiasesData.map(b => b.title))
       setUserBiases(userBiasesData)
-      setAllBiases(getAllBiases(userBiasesData))
+      const allBiasesData = getAllBiases(userBiasesData)
+      console.log("[BiasesHook] Total biases (core + user):", allBiasesData.length)
+      setAllBiases(allBiasesData)
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to load biases"
+      console.error("[BiasesHook] Error loading biases:", error)
       setError(message)
       toast({
         title: "Error",
@@ -38,7 +43,9 @@ export function useBiases() {
   const addBias = useCallback(
     async (bias: Bias) => {
       try {
+        console.log("[BiasesHook] Adding bias:", bias.title)
         await addUserBias(bias)
+        console.log("[BiasesHook] Successfully added bias, reloading...")
         await loadBiases()
         toast({
           title: "Success",
@@ -46,6 +53,7 @@ export function useBiases() {
         })
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to add bias"
+        console.error("[BiasesHook] Error adding bias:", error)
         toast({
           title: "Error",
           description: message,
@@ -60,7 +68,9 @@ export function useBiases() {
   const updateBias = useCallback(
     async (bias: Bias) => {
       try {
+        console.log("[BiasesHook] Updating bias:", bias.title)
         await updateUserBias(bias)
+        console.log("[BiasesHook] Successfully updated bias, reloading...")
         await loadBiases()
         toast({
           title: "Success",
@@ -68,6 +78,7 @@ export function useBiases() {
         })
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to update bias"
+        console.error("[BiasesHook] Error updating bias:", error)
         toast({
           title: "Error",
           description: message,
@@ -82,7 +93,9 @@ export function useBiases() {
   const deleteBias = useCallback(
     async (id: string) => {
       try {
+        console.log("[BiasesHook] Deleting bias:", id)
         await deleteUserBias(id)
+        console.log("[BiasesHook] Successfully deleted bias, reloading...")
         await loadBiases()
         toast({
           title: "Success",
@@ -90,6 +103,7 @@ export function useBiases() {
         })
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to delete bias"
+        console.error("[BiasesHook] Error deleting bias:", error)
         toast({
           title: "Error",
           description: message,
