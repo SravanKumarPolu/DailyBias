@@ -204,20 +204,35 @@ export default function SettingsPage() {
   useEffect(() => {
     setLocalVoiceRate(settings.voiceRate || 0.9)
     setLocalVoicePitch(settings.voicePitch || 1.0)
-  }, [settings.voiceRate, settings.voicePitch])
+    
+    // Update timezone info when settings change
+    if (settings.timezone) {
+      const timezoneInfo = detectTimezone()
+      setCurrentTimezoneInfo(timezoneInfo)
+    }
+  }, [settings.voiceRate, settings.voicePitch, settings.timezone])
 
   const handleExport = async () => {
     try {
       const data = await exportAllData()
+      if (!data || Object.keys(data).length === 0) {
+        alert("No data to export.")
+        return
+      }
+      
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
       a.download = `bias-daily-backup-${new Date().toISOString().slice(0, 10)}.json`
+      document.body.appendChild(a)
       a.click()
+      document.body.removeChild(a)
       URL.revokeObjectURL(url)
+      
       setExportSuccess(true)
       setTimeout(() => setExportSuccess(false), 3000)
+      haptics.success()
     } catch (error) {
       console.error("[DailyBias] Export failed:", error)
       alert("Failed to export data. Please try again.")
@@ -228,20 +243,39 @@ export default function SettingsPage() {
     const file = event.target.files?.[0]
     if (!file) return
 
+    // Validate file type
+    if (!file.name.toLowerCase().endsWith('.json')) {
+      alert('Please select a valid JSON file.')
+      event.target.value = ""
+      return
+    }
+
     setImporting(true)
     try {
       const text = await file.text()
       const data = JSON.parse(text)
+      
+      // Validate data structure
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid data format')
+      }
+      
       await importAllData(data)
       await refresh()
       setImportSuccess(true)
+      haptics.success()
+      
       setTimeout(() => {
         setImportSuccess(false)
         router.refresh()
       }, 2000)
     } catch (error) {
       console.error("[DailyBias] Import failed:", error)
-      alert("Failed to import data. Please check the file format and try again.")
+      if (error instanceof SyntaxError) {
+        alert("Invalid JSON file. Please check the file format and try again.")
+      } else {
+        alert("Failed to import data. Please check the file format and try again.")
+      }
     } finally {
       setImporting(false)
       event.target.value = ""
@@ -258,10 +292,16 @@ export default function SettingsPage() {
       const permission = await Notification.requestPermission()
       if (permission === "granted") {
         await saveSetting("dailyReminder", true)
-        new Notification("Bias Daily", {
-          body: "Daily reminders enabled! You'll be notified when a new bias is available.",
-          icon: "/icon-192.jpg",
-        })
+        
+        // Show test notification
+        if (Notification.permission === "granted") {
+          new Notification("Bias Daily", {
+            body: "Daily reminders enabled! You'll be notified when a new bias is available.",
+            icon: "/icon-192.jpg",
+          })
+        }
+        
+        haptics.success()
         return true
       } else {
         await saveSetting("dailyReminder", false)
@@ -275,6 +315,7 @@ export default function SettingsPage() {
     } catch (error) {
       console.error("[DailyBias] Notification permission error:", error)
       await saveSetting("dailyReminder", false)
+      alert("Failed to request notification permission. Please try again.")
       return false
     }
   }
@@ -303,10 +344,6 @@ export default function SettingsPage() {
     // Provide haptic feedback
     haptics.success()
 
-    // Log for debugging
-    console.log(
-      `[DailyBias] Voice settings reset to defaults: rate=${defaultRate}x, pitch=${defaultPitch}x`
-    )
   }
 
   const handleVoiceRateChange = (value: number) => {
@@ -335,36 +372,42 @@ export default function SettingsPage() {
 
   const handleAutoDetectToggle = async (enabled: boolean) => {
     try {
-      console.log('[DailyBias] Toggling timezone auto-detect:', enabled)
-      console.log('[DailyBias] Current settings before toggle:', settings.timezoneAutoDetect)
-      
       // Save the setting immediately
       await saveSetting("timezoneAutoDetect", enabled)
-      console.log('[DailyBias] Setting saved successfully')
       
       if (enabled) {
         const detected = detectTimezone()
-        console.log('[DailyBias] Auto-detected timezone:', detected)
         await saveSetting("timezone", detected.timezone)
         setCurrentTimezoneInfo(detected)
-        console.log('[DailyBias] Timezone updated to:', detected.timezone)
       }
       
       haptics.selection()
-      console.log('[DailyBias] Toggle completed successfully')
     } catch (error) {
       console.error('[DailyBias] Error toggling auto-detect:', error)
+      // Show user-friendly error message
+      alert('Failed to update timezone settings. Please try again.')
     }
   }
 
   const handleTestVoice = async () => {
     try {
       setTestingVoice(true)
-      if (!speechSupported) return
+      if (!speechSupported) {
+        alert('Speech synthesis is not supported in this browser.')
+        setTestingVoice(false)
+        return
+      }
+      
       await ensureVoicesLoaded()
 
       // Use the saved settings value for the most up-to-date selection
       const selectedVoiceName = settings.voiceName || ""
+
+      if (!selectedVoiceName) {
+        alert('Please select a voice first.')
+        setTestingVoice(false)
+        return
+      }
 
       // Short sample that announces the voice name
       const voiceLabel = selectedVoiceName || "Voice"
@@ -380,8 +423,9 @@ export default function SettingsPage() {
       }, 2500)
 
       haptics.selection()
-    } catch {
-      // ignored
+    } catch (error) {
+      console.error('[DailyBias] Voice test failed:', error)
+      alert('Failed to test voice. Please try again.')
       setTestingVoice(false)
     }
   }
@@ -819,12 +863,6 @@ export default function SettingsPage() {
                   onCheckedChange={handleAutoDetectToggle}
                   className="cursor-pointer"
                 />
-              </div>
-              
-              {/* Debug info - remove after fixing */}
-              <div className="text-xs text-muted-foreground bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                Debug: timezoneAutoDetect = {String(settings.timezoneAutoDetect)} 
-                ({typeof settings.timezoneAutoDetect})
               </div>
 
               {settings.timezoneAutoDetect === true && (

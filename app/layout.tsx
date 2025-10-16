@@ -8,6 +8,7 @@ import { NetworkStatus } from "@/components/network-status"
 import { TelegramRedirectBanner } from "@/components/telegram-redirect-banner"
 import { AppProvider } from "@/contexts/app-context"
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
+import { SWUpdateToaster } from "@/components/sw-update-toaster"
 
 // Inter: Modern, highly legible sans-serif
 const inter = Inter({
@@ -150,6 +151,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ErrorBoundary>
           <AppProvider>
             <ServiceWorkerRegistration />
+            <SWUpdateToaster />
             <NetworkStatus />
             <TelegramRedirectBanner />
             {children}

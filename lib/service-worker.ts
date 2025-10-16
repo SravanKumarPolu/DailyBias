@@ -53,10 +53,10 @@ export function registerServiceWorker() {
 
           newWorker.addEventListener("statechange", () => {
             if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              // New service worker available - auto-activate and reload silently
-              console.log("[SW] New version available - activating")
+              // New service worker available - notify UI instead of auto-reload
+              console.log("[SW] New version available - notifying UI")
               try {
-                newWorker.postMessage({ type: "SKIP_WAITING" })
+                window.dispatchEvent(new CustomEvent("sw-update-available"))
               } catch {}
             }
           })
@@ -67,10 +67,10 @@ export function registerServiceWorker() {
       })
 
     // Handle controller change (new SW activated)
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-      console.log("[SW] Controller changed, reloading page")
-      window.location.reload()
-    })
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    console.log("[SW] Controller changed, reloading page")
+    window.location.reload()
+  })
   })
 }
 
