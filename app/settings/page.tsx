@@ -167,7 +167,9 @@ export default function SettingsPage() {
     if (englishVoices.length > 0) {
 
       // Smart voice selection: prioritize same voice across all platforms
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || 
+                       window.innerWidth <= 768 || 
+                       ('ontouchstart' in window)
       
       // Priority order for voice selection (same across all platforms)
       const voicePriority = [
@@ -209,6 +211,9 @@ export default function SettingsPage() {
       console.log("=== CURRENT VOICE STATUS ===")
       console.log("[Settings] Currently selected voice in settings:", settings.voiceName)
       console.log("[Settings] Best voice found:", bestVoice?.name)
+      console.log("[Settings] User agent:", navigator.userAgent)
+      console.log("[Settings] Screen width:", window.innerWidth)
+      console.log("[Settings] Has touch:", 'ontouchstart' in window)
       console.log("[Settings] Is mobile device:", isMobile)
       console.log("[Settings] Total voices available:", englishVoices.length)
       console.log("===========================")
@@ -880,7 +885,7 @@ export default function SettingsPage() {
                     <div className="flex items-center gap-2">
                       <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                         <div className="h-3 w-3 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                      </div>
+                </div>
                       <div>
                         <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
                         <div className="mt-1 h-3 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
@@ -910,8 +915,8 @@ export default function SettingsPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  
+              </div>
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -946,21 +951,21 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+              <div className="space-y-2">
                     <Label htmlFor="timezone-select">Select Timezone</Label>
-                    <select
-                      id="timezone-select"
-                      value={settings.timezone || currentTimezoneInfo.timezone}
-                      onChange={(e) => handleTimezoneChange(e.target.value)}
-                      className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
-                    >
-                      {availableTimezones.map((tz) => (
-                        <option key={tz.value} value={tz.value}>
-                          {tz.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <select
+                  id="timezone-select"
+                  value={settings.timezone || currentTimezoneInfo.timezone}
+                  onChange={(e) => handleTimezoneChange(e.target.value)}
+                  className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                >
+                  {availableTimezones.map((tz) => (
+                    <option key={tz.value} value={tz.value}>
+                      {tz.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
                   
                   <div className="space-y-2">
                     <Button

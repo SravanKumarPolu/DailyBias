@@ -291,7 +291,7 @@ export function useSpeech() {
           console.log("[Speech] ACTIVE VOICE:", selectedVoice.name)
           console.log("[Speech] Voice language:", selectedVoice.lang)
           console.log("[Speech] Voice is local:", selectedVoice.localService)
-          console.log("[Speech] Is mobile:", /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+          console.log("[Speech] Is mobile:", /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768 || ('ontouchstart' in window))
           console.log("=========================")
         } else {
           // Fallback language
