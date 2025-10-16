@@ -24,11 +24,10 @@ export function useSettings() {
       const settingsData = await getSettings()
       console.log('[Settings] Loaded settings:', settingsData)
       
-      // Enforce "Google US English" as the default voice for all users
-      if (!settingsData.voiceName || String(settingsData.voiceName).trim() === "" || settingsData.voiceName !== "Google US English") {
-        console.log('[Settings] Migrating to Google US English voice')
-        settingsData.voiceName = "Google US English"
-        await updateSettings(settingsData)
+      // Only set default if no voice is selected at all
+      if (!settingsData.voiceName || String(settingsData.voiceName).trim() === "") {
+        console.log('[Settings] No voice selected, will auto-select best available')
+        // Don't force a specific voice here - let the UI component handle smart selection
       }
 
       // Auto-detect timezone if enabled (now default behavior)

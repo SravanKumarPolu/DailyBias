@@ -165,34 +165,44 @@ export default function SettingsPage() {
 
     // Enhanced voice selection logic for mobile compatibility
     if (englishVoices.length > 0) {
-      const hasSelected = settings.voiceName
-        ? englishVoices.some(v => v.name === settings.voiceName)
-        : false
 
-      // Force "Google US English" as the default for all platforms
-      const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+      // Smart voice selection: prioritize same voice across all platforms
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      
+      // Priority order for voice selection (same across all platforms)
+      const voicePriority = [
+        "Google US English",
+        "Samantha", // High-quality voice available on both iOS and some Android
+        "Daniel",   // Common Android voice
+        "Alex",     // iOS voice
+        "Victoria", // iOS voice
+        "Karen"     // Android voice
+      ]
+      
       console.log("[Settings] Available English voices:", englishVoices.map(v => v.name))
       console.log("[Settings] Current settings voiceName:", settings.voiceName)
-      console.log("[Settings] Google US English found:", googleUS?.name)
+      console.log("[Settings] Is mobile:", isMobile)
       
-      if (googleUS && settings.voiceName !== googleUS.name) {
-        console.log("[Settings] Setting Google US English as default voice:", googleUS.name)
-        saveSetting("voiceName", googleUS.name)
-      } else if (!hasSelected) {
-        // Fallback if Google US English not available
-        const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
-        const defaultVoice = danielVoice || englishVoices[0]
-        
-        if (defaultVoice?.name && defaultVoice.name !== settings.voiceName) {
-          console.log("[Settings] Auto-selecting fallback voice:", defaultVoice.name)
-          saveSetting("voiceName", defaultVoice.name)
+      // Find the best available voice based on priority
+      let bestVoice = null
+      for (const priorityVoice of voicePriority) {
+        bestVoice = englishVoices.find((v) => v.name.toLowerCase().includes(priorityVoice.toLowerCase()))
+        if (bestVoice) {
+          console.log("[Settings] Found priority voice:", bestVoice.name)
+          break
         }
       }
       
-      // DEBUG: If Google US English is not available, log what voices are available
-      if (!googleUS) {
-        console.log("[Settings] WARNING: Google US English not found! Available voices:", englishVoices.map(v => v.name))
-        console.log("[Settings] This might be why mobile is showing a different voice")
+      // If no priority voice found, use the first English voice
+      if (!bestVoice && englishVoices.length > 0) {
+        bestVoice = englishVoices[0]
+        console.log("[Settings] Using first available voice:", bestVoice.name)
+      }
+      
+      // Set the best voice if it's different from current
+      if (bestVoice && settings.voiceName !== bestVoice.name) {
+        console.log("[Settings] Setting best available voice:", bestVoice.name)
+        saveSetting("voiceName", bestVoice.name)
       }
     }
   }
@@ -1067,3 +1077,4 @@ export default function SettingsPage() {
     </div>
   )
 }
+

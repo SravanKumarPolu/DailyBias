@@ -196,21 +196,25 @@ export function useSpeech() {
         }
       }
 
-      // 2. Prefer Google US English on platforms that expose it
-      selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes("google us english"))
-      if (selectedVoice) {
-        console.log("[Speech] Using Google US English as fallback:", selectedVoice.name)
-        return selectedVoice
-      } else {
-        console.log("[Speech] Google US English not found in available voices")
+      // 2. Use same priority logic as settings for consistency
+      const voicePriority = [
+        "Google US English",
+        "Samantha", // High-quality voice available on both iOS and some Android
+        "Daniel",   // Common Android voice
+        "Alex",     // iOS voice
+        "Victoria", // iOS voice
+        "Karen"     // Android voice
+      ]
+      
+      for (const priorityVoice of voicePriority) {
+        selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes(priorityVoice.toLowerCase()))
+        if (selectedVoice) {
+          console.log("[Speech] Using priority voice as fallback:", selectedVoice.name)
+          return selectedVoice
+        }
       }
-
-      // 3. If not found, try to find Daniel
-      selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes("daniel"))
-      if (selectedVoice) {
-        console.log("[Speech] Using Daniel voice as fallback:", selectedVoice.name)
-        return selectedVoice
-      }
+      
+      console.log("[Speech] No priority voices found, will use first available voice")
 
       // 4. Try to find a high-quality LOCAL English voice (avoid network voices)
       selectedVoice = voices.find(
