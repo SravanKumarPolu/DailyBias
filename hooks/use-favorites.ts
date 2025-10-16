@@ -16,11 +16,14 @@ export function useFavorites() {
 
   async function loadFavorites() {
     try {
+      console.log("[FavoritesHook] Loading favorites...")
       setError(null)
       const favs = await getFavorites()
+      console.log("[FavoritesHook] Loaded favorites:", favs.length, favs.map(f => f.biasId))
       setFavorites(favs)
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to load favorites"
+      console.error("[FavoritesHook] Error loading favorites:", error)
       setError(message)
       toast({
         title: "Error",
@@ -34,15 +37,23 @@ export function useFavorites() {
 
   async function toggleFavorite(biasId: string) {
     try {
+      console.log("[FavoritesHook] Toggling favorite for bias:", biasId)
       const isFav = await isFavorite(biasId)
+      console.log("[FavoritesHook] Current favorite status:", isFav)
+      
       if (isFav) {
+        console.log("[FavoritesHook] Removing favorite")
         await removeFavorite(biasId)
       } else {
+        console.log("[FavoritesHook] Adding favorite")
         await addFavorite(biasId)
       }
+      
+      console.log("[FavoritesHook] Reloading favorites after toggle")
       await loadFavorites()
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to toggle favorite"
+      console.error("[FavoritesHook] Error toggling favorite:", error)
       toast({
         title: "Error",
         description: message,

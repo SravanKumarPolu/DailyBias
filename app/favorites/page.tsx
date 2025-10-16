@@ -13,46 +13,117 @@ import Link from "next/link"
 import type { Bias } from "@/lib/types"
 
 export default function FavoritesPage() {
-  const { allBiases, biasesLoading, favorites, toggleFavorite, favoritesLoading, settings } =
-    useApp()
+  const { 
+    allBiases, 
+    biasesLoading, 
+    favorites, 
+    toggleFavorite, 
+    favoritesLoading, 
+    settings,
+    toggleMastered,
+    isMastered
+  } = useApp()
   const [favoriteBiases, setFavoriteBiases] = useState<Bias[]>([])
+  const [masteredStates, setMasteredStates] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
+    console.log("[FavoritesPage] Updating favorite biases")
+    console.log("[FavoritesPage] All biases:", allBiases.length)
+    console.log("[FavoritesPage] Favorites:", favorites.length)
+    
     if (allBiases.length > 0 && favorites.length > 0) {
       const favoriteIds = new Set(favorites.map((f) => f.biasId))
+      console.log("[FavoritesPage] Favorite IDs:", Array.from(favoriteIds))
+      
       const biases = allBiases.filter((bias) => favoriteIds.has(bias.id))
+      console.log("[FavoritesPage] Filtered biases:", biases.length)
+      
       // Sort by when they were added to favorites
       biases.sort((a, b) => {
         const aFav = favorites.find((f) => f.biasId === a.id)
         const bFav = favorites.find((f) => f.biasId === b.id)
         return (bFav?.addedAt || 0) - (aFav?.addedAt || 0)
       })
+      
+      console.log("[FavoritesPage] Sorted favorite biases:", biases.map(b => b.title))
       setFavoriteBiases(biases)
     } else {
+      console.log("[FavoritesPage] No favorites or biases available")
       setFavoriteBiases([])
     }
   }, [allBiases, favorites])
 
+  // Load mastered states for favorite biases
+  useEffect(() => {
+    const loadMasteredStates = async () => {
+      if (favoriteBiases.length > 0) {
+        console.log("[FavoritesPage] Loading mastered states for", favoriteBiases.length, "favorite biases")
+        const mastered: Record<string, boolean> = {}
+        
+        try {
+          await Promise.all(
+            favoriteBiases.map(async (bias) => {
+              mastered[bias.id] = await isMastered(bias.id)
+            })
+          )
+          setMasteredStates(mastered)
+          console.log("[FavoritesPage] Loaded mastered states:", Object.keys(mastered).length)
+        } catch (error) {
+          console.error("[FavoritesPage] Error loading mastered states:", error)
+        }
+      }
+    }
+    
+    loadMasteredStates()
+  }, [favoriteBiases, isMastered])
+
   const handleToggleFavorite = async (biasId: string) => {
-    await toggleFavorite(biasId)
+    console.log("[FavoritesPage] Toggling favorite for bias:", biasId)
+    try {
+      await toggleFavorite(biasId)
+      console.log("[FavoritesPage] Successfully toggled favorite")
+    } catch (error) {
+      console.error("[FavoritesPage] Error toggling favorite:", error)
+    }
+  }
+
+  const handleToggleMastered = async (biasId: string) => {
+    console.log("[FavoritesPage] Toggling mastered for bias:", biasId)
+    try {
+      const newState = await toggleMastered(biasId)
+      setMasteredStates(prev => ({ ...prev, [biasId]: newState }))
+      console.log("[FavoritesPage] Successfully toggled mastered:", newState)
+    } catch (error) {
+      console.error("[FavoritesPage] Error toggling mastered:", error)
+    }
   }
 
   const handleExport = () => {
-    const data = favoriteBiases.map((bias) => ({
-      title: bias.title,
-      category: bias.category,
-      summary: bias.summary,
-      why: bias.why,
-      counter: bias.counter,
-    }))
+    console.log("[FavoritesPage] Exporting favorites:", favoriteBiases.length)
+    
+    try {
+      const data = favoriteBiases.map((bias) => ({
+        title: bias.title,
+        category: bias.category,
+        summary: bias.summary,
+        why: bias.why,
+        counter: bias.counter,
+        source: bias.source,
+        addedAt: favorites.find(f => f.biasId === bias.id)?.addedAt || Date.now()
+      }))
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `bias-daily-favorites-${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(url)
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `bias-daily-favorites-${new Date().toISOString().slice(0, 10)}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      
+      console.log("[FavoritesPage] Export completed successfully")
+    } catch (error) {
+      console.error("[FavoritesPage] Export failed:", error)
+    }
   }
 
   const loading = biasesLoading || favoritesLoading
@@ -129,6 +200,8 @@ export default function FavoritesPage() {
                       variant="compact"
                       isFavorite={true}
                       onToggleFavorite={() => handleToggleFavorite(bias.id)}
+                      isMastered={masteredStates[bias.id]}
+                      onToggleMastered={() => handleToggleMastered(bias.id)}
                     />
                   </div>
                 </Link>
