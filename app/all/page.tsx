@@ -51,16 +51,23 @@ export default function AllBiasesPage() {
   // Load favorite and mastered states
   useEffect(() => {
     const loadStates = async () => {
+      console.log("[AllPage] Loading favorite and mastered states for", allBiases.length, "biases")
       const favs: Record<string, boolean> = {}
       const masts: Record<string, boolean> = {}
-      await Promise.all(
-        allBiases.map(async (bias) => {
-          favs[bias.id] = await isFavorite(bias.id)
-          masts[bias.id] = await isMastered(bias.id)
-        })
-      )
-      setFavStates(favs)
-      setMasteredStates(masts)
+      
+      try {
+        await Promise.all(
+          allBiases.map(async (bias) => {
+            favs[bias.id] = await isFavorite(bias.id)
+            masts[bias.id] = await isMastered(bias.id)
+          })
+        )
+        setFavStates(favs)
+        setMasteredStates(masts)
+        console.log("[AllPage] Loaded states for", Object.keys(favs).length, "biases")
+      } catch (error) {
+        console.error("[AllPage] Error loading states:", error)
+      }
     }
     if (allBiases.length > 0) {
       loadStates()
@@ -74,17 +81,27 @@ export default function AllBiasesPage() {
   }, [allBiases, progressList, progressLoading])
 
   const searchResults = useMemo(() => {
+    console.log("[AllPage] Calculating search results")
+    console.log("[AllPage] Query:", debouncedSearchQuery)
+    console.log("[AllPage] Selected categories:", selectedCategories)
+    console.log("[AllPage] Available biases:", allBiases.length)
+    
     const sanitizedQuery = validateSearchQuery(debouncedSearchQuery)
+    console.log("[AllPage] Sanitized query:", sanitizedQuery)
 
     // Use enhanced search function
     const results = searchBiases(allBiases, sanitizedQuery)
+    console.log("[AllPage] Search results before category filter:", results.length)
 
     // Filter by category
-    return results.filter((result) => {
+    const filteredResults = results.filter((result) => {
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(result.bias.category)
       return matchesCategory
     })
+    
+    console.log("[AllPage] Final filtered results:", filteredResults.length)
+    return filteredResults
   }, [allBiases, debouncedSearchQuery, selectedCategories])
 
   const toggleCategory = useCallback((category: BiasCategory) => {
@@ -189,7 +206,7 @@ export default function AllBiasesPage() {
                     checked={selectedCategories.includes(category)}
                     onCheckedChange={() => toggleCategory(category)}
                   >
-                    {category}
+                    <span className="capitalize">{category}</span>
                   </DropdownMenuCheckboxItem>
                 ))}
               </DropdownMenuContent>
