@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useSettings } from "@/hooks/use-settings"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { getTimezoneAwareDateString } from "@/lib/timezone-utils"
 
 interface DailyHeaderProps {
   isVoiceListening?: boolean
@@ -23,14 +24,8 @@ export function DailyHeader({
 
   useEffect(() => {
     setMounted(true)
-    setToday(
-      new Date().toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    )
+    // Use timezone-aware date formatting
+    setToday(getTimezoneAwareDateString())
   }, [])
 
   useEffect(() => {

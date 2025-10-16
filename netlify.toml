@@ -10,11 +10,7 @@
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
 
-# Redirect rules for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Next.js plugin handles all routing; remove SPA catch-all redirect that breaks /_next assets
 
 # Headers for PWA support
 [[headers]]

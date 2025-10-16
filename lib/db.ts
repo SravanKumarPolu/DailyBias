@@ -1,5 +1,6 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
 import type { Bias, UserSettings, FavoriteItem, BiasProgress, StreakData } from "./types"
+import { getYesterdayDateString } from "./timezone-utils"
 
 interface BiasDB extends DBSchema {
   userBiases: {
@@ -145,7 +146,7 @@ export async function getSettings(): Promise<UserSettings> {
       voiceEnabled: true,
       voiceRate: 0.9, // Default to 0.9x for better comprehension
       voicePitch: 1.0,
-      voiceName: "Daniel", // Default to Daniel voice
+      voiceName: "Google US English", // Default to Google US English voice
     }
 
     // Merge with defaults to handle migration of new fields
@@ -261,9 +262,8 @@ export async function updateStreak(todayDate: string): Promise<StreakData> {
       return existing
     }
 
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayStr = yesterday.toISOString().split("T")[0]
+    // Use local timezone for yesterday calculation
+    const yesterdayStr = getYesterdayDateString()
 
     let newStreak: StreakData
 

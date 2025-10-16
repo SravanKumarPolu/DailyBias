@@ -23,6 +23,8 @@ export interface UserSettings {
   voiceRate: number
   voicePitch: number
   voiceName?: string
+  timezone?: string // User's preferred timezone (auto-detected if not set)
+  timezoneAutoDetect?: boolean // Whether to auto-detect timezone on app load
 }
 
 export interface FavoriteItem {

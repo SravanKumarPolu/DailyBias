@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import type { BiasProgress, ProgressStats } from "@/lib/types"
 import { getAllProgress, markBiasAsViewed, toggleBiasMastered, getProgress } from "@/lib/db"
 import { toast } from "@/hooks/use-toast"
+import { getLocalDateString, getDaysAgoDateString } from "@/lib/timezone-utils"
 
 function calculateStreak(progressList: BiasProgress[]): { current: number; longest: number } {
   if (progressList.length === 0) return { current: 0, longest: 0 }
@@ -11,25 +12,22 @@ function calculateStreak(progressList: BiasProgress[]): { current: number; longe
   // Sort by viewed date descending
   const sorted = [...progressList].sort((a, b) => b.viewedAt - a.viewedAt)
 
-  // Get unique dates (YYYY-MM-DD format)
+  // Get unique dates (YYYY-MM-DD format) using local timezone
   const uniqueDates = Array.from(
     new Set(
       sorted.map((p) => {
         const date = new Date(p.viewedAt)
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+        return getLocalDateString(date)
       })
     )
   )
 
-  // Calculate current streak
+  // Calculate current streak using local timezone
   let currentStreak = 0
-  const today = new Date()
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
+  const todayStr = getLocalDateString()
 
   for (let i = 0; i < uniqueDates.length; i++) {
-    const expectedDate = new Date(today)
-    expectedDate.setDate(today.getDate() - i)
-    const expectedStr = `${expectedDate.getFullYear()}-${String(expectedDate.getMonth() + 1).padStart(2, "0")}-${String(expectedDate.getDate()).padStart(2, "0")}`
+    const expectedStr = getDaysAgoDateString(i)
 
     if (uniqueDates[i] === expectedStr) {
       currentStreak++

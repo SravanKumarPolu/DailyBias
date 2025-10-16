@@ -16,6 +16,9 @@ import {
   Trophy,
   Eye,
   Star,
+  Globe,
+  Check,
+  Search,
 } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
@@ -34,6 +37,8 @@ import { exportAllData, importAllData } from "@/lib/db"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { haptics } from "@/lib/haptics"
+import { getCommonTimezones, detectTimezone, isValidTimezone } from "@/lib/timezone-utils"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 export default function SettingsPage() {
   const { settings, saveSetting, refresh } = useSettings()
@@ -47,6 +52,10 @@ export default function SettingsPage() {
   const [localVoicePitch, setLocalVoicePitch] = useState(settings.voicePitch || 1.0)
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
   const [testingVoice, setTestingVoice] = useState(false)
+  const [availableTimezones] = useState(getCommonTimezones())
+  const [currentTimezoneInfo, setCurrentTimezoneInfo] = useState(detectTimezone())
+  const [voicePopoverOpen, setVoicePopoverOpen] = useState(false)
+  const [voiceSearch, setVoiceSearch] = useState("")
 
   // Basic platform detection for contextual hints
   const isiOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/i.test(navigator.userAgent)
@@ -150,12 +159,21 @@ export default function SettingsPage() {
 
     setAvailableVoices(englishVoices)
 
-    // Auto-select Daniel as default voice, or fallback to best available
-    if (!settings.voiceName && englishVoices.length > 0) {
-      // Prefer Daniel voice as default
-      const danielVoice = englishVoices.find((voice) => voice.name.toLowerCase().includes("daniel"))
-      const defaultVoice = danielVoice || englishVoices[0]
-      saveSetting("voiceName", defaultVoice.name)
+    // Ensure we always point to a valid non-system voice option
+    if (englishVoices.length > 0) {
+      const hasSelected = settings.voiceName
+        ? englishVoices.some(v => v.name === settings.voiceName)
+        : false
+
+      if (!hasSelected) {
+        // Prefer Google US English, then Daniel, else first available
+        const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+        const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
+        const defaultVoice = googleUS || danielVoice || englishVoices[0]
+        if (defaultVoice?.name && defaultVoice.name !== settings.voiceName) {
+          saveSetting("voiceName", defaultVoice.name)
+        }
+      }
     }
   }
 
@@ -307,18 +325,49 @@ export default function SettingsPage() {
     saveSetting("voicePitch", localVoicePitch)
   }
 
+  const handleTimezoneChange = (timezone: string) => {
+    if (isValidTimezone(timezone)) {
+      saveSetting("timezone", timezone)
+      setCurrentTimezoneInfo(detectTimezone())
+      haptics.selection()
+    }
+  }
+
+  const handleAutoDetectToggle = async (enabled: boolean) => {
+    try {
+      console.log('[DailyBias] Toggling timezone auto-detect:', enabled)
+      console.log('[DailyBias] Current settings before toggle:', settings.timezoneAutoDetect)
+      
+      // Save the setting immediately
+      await saveSetting("timezoneAutoDetect", enabled)
+      console.log('[DailyBias] Setting saved successfully')
+      
+      if (enabled) {
+        const detected = detectTimezone()
+        console.log('[DailyBias] Auto-detected timezone:', detected)
+        await saveSetting("timezone", detected.timezone)
+        setCurrentTimezoneInfo(detected)
+        console.log('[DailyBias] Timezone updated to:', detected.timezone)
+      }
+      
+      haptics.selection()
+      console.log('[DailyBias] Toggle completed successfully')
+    } catch (error) {
+      console.error('[DailyBias] Error toggling auto-detect:', error)
+    }
+  }
+
   const handleTestVoice = async () => {
     try {
       setTestingVoice(true)
       if (!speechSupported) return
       await ensureVoicesLoaded()
 
-      // Get the currently selected voice from the DOM (most up-to-date)
-      const selectElement = document.getElementById("voice-select") as HTMLSelectElement
-      const selectedVoiceName = selectElement?.value || ""
+      // Use the saved settings value for the most up-to-date selection
+      const selectedVoiceName = settings.voiceName || ""
 
       // Short sample that announces the voice name
-      const voiceLabel = selectedVoiceName || "System Default"
+      const voiceLabel = selectedVoiceName || "Voice"
       const sample = `Hello. This is ${voiceLabel}.`
 
       // Pass the selected voice name explicitly to bypass settings cache
@@ -336,6 +385,28 @@ export default function SettingsPage() {
       setTestingVoice(false)
     }
   }
+
+  const openVoicePicker = async () => {
+    try {
+      setVoicePopoverOpen(true)
+      if (speechSupported) {
+        await ensureVoicesLoaded()
+      }
+      fetchAndFilterVoices()
+      setVoiceSearch("")
+    } catch {
+      // ignore
+    }
+  }
+
+  const filteredVoices = availableVoices.filter((v) => {
+    const q = voiceSearch.trim().toLowerCase()
+    if (!q) return true
+    return (
+      v.name.toLowerCase().includes(q) ||
+      (v.lang?.toLowerCase().includes(q) ?? false)
+    )
+  })
 
   return (
     <div className="min-h-screen pb-20 sm:pb-24">
@@ -527,20 +598,74 @@ export default function SettingsPage() {
               <>
                 <div className="space-y-2">
                   <Label htmlFor="voice-select">Voice</Label>
-                  <select
-                    id="voice-select"
-                    value={settings.voiceName || ""}
-                    onChange={(e) => saveSetting("voiceName", e.target.value)}
-                    className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
-                    onFocus={handleRefreshVoices}
-                  >
-                    <option value="">System Default</option>
-                    {availableVoices.map((voice, index) => (
-                      <option key={`${voice.name}-${voice.voiceURI || index}`} value={voice.name}>
-                        {voice.name} {voice.localService ? "⭐" : ""}
-                      </option>
-                    ))}
-                  </select>
+                  {/* Voice picker popover */}
+                  <Popover open={voicePopoverOpen} onOpenChange={setVoicePopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id="voice-select"
+                        variant="outline"
+                        className="w-full justify-between bg-transparent"
+                        onClick={openVoicePicker}
+                      >
+                        <span className="truncate">{settings.voiceName || "Select voice"}</span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-0" align="start">
+                      <div className="border-b p-4">
+                        <h4 className="font-medium">Select a voice</h4>
+                        <div className="relative mt-3">
+                          <input
+                            type="text"
+                            inputMode="search"
+                            placeholder="Search voices by name or language"
+                            value={voiceSearch}
+                            onChange={(e) => setVoiceSearch(e.target.value)}
+                            className="bg-secondary text-foreground placeholder:text-muted-foreground w-full rounded-md border px-9 py-2"
+                          />
+                          <Search className="text-muted-foreground pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2" />
+                        </div>
+                      </div>
+                      <div className="max-h-64 overflow-auto">
+                        {filteredVoices.map((voice, index) => {
+                          const selected = settings.voiceName === voice.name
+                          return (
+                            <button
+                              key={`${voice.name}-${voice.voiceURI || index}`}
+                              className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-ring ${selected ? 'bg-accent/60' : ''}`}
+                              onClick={() => {
+                                saveSetting('voiceName', voice.name)
+                                setVoicePopoverOpen(false)
+                                haptics.selection()
+                              }}
+                            >
+                              <div className="min-w-0 grow">
+                                <div className="truncate font-medium">{voice.name}</div>
+                                <div className="text-muted-foreground mt-0.5 text-xs">
+                                  {voice.lang || 'en'}
+                                </div>
+                              </div>
+                              <div className="flex shrink-0 items-center gap-2">
+                                {voice.localService && (
+                                  <span className="text-xs">⭐</span>
+                                )}
+                                {selected && <Check className="h-4 w-4" />}
+                              </div>
+                            </button>
+                          )
+                        })}
+                        {filteredVoices.length === 0 && (
+                          <div className="p-4 text-center text-muted-foreground text-sm">
+                            No voices found
+                          </div>
+                        )}
+                        <div className="border-t p-3">
+                          <Button size="sm" variant="ghost" className="w-full" onClick={handleRefreshVoices}>
+                            Refresh voices
+                          </Button>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                   {availableVoices.length <= 1 && (isiOS || isAndroid) && (
                     <div className="mt-2 space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-100">
                       {isiOS ? (
@@ -663,6 +788,75 @@ export default function SettingsPage() {
                 onCheckedChange={(checked) => saveSetting("mixUserBiasesInDaily", checked)}
                 className="cursor-pointer"
               />
+            </div>
+          </div>
+
+          {/* Timezone Settings Section */}
+          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
+            <div>
+              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+                <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
+                Timezone
+              </h2>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Configure your local timezone for accurate daily bias timing
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="timezone-auto-detect" className="cursor-pointer">
+                    Auto-detect Timezone
+                  </Label>
+                  <p className="text-muted-foreground text-sm">
+                    Automatically detect and update timezone
+                  </p>
+                </div>
+                <Switch
+                  id="timezone-auto-detect"
+                  checked={settings.timezoneAutoDetect === true}
+                  onCheckedChange={handleAutoDetectToggle}
+                  className="cursor-pointer"
+                />
+              </div>
+              
+              {/* Debug info - remove after fixing */}
+              <div className="text-xs text-muted-foreground bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                Debug: timezoneAutoDetect = {String(settings.timezoneAutoDetect)} 
+                ({typeof settings.timezoneAutoDetect})
+              </div>
+
+              {settings.timezoneAutoDetect === true && (
+                <div className="rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-900/20 dark:text-green-200">
+                  <div className="font-medium">Detected Timezone:</div>
+                  <div>{currentTimezoneInfo.city} ({currentTimezoneInfo.region})</div>
+                  <div className="text-xs opacity-75">{currentTimezoneInfo.timezone} {currentTimezoneInfo.offset}</div>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="timezone-select">Manual Timezone Selection</Label>
+                <select
+                  id="timezone-select"
+                  value={settings.timezone || currentTimezoneInfo.timezone}
+                  onChange={(e) => handleTimezoneChange(e.target.value)}
+                  className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                  disabled={settings.timezoneAutoDetect === true}
+                >
+                  {availableTimezones.map((tz) => (
+                    <option key={tz.value} value={tz.value}>
+                      {tz.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-muted-foreground text-xs">
+                  {settings.timezoneAutoDetect === true 
+                    ? "Auto-detect is active. Toggle OFF to enable manual selection."
+                    : "Manual selection is active. Toggle ON to enable auto-detect."
+                  }
+                </p>
+              </div>
             </div>
           </div>
 

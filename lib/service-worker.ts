@@ -1,6 +1,28 @@
+function shouldBypassSW(): boolean {
+  try {
+    const params = new URLSearchParams(window.location.search)
+    return (
+      params.has("v") ||
+      params.has("no-sw") ||
+      params.has("nosw") ||
+      params.get("cache") === "off" ||
+      params.get("nocache") === "1"
+    )
+  } catch {
+    return false
+  }
+}
+
 export function registerServiceWorker() {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
     console.log("[SW] Service workers not supported")
+    return
+  }
+
+  // Allow bypass/unregister via URL flags to avoid stale caches in the field
+  if (shouldBypassSW()) {
+    console.log("[SW] Bypassing service worker due to URL flag")
+    unregisterServiceWorker()
     return
   }
 
@@ -10,13 +32,19 @@ export function registerServiceWorker() {
       .then((registration) => {
         console.log("[SW] Service worker registered:", registration.scope)
 
-        // Check for updates periodically
-        setInterval(
-          () => {
-            registration.update()
-          },
-          60 * 60 * 1000
-        ) // Check every hour
+        // Always check for an update on load
+        registration.update().catch(() => {})
+
+        // Check for updates periodically (every 15 minutes)
+        setInterval(() => {
+          registration.update().catch(() => {})
+        }, 15 * 60 * 1000)
+
+        // Also check when app becomes visible again or goes online
+        const updateOnVisibility = () => registration.update().catch(() => {})
+        const updateOnOnline = () => registration.update().catch(() => {})
+        document.addEventListener("visibilitychange", updateOnVisibility)
+        window.addEventListener("online", updateOnOnline)
 
         // Handle updates
         registration.addEventListener("updatefound", () => {
@@ -25,14 +53,11 @@ export function registerServiceWorker() {
 
           newWorker.addEventListener("statechange", () => {
             if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              // New service worker available
-              console.log("[SW] New version available")
-
-              // Optionally notify user about update
-              if (window.confirm("A new version is available. Reload to update?")) {
+              // New service worker available - auto-activate and reload silently
+              console.log("[SW] New version available - activating")
+              try {
                 newWorker.postMessage({ type: "SKIP_WAITING" })
-                window.location.reload()
-              }
+              } catch {}
             }
           })
         })

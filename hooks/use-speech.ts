@@ -123,7 +123,7 @@ export function useSpeech() {
       // iOS Safari (including installed PWAs) is notorious for delaying
       // voice availability and sometimes not firing 'voiceschanged'. We
       // poll for a short period to increase reliability.
-      const maxWaitMs = 3000
+      const maxWaitMs = 5000
       const start = Date.now()
 
       const tryResolve = () => {
@@ -138,11 +138,29 @@ export function useSpeech() {
         tryResolve()
       }
 
-      const poller = setInterval(tryResolve, 100)
+      const poller = setInterval(tryResolve, 120)
       synth.addEventListener("voiceschanged", onVoicesChanged, { once: true })
 
       // Final safety timeout
       setTimeout(tryResolve, maxWaitMs)
+
+      // MOBILE WARMUP: Some browsers don't populate voices until we've
+      // invoked speak() at least once. Trigger a no-op utterance.
+      try {
+        // Cancel anything pending to avoid queue buildup
+        if (synth.speaking || synth.pending) synth.cancel()
+        const warmup = new SpeechSynthesisUtterance("")
+        warmup.volume = 0
+        // Use common English tag so platforms load en-* voices
+        warmup.lang = "en-US"
+        synth.speak(warmup)
+        // Cancel shortly after to keep it silent and quick
+        setTimeout(() => {
+          try { synth.cancel() } catch {}
+        }, 50)
+      } catch {
+        // Ignore warmup errors; polling still continues
+      }
     })
   }, [])
 
@@ -160,14 +178,21 @@ export function useSpeech() {
         }
       }
 
-      // 2. If no voice found, try to find Daniel
+      // 2. Prefer Google US English on platforms that expose it
+      selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes("google us english"))
+      if (selectedVoice) {
+        console.log("[Speech] Using Google US English as fallback:", selectedVoice.name)
+        return selectedVoice
+      }
+
+      // 3. If not found, try to find Daniel
       selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes("daniel"))
       if (selectedVoice) {
         console.log("[Speech] Using Daniel voice as fallback:", selectedVoice.name)
         return selectedVoice
       }
 
-      // 3. Try to find a high-quality LOCAL English voice (avoid network voices)
+      // 4. Try to find a high-quality LOCAL English voice (avoid network voices)
       selectedVoice = voices.find(
         (voice) =>
           voice.lang.startsWith("en") &&
@@ -180,7 +205,7 @@ export function useSpeech() {
         return selectedVoice
       }
 
-      // 4. Final fallback - use any English voice
+      // 5. Final fallback - use any English voice
       selectedVoice = voices.find((voice) => voice.lang.startsWith("en"))
 
       if (selectedVoice) {

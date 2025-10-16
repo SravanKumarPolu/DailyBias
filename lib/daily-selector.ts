@@ -1,5 +1,6 @@
 import type { Bias, BiasProgress } from "./types"
 import coreBiasesData from "@/data/biases.json"
+import { getLocalDateString } from "./timezone-utils"
 
 // Ensure the data is properly typed
 const coreBiases = coreBiasesData as Bias[]
@@ -16,7 +17,9 @@ function hashString(str: string): number {
 }
 
 export function getTodayDateString(): string {
-  return new Date().toISOString().slice(0, 10)
+  // Use local timezone instead of UTC for daily bias selection
+  // This ensures users get the correct daily bias based on their local timezone
+  return getLocalDateString()
 }
 
 export function getDailyBias(allBiases: Bias[], dateString: string = getTodayDateString()): Bias {
