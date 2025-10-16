@@ -11,7 +11,7 @@ function hashString(str: string): number {
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i)
     hash = (hash << 5) - hash + char
-    hash = hash & hash // Convert to 32-bit integer
+    hash = hash & 0xffffffff // Convert to 32-bit integer
   }
   return Math.abs(hash)
 }
@@ -33,6 +33,10 @@ export function getPersonalizedDailyBias(
   progressList: BiasProgress[],
   dateString: string = getTodayDateString()
 ): Bias {
+  console.log("[DailyBias] Selecting personalized daily bias for date:", dateString)
+  console.log("[DailyBias] Available biases:", allBiases.length)
+  console.log("[DailyBias] Progress entries:", progressList.length)
+  
   if (allBiases.length === 0) {
     throw new Error("No biases available")
   }
@@ -107,7 +111,11 @@ export function getPersonalizedDailyBias(
   const dateHash = hashString(dateString)
   const selectedIndex = dateHash % topCandidates.length
 
-  return topCandidates[selectedIndex].bias
+  const selectedBias = topCandidates[selectedIndex].bias
+  console.log("[DailyBias] Selected bias:", selectedBias.title, "Score:", topCandidates[selectedIndex].score)
+  console.log("[DailyBias] Top candidates:", topCandidates.slice(0, 3).map(c => `${c.bias.title} (${c.score})`))
+  
+  return selectedBias
 }
 
 export function getCategoryDistribution(

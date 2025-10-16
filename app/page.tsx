@@ -83,26 +83,41 @@ export default function HomePage() {
 
   // Calculate daily bias only once per day using cache
   const selectedDailyBias = useMemo(() => {
+    console.log("[DailyBias] Calculating daily bias - biases:", allBiases.length, "progress:", progressList.length, "loading:", progressLoading)
+    
     if (allBiases.length === 0 || progressLoading) {
+      console.log("[DailyBias] Skipping daily bias calculation - insufficient data")
       return null
     }
 
     const today = getTodayDateString()
+    console.log("[DailyBias] Today's date:", today)
+    
     const cachedBiasId = getCachedDailyBias(today)
+    console.log("[DailyBias] Cached bias ID:", cachedBiasId)
 
     // If we have a cached bias for today, use it
     if (cachedBiasId) {
       const cached = allBiases.find((b) => b.id === cachedBiasId)
       if (cached) {
+        console.log("[DailyBias] Using cached bias:", cached.title)
         return cached
+      } else {
+        console.log("[DailyBias] Cached bias not found in available biases, recalculating")
       }
     }
 
     // Otherwise, calculate a new daily bias only once
     // This should only run once when the cache is empty
-    const newDailyBias = getPersonalizedDailyBias(allBiases, progressList, today)
-    cacheDailyBias(today, newDailyBias.id)
-    return newDailyBias
+    try {
+      const newDailyBias = getPersonalizedDailyBias(allBiases, progressList, today)
+      cacheDailyBias(today, newDailyBias.id)
+      console.log("[DailyBias] Calculated and cached new bias:", newDailyBias.title)
+      return newDailyBias
+    } catch (error) {
+      console.error("[DailyBias] Error calculating daily bias:", error)
+      return null
+    }
   }, [allBiases, progressList, progressLoading])
 
   useEffect(() => {
