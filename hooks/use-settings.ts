@@ -22,21 +22,14 @@ export function useSettings() {
   const loadSettings = useCallback(async () => {
     try {
       const settingsData = await getSettings()
-      console.log('[Settings] Loaded settings:', settingsData)
+      console.log('[Settings] Loaded user settings')
       
-      // Only set default if no voice is selected at all
-      if (!settingsData.voiceName || String(settingsData.voiceName).trim() === "") {
-        console.log('[Settings] No voice selected, will auto-select best available')
-        // Don't force a specific voice here - let the UI component handle smart selection
-      }
-
       // Auto-detect timezone if enabled (now default behavior)
       if (settingsData.timezoneAutoDetect === true) {
-        console.log('[Settings] Auto-detect is enabled, detecting timezone...')
         const detectedTimezone = detectTimezone()
-        console.log('[Settings] Detected timezone:', detectedTimezone)
+        console.log('[Settings] Auto-detecting timezone:', detectedTimezone.timezone)
         if (detectedTimezone.timezone !== settingsData.timezone) {
-          console.log('[Settings] Updating timezone from', settingsData.timezone, 'to', detectedTimezone.timezone)
+          console.log('[Settings] Updating timezone to detected:', detectedTimezone.timezone)
           const updatedSettings = {
             ...settingsData,
             timezone: detectedTimezone.timezone,
@@ -48,9 +41,9 @@ export function useSettings() {
           return
         }
       } else if (settingsData.timezoneAutoDetect === false && !settingsData.timezone) {
-        console.log('[Settings] Auto-detect is disabled but no timezone set, using detected as default')
         // If auto-detect is explicitly disabled and no timezone is set, use detected timezone as default
         const detectedTimezone = detectTimezone()
+        console.log('[Settings] Setting default timezone:', detectedTimezone.timezone)
         const updatedSettings = {
           ...settingsData,
           timezone: detectedTimezone.timezone,
@@ -61,10 +54,9 @@ export function useSettings() {
         return
       }
       
-      console.log('[Settings] Final settings to be set:', settingsData)
       setSettings(settingsData)
     } catch (error) {
-      console.error("[DailyBias] Failed to load settings:", error)
+      console.error("[Settings] Failed to load settings:", error)
     } finally {
       setLoading(false)
     }
@@ -76,15 +68,13 @@ export function useSettings() {
 
   const saveSetting = useCallback(
     async <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
-      console.log('[Settings] Saving setting:', key, '=', value)
+      console.log('[Settings] Saving:', key, '=', value)
       setSettings(prevSettings => {
         const newSettings = { ...prevSettings, [key]: value }
-        console.log('[Settings] Updated settings state:', newSettings)
         // Save to database asynchronously
         updateSettings(newSettings).catch(console.error)
         return newSettings
       })
-      console.log('[Settings] Setting state updated')
     },
     [] // Remove settings dependency to avoid stale closures
   )

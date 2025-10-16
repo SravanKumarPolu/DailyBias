@@ -64,9 +64,7 @@ export default function SettingsPage() {
   // Helper to fetch and filter voices consistently
   const fetchAndFilterVoices = () => {
     const voices = window.speechSynthesis.getVoices()
-    console.log("[Settings] Raw voices available:", voices.length, voices.map(v => `${v.name} (${v.lang}, local: ${v.localService})`))
-    console.log("[Settings] User agent:", navigator.userAgent)
-    console.log("[Settings] Is mobile:", /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+    console.log("[Settings] Loading voices:", voices.length, "available")
 
     // Blacklist of known poor quality/novelty voices
     const blacklistedVoices = [
@@ -160,17 +158,11 @@ export default function SettingsPage() {
         return a.name.localeCompare(b.name)
       })
 
-    console.log("[Settings] Filtered English voices:", englishVoices.length, englishVoices.map(v => `${v.name} (local: ${v.localService})`))
+    console.log("[Settings] Filtered voices:", englishVoices.length, "high-quality English voices")
     setAvailableVoices(englishVoices)
 
-    // Enhanced voice selection logic for mobile compatibility
+    // Smart voice selection: prioritize same voice across all platforms
     if (englishVoices.length > 0) {
-
-      // Smart voice selection: prioritize same voice across all platforms
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || 
-                       window.innerWidth <= 768 || 
-                       ('ontouchstart' in window)
-      
       // Priority order for voice selection (focus on high-quality voices)
       const voicePriority = [
         "Google US English",  // Best desktop voice
@@ -183,16 +175,12 @@ export default function SettingsPage() {
         "Tom"                // Alternative Android voice
       ]
       
-      console.log("[Settings] Available English voices:", englishVoices.map(v => v.name))
-      console.log("[Settings] Current settings voiceName:", settings.voiceName)
-      console.log("[Settings] Is mobile:", isMobile)
-      
       // Find the best available voice based on priority
       let bestVoice = null
       for (const priorityVoice of voicePriority) {
         bestVoice = englishVoices.find((v) => v.name.toLowerCase().includes(priorityVoice.toLowerCase()))
         if (bestVoice) {
-          console.log("[Settings] Found priority voice:", bestVoice.name)
+          console.log("[Settings] Selected priority voice:", bestVoice.name)
           break
         }
       }
@@ -205,20 +193,9 @@ export default function SettingsPage() {
       
       // Set the best voice if it's different from current
       if (bestVoice && settings.voiceName !== bestVoice.name) {
-        console.log("[Settings] Setting best available voice:", bestVoice.name)
+        console.log("[Settings] Auto-selecting voice:", bestVoice.name)
         saveSetting("voiceName", bestVoice.name)
       }
-      
-      // DEBUG: Show current active voice status
-      console.log("=== CURRENT VOICE STATUS ===")
-      console.log("[Settings] Currently selected voice in settings:", settings.voiceName)
-      console.log("[Settings] Best voice found:", bestVoice?.name)
-      console.log("[Settings] User agent:", navigator.userAgent)
-      console.log("[Settings] Screen width:", window.innerWidth)
-      console.log("[Settings] Has touch:", 'ontouchstart' in window)
-      console.log("[Settings] Is mobile device:", isMobile)
-      console.log("[Settings] Total voices available:", englishVoices.length)
-      console.log("===========================")
     }
   }
 
@@ -267,9 +244,10 @@ export default function SettingsPage() {
 
   const handleExport = async () => {
     try {
+      console.log('[Settings] Exporting user data...')
       const data = await exportAllData()
       if (!data || Object.keys(data).length === 0) {
-        alert("No data to export.")
+        alert("No data to export. Make sure you have some biases or settings to backup.")
         return
       }
       
@@ -283,12 +261,13 @@ export default function SettingsPage() {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       
+      console.log('[Settings] Data exported successfully')
       setExportSuccess(true)
       setTimeout(() => setExportSuccess(false), 3000)
       haptics.success()
     } catch (error) {
-      console.error("[DailyBias] Export failed:", error)
-      alert("Failed to export data. Please try again.")
+      console.error("[Settings] Export failed:", error)
+      alert("Failed to export data. Please check your browser permissions and try again.")
     }
   }
 
@@ -298,13 +277,21 @@ export default function SettingsPage() {
 
     // Validate file type
     if (!file.name.toLowerCase().endsWith('.json')) {
-      alert('Please select a valid JSON file.')
+      alert('Please select a valid JSON backup file.')
+      event.target.value = ""
+      return
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File is too large. Please select a backup file smaller than 10MB.')
       event.target.value = ""
       return
     }
 
     setImporting(true)
     try {
+      console.log('[Settings] Importing data from file:', file.name)
       const text = await file.text()
       const data = JSON.parse(text)
       
@@ -313,8 +300,17 @@ export default function SettingsPage() {
         throw new Error('Invalid data format')
       }
       
+      // Check if it looks like a valid backup file
+      const expectedKeys = ['settings', 'userBiases', 'favorites', 'progress', 'streak']
+      const hasValidKeys = expectedKeys.some(key => key in data)
+      
+      if (!hasValidKeys) {
+        throw new Error('This does not appear to be a valid Bias Daily backup file.')
+      }
+      
       await importAllData(data)
       await refresh()
+      console.log('[Settings] Data imported successfully')
       setImportSuccess(true)
       haptics.success()
       
@@ -323,9 +319,11 @@ export default function SettingsPage() {
         router.refresh()
       }, 2000)
     } catch (error) {
-      console.error("[DailyBias] Import failed:", error)
+      console.error("[Settings] Import failed:", error)
       if (error instanceof SyntaxError) {
         alert("Invalid JSON file. Please check the file format and try again.")
+      } else if (error instanceof Error && error.message.includes('backup file')) {
+        alert(error.message)
       } else {
         alert("Failed to import data. Please check the file format and try again.")
       }
@@ -425,29 +423,22 @@ export default function SettingsPage() {
 
   const handleAutoDetectToggle = async (enabled: boolean) => {
     try {
-      console.log('[Settings] Toggling auto-detect to:', enabled)
+      console.log('[Settings] Timezone auto-detect:', enabled ? 'enabled' : 'disabled')
       setTimezoneSwitching(true)
       
       // Save the setting immediately
       await saveSetting("timezoneAutoDetect", enabled)
-      console.log('[Settings] Saved timezoneAutoDetect:', enabled)
       
       if (enabled) {
         const detected = detectTimezone()
-        console.log('[Settings] Detected timezone:', detected)
+        console.log('[Settings] Auto-detected timezone:', detected.timezone)
         await saveSetting("timezone", detected.timezone)
         setCurrentTimezoneInfo(detected)
       }
       
       haptics.selection()
-      
-      // Add a small delay to ensure UI updates properly
-      setTimeout(() => {
-        console.log('[Settings] Auto-detect toggle completed')
-      }, 100)
     } catch (error) {
-      console.error('[DailyBias] Error toggling auto-detect:', error)
-      // Show user-friendly error message
+      console.error('[Settings] Error toggling timezone auto-detect:', error)
       alert('Failed to update timezone settings. Please try again.')
     } finally {
       setTimezoneSwitching(false)
@@ -459,7 +450,6 @@ export default function SettingsPage() {
       setTestingVoice(true)
       if (!speechSupported) {
         alert('Speech synthesis is not supported in this browser.')
-        setTestingVoice(false)
         return
       }
       
@@ -470,27 +460,29 @@ export default function SettingsPage() {
 
       if (!selectedVoiceName) {
         alert('Please select a voice first.')
-        setTestingVoice(false)
         return
       }
 
       // Short sample that announces the voice name
       const voiceLabel = selectedVoiceName || "Voice"
-      const sample = `Hello. This is ${voiceLabel}.`
+      const sample = `Hello. This is ${voiceLabel}. Testing voice quality and pronunciation.`
 
+      console.log('[Settings] Testing voice:', selectedVoiceName)
+      
       // Pass the selected voice name explicitly to bypass settings cache
       speak(sample, selectedVoiceName || undefined)
 
-      // Stop after ~2.5 seconds to keep it short
+      // Stop after ~3 seconds to allow full sample
       setTimeout(() => {
         stop()
         setTestingVoice(false)
-      }, 2500)
+      }, 3000)
 
       haptics.selection()
     } catch (error) {
-      console.error('[DailyBias] Voice test failed:', error)
+      console.error('[Settings] Voice test failed:', error)
       alert('Failed to test voice. Please try again.')
+    } finally {
       setTestingVoice(false)
     }
   }
@@ -936,10 +928,7 @@ export default function SettingsPage() {
               ) : (
                 <>
                   {/* Auto-detected timezone display (default view) */}
-                  {(() => {
-                    console.log('[Settings] UI Render - timezoneAutoDetect:', settings.timezoneAutoDetect, 'condition result:', settings.timezoneAutoDetect !== false)
-                    return settings.timezoneAutoDetect !== false
-                  })() && (
+                  {settings.timezoneAutoDetect !== false && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between rounded-lg bg-green-50 p-3 dark:bg-green-900/20">
                     <div className="flex items-center gap-2">
@@ -970,10 +959,7 @@ export default function SettingsPage() {
               )}
 
               {/* Manual timezone selection (override view) */}
-              {(() => {
-                console.log('[Settings] UI Render - Manual mode check - timezoneAutoDetect:', settings.timezoneAutoDetect, 'condition result:', settings.timezoneAutoDetect === false)
-                return settings.timezoneAutoDetect === false
-              })() && (
+              {settings.timezoneAutoDetect === false && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
                     <div className="flex items-center gap-2">
@@ -1016,19 +1002,6 @@ export default function SettingsPage() {
                       className="w-full justify-center bg-transparent text-sm"
                     >
                       {timezoneSwitching ? "Switching..." : "Switch back to auto-detect"}
-                    </Button>
-                    
-                    {/* Debug button - remove after fixing */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        console.log('Current settings:', settings)
-                        console.log('Current timezone info:', currentTimezoneInfo)
-                      }}
-                      className="w-full justify-center text-xs text-gray-500"
-                    >
-                      Debug: Check Console
                     </Button>
                   </div>
                 </div>
