@@ -171,14 +171,16 @@ export default function SettingsPage() {
                        window.innerWidth <= 768 || 
                        ('ontouchstart' in window)
       
-      // Priority order for voice selection (same across all platforms)
+      // Priority order for voice selection (focus on high-quality voices)
       const voicePriority = [
-        "Google US English",
-        "Samantha", // High-quality voice available on both iOS and some Android
-        "Daniel",   // Common Android voice
-        "Alex",     // iOS voice
-        "Victoria", // iOS voice
-        "Karen"     // Android voice
+        "Google US English",  // Best desktop voice
+        "Samantha",          // High-quality, natural sounding
+        "Alex",              // High-quality iOS voice
+        "Victoria",          // Good iOS voice
+        "Karen",             // Decent Android voice
+        "Daniel",            // Common but lower quality Android voice
+        "Tessa",             // Good iOS voice
+        "Tom"                // Alternative Android voice
       ]
       
       console.log("[Settings] Available English voices:", englishVoices.map(v => v.name))
@@ -773,6 +775,44 @@ export default function SettingsPage() {
                       </div>
                     </PopoverContent>
                   </Popover>
+                  
+                  {/* Current Voice Status Display */}
+                  <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                      <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                        Currently Active Voice:
+                      </span>
+                          </div>
+                    <div className="mt-1 text-sm text-blue-800 dark:text-blue-200">
+                      {settings.voiceName || "None selected"}
+                    </div>
+                    <div className="mt-1 text-xs text-blue-600 dark:text-blue-300">
+                      Device: {typeof window !== "undefined" && (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768 || ('ontouchstart' in window)) ? "Mobile" : "Desktop"}
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-2 h-8 text-xs"
+                      onClick={() => {
+                        if (window.speechSynthesis) {
+                          const utterance = new SpeechSynthesisUtterance("Hello, this is the current voice speaking.")
+                          utterance.rate = 0.9
+                          utterance.pitch = 1.0
+                          utterance.volume = 1.0
+                          const voices = window.speechSynthesis.getVoices()
+                          const selectedVoice = voices.find(v => v.name === settings.voiceName)
+                          if (selectedVoice) {
+                            utterance.voice = selectedVoice
+                            utterance.lang = selectedVoice.lang
+                          }
+                          window.speechSynthesis.speak(utterance)
+                        }
+                      }}
+                    >
+                      🔊 Test Current Voice
+                    </Button>
+                  </div>
                   
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-muted-foreground text-xs">

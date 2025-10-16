@@ -196,14 +196,16 @@ export function useSpeech() {
         }
       }
 
-      // 2. Use same priority logic as settings for consistency
+      // 2. Use same priority logic as settings for consistency (focus on high-quality voices)
       const voicePriority = [
-        "Google US English",
-        "Samantha", // High-quality voice available on both iOS and some Android
-        "Daniel",   // Common Android voice
-        "Alex",     // iOS voice
-        "Victoria", // iOS voice
-        "Karen"     // Android voice
+        "Google US English",  // Best desktop voice
+        "Samantha",          // High-quality, natural sounding
+        "Alex",              // High-quality iOS voice
+        "Victoria",          // Good iOS voice
+        "Karen",             // Decent Android voice
+        "Daniel",            // Common but lower quality Android voice
+        "Tessa",             // Good iOS voice
+        "Tom"                // Alternative Android voice
       ]
       
       for (const priorityVoice of voicePriority) {
