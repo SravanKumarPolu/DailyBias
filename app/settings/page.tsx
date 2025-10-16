@@ -65,6 +65,8 @@ export default function SettingsPage() {
   const fetchAndFilterVoices = () => {
     const voices = window.speechSynthesis.getVoices()
     console.log("[Settings] Raw voices available:", voices.length, voices.map(v => `${v.name} (${v.lang}, local: ${v.localService})`))
+    console.log("[Settings] User agent:", navigator.userAgent)
+    console.log("[Settings] Is mobile:", /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
     // Blacklist of known poor quality/novelty voices
     const blacklistedVoices = [
@@ -169,6 +171,10 @@ export default function SettingsPage() {
 
       // Force "Google US English" as the default for all platforms
       const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+      console.log("[Settings] Available English voices:", englishVoices.map(v => v.name))
+      console.log("[Settings] Current settings voiceName:", settings.voiceName)
+      console.log("[Settings] Google US English found:", googleUS?.name)
+      
       if (googleUS && settings.voiceName !== googleUS.name) {
         console.log("[Settings] Setting Google US English as default voice:", googleUS.name)
         saveSetting("voiceName", googleUS.name)
@@ -181,6 +187,12 @@ export default function SettingsPage() {
           console.log("[Settings] Auto-selecting fallback voice:", defaultVoice.name)
           saveSetting("voiceName", defaultVoice.name)
         }
+      }
+      
+      // DEBUG: If Google US English is not available, log what voices are available
+      if (!googleUS) {
+        console.log("[Settings] WARNING: Google US English not found! Available voices:", englishVoices.map(v => v.name))
+        console.log("[Settings] This might be why mobile is showing a different voice")
       }
     }
   }

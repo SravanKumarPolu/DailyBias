@@ -179,6 +179,9 @@ export function useSpeech() {
 
   const selectBestVoice = useCallback(
     (voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
+      console.log("[Speech] Available voices:", voices.map(v => `${v.name} (${v.lang}, local: ${v.localService})`))
+      console.log("[Speech] Target voice from settings:", overrideVoiceName || settings.voiceName)
+      
       let selectedVoice: SpeechSynthesisVoice | undefined
 
       // 1. Try to find the exact voice name from override or settings
@@ -188,6 +191,8 @@ export function useSpeech() {
         if (selectedVoice) {
           console.log("[Speech] Using selected voice:", selectedVoice.name)
           return selectedVoice
+        } else {
+          console.log("[Speech] Target voice not found:", targetVoiceName)
         }
       }
 
@@ -196,6 +201,8 @@ export function useSpeech() {
       if (selectedVoice) {
         console.log("[Speech] Using Google US English as fallback:", selectedVoice.name)
         return selectedVoice
+      } else {
+        console.log("[Speech] Google US English not found in available voices")
       }
 
       // 3. If not found, try to find Daniel
