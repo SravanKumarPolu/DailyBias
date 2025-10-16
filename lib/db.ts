@@ -147,6 +147,9 @@ export async function getSettings(): Promise<UserSettings> {
       voiceRate: 0.9, // Default to 0.9x for better comprehension
       voicePitch: 1.0,
       voiceName: "Google US English", // Default to Google US English voice
+    // Ensure timezone-related fields always exist in production too
+    timezoneAutoDetect: false,
+    timezone: "UTC",
     }
 
     // Merge with defaults to handle migration of new fields
