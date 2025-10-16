@@ -15,23 +15,28 @@ export function useSettings() {
     voiceRate: 0.9,
     voicePitch: 1.0,
     voiceName: "Google US English", // Default to Google US English voice
-    timezoneAutoDetect: false, // Auto-detect timezone disabled by default
+    timezoneAutoDetect: true, // Auto-detect timezone enabled by default
   })
   const [loading, setLoading] = useState(true)
 
   const loadSettings = useCallback(async () => {
     try {
       const settingsData = await getSettings()
+      console.log('[Settings] Loaded settings:', settingsData)
+      
       // Enforce a non-empty voice selection (no system-default fallback)
       if (!settingsData.voiceName || String(settingsData.voiceName).trim() === "") {
         settingsData.voiceName = "Google US English"
         await updateSettings(settingsData)
       }
 
-      // Auto-detect timezone only if explicitly enabled by user
+      // Auto-detect timezone if enabled (now default behavior)
       if (settingsData.timezoneAutoDetect === true) {
+        console.log('[Settings] Auto-detect is enabled, detecting timezone...')
         const detectedTimezone = detectTimezone()
+        console.log('[Settings] Detected timezone:', detectedTimezone)
         if (detectedTimezone.timezone !== settingsData.timezone) {
+          console.log('[Settings] Updating timezone from', settingsData.timezone, 'to', detectedTimezone.timezone)
           const updatedSettings = {
             ...settingsData,
             timezone: detectedTimezone.timezone,
@@ -42,8 +47,9 @@ export function useSettings() {
           await updateSettings(updatedSettings)
           return
         }
-      } else if (!settingsData.timezone) {
-        // If auto-detect is disabled and no timezone is set, use detected timezone as default
+      } else if (settingsData.timezoneAutoDetect === false && !settingsData.timezone) {
+        console.log('[Settings] Auto-detect is disabled but no timezone set, using detected as default')
+        // If auto-detect is explicitly disabled and no timezone is set, use detected timezone as default
         const detectedTimezone = detectTimezone()
         const updatedSettings = {
           ...settingsData,
@@ -55,6 +61,7 @@ export function useSettings() {
         return
       }
       
+      console.log('[Settings] Final settings to be set:', settingsData)
       setSettings(settingsData)
     } catch (error) {
       console.error("[DailyBias] Failed to load settings:", error)
@@ -69,11 +76,17 @@ export function useSettings() {
 
   const saveSetting = useCallback(
     async <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
-      const newSettings = { ...settings, [key]: value }
-      setSettings(newSettings)
-      await updateSettings(newSettings)
+      console.log('[Settings] Saving setting:', key, '=', value)
+      setSettings(prevSettings => {
+        const newSettings = { ...prevSettings, [key]: value }
+        console.log('[Settings] Updated settings state:', newSettings)
+        // Save to database asynchronously
+        updateSettings(newSettings).catch(console.error)
+        return newSettings
+      })
+      console.log('[Settings] Setting state updated')
     },
-    [settings]
+    [] // Remove settings dependency to avoid stale closures
   )
 
   const saveAllSettings = useCallback(async (newSettings: UserSettings) => {

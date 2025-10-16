@@ -148,12 +148,27 @@ export async function getSettings(): Promise<UserSettings> {
       voicePitch: 1.0,
       voiceName: "Google US English", // Default to Google US English voice
     // Ensure timezone-related fields always exist in production too
-    timezoneAutoDetect: false,
+    timezoneAutoDetect: true, // Auto-detect timezone enabled by default
     timezone: "UTC",
     }
 
     // Merge with defaults to handle migration of new fields
-    return settings ? { ...defaults, ...settings } : defaults
+    if (settings) {
+      // Migration: For existing users who have the old default (false), migrate to new default (true)
+      // This is a one-time migration to apply the new default behavior
+      if (settings.timezoneAutoDetect === false && (!settings.timezone || settings.timezone === 'UTC')) {
+        console.log('[Settings] Migrating existing user to auto-detect (new default)')
+        settings.timezoneAutoDetect = true
+        // Don't auto-save the migration - let the user choose
+      }
+      // Only apply default timezoneAutoDetect for truly new users (no timezoneAutoDetect set at all)
+      else if (settings.timezoneAutoDetect === undefined) {
+        console.log('[Settings] New user - applying auto-detect default')
+        settings.timezoneAutoDetect = true
+      }
+      return { ...defaults, ...settings }
+    }
+    return defaults
   }, "Failed to load settings")
 }
 

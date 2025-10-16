@@ -56,14 +56,47 @@ export default function SettingsPage() {
   const [currentTimezoneInfo, setCurrentTimezoneInfo] = useState(detectTimezone())
   const [voicePopoverOpen, setVoicePopoverOpen] = useState(false)
   const [voiceSearch, setVoiceSearch] = useState("")
+  const [timezoneSwitching, setTimezoneSwitching] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   // Basic platform detection for contextual hints
   const isiOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/i.test(navigator.userAgent)
   const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)
+  const isMobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+  // Mobile-specific voice detection helper
+  const getMobileOptimizedVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
+    if (!isMobile) return undefined
+    
+    // On mobile, prioritize voices that are most likely to be available and work well
+    const mobilePreferredVoices = [
+      "google us english",
+      "daniel",
+      "samantha", 
+      "alex",
+      "victoria",
+      "karen",
+      "moira",
+      "tessa"
+    ]
+    
+    for (const preferred of mobilePreferredVoices) {
+      const voice = voices.find(v => v.name.toLowerCase().includes(preferred))
+      if (voice) {
+        console.log("[Settings] Mobile-optimized voice selected:", voice.name)
+        return voice
+      }
+    }
+    
+    // If no preferred voice found, return the first local voice or first available
+    const localVoice = voices.find(v => v.localService)
+    return localVoice || voices[0]
+  }
 
   // Helper to fetch and filter voices consistently
   const fetchAndFilterVoices = () => {
     const voices = window.speechSynthesis.getVoices()
+    console.log("[Settings] Raw voices available:", voices.length, voices.map(v => `${v.name} (${v.lang}, local: ${v.localService})`))
 
     // Blacklist of known poor quality/novelty voices
     const blacklistedVoices = [
@@ -157,20 +190,33 @@ export default function SettingsPage() {
         return a.name.localeCompare(b.name)
       })
 
+    console.log("[Settings] Filtered English voices:", englishVoices.length, englishVoices.map(v => `${v.name} (local: ${v.localService})`))
     setAvailableVoices(englishVoices)
 
-    // Ensure we always point to a valid non-system voice option
+    // Enhanced voice selection logic for mobile compatibility
     if (englishVoices.length > 0) {
       const hasSelected = settings.voiceName
         ? englishVoices.some(v => v.name === settings.voiceName)
         : false
 
       if (!hasSelected) {
-        // Prefer Google US English, then Daniel, else first available
-        const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
-        const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
-        const defaultVoice = googleUS || danielVoice || englishVoices[0]
+        // Enhanced mobile detection for better voice selection
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        
+        let defaultVoice: SpeechSynthesisVoice | undefined
+        
+        if (isMobile) {
+          // Use mobile-optimized voice selection
+          defaultVoice = getMobileOptimizedVoice(englishVoices)
+        } else {
+          // On desktop, use original logic
+          const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+          const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
+          defaultVoice = googleUS || danielVoice || englishVoices[0]
+        }
+        
         if (defaultVoice?.name && defaultVoice.name !== settings.voiceName) {
+          console.log("[Settings] Auto-selecting voice for platform:", defaultVoice.name, "isMobile:", isMobile)
           saveSetting("voiceName", defaultVoice.name)
         }
       }
@@ -192,25 +238,36 @@ export default function SettingsPage() {
       if (speechSupported) {
         await ensureVoicesLoaded()
       }
-      fetchAndFilterVoices()
-      haptics.selection()
+      
+      // Add a small delay to ensure voices are fully loaded
+      setTimeout(() => {
+        fetchAndFilterVoices()
+        haptics.selection()
+      }, 100)
     } catch {
       // no-op; we still attempt to refresh list
       fetchAndFilterVoices()
     }
   }
 
+  // Handle hydration and timezone detection
+  useEffect(() => {
+    setMounted(true)
+    // Update timezone info after hydration to avoid mismatch
+    setCurrentTimezoneInfo(detectTimezone())
+  }, [])
+
   // Sync local state with settings
   useEffect(() => {
     setLocalVoiceRate(settings.voiceRate || 0.9)
     setLocalVoicePitch(settings.voicePitch || 1.0)
     
-    // Update timezone info when settings change
-    if (settings.timezone) {
+    // Update timezone info when settings change (only after mounted)
+    if (mounted && settings.timezone) {
       const timezoneInfo = detectTimezone()
       setCurrentTimezoneInfo(timezoneInfo)
     }
-  }, [settings.voiceRate, settings.voicePitch, settings.timezone])
+  }, [settings.voiceRate, settings.voicePitch, settings.timezone, mounted])
 
   const handleExport = async () => {
     try {
@@ -372,20 +429,32 @@ export default function SettingsPage() {
 
   const handleAutoDetectToggle = async (enabled: boolean) => {
     try {
+      console.log('[Settings] Toggling auto-detect to:', enabled)
+      setTimezoneSwitching(true)
+      
       // Save the setting immediately
       await saveSetting("timezoneAutoDetect", enabled)
+      console.log('[Settings] Saved timezoneAutoDetect:', enabled)
       
       if (enabled) {
         const detected = detectTimezone()
+        console.log('[Settings] Detected timezone:', detected)
         await saveSetting("timezone", detected.timezone)
         setCurrentTimezoneInfo(detected)
       }
       
       haptics.selection()
+      
+      // Add a small delay to ensure UI updates properly
+      setTimeout(() => {
+        console.log('[Settings] Auto-detect toggle completed')
+      }, 100)
     } catch (error) {
       console.error('[DailyBias] Error toggling auto-detect:', error)
       // Show user-friendly error message
       alert('Failed to update timezone settings. Please try again.')
+    } finally {
+      setTimezoneSwitching(false)
     }
   }
 
@@ -714,16 +783,22 @@ export default function SettingsPage() {
                     <div className="mt-2 space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-100">
                       {isiOS ? (
                         <>
-                          On iOS, web apps (especially installed PWAs) may only expose the system
-                          voice. To enable more voices: open this site in Safari, go to iOS Settings
-                          → Accessibility → Spoken Content → Voices and download additional English
-                          voices. Then reopen the site and tap <strong>Refresh voices</strong>.
+                          <div className="font-medium mb-1">Limited voices detected on iOS</div>
+                          <div className="space-y-1">
+                            <div>• Web apps (especially PWAs) may only show system voices</div>
+                            <div>• For more voices: open this site in Safari browser</div>
+                            <div>• Go to iOS Settings → Accessibility → Spoken Content → Voices</div>
+                            <div>• Download additional English voices, then refresh here</div>
+                          </div>
                         </>
                       ) : (
                         <>
-                          On Android, make sure <strong>Google Text-to-speech</strong> is
-                          installed/updated and set as the preferred TTS engine. Then tap{" "}
-                          <strong>Refresh voices</strong>.
+                          <div className="font-medium mb-1">Limited voices detected on Android</div>
+                          <div className="space-y-1">
+                            <div>• Make sure <strong>Google Text-to-speech</strong> is installed/updated</div>
+                            <div>• Set it as the preferred TTS engine</div>
+                            <div>• Tap <strong>Refresh voices</strong> after making changes</div>
+                          </div>
                           <div className="mt-2 flex flex-wrap gap-2">
                             <a
                               href="https://play.google.com/store/apps/details?id=com.google.android.tts"
@@ -731,7 +806,7 @@ export default function SettingsPage() {
                               rel="noreferrer noopener"
                               className="rounded-md border border-amber-300 bg-amber-100 px-2 py-1 text-amber-900 hover:bg-amber-200 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-100"
                             >
-                              Open Google TTS in Play Store
+                              Open Google TTS in Play Store
                             </a>
                             <a
                               href="intent://#Intent;action=android.settings.TTS_SETTINGS;end"
@@ -742,6 +817,18 @@ export default function SettingsPage() {
                           </div>
                         </>
                       )}
+                    </div>
+                  )}
+                  
+                  {/* Mobile voice consistency hint */}
+                  {isMobile && availableVoices.length > 1 && (
+                    <div className="mt-2 space-y-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-100">
+                      <div className="font-medium mb-1">Mobile Voice Optimization</div>
+                      <div className="space-y-1">
+                        <div>• This app automatically selects the best available voice for mobile</div>
+                        <div>• Voice selection is saved for consistency across sessions</div>
+                        <div>• If you hear a different voice than expected, tap "Refresh voices"</div>
+                      </div>
                     </div>
                   )}
                   <div className="flex items-center justify-between gap-2">
@@ -835,7 +922,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Timezone Settings Section */}
+          {/* Smart Timezone Settings Section */}
           <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
               <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
@@ -848,53 +935,123 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="timezone-auto-detect" className="cursor-pointer">
-                    Auto-detect Timezone
-                  </Label>
-                  <p className="text-muted-foreground text-sm">
-                    Automatically detect and update timezone
-                  </p>
+              {/* Show loading state during hydration */}
+              {!mounted ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-900/20">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                        <div className="h-3 w-3 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                      </div>
+                      <div>
+                        <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                        <div className="mt-1 h-3 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <Switch
-                  id="timezone-auto-detect"
-                  checked={settings.timezoneAutoDetect === true}
-                  onCheckedChange={handleAutoDetectToggle}
-                  className="cursor-pointer"
-                />
-              </div>
-
-              {settings.timezoneAutoDetect === true && (
-                <div className="rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-900/20 dark:text-green-200">
-                  <div className="font-medium">Detected Timezone:</div>
-                  <div>{currentTimezoneInfo.city} ({currentTimezoneInfo.region})</div>
-                  <div className="text-xs opacity-75">{currentTimezoneInfo.timezone} {currentTimezoneInfo.offset}</div>
+              ) : (
+                <>
+                  {/* Auto-detected timezone display (default view) */}
+                  {(() => {
+                    console.log('[Settings] UI Render - timezoneAutoDetect:', settings.timezoneAutoDetect, 'condition result:', settings.timezoneAutoDetect !== false)
+                    return settings.timezoneAutoDetect !== false
+                  })() && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between rounded-lg bg-green-50 p-3 dark:bg-green-900/20">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 dark:bg-green-800">
+                        <Check className="h-3 w-3 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-green-800 dark:text-green-200">
+                          Auto-detected: {currentTimezoneInfo.city} ({currentTimezoneInfo.region})
+                        </div>
+                        <div className="text-xs text-green-600 dark:text-green-300">
+                          {currentTimezoneInfo.timezone} {currentTimezoneInfo.offset} • Detected automatically
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAutoDetectToggle(false)}
+                    disabled={timezoneSwitching}
+                    className="w-full justify-center bg-transparent text-sm"
+                  >
+                    {timezoneSwitching ? "Switching..." : "Use different timezone"}
+                  </Button>
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="timezone-select">Manual Timezone Selection</Label>
-                <select
-                  id="timezone-select"
-                  value={settings.timezone || currentTimezoneInfo.timezone}
-                  onChange={(e) => handleTimezoneChange(e.target.value)}
-                  className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
-                  disabled={settings.timezoneAutoDetect === true}
-                >
-                  {availableTimezones.map((tz) => (
-                    <option key={tz.value} value={tz.value}>
-                      {tz.label}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-muted-foreground text-xs">
-                  {settings.timezoneAutoDetect === true 
-                    ? "Auto-detect is active. Toggle OFF to enable manual selection."
-                    : "Manual selection is active. Toggle ON to enable auto-detect."
-                  }
-                </p>
-              </div>
+              {/* Manual timezone selection (override view) */}
+              {(() => {
+                console.log('[Settings] UI Render - Manual mode check - timezoneAutoDetect:', settings.timezoneAutoDetect, 'condition result:', settings.timezoneAutoDetect === false)
+                return settings.timezoneAutoDetect === false
+              })() && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-800">
+                        <Globe className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-blue-800 dark:text-blue-200">
+                          Manual Selection Active
+                        </div>
+                        <div className="text-xs text-blue-600 dark:text-blue-300">
+                          Using manually selected timezone
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="timezone-select">Select Timezone</Label>
+                    <select
+                      id="timezone-select"
+                      value={settings.timezone || currentTimezoneInfo.timezone}
+                      onChange={(e) => handleTimezoneChange(e.target.value)}
+                      className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                    >
+                      {availableTimezones.map((tz) => (
+                        <option key={tz.value} value={tz.value}>
+                          {tz.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAutoDetectToggle(true)}
+                      disabled={timezoneSwitching}
+                      className="w-full justify-center bg-transparent text-sm"
+                    >
+                      {timezoneSwitching ? "Switching..." : "Switch back to auto-detect"}
+                    </Button>
+                    
+                    {/* Debug button - remove after fixing */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        console.log('Current settings:', settings)
+                        console.log('Current timezone info:', currentTimezoneInfo)
+                      }}
+                      className="w-full justify-center text-xs text-gray-500"
+                    >
+                      Debug: Check Console
+                    </Button>
+                  </div>
+                </div>
+              )}
+                </>
+              )}
             </div>
           </div>
 

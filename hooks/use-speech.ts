@@ -116,29 +116,42 @@ export function useSpeech() {
 
       // Voices may already be ready
       if (voices.length > 0) {
+        console.log("[Speech] Voices already loaded:", voices.length)
         resolve(voices)
         return
       }
 
+      // Enhanced mobile detection
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+      
       // iOS Safari (including installed PWAs) is notorious for delaying
       // voice availability and sometimes not firing 'voiceschanged'. We
       // poll for a short period to increase reliability.
-      const maxWaitMs = 5000
+      const maxWaitMs = isIOS ? 8000 : 5000 // Give iOS more time
       const start = Date.now()
 
       const tryResolve = () => {
         voices = synth.getVoices()
+        console.log("[Speech] Voice check:", voices.length, "voices found")
+        
         if (voices.length > 0 || Date.now() - start >= maxWaitMs) {
           clearInterval(poller)
+          if (voices.length > 0) {
+            console.log("[Speech] Successfully loaded voices:", voices.map(v => v.name))
+          } else {
+            console.warn("[Speech] No voices found after waiting", maxWaitMs, "ms")
+          }
           resolve(voices)
         }
       }
 
       const onVoicesChanged = () => {
+        console.log("[Speech] voiceschanged event fired")
         tryResolve()
       }
 
-      const poller = setInterval(tryResolve, 120)
+      const poller = setInterval(tryResolve, isMobile ? 200 : 120) // Slower polling on mobile
       synth.addEventListener("voiceschanged", onVoicesChanged, { once: true })
 
       // Final safety timeout
@@ -153,13 +166,17 @@ export function useSpeech() {
         warmup.volume = 0
         // Use common English tag so platforms load en-* voices
         warmup.lang = "en-US"
+        console.log("[Speech] Triggering voice warmup...")
         synth.speak(warmup)
         // Cancel shortly after to keep it silent and quick
         setTimeout(() => {
-          try { synth.cancel() } catch {}
-        }, 50)
-      } catch {
-        // Ignore warmup errors; polling still continues
+          try { 
+            synth.cancel() 
+            console.log("[Speech] Voice warmup completed")
+          } catch {}
+        }, 100) // Slightly longer on mobile
+      } catch (error) {
+        console.warn("[Speech] Voice warmup failed:", error)
       }
     })
   }, [])
@@ -224,6 +241,29 @@ export function useSpeech() {
     [settings.voiceName]
   )
 
+  // Enhanced voice selection with mobile-specific handling
+  const selectBestVoiceWithMobileSupport = useCallback(
+    (voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
+      const selectedVoice = selectBestVoice(voices, overrideVoiceName)
+      
+      // If we found a voice but it's not the preferred one, and we're on mobile,
+      // try to save the best available voice for consistency
+      if (selectedVoice && selectedVoice.name !== settings.voiceName) {
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        
+        if (isMobile && selectedVoice.name !== "Google US English") {
+          // On mobile, if we can't get Google US English, save the best available voice
+          // This ensures consistent voice selection across sessions
+          console.log("[Speech] Mobile device - saving best available voice:", selectedVoice.name)
+          saveSetting("voiceName", selectedVoice.name)
+        }
+      }
+      
+      return selectedVoice
+    },
+    [selectBestVoice, settings.voiceName, saveSetting]
+  )
+
   const speakChunks = useCallback(
     (chunks: string[], voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
       if (chunks.length === 0) {
@@ -242,7 +282,7 @@ export function useSpeech() {
         typeof settings.voicePitch === "number" && isFinite(settings.voicePitch)
           ? settings.voicePitch
           : 1.0
-      const selectedVoice = selectBestVoice(voices, overrideVoiceName)
+      const selectedVoice = selectBestVoiceWithMobileSupport(voices, overrideVoiceName)
 
       const speakNextChunk = () => {
         if (currentChunkIndexRef.current >= chunks.length) {
@@ -358,7 +398,7 @@ export function useSpeech() {
       )
       speakNextChunk()
     },
-    [settings.voiceRate, settings.voicePitch, selectBestVoice]
+    [settings.voiceRate, settings.voicePitch, selectBestVoiceWithMobileSupport]
   )
 
   const speak = useCallback(
