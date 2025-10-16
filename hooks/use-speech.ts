@@ -121,14 +121,10 @@ export function useSpeech() {
         return
       }
 
-      // Enhanced mobile detection
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
-      
       // iOS Safari (including installed PWAs) is notorious for delaying
       // voice availability and sometimes not firing 'voiceschanged'. We
       // poll for a short period to increase reliability.
-      const maxWaitMs = isIOS ? 8000 : 5000 // Give iOS more time
+      const maxWaitMs = 5000
       const start = Date.now()
 
       const tryResolve = () => {
@@ -151,7 +147,7 @@ export function useSpeech() {
         tryResolve()
       }
 
-      const poller = setInterval(tryResolve, isMobile ? 200 : 120) // Slower polling on mobile
+      const poller = setInterval(tryResolve, 120)
       synth.addEventListener("voiceschanged", onVoicesChanged, { once: true })
 
       // Final safety timeout
@@ -174,7 +170,7 @@ export function useSpeech() {
             synth.cancel() 
             console.log("[Speech] Voice warmup completed")
           } catch {}
-        }, 100) // Slightly longer on mobile
+        }, 50)
       } catch (error) {
         console.warn("[Speech] Voice warmup failed:", error)
       }
@@ -241,28 +237,6 @@ export function useSpeech() {
     [settings.voiceName]
   )
 
-  // Enhanced voice selection with mobile-specific handling
-  const selectBestVoiceWithMobileSupport = useCallback(
-    (voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
-      const selectedVoice = selectBestVoice(voices, overrideVoiceName)
-      
-      // If we found a voice but it's not the preferred one, and we're on mobile,
-      // try to save the best available voice for consistency
-      if (selectedVoice && selectedVoice.name !== settings.voiceName) {
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-        
-        if (isMobile && selectedVoice.name !== "Google US English") {
-          // On mobile, if we can't get Google US English, save the best available voice
-          // This ensures consistent voice selection across sessions
-          console.log("[Speech] Mobile device - saving best available voice:", selectedVoice.name)
-          saveSetting("voiceName", selectedVoice.name)
-        }
-      }
-      
-      return selectedVoice
-    },
-    [selectBestVoice, settings.voiceName, saveSetting]
-  )
 
   const speakChunks = useCallback(
     (chunks: string[], voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
@@ -282,7 +256,7 @@ export function useSpeech() {
         typeof settings.voicePitch === "number" && isFinite(settings.voicePitch)
           ? settings.voicePitch
           : 1.0
-      const selectedVoice = selectBestVoiceWithMobileSupport(voices, overrideVoiceName)
+      const selectedVoice = selectBestVoice(voices, overrideVoiceName)
 
       const speakNextChunk = () => {
         if (currentChunkIndexRef.current >= chunks.length) {
@@ -398,7 +372,7 @@ export function useSpeech() {
       )
       speakNextChunk()
     },
-    [settings.voiceRate, settings.voicePitch, selectBestVoiceWithMobileSupport]
+    [settings.voiceRate, settings.voicePitch, selectBestVoice]
   )
 
   const speak = useCallback(

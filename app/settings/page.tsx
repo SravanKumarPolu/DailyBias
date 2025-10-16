@@ -62,36 +62,7 @@ export default function SettingsPage() {
   // Basic platform detection for contextual hints
   const isiOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/i.test(navigator.userAgent)
   const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)
-  const isMobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-  // Mobile-specific voice detection helper
-  const getMobileOptimizedVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
-    if (!isMobile) return undefined
-    
-    // On mobile, prioritize voices that are most likely to be available and work well
-    const mobilePreferredVoices = [
-      "google us english",
-      "daniel",
-      "samantha", 
-      "alex",
-      "victoria",
-      "karen",
-      "moira",
-      "tessa"
-    ]
-    
-    for (const preferred of mobilePreferredVoices) {
-      const voice = voices.find(v => v.name.toLowerCase().includes(preferred))
-      if (voice) {
-        console.log("[Settings] Mobile-optimized voice selected:", voice.name)
-        return voice
-      }
-    }
-    
-    // If no preferred voice found, return the first local voice or first available
-    const localVoice = voices.find(v => v.localService)
-    return localVoice || voices[0]
-  }
 
   // Helper to fetch and filter voices consistently
   const fetchAndFilterVoices = () => {
@@ -200,23 +171,13 @@ export default function SettingsPage() {
         : false
 
       if (!hasSelected) {
-        // Enhanced mobile detection for better voice selection
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-        
-        let defaultVoice: SpeechSynthesisVoice | undefined
-        
-        if (isMobile) {
-          // Use mobile-optimized voice selection
-          defaultVoice = getMobileOptimizedVoice(englishVoices)
-        } else {
-          // On desktop, use original logic
-          const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
-          const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
-          defaultVoice = googleUS || danielVoice || englishVoices[0]
-        }
+        // Use consistent voice selection logic for all platforms
+        const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+        const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
+        const defaultVoice = googleUS || danielVoice || englishVoices[0]
         
         if (defaultVoice?.name && defaultVoice.name !== settings.voiceName) {
-          console.log("[Settings] Auto-selecting voice for platform:", defaultVoice.name, "isMobile:", isMobile)
+          console.log("[Settings] Auto-selecting voice:", defaultVoice.name)
           saveSetting("voiceName", defaultVoice.name)
         }
       }
@@ -239,11 +200,8 @@ export default function SettingsPage() {
         await ensureVoicesLoaded()
       }
       
-      // Add a small delay to ensure voices are fully loaded
-      setTimeout(() => {
-        fetchAndFilterVoices()
-        haptics.selection()
-      }, 100)
+      fetchAndFilterVoices()
+      haptics.selection()
     } catch {
       // no-op; we still attempt to refresh list
       fetchAndFilterVoices()
@@ -820,17 +778,6 @@ export default function SettingsPage() {
                     </div>
                   )}
                   
-                  {/* Mobile voice consistency hint */}
-                  {isMobile && availableVoices.length > 1 && (
-                    <div className="mt-2 space-y-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-100">
-                      <div className="font-medium mb-1">Mobile Voice Optimization</div>
-                      <div className="space-y-1">
-                        <div>• This app automatically selects the best available voice for mobile</div>
-                        <div>• Voice selection is saved for consistency across sessions</div>
-                        <div>• If you hear a different voice than expected, tap "Refresh voices"</div>
-                      </div>
-                    </div>
-                  )}
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-muted-foreground text-xs">
                       ⭐ indicates high-quality local voices
