@@ -59,9 +59,6 @@ export default function SettingsPage() {
   const [timezoneSwitching, setTimezoneSwitching] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  // Basic platform detection for contextual hints
-  const isiOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/i.test(navigator.userAgent)
-  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)
 
 
   // Helper to fetch and filter voices consistently
@@ -170,14 +167,18 @@ export default function SettingsPage() {
         ? englishVoices.some(v => v.name === settings.voiceName)
         : false
 
-      if (!hasSelected) {
-        // Use consistent voice selection logic for all platforms
-        const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+      // Force "Google US English" as the default for all platforms
+      const googleUS = englishVoices.find((v) => v.name.toLowerCase().includes("google us english"))
+      if (googleUS && settings.voiceName !== googleUS.name) {
+        console.log("[Settings] Setting Google US English as default voice:", googleUS.name)
+        saveSetting("voiceName", googleUS.name)
+      } else if (!hasSelected) {
+        // Fallback if Google US English not available
         const danielVoice = englishVoices.find((v) => v.name.toLowerCase().includes("daniel"))
-        const defaultVoice = googleUS || danielVoice || englishVoices[0]
+        const defaultVoice = danielVoice || englishVoices[0]
         
         if (defaultVoice?.name && defaultVoice.name !== settings.voiceName) {
-          console.log("[Settings] Auto-selecting voice:", defaultVoice.name)
+          console.log("[Settings] Auto-selecting fallback voice:", defaultVoice.name)
           saveSetting("voiceName", defaultVoice.name)
         }
       }
@@ -737,46 +738,6 @@ export default function SettingsPage() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                  {availableVoices.length <= 1 && (isiOS || isAndroid) && (
-                    <div className="mt-2 space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-100">
-                      {isiOS ? (
-                        <>
-                          <div className="font-medium mb-1">Limited voices detected on iOS</div>
-                          <div className="space-y-1">
-                            <div>• Web apps (especially PWAs) may only show system voices</div>
-                            <div>• For more voices: open this site in Safari browser</div>
-                            <div>• Go to iOS Settings → Accessibility → Spoken Content → Voices</div>
-                            <div>• Download additional English voices, then refresh here</div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="font-medium mb-1">Limited voices detected on Android</div>
-                          <div className="space-y-1">
-                            <div>• Make sure <strong>Google Text-to-speech</strong> is installed/updated</div>
-                            <div>• Set it as the preferred TTS engine</div>
-                            <div>• Tap <strong>Refresh voices</strong> after making changes</div>
-                          </div>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            <a
-                              href="https://play.google.com/store/apps/details?id=com.google.android.tts"
-                              target="_blank"
-                              rel="noreferrer noopener"
-                              className="rounded-md border border-amber-300 bg-amber-100 px-2 py-1 text-amber-900 hover:bg-amber-200 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-100"
-                            >
-                              Open Google TTS in Play Store
-                            </a>
-                            <a
-                              href="intent://#Intent;action=android.settings.TTS_SETTINGS;end"
-                              className="rounded-md border border-amber-300 bg-amber-100 px-2 py-1 text-amber-900 hover:bg-amber-200 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-100"
-                            >
-                              Open TTS settings
-                            </a>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
                   
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-muted-foreground text-xs">

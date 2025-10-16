@@ -24,8 +24,9 @@ export function useSettings() {
       const settingsData = await getSettings()
       console.log('[Settings] Loaded settings:', settingsData)
       
-      // Enforce a non-empty voice selection (no system-default fallback)
-      if (!settingsData.voiceName || String(settingsData.voiceName).trim() === "") {
+      // Enforce "Google US English" as the default voice for all users
+      if (!settingsData.voiceName || String(settingsData.voiceName).trim() === "" || settingsData.voiceName !== "Google US English") {
+        console.log('[Settings] Migrating to Google US English voice')
         settingsData.voiceName = "Google US English"
         await updateSettings(settingsData)
       }
