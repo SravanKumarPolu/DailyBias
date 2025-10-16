@@ -287,9 +287,16 @@ export function useSpeech() {
         if (selectedVoice) {
           utterance.lang = selectedVoice.lang
           utterance.voice = selectedVoice
+          console.log("=== ACTIVE VOICE DEBUG ===")
+          console.log("[Speech] ACTIVE VOICE:", selectedVoice.name)
+          console.log("[Speech] Voice language:", selectedVoice.lang)
+          console.log("[Speech] Voice is local:", selectedVoice.localService)
+          console.log("[Speech] Is mobile:", /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+          console.log("=========================")
         } else {
           // Fallback language
           utterance.lang = "en-US"
+          console.log("[Speech] Using system default voice (no voice selected)")
         }
 
         utterance.onstart = () => {

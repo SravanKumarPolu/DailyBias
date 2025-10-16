@@ -204,6 +204,14 @@ export default function SettingsPage() {
         console.log("[Settings] Setting best available voice:", bestVoice.name)
         saveSetting("voiceName", bestVoice.name)
       }
+      
+      // DEBUG: Show current active voice status
+      console.log("=== CURRENT VOICE STATUS ===")
+      console.log("[Settings] Currently selected voice in settings:", settings.voiceName)
+      console.log("[Settings] Best voice found:", bestVoice?.name)
+      console.log("[Settings] Is mobile device:", isMobile)
+      console.log("[Settings] Total voices available:", englishVoices.length)
+      console.log("===========================")
     }
   }
 
