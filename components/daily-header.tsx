@@ -1,6 +1,6 @@
 "use client"
 
-import { Moon, Sun, Bell, Mic, MicOff, Monitor } from "lucide-react"
+import { Moon, Sun, Bell, Mic, MicOff, Monitor, Rocket } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSettings } from "@/hooks/use-settings"
 import { useEffect, useState } from "react"
@@ -92,6 +92,19 @@ export function DailyHeader({
           </p>
         </div>
         <div className="flex shrink-0 gap-spacing-xs sm:gap-spacing-sm">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
+            aria-label="Visit Boostlly - Tiny words. Big impact."
+            title="Visit Boostlly - Tiny words. Big impact."
+            className="touch-target hover-grow button-press h-9 w-9 cursor-pointer transition-all duration-fast sm:h-10 sm:w-10"
+          >
+            <Rocket
+              className="h-4 w-4 transition-all duration-fast sm:h-5 sm:w-5"
+              aria-hidden="true"
+            />
+          </Button>
           {voiceCommandsSupported && (
             <Button
               variant="ghost"
