@@ -12,10 +12,6 @@ import {
   Info,
   Mic,
   RotateCcw,
-  Flame,
-  Trophy,
-  Eye,
-  Star,
   Globe,
   Check,
   Search,
@@ -23,11 +19,7 @@ import {
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
-import { ProgressChart } from "@/components/progress-chart"
-import { CategoryChart } from "@/components/category-chart"
-import { StatCard } from "@/components/stat-card"
 import { useSettings } from "@/hooks/use-settings"
-import { useApp } from "@/contexts/app-context"
 import { useSpeech } from "@/hooks/use-speech"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -42,7 +34,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 export default function SettingsPage() {
   const { settings, saveSetting, refresh } = useSettings()
-  const { progressStats, progressList, allBiases } = useApp()
   const { ensureVoicesLoaded, isSupported: speechSupported, speak, stop } = useSpeech()
   const router = useRouter()
   const [importing, setImporting] = useState(false)
@@ -524,61 +515,6 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          {/* Progress Stats Section */}
-          <div className="space-y-4 sm:space-y-6">
-            <div>
-              <h2 className="mb-1 text-lg font-semibold sm:text-xl">Your Progress</h2>
-              <p className="text-muted-foreground text-xs sm:text-sm">
-                Track your learning journey
-              </p>
-            </div>
-
-            {/* Enhanced Stats Grid */}
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-              <StatCard
-                icon={Flame}
-                label="Current Streak"
-                value={progressStats.currentStreak}
-                suffix={progressStats.currentStreak === 1 ? "day" : "days"}
-                color="text-orange-500"
-                bgColor="bg-orange-500/10"
-                delay={0}
-              />
-              <StatCard
-                icon={Trophy}
-                label="Longest Streak"
-                value={progressStats.longestStreak}
-                suffix={progressStats.longestStreak === 1 ? "day" : "days"}
-                color="text-yellow-500"
-                bgColor="bg-yellow-500/10"
-                delay={0.1}
-              />
-              <StatCard
-                icon={Eye}
-                label="Biases Read"
-                value={progressStats.totalBiasesRead}
-                max={allBiases.length}
-                color="text-primary"
-                bgColor="bg-primary/10"
-                delay={0.2}
-              />
-              <StatCard
-                icon={Star}
-                label="Mastered"
-                value={progressStats.masteredCount}
-                max={allBiases.length}
-                color="text-purple-500"
-                bgColor="bg-purple-500/10"
-                delay={0.3}
-              />
-            </div>
-
-            {/* Activity Chart */}
-            <ProgressChart progressList={progressList} />
-
-            {/* Category Breakdown */}
-            <CategoryChart allBiases={allBiases} progressList={progressList} />
-          </div>
 
           {/* Appearance Section */}
           <div className="glass space-y-4 rounded-xl p-4 sm:space-y-6 sm:rounded-2xl sm:p-6">

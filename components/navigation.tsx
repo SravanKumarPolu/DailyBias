@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Grid3x3, Heart, Plus, Settings } from "lucide-react"
+import { Home, Grid3x3, Heart, Plus, BarChart3, Settings } from "lucide-react"
 import { motion } from "framer-motion"
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { href: "/all", icon: Grid3x3, label: "All" },
   { href: "/favorites", icon: Heart, label: "Favorites" },
   { href: "/add", icon: Plus, label: "Add" },
+  { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/settings", icon: Settings, label: "Settings" },
 ]
 
