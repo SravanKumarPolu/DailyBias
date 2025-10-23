@@ -59,6 +59,11 @@ export class ContentVersionManager {
 
   async initialize(): Promise<void> {
     if (this.db) return
+    
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      return
+    }
 
     this.db = await openDB<ContentVersioningDB>("bias-daily-db", 3, {
       upgrade(db) {
@@ -168,18 +173,29 @@ export class ContentVersionManager {
   }
 
   async getContentNeedingReview(): Promise<string[]> {
-    const allMetrics = await this.getAllQualityMetrics()
-    return allMetrics
-      .filter(metrics => {
-        const healthScore = (
-          metrics.accuracyScore * 0.3 +
-          metrics.clarityScore * 0.25 +
-          metrics.completenessScore * 0.25 +
-          metrics.userRating * 0.2
-        )
-        return healthScore < 0.7 || (Date.now() - metrics.lastUpdated) > 30 * 24 * 60 * 60 * 1000 // 30 days
-      })
-      .map(metrics => metrics.biasId)
+    try {
+      await this.initialize()
+      
+      if (!this.db) {
+        return []
+      }
+      
+      const allMetrics = await this.getAllQualityMetrics()
+      return allMetrics
+        .filter(metrics => {
+          const healthScore = (
+            metrics.accuracyScore * 0.3 +
+            metrics.clarityScore * 0.25 +
+            metrics.completenessScore * 0.25 +
+            metrics.userRating * 0.2
+          )
+          return healthScore < 0.7 || (Date.now() - metrics.lastUpdated) > 30 * 24 * 60 * 60 * 1000 // 30 days
+        })
+        .map(metrics => metrics.biasId)
+    } catch (error) {
+      console.error("Error getting content needing review:", error)
+      return []
+    }
   }
 }
 

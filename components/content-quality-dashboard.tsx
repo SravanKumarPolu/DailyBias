@@ -54,11 +54,6 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
     loadQualityMetrics()
   }, [loadQualityMetrics])
 
-  const getHealthColor = (score: number) => {
-    if (score >= 0.8) return "text-green-600"
-    if (score >= 0.6) return "text-yellow-600"
-    return "text-red-600"
-  }
 
   const getHealthBadge = (score: number) => {
     if (score >= 0.8) return { label: "Excellent", color: "bg-green-100 text-green-800" }

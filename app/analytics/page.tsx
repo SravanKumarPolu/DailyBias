@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowLeft, BarChart3, TrendingUp, Users, Star, AlertTriangle } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
@@ -20,7 +20,7 @@ export default function AnalyticsPage() {
   const [contentNeedingReview, setContentNeedingReview] = useState<string[]>([])
 
   // Load content needing review
-  useState(() => {
+  useEffect(() => {
     const loadContentNeedingReview = async () => {
       try {
         const needingReview = await contentVersionManager.getContentNeedingReview()
@@ -30,7 +30,7 @@ export default function AnalyticsPage() {
       }
     }
     loadContentNeedingReview()
-  })
+  }, [])
 
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
