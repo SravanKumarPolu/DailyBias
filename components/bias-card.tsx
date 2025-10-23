@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { BiasExamples, generateExamples, generateTips } from "@/components/bias-examples"
 import { BiasCredibility } from "@/components/bias-credibility"
+import { BiasFeedback } from "@/components/bias-feedback"
+import { ExpertReview } from "@/components/expert-review"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
@@ -452,6 +454,12 @@ export function BiasCard({
 
         {/* Research & Sources */}
         <BiasCredibility bias={bias} />
+
+        {/* User Feedback */}
+        <BiasFeedback bias={bias} />
+
+        {/* Expert Review */}
+        <ExpertReview bias={bias} />
 
         {/* Source badge */}
         {bias.source === "user" && (
