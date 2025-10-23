@@ -71,6 +71,19 @@ export default withPWA({
   disable: process.env.NODE_ENV === 'development',
   // Add cache ID to force cache invalidation on new deployments
   cacheId: `bias-daily-v${Date.now()}`,
+  // Exclude problematic files from precaching
+  exclude: [
+    /app-build-manifest\.json$/,
+    /build-manifest\.json$/,
+    /react-loadable-manifest\.json$/,
+    /page_client-reference-manifest\.js$/,
+    /_not-found/,
+    /server\/app/,
+    /middleware-build-manifest\.js$/,
+    /middleware-react-loadable-manifest\.js$/,
+    /next-font-manifest\.js$/,
+    /next-font-manifest\.json$/,
+  ],
   runtimeCaching: [
     {
       // API and data routes - Always fetch fresh

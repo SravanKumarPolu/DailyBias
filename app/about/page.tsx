@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Shield, Zap, Heart, Download } from "lucide-react"
+import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, CheckCircle, GraduationCap } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
@@ -98,6 +98,69 @@ export default function AboutPage() {
                   <p className="text-muted-foreground text-responsive-sm text-balance">
                     Save favorites, add your own biases, and customize the appearance to match your
                     preferences.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Methodology */}
+          <div className="glass shadow-glass animate-fade-in-up space-y-5 rounded-xl p-5 sm:space-y-6 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.15s" }}>
+            <h2 className="text-responsive-2xl font-semibold tracking-tight">Content Quality & Sources</h2>
+
+            <div className="space-y-4 sm:space-y-5">
+              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
+                <div className="shrink-0">
+                  <div className="bg-blue-100 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
+                    <GraduationCap className="text-blue-600 h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Research-Based Content</h3>
+                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                    All bias explanations are backed by peer-reviewed psychological research. Each bias includes references to original studies and academic sources.
+                  </p>
+                </div>
+              </div>
+
+              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
+                <div className="shrink-0">
+                  <div className="bg-green-100 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
+                    <CheckCircle className="text-green-600 h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Expert Review</h3>
+                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                    Content is reviewed by psychology professionals and cognitive science experts to ensure accuracy and educational value.
+                  </p>
+                </div>
+              </div>
+
+              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
+                <div className="shrink-0">
+                  <div className="bg-purple-100 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
+                    <BookOpen className="text-purple-600 h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Transparent Sources</h3>
+                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                    Every bias includes academic references, research level indicators, and links to original studies when available.
+                  </p>
+                </div>
+              </div>
+
+              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
+                <div className="shrink-0">
+                  <div className="bg-orange-100 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
+                    <Users className="text-orange-600 h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Community Contributions</h3>
+                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                    Users can add custom biases, but all content is reviewed for accuracy and educational value before publication.
                   </p>
                 </div>
               </div>

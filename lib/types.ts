@@ -10,8 +10,19 @@ export interface Bias {
   why: string
   counter: string
   source: BiasSource
+  references?: BiasReference[]
+  researchLevel?: "established" | "emerging" | "contested"
   createdAt?: number
   updatedAt?: number
+}
+
+export interface BiasReference {
+  title: string
+  authors: string
+  year: number
+  journal?: string
+  url?: string
+  type: "study" | "review" | "book" | "article"
 }
 
 export interface UserSettings {

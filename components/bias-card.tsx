@@ -9,6 +9,7 @@ import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { BiasExamples, generateExamples, generateTips } from "@/components/bias-examples"
+import { BiasCredibility } from "@/components/bias-credibility"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
@@ -448,6 +449,9 @@ export function BiasCard({
 
         {/* Examples and Tips */}
         <BiasExamples bias={bias} />
+
+        {/* Research & Sources */}
+        <BiasCredibility bias={bias} />
 
         {/* Source badge */}
         {bias.source === "user" && (

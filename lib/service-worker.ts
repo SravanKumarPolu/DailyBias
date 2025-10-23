@@ -31,6 +31,11 @@ export function registerServiceWorker() {
       .register("/sw.js")
       .then((registration) => {
         console.log("[SW] Service worker registered:", registration.scope)
+        
+        // Handle service worker errors gracefully
+        registration.addEventListener("error", (event) => {
+          console.warn("[SW] Service worker error:", event)
+        })
 
         // Always check for an update on load
         registration.update().catch(() => {})
@@ -64,6 +69,14 @@ export function registerServiceWorker() {
       })
       .catch((error) => {
         console.error("[SW] Service worker registration failed:", error)
+        // If registration fails due to precaching issues, try to unregister and re-register
+        if (error.message?.includes("bad-precaching-response")) {
+          console.log("[SW] Attempting to clear cache and re-register...")
+          unregisterServiceWorker()
+          setTimeout(() => {
+            navigator.serviceWorker.register("/sw.js").catch(() => {})
+          }, 1000)
+        }
       })
 
     // Handle controller change (new SW activated)
