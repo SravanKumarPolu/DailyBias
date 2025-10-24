@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, CheckCircle, GraduationCap } from "lucide-react"
+import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, CheckCircle, GraduationCap, Archive } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
@@ -101,6 +101,20 @@ export default function AboutPage() {
                   </p>
                 </div>
               </div>
+
+              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
+                <div className="shrink-0">
+                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
+                    <Archive className="text-primary h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Archive & Search</h3>
+                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                    Access the complete archive of past biases with powerful search and filtering capabilities.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -167,15 +181,29 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* About the Biases */}
+          {/* Content Transparency */}
           <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">About the Biases</h2>
+            <h2 className="text-responsive-2xl font-semibold tracking-tight">Content Coverage & Transparency</h2>
             <div className="text-muted-foreground space-y-3 text-responsive-sm leading-relaxed sm:space-y-4">
               <p className="text-balance">
-                This app features 50 cognitive biases from Elon Musk's curated list. Each bias
-                includes a clear explanation, why it happens, and practical strategies to counter
-                it.
+                This app currently features <strong>50 carefully curated cognitive biases</strong> out of approximately 180 known biases in the field. Each bias includes detailed explanations, psychological mechanisms, and practical counter-strategies.
               </p>
+              <p className="text-balance">
+                <strong>Daily Rotation:</strong> With 50 biases, you'll see each bias approximately every 2 months, ensuring variety while allowing for deep learning and retention.
+              </p>
+              <p className="text-balance">
+                <strong>Archive Access:</strong> All past biases are available in the Archive section, where you can search, filter, and revisit any bias you've encountered.
+              </p>
+              <p className="text-balance">
+                <strong>Continuous Growth:</strong> We're actively expanding our collection through expert curation and community contributions, with a goal of reaching 100+ biases.
+              </p>
+            </div>
+          </div>
+
+          {/* About the Biases */}
+          <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.25s" }}>
+            <h2 className="text-responsive-2xl font-semibold tracking-tight">About the Biases</h2>
+            <div className="text-muted-foreground space-y-3 text-responsive-sm leading-relaxed sm:space-y-4">
               <p className="text-balance">
                 Cognitive biases are systematic patterns of deviation from rationality in judgment.
                 Understanding them helps you make better decisions, think more clearly, and avoid

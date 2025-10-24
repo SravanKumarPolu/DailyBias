@@ -90,6 +90,9 @@ export function DailyHeader({
           <p className="text-muted-foreground truncate text-xs transition-colors duration-fast sm:text-sm">
             {today}
           </p>
+          <p className="text-muted-foreground truncate text-xs transition-colors duration-fast">
+            One bias daily • 50 total • ~2 months rotation
+          </p>
         </div>
         <div className="flex shrink-0 gap-spacing-xs sm:gap-spacing-sm">
           <Button

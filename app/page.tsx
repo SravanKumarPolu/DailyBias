@@ -7,6 +7,8 @@ import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { TiltCard } from "@/components/tilt-card"
 import { PullToRefresh } from "@/components/pull-to-refresh"
+import { ContentTransparency } from "@/components/content-transparency"
+import { BiasProgressIndicator } from "@/components/bias-progress-indicator"
 import { useApp } from "@/contexts/app-context"
 import { getPersonalizedDailyBias, getTodayDateString } from "@/lib/daily-selector"
 import type { Bias } from "@/lib/types"
@@ -252,16 +254,24 @@ export default function HomePage() {
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>
         ) : (
-          <TiltCard className="mb-6" tiltStrength={8} glareEnabled>
-            <DynamicBiasCard
-              bias={dailyBias}
-              variant="detailed"
-              isFavorite={isFav}
-              onToggleFavorite={handleToggleFavorite}
-              isMastered={isMast}
-              onToggleMastered={handleToggleMastered}
-            />
-          </TiltCard>
+          <>
+            <TiltCard className="mb-6" tiltStrength={8} glareEnabled>
+              <DynamicBiasCard
+                bias={dailyBias}
+                variant="detailed"
+                isFavorite={isFav}
+                onToggleFavorite={handleToggleFavorite}
+                isMastered={isMast}
+                onToggleMastered={handleToggleMastered}
+              />
+            </TiltCard>
+
+            {/* Content Transparency */}
+            <ContentTransparency showDetails={false} />
+
+            {/* Progress Indicator */}
+            <BiasProgressIndicator />
+          </>
         )}
       </main>
 
