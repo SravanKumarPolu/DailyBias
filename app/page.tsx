@@ -9,6 +9,7 @@ import { TiltCard } from "@/components/tilt-card"
 import { PullToRefresh } from "@/components/pull-to-refresh"
 import { ContentTransparency } from "@/components/content-transparency"
 import { BiasProgressIndicator } from "@/components/bias-progress-indicator"
+import { DailyProgressWidget } from "@/components/daily-progress-widget"
 import { useApp } from "@/contexts/app-context"
 import { getPersonalizedDailyBias, getTodayDateString } from "@/lib/daily-selector"
 import type { Bias } from "@/lib/types"
@@ -268,6 +269,9 @@ export default function HomePage() {
 
             {/* Content Transparency */}
             <ContentTransparency showDetails={false} />
+
+            {/* Daily Progress Widget */}
+            <DailyProgressWidget />
 
             {/* Progress Indicator */}
             <BiasProgressIndicator />

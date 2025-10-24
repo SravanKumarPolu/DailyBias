@@ -6,6 +6,7 @@ import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { ContentQualityDashboard } from "@/components/content-quality-dashboard"
+import { LearningProgressDashboard } from "@/components/learning-progress-dashboard"
 import { useSettings } from "@/hooks/use-settings"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +17,7 @@ import { contentVersionManager } from "@/lib/content-versioning"
 export default function AnalyticsPage() {
   const { settings } = useSettings()
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<"overview" | "quality" | "reviews">("overview")
+  const [activeTab, setActiveTab] = useState<"overview" | "progress" | "quality" | "reviews">("overview")
   const [contentNeedingReview, setContentNeedingReview] = useState<string[]>([])
 
   // Load content needing review
@@ -34,6 +35,7 @@ export default function AnalyticsPage() {
 
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
+    { id: "progress", label: "Learning Progress", icon: TrendingUp },
     { id: "quality", label: "Content Quality", icon: Star },
     { id: "reviews", label: "Reviews", icon: Users }
   ]
@@ -181,6 +183,10 @@ export default function AnalyticsPage() {
                   </CardContent>
                 </Card>
               </div>
+            )}
+
+            {activeTab === "progress" && (
+              <LearningProgressDashboard />
             )}
 
             {activeTab === "quality" && (
