@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useApp } from "@/contexts/app-context"
 import { getCategoryLabel, getCategoryColor } from "@/lib/category-utils"
+import type { BiasCategory } from "@/lib/types"
 import { 
   TrendingUp, 
   Calendar, 
@@ -108,7 +109,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
     })
 
     return Object.entries(categoryCounts).map(([category, counts]) => ({
-      category: getCategoryLabel(category),
+      category: getCategoryLabel(category as BiasCategory),
       viewed: counts.viewed,
       mastered: counts.mastered,
       total: counts.total,
@@ -343,7 +344,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                 <div key={category.category} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Badge className={getCategoryColor(category.category.toLowerCase())}>
+                      <Badge className={getCategoryColor(category.category.toLowerCase() as BiasCategory)}>
                         {category.category}
                       </Badge>
                       <span className="text-sm text-muted-foreground">
