@@ -9,7 +9,7 @@ import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { BiasExamples, generateExamples, generateTips } from "@/components/bias-examples"
-import { BiasCredibility } from "@/components/bias-credibility"
+import { BiasResearchInfo } from "@/components/bias-research-info"
 import { BiasFeedback } from "@/components/bias-feedback"
 import { ExpertReview } from "@/components/expert-review"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
@@ -453,7 +453,7 @@ export function BiasCard({
         <BiasExamples bias={bias} />
 
         {/* Research & Sources */}
-        <BiasCredibility bias={bias} />
+        <BiasResearchInfo bias={bias} />
 
         {/* User Feedback */}
         <BiasFeedback bias={bias} />
