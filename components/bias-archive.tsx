@@ -171,38 +171,47 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap gap-4">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map(category => (
-                    <SelectItem key={category} value={category}>
-                      {getCategoryLabel(category)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 flex-1">
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full sm:w-40 touch-target">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map(category => (
+                      <SelectItem key={category} value={category}>
+                        {getCategoryLabel(category)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Month" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Months</SelectItem>
-                  {months.map(month => (
-                    <SelectItem key={month.value} value={month.value}>
-                      {month.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                  <SelectTrigger className="w-full sm:w-40 touch-target">
+                    <SelectValue placeholder="Month" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Months</SelectItem>
+                    {months.map(month => (
+                      <SelectItem key={month.value} value={month.value}>
+                        {month.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <Filter className="h-4 w-4" />
-                {filteredEntries.length} result{filteredEntries.length !== 1 ? 's' : ''}
+              <div className="flex items-center justify-between sm:justify-end gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  <span className="hidden xs:inline">
+                    {filteredEntries.length} result{filteredEntries.length !== 1 ? 's' : ''}
+                  </span>
+                  <span className="xs:hidden">
+                    {filteredEntries.length}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -222,13 +231,13 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
               isToday(entry.date) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-950/20' : ''
             }`}>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg flex-shrink-0">
                       <Calendar className="h-4 w-4 text-blue-600" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-lg break-words">
                         {formatDate(entry.date)}
                         {isToday(entry.date) && (
                           <Badge className="ml-2 bg-blue-100 text-blue-800 border-blue-200">
@@ -236,20 +245,22 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
                           </Badge>
                         )}
                       </CardTitle>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
                         <Badge className={getCategoryColor(entry.bias.category)}>
                           {getCategoryLabel(entry.bias.category)}
                         </Badge>
                         {entry.isFavorite && (
-                          <Badge variant="outline" className="text-red-600 border-red-300">
+                          <Badge variant="outline" className="text-red-600 border-red-300 text-xs">
                             <Heart className="h-3 w-3 mr-1" />
-                            Favorite
+                            <span className="hidden xs:inline">Favorite</span>
+                            <span className="xs:hidden">♥</span>
                           </Badge>
                         )}
                         {entry.isMastered && (
-                          <Badge variant="outline" className="text-yellow-600 border-yellow-300">
+                          <Badge variant="outline" className="text-yellow-600 border-yellow-300 text-xs">
                             <Star className="h-3 w-3 mr-1" />
-                            Mastered
+                            <span className="hidden xs:inline">Mastered</span>
+                            <span className="xs:hidden">★</span>
                           </Badge>
                         )}
                       </div>
@@ -274,7 +285,89 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
       {totalPages > 1 && (
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            {/* Mobile Layout */}
+            <div className="block sm:hidden">
+              <div className="text-center mb-4">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Page {currentPage} of {totalPages}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  {startIndex + 1}-{Math.min(endIndex, filteredEntries.length)} of {filteredEntries.length} entries
+                </div>
+              </div>
+              
+              {/* Mobile Pagination Controls */}
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="flex-1 mr-2 touch-target"
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  <span className="hidden xs:inline">Previous</span>
+                </Button>
+                
+                {/* Mobile Page Numbers - Show fewer pages */}
+                <div className="flex items-center gap-1 flex-1 justify-center">
+                  {currentPage > 1 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      className="w-8 h-8 p-0 touch-target"
+                    >
+                      {currentPage - 1}
+                    </Button>
+                  )}
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-8 h-8 p-0 touch-target"
+                  >
+                    {currentPage}
+                  </Button>
+                  {currentPage < totalPages && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      className="w-8 h-8 p-0 touch-target"
+                    >
+                      {currentPage + 1}
+                    </Button>
+                  )}
+                  {currentPage < totalPages - 1 && (
+                    <>
+                      <span className="text-gray-400 text-xs">...</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(totalPages)}
+                        className="w-8 h-8 p-0 touch-target"
+                      >
+                        {totalPages}
+                      </Button>
+                    </>
+                  )}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  className="flex-1 ml-2 touch-target"
+                >
+                  <span className="hidden xs:inline">Next</span>
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Desktop Layout */}
+            <div className="hidden sm:flex items-center justify-between">
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Showing {startIndex + 1}-{Math.min(endIndex, filteredEntries.length)} of {filteredEntries.length} entries
               </div>
@@ -284,6 +377,7 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
                   size="sm"
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
+                  className="touch-target"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
@@ -297,7 +391,7 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
                         variant={currentPage === page ? "default" : "outline"}
                         size="sm"
                         onClick={() => setCurrentPage(page)}
-                        className="w-8 h-8 p-0"
+                        className="w-8 h-8 p-0 touch-target"
                       >
                         {page}
                       </Button>
@@ -310,7 +404,7 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
                         variant="outline"
                         size="sm"
                         onClick={() => setCurrentPage(totalPages)}
-                        className="w-8 h-8 p-0"
+                        className="w-8 h-8 p-0 touch-target"
                       >
                         {totalPages}
                       </Button>
@@ -322,6 +416,7 @@ export function BiasArchive({ showTransparency = true }: BiasArchiveProps) {
                   size="sm"
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
+                  className="touch-target"
                 >
                   Next
                   <ChevronRight className="h-4 w-4" />
