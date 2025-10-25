@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { BookOpen, ExternalLink, ChevronDown, ChevronUp, GraduationCap, FileText, Shield } from "lucide-react"
+import { BookOpen, ExternalLink, ChevronDown, ChevronUp, GraduationCap, FileText, Shield, Users, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -126,6 +126,49 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                   </div>
                 )}
               </div>
+
+              {/* Author Information */}
+              {(bias.author || bias.reviewer) && (
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    Author & Review Information
+                  </h4>
+                  <div className="space-y-3">
+                    {bias.author && (
+                      <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <div className="flex items-start gap-3">
+                          <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
+                            <GraduationCap className="h-4 w-4 text-green-600 dark:text-green-400" />
+                          </div>
+                          <div className="flex-1">
+                            <h5 className="font-medium text-green-900 dark:text-green-100">Author</h5>
+                            <p className="text-sm text-green-800 dark:text-green-200 font-medium">{bias.author.name}</p>
+                            <p className="text-xs text-green-700 dark:text-green-300">{bias.author.credentials}</p>
+                            <p className="text-xs text-green-600 dark:text-green-400">{bias.author.affiliation}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {bias.reviewer && (
+                      <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div className="flex items-start gap-3">
+                          <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
+                            <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div className="flex-1">
+                            <h5 className="font-medium text-blue-900 dark:text-blue-100">Reviewed By</h5>
+                            <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">{bias.reviewer.name}</p>
+                            <p className="text-xs text-blue-700 dark:text-blue-300">{bias.reviewer.credentials}</p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400">{bias.reviewer.affiliation}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* References */}
               {bias.references && bias.references.length > 0 ? (

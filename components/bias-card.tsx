@@ -214,9 +214,27 @@ export function BiasCard({
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1">
-            <Badge className={`mb-1.5 text-xs sm:mb-2 ${getCategoryColor(bias.category)}`}>
-              {getCategoryLabel(bias.category)}
-            </Badge>
+            <div className="flex flex-wrap items-center gap-1.5 mb-1.5 sm:mb-2">
+              <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
+                {getCategoryLabel(bias.category)}
+              </Badge>
+              {bias.researchLevel && (
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs ${
+                    bias.researchLevel === 'established' 
+                      ? 'border-green-200 text-green-700 bg-green-50' 
+                      : bias.researchLevel === 'emerging'
+                      ? 'border-yellow-200 text-yellow-700 bg-yellow-50'
+                      : 'border-orange-200 text-orange-700 bg-orange-50'
+                  }`}
+                >
+                  {bias.researchLevel === 'established' ? 'Well-Established' : 
+                   bias.researchLevel === 'emerging' ? 'Emerging Research' : 
+                   'Contested'}
+                </Badge>
+              )}
+            </div>
             <h3 className="mb-1.5 font-serif text-base leading-tight font-semibold text-balance sm:mb-2 sm:text-lg">
               {bias.title}
             </h3>
@@ -295,9 +313,27 @@ export function BiasCard({
         {/* Header */}
         <div className="relative flex items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1">
-            <Badge className={`mb-2 text-xs sm:mb-3 ${getCategoryColor(bias.category)}`}>
-              {getCategoryLabel(bias.category)}
-            </Badge>
+            <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3">
+              <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
+                {getCategoryLabel(bias.category)}
+              </Badge>
+              {bias.researchLevel && (
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs ${
+                    bias.researchLevel === 'established' 
+                      ? 'border-green-200 text-green-700 bg-green-50' 
+                      : bias.researchLevel === 'emerging'
+                      ? 'border-yellow-200 text-yellow-700 bg-yellow-50'
+                      : 'border-orange-200 text-orange-700 bg-orange-50'
+                  }`}
+                >
+                  {bias.researchLevel === 'established' ? 'Well-Established' : 
+                   bias.researchLevel === 'emerging' ? 'Emerging Research' : 
+                   'Contested'}
+                </Badge>
+              )}
+            </div>
             <h1
               id="bias-title"
               className="font-serif text-xl font-bold text-balance sm:text-2xl md:text-3xl"
