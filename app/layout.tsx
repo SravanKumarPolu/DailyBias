@@ -9,6 +9,7 @@ import { TelegramRedirectBanner } from "@/components/telegram-redirect-banner"
 import { AppProvider } from "@/contexts/app-context"
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
 import { SWUpdateToaster } from "@/components/sw-update-toaster"
+import { siteConfig } from "@/lib/site-config"
 
 // Inter: Modern, highly legible sans-serif
 const inter = Inter({
@@ -30,12 +31,11 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   // Basic Metadata
-  metadataBase: new URL("https://biasdaily.app"),
+  metadataBase: new URL(siteConfig.url),
   title: "Bias Daily - Learn One Cognitive Bias Every Day",
-  description:
-    "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Free, offline-first PWA with no tracking.",
-  applicationName: "Bias Daily",
-  generator: "Daily Bias",
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  generator: siteConfig.name,
   keywords: [
     "cognitive biases",
     "daily learning",
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
     "PWA",
     "offline app",
   ],
-  authors: [{ name: "Bias Daily" }],
-  creator: "Bias Daily",
-  publisher: "Bias Daily",
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
   category: "education",
 
   // PWA & Theme
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Bias Daily",
+    title: siteConfig.name,
   },
 
   // Open Graph (Facebook, LinkedIn, etc.)
@@ -75,8 +75,8 @@ export const metadata: Metadata = {
     title: "Bias Daily - Learn One Cognitive Bias Every Day",
     description:
       "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Free, offline-first PWA.",
-    url: "https://biasdaily.app",
-    siteName: "Bias Daily",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     images: [
       {
         url: "/icon-512.jpg",
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     title: "Bias Daily - Learn One Cognitive Bias Every Day",
     description: "Discover a new cognitive bias each day from Elon Musk's list of 50 biases.",
     images: ["/icon-512.jpg"],
-    creator: "@biasdaily",
+    creator: siteConfig.twitterHandle,
   },
 
   // SEO & Indexing
@@ -114,7 +114,7 @@ export const metadata: Metadata = {
 
   // Canonical URL (prevents duplicate content)
   alternates: {
-    canonical: "https://biasdaily.app",
+    canonical: siteConfig.url,
   },
 
   // Format Detection (disable auto-detection of phone numbers, etc.)

@@ -6,11 +6,12 @@ import { Brain, Star, Zap, Check, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { siteConfig } from "@/lib/site-config"
 
 const onboardingSteps = [
   {
     icon: Brain,
-    title: "Welcome to Daily Bias",
+    title: `Welcome to ${siteConfig.name}`,
     description: "Learn one cognitive bias every day from Elon Musk's curated list of 50 biases.",
     features: [
       "New bias daily, personalized to your progress",

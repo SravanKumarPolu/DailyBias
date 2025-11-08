@@ -31,6 +31,7 @@ import Link from "next/link"
 import { haptics } from "@/lib/haptics"
 import { getCommonTimezones, detectTimezone, isValidTimezone } from "@/lib/timezone-utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { siteConfig } from "@/lib/site-config"
 
 export default function SettingsPage() {
   const { settings, saveSetting, refresh } = useSettings()
@@ -809,7 +810,7 @@ export default function SettingsPage() {
           {/* Daily Bias Section */}
           <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
             <div>
-              <h2 className="mb-1 text-lg font-semibold sm:text-xl">Daily Bias</h2>
+              <h2 className="mb-1 text-lg font-semibold sm:text-xl">{siteConfig.name}</h2>
               <p className="text-muted-foreground text-xs sm:text-sm">
                 Configure daily bias selection
               </p>

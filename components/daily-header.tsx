@@ -6,6 +6,7 @@ import { useSettings } from "@/hooks/use-settings"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { getTimezoneAwareDateString } from "@/lib/timezone-utils"
+import { siteConfig } from "@/lib/site-config"
 
 interface DailyHeaderProps {
   isVoiceListening?: boolean
@@ -84,7 +85,7 @@ export function DailyHeader({
         <div className="min-w-0 flex-1">
           <Link href="/" className="group inline-block cursor-pointer">
             <h1 className="group-hover:text-primary inline-block truncate text-lg font-bold transition-all duration-fast group-hover:scale-105 sm:text-xl md:text-2xl">
-              Daily Bias
+              {siteConfig.name}
             </h1>
           </Link>
           <p className="text-muted-foreground truncate text-xs transition-colors duration-fast sm:text-sm">

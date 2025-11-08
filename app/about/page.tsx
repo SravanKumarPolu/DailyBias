@@ -7,6 +7,7 @@ import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useSettings } from "@/hooks/use-settings"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { siteConfig } from "@/lib/site-config"
 
 export default function AboutPage() {
   const { settings } = useSettings()
@@ -49,7 +50,7 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Daily Bias</h3>
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">{siteConfig.name}</h3>
                   <p className="text-muted-foreground text-responsive-sm text-balance">
                     Discover a new cognitive bias every day, selected deterministically so everyone
                     sees the same bias on the same date.
