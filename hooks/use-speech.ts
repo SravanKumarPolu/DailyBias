@@ -302,71 +302,99 @@ export function useSpeech() {
         }
 
         utterance.onstart = () => {
-          if (currentChunkIndexRef.current === 0) {
-            console.log("[Speech] Started speaking with voice:", utterance.voice?.name || "default")
-            setIsSpeaking(true)
+          try {
+            if (currentChunkIndexRef.current === 0) {
+              console.log("[Speech] Started speaking with voice:", utterance.voice?.name || "default")
+              setIsSpeaking(true)
+            }
+          } catch (error) {
+            console.error("[Speech] Error in onstart handler:", error)
           }
         }
 
         utterance.onend = () => {
-          currentChunkIndexRef.current++
-          console.log(`[Speech] Chunk ${currentChunkIndexRef.current}/${chunks.length} completed`)
+          try {
+            currentChunkIndexRef.current++
+            console.log(`[Speech] Chunk ${currentChunkIndexRef.current}/${chunks.length} completed`)
 
-          // Small delay between chunks to prevent issues
-          setTimeout(() => {
-            speakNextChunk()
-          }, 50)
+            // Small delay between chunks to prevent issues
+            setTimeout(() => {
+              try {
+                speakNextChunk()
+              } catch (error) {
+                console.error("[Speech] Error in onend speakNextChunk:", error)
+                setIsSpeaking(false)
+                utteranceQueueRef.current = []
+              }
+            }, 50)
+          } catch (error) {
+            console.error("[Speech] Error in onend handler:", error)
+            setIsSpeaking(false)
+            utteranceQueueRef.current = []
+          }
         }
 
         utterance.onerror = (event: SpeechSynthesisErrorEvent) => {
-          const errorType = event.error || "unknown"
-          const voiceName = utterance.voice?.name || "default"
-          const isLocal = utterance.voice?.localService ?? false
+          try {
+            const errorType = event.error || "unknown"
+            const voiceName = utterance.voice?.name || "default"
+            const isLocal = utterance.voice?.localService ?? false
 
-          // Handle specific errors with appropriate log levels
-          // Check for both British and American spellings of canceled/cancelled
-          if (
-            errorType === "interrupted" ||
-            errorType === "canceled" ||
-            (errorType as string) === "cancelled"
-          ) {
-            // This is normal behavior when user stops speech or starts new speech
-            const logLevel = isIntentionallyStoppingRef.current ? "log" : "warn"
-            console[logLevel](
-              `[Speech] Speech ${errorType}: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}${isIntentionallyStoppingRef.current ? " (intentional stop)" : ""}`
+            // Handle specific errors with appropriate log levels
+            // Check for both British and American spellings of canceled/cancelled
+            if (
+              errorType === "interrupted" ||
+              errorType === "canceled" ||
+              (errorType as string) === "cancelled"
+            ) {
+              // This is normal behavior when user stops speech or starts new speech
+              const logLevel = isIntentionallyStoppingRef.current ? "log" : "warn"
+              console[logLevel](
+                `[Speech] Speech ${errorType}: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}${isIntentionallyStoppingRef.current ? " (intentional stop)" : ""}`
+              )
+              setIsSpeaking(false)
+              utteranceQueueRef.current = []
+              return
+            }
+
+            if (errorType === "not-allowed") {
+              console.warn(
+                `[Speech] Not allowed - user interaction required first: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+              )
+              setIsSpeaking(false)
+              utteranceQueueRef.current = []
+              return
+            }
+
+            // For network or synthesis errors, try to continue with next chunk
+            if (errorType === "network" || errorType === "synthesis-failed") {
+              console.warn(
+                `[Speech] ${errorType} - attempting next chunk: voice="${voiceName}", local=${isLocal}, chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
+              )
+              currentChunkIndexRef.current++
+              setTimeout(() => {
+                try {
+                  speakNextChunk()
+                } catch (error) {
+                  console.error("[Speech] Error in onerror speakNextChunk:", error)
+                  setIsSpeaking(false)
+                  utteranceQueueRef.current = []
+                }
+              }, 100)
+              return
+            }
+
+            // Unknown/unexpected error - use console.error
+            console.error(
+              `[Speech] Unexpected error: type="${errorType}", voice="${voiceName}", local=${isLocal}, chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
             )
             setIsSpeaking(false)
             utteranceQueueRef.current = []
-            return
-          }
-
-          if (errorType === "not-allowed") {
-            console.warn(
-              `[Speech] Not allowed - user interaction required first: voice="${voiceName}", chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
-            )
+          } catch (error) {
+            console.error("[Speech] Error in onerror handler:", error)
             setIsSpeaking(false)
             utteranceQueueRef.current = []
-            return
           }
-
-          // For network or synthesis errors, try to continue with next chunk
-          if (errorType === "network" || errorType === "synthesis-failed") {
-            console.warn(
-              `[Speech] ${errorType} - attempting next chunk: voice="${voiceName}", local=${isLocal}, chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
-            )
-            currentChunkIndexRef.current++
-            setTimeout(() => {
-              speakNextChunk()
-            }, 100)
-            return
-          }
-
-          // Unknown/unexpected error - use console.error
-          console.error(
-            `[Speech] Unexpected error: type="${errorType}", voice="${voiceName}", local=${isLocal}, chunk=${currentChunkIndexRef.current + 1}/${chunks.length}`
-          )
-          setIsSpeaking(false)
-          utteranceQueueRef.current = []
         }
 
         utteranceRef.current = utterance

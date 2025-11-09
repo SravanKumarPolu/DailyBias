@@ -33,38 +33,85 @@ export function registerServiceWorker() {
         console.log("[SW] Service worker registered:", registration.scope)
         
         // Handle service worker errors gracefully
-        registration.addEventListener("error", (event) => {
-          console.warn("[SW] Service worker error:", event)
-        })
+        // Note: ServiceWorkerRegistration doesn't have an 'error' event
+        // Errors are handled via the service worker's error event or registration.update() rejections
+        if (registration.installing) {
+          registration.installing.addEventListener("error", (event) => {
+            console.warn("[SW] Service worker installation error:", event)
+          })
+        }
+        if (registration.waiting) {
+          registration.waiting.addEventListener("error", (event) => {
+            console.warn("[SW] Service worker waiting error:", event)
+          })
+        }
+        if (registration.active) {
+          registration.active.addEventListener("error", (event) => {
+            console.warn("[SW] Service worker active error:", event)
+          })
+        }
 
         // Always check for an update on load
-        registration.update().catch(() => {})
+        registration.update().catch((error) => {
+          // Silently handle update errors - they're not critical
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[SW] Update check failed:", error)
+          }
+        })
 
         // Check for updates periodically (every 15 minutes)
         setInterval(() => {
-          registration.update().catch(() => {})
+          registration.update().catch((error) => {
+            // Silently handle update errors
+            if (process.env.NODE_ENV === "development") {
+              console.warn("[SW] Periodic update check failed:", error)
+            }
+          })
         }, 15 * 60 * 1000)
 
         // Also check when app becomes visible again or goes online
-        const updateOnVisibility = () => registration.update().catch(() => {})
-        const updateOnOnline = () => registration.update().catch(() => {})
+        const updateOnVisibility = () => {
+          registration.update().catch((error) => {
+            if (process.env.NODE_ENV === "development") {
+              console.warn("[SW] Visibility update check failed:", error)
+            }
+          })
+        }
+        const updateOnOnline = () => {
+          registration.update().catch((error) => {
+            if (process.env.NODE_ENV === "development") {
+              console.warn("[SW] Online update check failed:", error)
+            }
+          })
+        }
         document.addEventListener("visibilitychange", updateOnVisibility)
         window.addEventListener("online", updateOnOnline)
 
         // Handle updates
         registration.addEventListener("updatefound", () => {
-          const newWorker = registration.installing
-          if (!newWorker) return
+          try {
+            const newWorker = registration.installing
+            if (!newWorker) return
 
-          newWorker.addEventListener("statechange", () => {
-            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              // New service worker available - notify UI instead of auto-reload
-              console.log("[SW] New version available - notifying UI")
+            newWorker.addEventListener("statechange", () => {
               try {
-                window.dispatchEvent(new CustomEvent("sw-update-available"))
-              } catch {}
-            }
-          })
+                if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                  // New service worker available - notify UI instead of auto-reload
+                  console.log("[SW] New version available - notifying UI")
+                  window.dispatchEvent(new CustomEvent("sw-update-available"))
+                }
+              } catch (error) {
+                console.error("[SW] Error in statechange handler:", error)
+              }
+            })
+
+            // Also listen for errors on the new worker
+            newWorker.addEventListener("error", (event) => {
+              console.warn("[SW] New worker error:", event)
+            })
+          } catch (error) {
+            console.error("[SW] Error in updatefound handler:", error)
+          }
         })
       })
       .catch((error) => {
@@ -80,10 +127,14 @@ export function registerServiceWorker() {
       })
 
     // Handle controller change (new SW activated)
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    console.log("[SW] Controller changed, reloading page")
-    window.location.reload()
-  })
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      try {
+        console.log("[SW] Controller changed, reloading page")
+        window.location.reload()
+      } catch (error) {
+        console.error("[SW] Error in controllerchange handler:", error)
+      }
+    })
   })
 }
 

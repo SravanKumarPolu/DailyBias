@@ -34,10 +34,35 @@ const nextConfig = {
           lib: {
             test: /[\\/]node_modules[\\/]/,
             name(module) {
-              const packageName = module.context.match(
-                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-              )?.[1]
-              return `npm.${packageName?.replace('@', '')}`
+              // Try to extract package name from module context
+              const match = module.context?.match(
+                /[\\/]node_modules[\\/](@[^/]+[\\/])?([^/]+)/
+              )
+              
+              if (match) {
+                const scoped = match[1] ? match[1].replace(/[@\\/]/g, '') : ''
+                const packageName = match[2] || ''
+                const fullName = scoped ? `${scoped}-${packageName}` : packageName
+                
+                if (fullName) {
+                  return `npm.${fullName}`
+                }
+              }
+              
+              // Fallback: use a hash of the resource path or generic name
+              const resource = module.resource || module.identifier?.() || ''
+              if (resource) {
+                // Create a simple hash from the resource path
+                const hash = resource
+                  .split('')
+                  .reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0)
+                  .toString(36)
+                  .slice(-8)
+                return `npm.${hash}`
+              }
+              
+              // Final fallback
+              return 'npm.vendor'
             },
             priority: 30,
           },
