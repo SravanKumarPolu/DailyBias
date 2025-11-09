@@ -130,20 +130,20 @@ export default function AnalyticsPage() {
 
           {/* Content Needing Review Alert */}
           {contentNeedingReview.length > 0 && (
-            <Card className="border-l-4 border-l-orange-500 bg-orange-50/50 dark:bg-orange-950/20">
+            <Card className="border-l-4 border-l-warning bg-warning/10 dark:bg-warning/20">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-orange-900 dark:text-orange-100">
+                <CardTitle className="flex items-center gap-2 text-warning-foreground">
                   <AlertTriangle className="h-5 w-5" />
                   Content Needing Review
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-orange-800 dark:text-orange-200 mb-3">
+                <p className="text-warning-foreground/90 mb-3">
                   {contentNeedingReview.length} content item{contentNeedingReview.length !== 1 ? 's' : ''} need{contentNeedingReview.length === 1 ? 's' : ''} expert review or have low quality scores.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {contentNeedingReview.map((biasId) => (
-                    <Badge key={biasId} variant="outline" className="text-orange-800 border-orange-300">
+                    <Badge key={biasId} variant="outline" className="border-warning/30 text-warning-foreground bg-warning/10 dark:border-warning/40 dark:bg-warning/20">
                       {biasId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </Badge>
                   ))}
@@ -171,32 +171,32 @@ export default function AnalyticsPage() {
                   </Card>
                 ) : metrics ? (
                   <>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <TrendingUp className="h-5 w-5 text-blue-600" />
-                          Content Health Overview
-                        </CardTitle>
-                      </CardHeader>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-info" />
+                        Content Health Overview
+                      </CardTitle>
+                    </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                          <div className="text-center p-4 bg-info/10 dark:bg-info/20 rounded-lg border border-info/20">
+                            <div className="text-2xl font-bold text-info-foreground">
                               {metrics.averageQualityScore.toFixed(1)}%
                             </div>
-                            <div className="text-sm text-blue-700 dark:text-blue-300">Average Quality Score</div>
+                            <div className="text-sm text-info-foreground/80">Average Quality Score</div>
                           </div>
-                          <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                            <div className="text-2xl font-bold text-green-900 dark:text-green-100">
+                          <div className="text-center p-4 bg-success/10 dark:bg-success/20 rounded-lg border border-success/20">
+                            <div className="text-2xl font-bold text-success-foreground">
                               {metrics.expertReviewsCount}
                             </div>
-                            <div className="text-sm text-green-700 dark:text-green-300">Expert Reviews</div>
+                            <div className="text-sm text-success-foreground/80">Expert Reviews</div>
                           </div>
-                          <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                          <div className="text-center p-4 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/20">
+                            <div className="text-2xl font-bold text-accent-foreground">
                               {metrics.userFeedbackCount}
                             </div>
-                            <div className="text-sm text-purple-700 dark:text-purple-300">User Feedback</div>
+                            <div className="text-sm text-accent-foreground/80">User Feedback</div>
                           </div>
                         </div>
                       </CardContent>
@@ -213,32 +213,32 @@ export default function AnalyticsPage() {
                               const iconMap = {
                                 expert_review: { 
                                   icon: Star, 
-                                  bgClass: "bg-green-100 dark:bg-green-900",
-                                  iconClass: "text-green-600"
+                                  bgClass: "bg-success/20 dark:bg-success/30",
+                                  iconClass: "text-success-foreground"
                                 },
                                 user_feedback: { 
                                   icon: Users, 
-                                  bgClass: "bg-blue-100 dark:bg-blue-900",
-                                  iconClass: "text-blue-600"
+                                  bgClass: "bg-info/20 dark:bg-info/30",
+                                  iconClass: "text-info-foreground"
                                 },
                                 quality_improvement: { 
                                   icon: TrendingUp, 
-                                  bgClass: "bg-purple-100 dark:bg-purple-900",
-                                  iconClass: "text-purple-600"
+                                  bgClass: "bg-accent/20 dark:bg-accent/30",
+                                  iconClass: "text-accent-foreground"
                                 }
                               }
                               const { icon: Icon, bgClass, iconClass } = iconMap[activity.type]
                               
                               return (
-                                <div key={`${activity.biasId}-${index}`} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <div key={`${activity.biasId}-${index}`} className="flex items-center gap-3 p-3 bg-muted/30 dark:bg-muted/20 rounded-lg border border-border/50">
                                   <div className={`${bgClass} p-2 rounded-lg`}>
                                     <Icon className={`h-4 w-4 ${iconClass}`} />
                                   </div>
                                   <div className="flex-1">
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <p className="text-sm font-medium text-foreground">
                                       {activity.description}
                                     </p>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                                    <p className="text-xs text-muted-foreground">
                                       {formatRelativeTime(activity.timestamp)}
                                     </p>
                                   </div>
@@ -247,7 +247,7 @@ export default function AnalyticsPage() {
                             })}
                           </div>
                         ) : (
-                          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                          <div className="text-center py-8 text-muted-foreground">
                             <p>No recent activity to display</p>
                             <p className="text-sm mt-2">Activity will appear here as content is reviewed and updated</p>
                           </div>
@@ -258,7 +258,7 @@ export default function AnalyticsPage() {
                 ) : (
                   <Card>
                     <CardContent className="p-6 text-center">
-                      <p className="text-gray-500 dark:text-gray-400">No analytics data available yet</p>
+                      <p className="text-muted-foreground">No analytics data available yet</p>
                     </CardContent>
                   </Card>
                 )}
@@ -303,41 +303,41 @@ export default function AnalyticsPage() {
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Review Status</h4>
+                          <h4 className="font-medium text-foreground mb-3">Review Status</h4>
                           <div className="space-y-2">
                             <div className="flex justify-between">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Approved</span>
-                              <span className="font-medium">{metrics.approvedCount}</span>
+                              <span className="text-sm text-muted-foreground">Approved</span>
+                              <span className="font-medium text-foreground">{metrics.approvedCount}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Pending</span>
-                              <span className="font-medium">{metrics.pendingCount}</span>
+                              <span className="text-sm text-muted-foreground">Pending</span>
+                              <span className="font-medium text-foreground">{metrics.pendingCount}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Needs Revision</span>
-                              <span className="font-medium">{metrics.needsRevisionCount}</span>
+                              <span className="text-sm text-muted-foreground">Needs Revision</span>
+                              <span className="font-medium text-foreground">{metrics.needsRevisionCount}</span>
                             </div>
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Average Scores</h4>
+                          <h4 className="font-medium text-foreground mb-3">Average Scores</h4>
                           {qualityMetrics.length > 0 ? (
                             <div className="space-y-2">
                               <div className="flex justify-between">
-                                <span className="text-sm text-gray-600 dark:text-gray-400">Accuracy</span>
-                                <span className="font-medium">{metrics.averageAccuracy.toFixed(1)}/10</span>
+                                <span className="text-sm text-muted-foreground">Accuracy</span>
+                                <span className="font-medium text-foreground">{metrics.averageAccuracy.toFixed(1)}/10</span>
                               </div>
                               <div className="flex justify-between">
-                                <span className="text-sm text-gray-600 dark:text-gray-400">Clarity</span>
-                                <span className="font-medium">{metrics.averageClarity.toFixed(1)}/10</span>
+                                <span className="text-sm text-muted-foreground">Clarity</span>
+                                <span className="font-medium text-foreground">{metrics.averageClarity.toFixed(1)}/10</span>
                               </div>
                               <div className="flex justify-between">
-                                <span className="text-sm text-gray-600 dark:text-gray-400">Completeness</span>
-                                <span className="font-medium">{metrics.averageCompleteness.toFixed(1)}/10</span>
+                                <span className="text-sm text-muted-foreground">Completeness</span>
+                                <span className="font-medium text-foreground">{metrics.averageCompleteness.toFixed(1)}/10</span>
                               </div>
                             </div>
                           ) : (
-                            <p className="text-sm text-gray-500 dark:text-gray-400">No quality metrics available</p>
+                            <p className="text-sm text-muted-foreground">No quality metrics available</p>
                           )}
                         </div>
                       </div>
@@ -346,7 +346,7 @@ export default function AnalyticsPage() {
                 ) : (
                   <Card>
                     <CardContent className="p-6 text-center">
-                      <p className="text-gray-500 dark:text-gray-400">No review statistics available yet</p>
+                      <p className="text-muted-foreground">No review statistics available yet</p>
                     </CardContent>
                   </Card>
                 )}

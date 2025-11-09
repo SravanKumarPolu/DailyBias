@@ -237,12 +237,13 @@ export default function AddBiasPage() {
               </div>
             </div>
           ) : (
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
               {userBiases.map((bias, index) => (
                 <div 
                   key={bias.id} 
-                  className="glass hover-lift animate-fade-in-up shadow-soft rounded-xl p-4 transition-all duration-200 sm:rounded-2xl sm:p-6"
+                  className="glass hover-lift animate-fade-in-up shadow-soft rounded-xl p-4 transition-all duration-200 sm:rounded-2xl sm:p-6 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
+                  tabIndex={0}
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3 sm:gap-4">

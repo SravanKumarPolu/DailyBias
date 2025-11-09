@@ -204,11 +204,11 @@ export default function HomePage() {
         {loading || !dailyBias ? (
           <div className="space-y-4 sm:space-y-6" role="status" aria-live="polite" aria-busy="true" aria-label="Loading daily bias">
             {/* Stats grid skeleton */}
-            <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-3">
+            <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4">
               {[1, 2, 3, 4].map((i) => (
                 <div 
                   key={i} 
-                  className="group relative overflow-hidden rounded-lg bg-card/50 backdrop-blur-sm border border-border/50 p-4 shadow-depth-1"
+                  className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 shadow-depth-1 sm:rounded-2xl"
                 >
                   <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/5 to-transparent" 
                        style={{ animationDelay: `${i * 100}ms` }} />
@@ -220,7 +220,7 @@ export default function HomePage() {
             </div>
 
             {/* Featured card skeleton */}
-            <div className="group relative overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-primary/20 p-4 shadow-depth-2 sm:rounded-3xl sm:p-6">
+            <div className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border-2 border-primary/20 p-4 shadow-depth-2 sm:rounded-2xl sm:p-6">
               <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/10 to-transparent" 
                    style={{ animationDuration: '2s' }} />
               <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent animate-pulse" />

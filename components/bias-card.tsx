@@ -223,10 +223,10 @@ export function BiasCard({
                   variant="outline" 
                   className={`text-xs ${
                     bias.researchLevel === 'established' 
-                      ? 'border-green-200 text-green-700 bg-green-50' 
+                      ? 'border-success/30 text-success-foreground bg-success/10 dark:border-success/40 dark:bg-success/20' 
                       : bias.researchLevel === 'emerging'
-                      ? 'border-yellow-200 text-yellow-700 bg-yellow-50'
-                      : 'border-orange-200 text-orange-700 bg-orange-50'
+                      ? 'border-warning/30 text-warning-foreground bg-warning/10 dark:border-warning/40 dark:bg-warning/20'
+                      : 'border-destructive/30 text-destructive-foreground bg-destructive/10 dark:border-destructive/40 dark:bg-destructive/20'
                   }`}
                 >
                   {bias.researchLevel === 'established' ? 'Well-Established' : 
@@ -256,7 +256,7 @@ export function BiasCard({
               >
                 <Heart
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
-                    isFavorite ? "fill-red-500 text-red-500" : ""
+                    isFavorite ? "fill-destructive text-destructive" : ""
                   } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
                 />
               </Button>
@@ -274,7 +274,7 @@ export function BiasCard({
               >
                 <Star
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
-                    isMastered ? "fill-yellow-500 text-yellow-500" : ""
+                    isMastered ? "fill-warning text-warning-foreground" : ""
                   } ${masteredAnimating ? "animate-bounce-subtle" : ""}`}
                 />
               </Button>
@@ -322,10 +322,10 @@ export function BiasCard({
                   variant="outline" 
                   className={`text-xs ${
                     bias.researchLevel === 'established' 
-                      ? 'border-green-200 text-green-700 bg-green-50' 
+                      ? 'border-success/30 text-success-foreground bg-success/10 dark:border-success/40 dark:bg-success/20' 
                       : bias.researchLevel === 'emerging'
-                      ? 'border-yellow-200 text-yellow-700 bg-yellow-50'
-                      : 'border-orange-200 text-orange-700 bg-orange-50'
+                      ? 'border-warning/30 text-warning-foreground bg-warning/10 dark:border-warning/40 dark:bg-warning/20'
+                      : 'border-destructive/30 text-destructive-foreground bg-destructive/10 dark:border-destructive/40 dark:bg-destructive/20'
                   }`}
                 >
                   {bias.researchLevel === 'established' ? 'Well-Established' : 
@@ -353,7 +353,7 @@ export function BiasCard({
               >
                 <Heart
                   className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
-                    isFavorite ? "fill-red-500 text-red-500" : ""
+                    isFavorite ? "fill-destructive text-destructive" : ""
                   } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
                 />
               </Button>
@@ -369,7 +369,7 @@ export function BiasCard({
               >
                 <Star
                   className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
-                    isMastered ? "fill-yellow-500 text-yellow-500" : ""
+                    isMastered ? "fill-warning text-warning-foreground" : ""
                   } ${masteredAnimating ? "animate-bounce-subtle" : ""}`}
                 />
               </Button>
@@ -468,7 +468,7 @@ export function BiasCard({
             {copied ? (
               <>
                 <Check
-                  className="mr-2 h-4 w-4 text-green-500 transition-all duration-200"
+                  className="mr-2 h-4 w-4 text-success transition-all duration-200"
                   aria-hidden="true"
                 />
                 Copied

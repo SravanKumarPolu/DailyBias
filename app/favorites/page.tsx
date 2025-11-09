@@ -158,7 +158,7 @@ export default function FavoritesPage() {
           {/* Favorites count */}
           {!loading && favoriteBiases.length > 0 && (
             <div className="text-muted-foreground flex items-center gap-2 text-sm sm:text-base">
-              <Heart className="h-4 w-4 text-red-500" aria-hidden="true" />
+              <Heart className="h-4 w-4 text-destructive" aria-hidden="true" />
               <span>
                 {favoriteBiases.length} {favoriteBiases.length === 1 ? "favorite" : "favorites"}
               </span>
@@ -186,15 +186,15 @@ export default function FavoritesPage() {
               }
             />
           ) : (
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
               {favoriteBiases.map((bias, index) => (
                 <Link 
                   key={bias.id} 
                   href={`/bias/${bias.id}`} 
-                  className="group cursor-pointer"
+                  className="group cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                 >
-                  <div className="animate-fade-in-up transition-transform duration-200 group-hover:scale-[1.02]">
+                  <div className="animate-fade-in-up transition-all duration-200 group-hover:scale-[1.01] group-focus:scale-[1.01]">
                     <DynamicBiasCard
                       bias={bias}
                       variant="compact"

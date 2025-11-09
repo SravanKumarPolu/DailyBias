@@ -230,7 +230,7 @@ export default function AllBiasesPage() {
 
           {/* Biases grid */}
           {biasesLoading ? (
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2" role="status" aria-live="polite" aria-busy="true" aria-label="Loading biases">
+            <div className="grid gap-4 sm:gap-5 md:grid-cols-2" role="status" aria-live="polite" aria-busy="true" aria-label="Loading biases">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="glass space-y-3 rounded-xl p-4 sm:rounded-2xl sm:p-6">
                   <Skeleton className="h-5 w-16 sm:h-6 sm:w-20" />
@@ -264,15 +264,15 @@ export default function AllBiasesPage() {
             />
           ) : (
             <>
-              <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
                 {visibleResults.map(({ bias, score }, index) => (
                 <Link
                   key={bias.id}
                   href={`/bias/${bias.id}`}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                 >
-                  <div className="relative transition-transform duration-200 group-hover:scale-[1.02]">
+                  <div className="relative transition-all duration-200 group-hover:scale-[1.01] group-focus:scale-[1.01]">
                     <DynamicBiasCard
                       bias={bias}
                       variant="compact"
