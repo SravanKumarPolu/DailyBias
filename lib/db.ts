@@ -4,6 +4,14 @@ import type { ContentVersion, ContentQualityMetrics } from "./content-versioning
 import { getYesterdayDateString } from "./timezone-utils"
 import { logger } from "./logger"
 
+export interface FeedbackData {
+  biasId: string
+  type: "accuracy" | "clarity" | "completeness" | "other"
+  rating: "positive" | "negative"
+  comment?: string
+  timestamp: number
+}
+
 interface BiasDB extends DBSchema {
   userBiases: {
     key: string
@@ -41,6 +49,11 @@ interface BiasDB extends DBSchema {
     value: ContentQualityMetrics
     indexes: { "byScore": number }
   }
+  feedback: {
+    key: number
+    value: FeedbackData
+    indexes: { "by-biasId": string; "by-timestamp": number }
+  }
 }
 
 let dbInstance: IDBPDatabase<BiasDB> | null = null
@@ -58,7 +71,7 @@ export async function getDB() {
   if (dbInstance) return dbInstance
 
   try {
-    dbInstance = await openDB<BiasDB>("bias-daily-db", 3, {
+    dbInstance = await openDB<BiasDB>("bias-daily-db", 4, {
       upgrade(db, oldVersion) {
         if (oldVersion < 1) {
           const userBiasStore = db.createObjectStore("userBiases", { keyPath: "id" })
@@ -90,6 +103,15 @@ export async function getDB() {
           if (!db.objectStoreNames.contains("qualityMetrics")) {
             const metricsStore = db.createObjectStore("qualityMetrics", { keyPath: "biasId" })
             metricsStore.createIndex("byScore", "userRating")
+          }
+        }
+
+        if (oldVersion < 4) {
+          // Create feedback store if it doesn't exist
+          if (!db.objectStoreNames.contains("feedback")) {
+            const feedbackStore = db.createObjectStore("feedback", { autoIncrement: true })
+            feedbackStore.createIndex("by-biasId", "biasId")
+            feedbackStore.createIndex("by-timestamp", "timestamp")
           }
         }
       },
@@ -348,6 +370,7 @@ export async function exportAllData() {
     const settings = await db.get("settings", "user-settings")
     const progress = await db.getAll("progress")
     const streak = await db.get("streak", "user-streak")
+    const feedback = await db.getAll("feedback")
 
     return {
       userBiases,
@@ -355,9 +378,33 @@ export async function exportAllData() {
       settings,
       progress,
       streak,
+      feedback,
       exportedAt: Date.now(),
     }
   }, "Failed to export data")
+}
+
+export async function addFeedback(feedback: FeedbackData): Promise<void> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    // Auto-increment key will be generated automatically
+    await db.add("feedback", feedback)
+  }, "Failed to add feedback")
+}
+
+export async function getAllFeedback(): Promise<FeedbackData[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    return db.getAll("feedback")
+  }, "Failed to load feedback")
+}
+
+export async function getFeedbackByBiasId(biasId: string): Promise<FeedbackData[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const index = db.transaction("feedback").store.index("by-biasId")
+    return index.getAll(biasId)
+  }, "Failed to load feedback by bias ID")
 }
 
 export async function importAllData(data: {
@@ -366,6 +413,7 @@ export async function importAllData(data: {
   settings?: UserSettings
   progress?: BiasProgress[]
   streak?: StreakData
+  feedback?: FeedbackData[]
 }) {
   return withErrorHandling(async () => {
     const db = await getDB()
@@ -394,6 +442,12 @@ export async function importAllData(data: {
 
     if (data.streak) {
       await db.put("streak", data.streak, "user-streak")
+    }
+
+    if (data.feedback) {
+      for (const feedback of data.feedback) {
+        await db.add("feedback", feedback)
+      }
     }
   }, "Failed to import data")
 }

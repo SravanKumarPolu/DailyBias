@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ThumbsUp, ThumbsDown, MessageSquare, Send, X, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,18 +8,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import type { Bias } from "@/lib/types"
-import { openDB } from "idb"
+import { addFeedback, type FeedbackData } from "@/lib/db"
+import { sendFeedbackEmail, initEmailJS, isEmailAvailable } from "@/lib/email"
 
 interface BiasFeedbackProps {
   bias: Bias
-}
-
-interface FeedbackData {
-  biasId: string
-  type: "accuracy" | "clarity" | "completeness" | "other"
-  rating: "positive" | "negative"
-  comment?: string
-  timestamp: number
 }
 
 export function BiasFeedback({ bias }: BiasFeedbackProps) {
@@ -30,6 +23,13 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const { toast } = useToast()
+
+  // Initialize EmailJS on component mount
+  useEffect(() => {
+    if (isEmailAvailable()) {
+      initEmailJS()
+    }
+  }, [])
 
   const feedbackTypes = [
     { id: "accuracy", label: "Accuracy", description: "Is the information correct?" },
@@ -52,9 +52,24 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
         timestamp: Date.now()
       }
 
-      // Store feedback in IndexedDB
-      const db = await openDB("bias-daily-db", 2)
-      await db.add("feedback", feedback)
+      // Store feedback in IndexedDB (local backup)
+      await addFeedback(feedback)
+
+      // Send email to debiasdaily@gmail.com (non-blocking)
+      // If email fails, we still consider the submission successful since it's stored locally
+      try {
+        await sendFeedbackEmail({
+          biasId: bias.id,
+          biasTitle: bias.title,
+          feedbackType: feedback.type,
+          rating: feedback.rating,
+          comment: feedback.comment,
+          timestamp: feedback.timestamp,
+        })
+      } catch (emailError) {
+        // Email failure is not critical - feedback is already stored in IndexedDB
+        console.warn("Email send failed, but feedback is stored locally:", emailError)
+      }
 
       setIsSubmitted(true)
       toast({

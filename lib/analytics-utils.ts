@@ -5,6 +5,7 @@
 
 import type { Bias, BiasProgress } from "./types"
 import type { ContentQualityMetrics } from "./content-versioning"
+import type { FeedbackData } from "./db"
 
 export interface AnalyticsMetrics {
   totalBiases: number
@@ -36,7 +37,8 @@ export interface RecentActivity {
 export async function calculateAnalyticsMetrics(
   allBiases: Bias[],
   progressList: BiasProgress[],
-  qualityMetrics: ContentQualityMetrics[]
+  qualityMetrics: ContentQualityMetrics[],
+  feedbackList: FeedbackData[] = []
 ): Promise<AnalyticsMetrics> {
   const totalBiases = allBiases.length
   const knownBiases = totalBiases // For now, known biases = total biases
@@ -68,8 +70,10 @@ export async function calculateAnalyticsMetrics(
   // Count expert reviews (biases with expertReviewScore)
   const expertReviewsCount = qualityMetrics.filter(m => m.expertReviewScore !== undefined).length
 
-  // Count user feedback (biases with viewCount > 0 or userRating > 0)
-  const userFeedbackCount = progressList.filter(p => p.viewCount > 0).length
+  // Count user feedback - use actual feedback submissions if available, otherwise fall back to view counts
+  const userFeedbackCount = feedbackList.length > 0 
+    ? new Set(feedbackList.map(f => f.biasId)).size 
+    : progressList.filter(p => p.viewCount > 0).length
 
   // Count reviewed biases
   const reviewedBiasesCount = qualityMetrics.length
@@ -115,12 +119,13 @@ export async function calculateAnalyticsMetrics(
 }
 
 /**
- * Generate recent activity from quality metrics and progress data
+ * Generate recent activity from quality metrics, progress data, and feedback
  */
 export async function getRecentActivity(
   allBiases: Bias[],
   progressList: BiasProgress[],
-  qualityMetrics: ContentQualityMetrics[]
+  qualityMetrics: ContentQualityMetrics[],
+  feedbackList: FeedbackData[] = []
 ): Promise<RecentActivity[]> {
   const activities: RecentActivity[] = []
   const biasMap = new Map(allBiases.map(b => [b.id, b]))
@@ -144,24 +149,51 @@ export async function getRecentActivity(
     }
   })
 
-  // Get recent user feedback (recently viewed biases)
-  const recentViews = progressList
-    .filter(p => p.viewCount > 0)
-    .sort((a, b) => b.viewedAt - a.viewedAt)
-    .slice(0, 5)
+  // Get recent user feedback - use actual feedback submissions if available
+  if (feedbackList.length > 0) {
+    const recentFeedback = feedbackList
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 5)
 
-  recentViews.forEach(progress => {
-    const bias = biasMap.get(progress.biasId)
-    if (bias) {
-      activities.push({
-        type: "user_feedback",
-        biasId: progress.biasId,
-        biasTitle: bias.title,
-        timestamp: progress.viewedAt,
-        description: `User feedback received for "${bias.title}"`
-      })
-    }
-  })
+    recentFeedback.forEach(feedback => {
+      const bias = biasMap.get(feedback.biasId)
+      if (bias) {
+        const feedbackTypeLabels = {
+          accuracy: "Accuracy",
+          clarity: "Clarity",
+          completeness: "Completeness",
+          other: "General"
+        }
+        const ratingLabel = feedback.rating === "positive" ? "Good" : "Needs Improvement"
+        activities.push({
+          type: "user_feedback",
+          biasId: feedback.biasId,
+          biasTitle: bias.title,
+          timestamp: feedback.timestamp,
+          description: `${feedbackTypeLabels[feedback.type]} feedback (${ratingLabel}) for "${bias.title}"`
+        })
+      }
+    })
+  } else {
+    // Fallback to view counts if no feedback available
+    const recentViews = progressList
+      .filter(p => p.viewCount > 0)
+      .sort((a, b) => b.viewedAt - a.viewedAt)
+      .slice(0, 5)
+
+    recentViews.forEach(progress => {
+      const bias = biasMap.get(progress.biasId)
+      if (bias) {
+        activities.push({
+          type: "user_feedback",
+          biasId: progress.biasId,
+          biasTitle: bias.title,
+          timestamp: progress.viewedAt,
+          description: `User feedback received for "${bias.title}"`
+        })
+      }
+    })
+  }
 
   // Get quality improvements (metrics updated recently with improved scores)
   const recentQualityUpdates = qualityMetrics

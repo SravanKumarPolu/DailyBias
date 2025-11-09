@@ -65,20 +65,25 @@ export class ContentVersionManager {
       return
     }
 
-    this.db = await openDB<ContentVersioningDB>("bias-daily-db", 3, {
-      upgrade(db) {
-        // Create content versions store
-        if (!db.objectStoreNames.contains("contentVersions")) {
-          const versionStore = db.createObjectStore("contentVersions", { keyPath: "id" })
-          versionStore.createIndex("byBiasId", "biasId")
-          versionStore.createIndex("byTimestamp", "timestamp")
+    this.db = await openDB<ContentVersioningDB>("bias-daily-db", 4, {
+      upgrade(db, oldVersion) {
+        // Create content versions store (version 3 migration)
+        if (oldVersion < 3) {
+          if (!db.objectStoreNames.contains("contentVersions")) {
+            const versionStore = db.createObjectStore("contentVersions", { keyPath: "id" })
+            versionStore.createIndex("byBiasId", "biasId")
+            versionStore.createIndex("byTimestamp", "timestamp")
+          }
+          
+          // Create quality metrics store
+          if (!db.objectStoreNames.contains("qualityMetrics")) {
+            const metricsStore = db.createObjectStore("qualityMetrics", { keyPath: "biasId" })
+            metricsStore.createIndex("byScore", "userRating")
+          }
         }
         
-        // Create quality metrics store
-        if (!db.objectStoreNames.contains("qualityMetrics")) {
-          const metricsStore = db.createObjectStore("qualityMetrics", { keyPath: "biasId" })
-          metricsStore.createIndex("byScore", "userRating")
-        }
+        // Version 4 migration - feedback store is handled by main db.ts
+        // No action needed here as both use the same database instance
       }
     })
   }

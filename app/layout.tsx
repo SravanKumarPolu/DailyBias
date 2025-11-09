@@ -9,6 +9,7 @@ import { TelegramRedirectBanner } from "@/components/telegram-redirect-banner"
 import { AppProvider } from "@/contexts/app-context"
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
 import { SWUpdateToaster } from "@/components/sw-update-toaster"
+import { PlausibleAnalytics } from "@/components/plausible-analytics"
 import { siteConfig } from "@/lib/site-config"
 
 // Inter: Modern, highly legible sans-serif
@@ -158,6 +159,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Toaster />
           </AppProvider>
         </ErrorBoundary>
+        <PlausibleAnalytics />
       </body>
     </html>
   )

@@ -20,6 +20,7 @@ import {
   type AnalyticsMetrics,
   type RecentActivity 
 } from "@/lib/analytics-utils"
+import { getAllFeedback, type FeedbackData } from "@/lib/db"
 
 export default function AnalyticsPage() {
   const { 
@@ -33,6 +34,7 @@ export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "progress" | "quality" | "reviews">("overview")
   const [contentNeedingReview, setContentNeedingReview] = useState<string[]>([])
   const [qualityMetrics, setQualityMetrics] = useState<ContentQualityMetrics[]>([])
+  const [feedbackList, setFeedbackList] = useState<FeedbackData[]>([])
   const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null)
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
   const [loading, setLoading] = useState(true)
@@ -51,16 +53,21 @@ export default function AnalyticsPage() {
         const needingReview = await contentVersionManager.getContentNeedingReview()
         setContentNeedingReview(needingReview)
         
+        // Load feedback data
+        const feedback = await getAllFeedback()
+        setFeedbackList(feedback)
+        
         // Calculate analytics metrics
         const calculatedMetrics = await calculateAnalyticsMetrics(
           allBiases,
           progressList,
-          metrics
+          metrics,
+          feedback
         )
         setMetrics(calculatedMetrics)
         
         // Get recent activity
-        const activity = await getRecentActivity(allBiases, progressList, metrics)
+        const activity = await getRecentActivity(allBiases, progressList, metrics, feedback)
         setRecentActivity(activity)
       } catch (error) {
         console.error("Error loading analytics data:", error)
@@ -180,23 +187,23 @@ export default function AnalyticsPage() {
                     </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="text-center p-4 bg-info/10 dark:bg-info/20 rounded-lg border border-info/20">
-                            <div className="text-2xl font-bold text-info-foreground">
+                          <div className="text-center p-4 bg-info/15 dark:bg-info/25 rounded-lg border border-info/30 dark:border-info/40">
+                            <div className="text-2xl font-bold text-info dark:text-info-foreground">
                               {metrics.averageQualityScore.toFixed(1)}%
                             </div>
-                            <div className="text-sm text-info-foreground/80">Average Quality Score</div>
+                            <div className="text-sm font-medium text-foreground dark:text-info-foreground mt-1">Average Quality Score</div>
                           </div>
-                          <div className="text-center p-4 bg-success/10 dark:bg-success/20 rounded-lg border border-success/20">
-                            <div className="text-2xl font-bold text-success-foreground">
+                          <div className="text-center p-4 bg-success/15 dark:bg-success/25 rounded-lg border border-success/30 dark:border-success/40">
+                            <div className="text-2xl font-bold text-success dark:text-success-foreground">
                               {metrics.expertReviewsCount}
                             </div>
-                            <div className="text-sm text-success-foreground/80">Expert Reviews</div>
+                            <div className="text-sm font-medium text-foreground dark:text-success-foreground mt-1">Expert Reviews</div>
                           </div>
-                          <div className="text-center p-4 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/20">
-                            <div className="text-2xl font-bold text-accent-foreground">
+                          <div className="text-center p-4 bg-accent/15 dark:bg-accent/25 rounded-lg border border-accent/30 dark:border-accent/40">
+                            <div className="text-2xl font-bold text-accent dark:text-accent-foreground">
                               {metrics.userFeedbackCount}
                             </div>
-                            <div className="text-sm text-accent-foreground/80">User Feedback</div>
+                            <div className="text-sm font-medium text-foreground dark:text-accent-foreground mt-1">User Feedback</div>
                           </div>
                         </div>
                       </CardContent>
