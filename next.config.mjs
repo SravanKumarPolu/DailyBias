@@ -2,6 +2,8 @@ import withPWA from 'next-pwa'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable static export for Capacitor/Android (safe for client-side apps)
+  output: 'export',
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: false,  // ✅ Re-enabled (warnings won't block build)

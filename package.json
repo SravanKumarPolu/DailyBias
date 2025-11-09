@@ -17,9 +17,16 @@
     "test:coverage": "vitest --coverage",
     "validate": "pnpm type-check && pnpm lint && pnpm test",
     "audit:deps": "pnpm audit",
-    "audit:security": "pnpm audit --audit-level=moderate"
+    "audit:security": "pnpm audit --audit-level=moderate",
+    "android:sync": "pnpm build && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npx cap run android",
+    "android:build": "pnpm build && npx cap sync android && npx cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
