@@ -7,31 +7,72 @@ import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { ContentQualityDashboard } from "@/components/content-quality-dashboard"
 import { LearningProgressDashboard } from "@/components/learning-progress-dashboard"
-import { useSettings } from "@/hooks/use-settings"
+import { useApp } from "@/contexts/app-context"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
-import { contentVersionManager } from "@/lib/content-versioning"
+import { contentVersionManager, type ContentQualityMetrics } from "@/lib/content-versioning"
+import { 
+  calculateAnalyticsMetrics, 
+  getRecentActivity, 
+  formatRelativeTime,
+  type AnalyticsMetrics,
+  type RecentActivity 
+} from "@/lib/analytics-utils"
 
 export default function AnalyticsPage() {
-  const { settings } = useSettings()
+  const { 
+    allBiases, 
+    biasesLoading, 
+    progressList, 
+    progressLoading,
+    settings
+  } = useApp()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<"overview" | "progress" | "quality" | "reviews">("overview")
   const [contentNeedingReview, setContentNeedingReview] = useState<string[]>([])
+  const [qualityMetrics, setQualityMetrics] = useState<ContentQualityMetrics[]>([])
+  const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null)
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Load content needing review
+  // Load analytics data
   useEffect(() => {
-    const loadContentNeedingReview = async () => {
+    const loadAnalyticsData = async () => {
       try {
+        setLoading(true)
+        
+        // Load quality metrics
+        const metrics = await contentVersionManager.getAllQualityMetrics()
+        setQualityMetrics(metrics)
+        
+        // Load content needing review
         const needingReview = await contentVersionManager.getContentNeedingReview()
         setContentNeedingReview(needingReview)
+        
+        // Calculate analytics metrics
+        const calculatedMetrics = await calculateAnalyticsMetrics(
+          allBiases,
+          progressList,
+          metrics
+        )
+        setMetrics(calculatedMetrics)
+        
+        // Get recent activity
+        const activity = await getRecentActivity(allBiases, progressList, metrics)
+        setRecentActivity(activity)
       } catch (error) {
-        console.error("Error loading content needing review:", error)
+        console.error("Error loading analytics data:", error)
+      } finally {
+        setLoading(false)
       }
     }
-    loadContentNeedingReview()
-  }, [])
+    
+    if (!biasesLoading && !progressLoading && allBiases.length > 0) {
+      loadAnalyticsData()
+    }
+  }, [allBiases, progressList, biasesLoading, progressLoading])
 
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
@@ -115,73 +156,112 @@ export default function AnalyticsPage() {
           <div className="space-y-6">
             {activeTab === "overview" && (
               <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-blue-600" />
-                      Content Health Overview
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">85%</div>
-                        <div className="text-sm text-blue-700 dark:text-blue-300">Average Quality Score</div>
+                {loading || biasesLoading || progressLoading ? (
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="animate-pulse space-y-4">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {[1, 2, 3].map((i) => (
+                            <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                        <div className="text-2xl font-bold text-green-900 dark:text-green-100">42</div>
-                        <div className="text-sm text-green-700 dark:text-green-300">Expert Reviews</div>
-                      </div>
-                      <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                        <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">156</div>
-                        <div className="text-sm text-purple-700 dark:text-purple-300">User Feedback</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ) : metrics ? (
+                  <>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5 text-blue-600" />
+                          Content Health Overview
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                              {metrics.averageQualityScore.toFixed(1)}%
+                            </div>
+                            <div className="text-sm text-blue-700 dark:text-blue-300">Average Quality Score</div>
+                          </div>
+                          <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-100">
+                              {metrics.expertReviewsCount}
+                            </div>
+                            <div className="text-sm text-green-700 dark:text-green-300">Expert Reviews</div>
+                          </div>
+                          <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                              {metrics.userFeedbackCount}
+                            </div>
+                            <div className="text-sm text-purple-700 dark:text-purple-300">User Feedback</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Activity</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
-                          <Star className="h-4 w-4 text-green-600" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            Expert review completed for "Confirmation Bias"
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">2 hours ago</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                          <Users className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            User feedback received for "Anchoring Bias"
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">4 hours ago</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
-                          <TrendingUp className="h-4 w-4 text-purple-600" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            Content quality improved for "Availability Heuristic"
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">1 day ago</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Recent Activity</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {recentActivity.length > 0 ? (
+                          <div className="space-y-3">
+                            {recentActivity.map((activity, index) => {
+                              const iconMap = {
+                                expert_review: { 
+                                  icon: Star, 
+                                  bgClass: "bg-green-100 dark:bg-green-900",
+                                  iconClass: "text-green-600"
+                                },
+                                user_feedback: { 
+                                  icon: Users, 
+                                  bgClass: "bg-blue-100 dark:bg-blue-900",
+                                  iconClass: "text-blue-600"
+                                },
+                                quality_improvement: { 
+                                  icon: TrendingUp, 
+                                  bgClass: "bg-purple-100 dark:bg-purple-900",
+                                  iconClass: "text-purple-600"
+                                }
+                              }
+                              const { icon: Icon, bgClass, iconClass } = iconMap[activity.type]
+                              
+                              return (
+                                <div key={`${activity.biasId}-${index}`} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                  <div className={`${bgClass} p-2 rounded-lg`}>
+                                    <Icon className={`h-4 w-4 ${iconClass}`} />
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                      {activity.description}
+                                    </p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                                      {formatRelativeTime(activity.timestamp)}
+                                    </p>
+                                  </div>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                            <p>No recent activity to display</p>
+                            <p className="text-sm mt-2">Activity will appear here as content is reviewed and updated</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </>
+                ) : (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-gray-500 dark:text-gray-400">No analytics data available yet</p>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
 
@@ -195,49 +275,81 @@ export default function AnalyticsPage() {
 
             {activeTab === "reviews" && (
               <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Review Statistics</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Review Status</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Approved</span>
-                            <span className="font-medium">38</span>
+                {loading || biasesLoading || progressLoading ? (
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="animate-pulse space-y-4">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                            ))}
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Pending</span>
-                            <span className="font-medium">4</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Needs Revision</span>
-                            <span className="font-medium">2</span>
+                          <div className="space-y-3">
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                            ))}
                           </div>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Average Scores</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Accuracy</span>
-                            <span className="font-medium">8.7/10</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Clarity</span>
-                            <span className="font-medium">8.2/10</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Completeness</span>
-                            <span className="font-medium">8.5/10</span>
+                    </CardContent>
+                  </Card>
+                ) : metrics ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Review Statistics</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Review Status</h4>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">Approved</span>
+                              <span className="font-medium">{metrics.approvedCount}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">Pending</span>
+                              <span className="font-medium">{metrics.pendingCount}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">Needs Revision</span>
+                              <span className="font-medium">{metrics.needsRevisionCount}</span>
+                            </div>
                           </div>
                         </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Average Scores</h4>
+                          {qualityMetrics.length > 0 ? (
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Accuracy</span>
+                                <span className="font-medium">{metrics.averageAccuracy.toFixed(1)}/10</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Clarity</span>
+                                <span className="font-medium">{metrics.averageClarity.toFixed(1)}/10</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Completeness</span>
+                                <span className="font-medium">{metrics.averageCompleteness.toFixed(1)}/10</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-500 dark:text-gray-400">No quality metrics available</p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-gray-500 dark:text-gray-400">No review statistics available yet</p>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </div>

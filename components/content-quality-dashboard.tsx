@@ -23,17 +23,20 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
     try {
       setLoading(true)
       
+      let loadedMetrics: ContentQualityMetrics[] = []
+      
       if (biasId) {
         const singleMetric = await contentVersionManager.getQualityMetrics(biasId)
-        setMetrics(singleMetric ? [singleMetric] : [])
+        loadedMetrics = singleMetric ? [singleMetric] : []
       } else {
-        const allMetrics = await contentVersionManager.getAllQualityMetrics()
-        setMetrics(allMetrics)
+        loadedMetrics = await contentVersionManager.getAllQualityMetrics()
       }
       
-      // Calculate overall health score
-      if (metrics.length > 0) {
-        const totalHealth = metrics.reduce((sum, metric) => {
+      setMetrics(loadedMetrics)
+      
+      // Calculate overall health score from the loaded metrics
+      if (loadedMetrics.length > 0) {
+        const totalHealth = loadedMetrics.reduce((sum, metric) => {
           return sum + (
             metric.accuracyScore * 0.3 +
             metric.clarityScore * 0.25 +
@@ -41,14 +44,18 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
             metric.userRating * 0.2
           )
         }, 0)
-        setOverallHealth(totalHealth / metrics.length)
+        setOverallHealth(totalHealth / loadedMetrics.length)
+      } else {
+        setOverallHealth(0)
       }
     } catch (error) {
       console.error("Error loading quality metrics:", error)
+      setMetrics([])
+      setOverallHealth(0)
     } finally {
       setLoading(false)
     }
-  }, [biasId, metrics])
+  }, [biasId])
 
   useEffect(() => {
     loadQualityMetrics()
