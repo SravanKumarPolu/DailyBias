@@ -5,6 +5,7 @@ import type { Bias } from "@/lib/types"
 import { getUserBiases, addUserBias, updateUserBias, deleteUserBias } from "@/lib/db"
 import { getCoreBiases, getAllBiases } from "@/lib/daily-selector"
 import { toast } from "@/hooks/use-toast"
+import { logger } from "@/lib/logger"
 
 export function useBiases() {
   const [userBiases, setUserBiases] = useState<Bias[]>([])
@@ -14,17 +15,17 @@ export function useBiases() {
 
   const loadBiases = useCallback(async () => {
     try {
-      console.log("[BiasesHook] Loading user biases...")
+      logger.debug("[BiasesHook] Loading user biases...")
       setError(null)
       const userBiasesData = await getUserBiases()
-      console.log("[BiasesHook] Loaded user biases:", userBiasesData.length, userBiasesData.map(b => b.title))
+      logger.debug("[BiasesHook] Loaded user biases:", userBiasesData.length, userBiasesData.map(b => b.title))
       setUserBiases(userBiasesData)
       const allBiasesData = getAllBiases(userBiasesData)
-      console.log("[BiasesHook] Total biases (core + user):", allBiasesData.length)
+      logger.debug("[BiasesHook] Total biases (core + user):", allBiasesData.length)
       setAllBiases(allBiasesData)
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to load biases"
-      console.error("[BiasesHook] Error loading biases:", error)
+      logger.error("[BiasesHook] Error loading biases:", error)
       setError(message)
       toast({
         title: "Error",
@@ -43,9 +44,9 @@ export function useBiases() {
   const addBias = useCallback(
     async (bias: Bias) => {
       try {
-        console.log("[BiasesHook] Adding bias:", bias.title)
+        logger.debug("[BiasesHook] Adding bias:", bias.title)
         await addUserBias(bias)
-        console.log("[BiasesHook] Successfully added bias, reloading...")
+        logger.debug("[BiasesHook] Successfully added bias, reloading...")
         await loadBiases()
         toast({
           title: "Success",
@@ -53,7 +54,7 @@ export function useBiases() {
         })
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to add bias"
-        console.error("[BiasesHook] Error adding bias:", error)
+        logger.error("[BiasesHook] Error adding bias:", error)
         toast({
           title: "Error",
           description: message,
@@ -68,9 +69,9 @@ export function useBiases() {
   const updateBias = useCallback(
     async (bias: Bias) => {
       try {
-        console.log("[BiasesHook] Updating bias:", bias.title)
+        logger.debug("[BiasesHook] Updating bias:", bias.title)
         await updateUserBias(bias)
-        console.log("[BiasesHook] Successfully updated bias, reloading...")
+        logger.debug("[BiasesHook] Successfully updated bias, reloading...")
         await loadBiases()
         toast({
           title: "Success",
@@ -78,7 +79,7 @@ export function useBiases() {
         })
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to update bias"
-        console.error("[BiasesHook] Error updating bias:", error)
+        logger.error("[BiasesHook] Error updating bias:", error)
         toast({
           title: "Error",
           description: message,
@@ -93,9 +94,9 @@ export function useBiases() {
   const deleteBias = useCallback(
     async (id: string) => {
       try {
-        console.log("[BiasesHook] Deleting bias:", id)
+        logger.debug("[BiasesHook] Deleting bias:", id)
         await deleteUserBias(id)
-        console.log("[BiasesHook] Successfully deleted bias, reloading...")
+        logger.debug("[BiasesHook] Successfully deleted bias, reloading...")
         await loadBiases()
         toast({
           title: "Success",
@@ -103,7 +104,7 @@ export function useBiases() {
         })
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to delete bias"
-        console.error("[BiasesHook] Error deleting bias:", error)
+        logger.error("[BiasesHook] Error deleting bias:", error)
         toast({
           title: "Error",
           description: message,

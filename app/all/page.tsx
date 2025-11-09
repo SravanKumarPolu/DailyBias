@@ -26,6 +26,7 @@ import { searchBiases } from "@/lib/search-utils"
 import { getBalancedRecommendation } from "@/lib/daily-selector"
 import { Badge } from "@/components/ui/badge"
 import { useDebounce } from "@/hooks/use-debounce"
+import { logger } from "@/lib/logger"
 
 const categories: BiasCategory[] = ["decision", "memory", "social", "perception", "misc"]
 
@@ -51,7 +52,7 @@ export default function AllBiasesPage() {
   // Load favorite and mastered states
   useEffect(() => {
     const loadStates = async () => {
-      console.log("[AllPage] Loading favorite and mastered states for", allBiases.length, "biases")
+      logger.debug("[AllPage] Loading favorite and mastered states for", allBiases.length, "biases")
       const favs: Record<string, boolean> = {}
       const masts: Record<string, boolean> = {}
       
@@ -64,9 +65,9 @@ export default function AllBiasesPage() {
         )
         setFavStates(favs)
         setMasteredStates(masts)
-        console.log("[AllPage] Loaded states for", Object.keys(favs).length, "biases")
+        logger.debug("[AllPage] Loaded states for", Object.keys(favs).length, "biases")
       } catch (error) {
-        console.error("[AllPage] Error loading states:", error)
+        logger.error("[AllPage] Error loading states:", error)
       }
     }
     if (allBiases.length > 0) {
@@ -81,17 +82,17 @@ export default function AllBiasesPage() {
   }, [allBiases, progressList, progressLoading])
 
   const searchResults = useMemo(() => {
-    console.log("[AllPage] Calculating search results")
-    console.log("[AllPage] Query:", debouncedSearchQuery)
-    console.log("[AllPage] Selected categories:", selectedCategories)
-    console.log("[AllPage] Available biases:", allBiases.length)
+    logger.debug("[AllPage] Calculating search results")
+    logger.debug("[AllPage] Query:", debouncedSearchQuery)
+    logger.debug("[AllPage] Selected categories:", selectedCategories)
+    logger.debug("[AllPage] Available biases:", allBiases.length)
     
     const sanitizedQuery = validateSearchQuery(debouncedSearchQuery)
-    console.log("[AllPage] Sanitized query:", sanitizedQuery)
+    logger.debug("[AllPage] Sanitized query:", sanitizedQuery)
 
     // Use enhanced search function
     const results = searchBiases(allBiases, sanitizedQuery)
-    console.log("[AllPage] Search results before category filter:", results.length)
+    logger.debug("[AllPage] Search results before category filter:", results.length)
 
     // Filter by category
     const filteredResults = results.filter((result) => {
@@ -100,7 +101,7 @@ export default function AllBiasesPage() {
       return matchesCategory
     })
     
-    console.log("[AllPage] Final filtered results:", filteredResults.length)
+    logger.debug("[AllPage] Final filtered results:", filteredResults.length)
     return filteredResults
   }, [allBiases, debouncedSearchQuery, selectedCategories])
 

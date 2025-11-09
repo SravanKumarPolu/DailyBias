@@ -1,6 +1,7 @@
 import type { Bias, BiasProgress } from "./types"
 import coreBiasesData from "@/data/biases.json"
 import { getLocalDateString } from "./timezone-utils"
+import { logger } from "./logger"
 
 // Ensure the data is properly typed
 const coreBiases = coreBiasesData as Bias[]
@@ -33,9 +34,9 @@ export function getPersonalizedDailyBias(
   progressList: BiasProgress[],
   dateString: string = getTodayDateString()
 ): Bias {
-  console.log("[DailyBias] Selecting personalized daily bias for date:", dateString)
-  console.log("[DailyBias] Available biases:", allBiases.length)
-  console.log("[DailyBias] Progress entries:", progressList.length)
+  logger.debug("[DailyBias] Selecting personalized daily bias for date:", dateString)
+  logger.debug("[DailyBias] Available biases:", allBiases.length)
+  logger.debug("[DailyBias] Progress entries:", progressList.length)
   
   if (allBiases.length === 0) {
     throw new Error("No biases available")
@@ -112,8 +113,8 @@ export function getPersonalizedDailyBias(
   const selectedIndex = dateHash % topCandidates.length
 
   const selectedBias = topCandidates[selectedIndex].bias
-  console.log("[DailyBias] Selected bias:", selectedBias.title, "Score:", topCandidates[selectedIndex].score)
-  console.log("[DailyBias] Top candidates:", topCandidates.slice(0, 3).map(c => `${c.bias.title} (${c.score})`))
+  logger.debug("[DailyBias] Selected bias:", selectedBias.title, "Score:", topCandidates[selectedIndex].score)
+  logger.debug("[DailyBias] Top candidates:", topCandidates.slice(0, 3).map(c => `${c.bias.title} (${c.score})`))
   
   return selectedBias
 }
@@ -169,14 +170,14 @@ export function getBalancedRecommendation(
 export function getCoreBiases(): Bias[] {
   // Add error handling and logging
   if (!coreBiases || !Array.isArray(coreBiases) || coreBiases.length === 0) {
-    console.error("[DailyBias] Core biases not loaded properly", {
+    logger.error("[DailyBias] Core biases not loaded properly", {
       coreBiases,
       isArray: Array.isArray(coreBiases),
       length: coreBiases?.length,
     })
     return []
   }
-  console.log(`[DailyBias] Loaded ${coreBiases.length} core biases`)
+  logger.debug(`[DailyBias] Loaded ${coreBiases.length} core biases`)
   return coreBiases
 }
 

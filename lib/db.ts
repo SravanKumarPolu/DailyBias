@@ -1,6 +1,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
 import type { Bias, UserSettings, FavoriteItem, BiasProgress, StreakData } from "./types"
+import type { ContentVersion, ContentQualityMetrics } from "./content-versioning"
 import { getYesterdayDateString } from "./timezone-utils"
+import { logger } from "./logger"
 
 interface BiasDB extends DBSchema {
   userBiases: {
@@ -29,6 +31,16 @@ interface BiasDB extends DBSchema {
     key: string
     value: StreakData
   }
+  contentVersions: {
+    key: string
+    value: ContentVersion
+    indexes: { "byBiasId": string; "byTimestamp": number }
+  }
+  qualityMetrics: {
+    key: string
+    value: ContentQualityMetrics
+    indexes: { "byScore": number }
+  }
 }
 
 let dbInstance: IDBPDatabase<BiasDB> | null = null
@@ -37,7 +49,7 @@ async function withErrorHandling<T>(operation: () => Promise<T>, errorMessage: s
   try {
     return await operation()
   } catch (error) {
-    console.error(`[DailyBias] ${errorMessage}:`, error)
+    logger.error(`[DailyBias] ${errorMessage}:`, error)
     throw new Error(errorMessage)
   }
 }
@@ -46,7 +58,7 @@ export async function getDB() {
   if (dbInstance) return dbInstance
 
   try {
-    dbInstance = await openDB<BiasDB>("bias-daily-db", 2, {
+    dbInstance = await openDB<BiasDB>("bias-daily-db", 3, {
       upgrade(db, oldVersion) {
         if (oldVersion < 1) {
           const userBiasStore = db.createObjectStore("userBiases", { keyPath: "id" })
@@ -65,12 +77,27 @@ export async function getDB() {
 
           db.createObjectStore("streak")
         }
+
+        if (oldVersion < 3) {
+          // Create content versions store if it doesn't exist
+          if (!db.objectStoreNames.contains("contentVersions")) {
+            const versionStore = db.createObjectStore("contentVersions", { keyPath: "id" })
+            versionStore.createIndex("byBiasId", "biasId")
+            versionStore.createIndex("byTimestamp", "timestamp")
+          }
+          
+          // Create quality metrics store if it doesn't exist
+          if (!db.objectStoreNames.contains("qualityMetrics")) {
+            const metricsStore = db.createObjectStore("qualityMetrics", { keyPath: "biasId" })
+            metricsStore.createIndex("byScore", "userRating")
+          }
+        }
       },
     })
 
     return dbInstance
   } catch (error) {
-    console.error("[DailyBias] Failed to initialize database:", error)
+    logger.error("[DailyBias] Failed to initialize database:", error)
     throw new Error("Failed to initialize database. Please check if IndexedDB is available.")
   }
 }
@@ -157,13 +184,13 @@ export async function getSettings(): Promise<UserSettings> {
       // Migration: For existing users who have the old default (false), migrate to new default (true)
       // This is a one-time migration to apply the new default behavior
       if (settings.timezoneAutoDetect === false && (!settings.timezone || settings.timezone === 'UTC')) {
-        console.log('[Settings] Migrating existing user to auto-detect (new default)')
+        logger.debug('[Settings] Migrating existing user to auto-detect (new default)')
         settings.timezoneAutoDetect = true
         // Don't auto-save the migration - let the user choose
       }
       // Only apply default timezoneAutoDetect for truly new users (no timezoneAutoDetect set at all)
       else if (settings.timezoneAutoDetect === undefined) {
-        console.log('[Settings] New user - applying auto-detect default')
+        logger.debug('[Settings] New user - applying auto-detect default')
         settings.timezoneAutoDetect = true
       }
       return { ...defaults, ...settings }

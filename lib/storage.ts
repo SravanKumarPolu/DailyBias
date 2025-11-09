@@ -1,3 +1,5 @@
+import { logger } from "./logger"
+
 // LocalStorage helpers for simple flags
 export function getLocalFlag(key: string, defaultValue = false): boolean {
   if (typeof window === "undefined") return defaultValue
@@ -37,7 +39,7 @@ export function getCachedDailyBias(date: string): string | null {
       }
     }
   } catch (error) {
-    console.error("Error reading cached daily bias:", error)
+    logger.error("Error reading cached daily bias:", error)
   }
   return null
 }
@@ -48,6 +50,6 @@ export function cacheDailyBias(date: string, biasId: string): void {
     const data: DailyBiasCache = { date, biasId }
     localStorage.setItem("daily-bias-cache", JSON.stringify(data))
   } catch (error) {
-    console.error("Error caching daily bias:", error)
+    logger.error("Error caching daily bias:", error)
   }
 }

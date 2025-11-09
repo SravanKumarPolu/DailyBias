@@ -5,6 +5,7 @@ import type { BiasProgress, ProgressStats } from "@/lib/types"
 import { getAllProgress, markBiasAsViewed, toggleBiasMastered, getProgress } from "@/lib/db"
 import { toast } from "@/hooks/use-toast"
 import { getLocalDateString, getDaysAgoDateString } from "@/lib/timezone-utils"
+import { logger } from "@/lib/logger"
 
 function calculateStreak(progressList: BiasProgress[]): { current: number; longest: number } {
   if (progressList.length === 0) return { current: 0, longest: 0 }
@@ -91,7 +92,7 @@ export function useProgress() {
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to load progress"
       setError(message)
-      console.error("[DailyBias] Failed to load progress:", error)
+      logger.error("[DailyBias] Failed to load progress:", error)
     } finally {
       setLoading(false)
     }
@@ -108,7 +109,7 @@ export function useProgress() {
         await loadProgress()
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to mark as viewed"
-        console.error("[DailyBias] Failed to mark as viewed:", error)
+        logger.error("[DailyBias] Failed to mark as viewed:", error)
         throw error
       }
     },

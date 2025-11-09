@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import type { UserSettings } from "@/lib/types"
 import { getSettings, updateSettings } from "@/lib/db"
 import { detectTimezone } from "@/lib/timezone-utils"
+import { logger } from "@/lib/logger"
 
 export function useSettings() {
   const [settings, setSettings] = useState<UserSettings>({
@@ -22,14 +23,14 @@ export function useSettings() {
   const loadSettings = useCallback(async () => {
     try {
       const settingsData = await getSettings()
-      console.log('[Settings] Loaded user settings')
+      logger.debug('[Settings] Loaded user settings')
       
       // Auto-detect timezone if enabled (now default behavior)
       if (settingsData.timezoneAutoDetect === true) {
         const detectedTimezone = detectTimezone()
-        console.log('[Settings] Auto-detecting timezone:', detectedTimezone.timezone)
+        logger.debug('[Settings] Auto-detecting timezone:', detectedTimezone.timezone)
         if (detectedTimezone.timezone !== settingsData.timezone) {
-          console.log('[Settings] Updating timezone to detected:', detectedTimezone.timezone)
+          logger.debug('[Settings] Updating timezone to detected:', detectedTimezone.timezone)
           const updatedSettings = {
             ...settingsData,
             timezone: detectedTimezone.timezone,
@@ -43,7 +44,7 @@ export function useSettings() {
       } else if (settingsData.timezoneAutoDetect === false && !settingsData.timezone) {
         // If auto-detect is explicitly disabled and no timezone is set, use detected timezone as default
         const detectedTimezone = detectTimezone()
-        console.log('[Settings] Setting default timezone:', detectedTimezone.timezone)
+        logger.debug('[Settings] Setting default timezone:', detectedTimezone.timezone)
         const updatedSettings = {
           ...settingsData,
           timezone: detectedTimezone.timezone,
@@ -56,7 +57,7 @@ export function useSettings() {
       
       setSettings(settingsData)
     } catch (error) {
-      console.error("[Settings] Failed to load settings:", error)
+      logger.error("[Settings] Failed to load settings:", error)
     } finally {
       setLoading(false)
     }
@@ -68,11 +69,11 @@ export function useSettings() {
 
   const saveSetting = useCallback(
     async <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
-      console.log('[Settings] Saving:', key, '=', value)
+      logger.debug('[Settings] Saving:', key, '=', value)
       setSettings(prevSettings => {
         const newSettings = { ...prevSettings, [key]: value }
         // Save to database asynchronously
-        updateSettings(newSettings).catch(console.error)
+        updateSettings(newSettings).catch((err) => logger.error('[Settings] Failed to save:', err))
         return newSettings
       })
     },
