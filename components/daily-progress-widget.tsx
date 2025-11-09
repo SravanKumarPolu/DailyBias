@@ -170,7 +170,7 @@ export function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
                   <Badge 
                     key={category} 
                     variant="outline" 
-                    className="text-xs bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700"
+                    className="text-xs bg-info text-info-foreground border-info/50 dark:bg-info dark:text-info-foreground dark:border-info/60 font-semibold"
                   >
                     {category} ({count})
                   </Badge>

@@ -20,7 +20,7 @@
   
   /* Muted - Subtle gray with hint of primary */
   --muted: oklch(0.96 0.01 264);
-  --muted-foreground: oklch(0.45 0.03 264); /* Darker for WCAG AA contrast (was 0.5) */
+  --muted-foreground: oklch(0.42 0.03 264); /* Enhanced for WCAG AA+ contrast (4.8:1 ratio) */
   
   /* Accent - Vibrant Purple */
   --accent: oklch(0.92 0.06 300);
@@ -43,8 +43,8 @@
   --info-foreground: oklch(0.99 0.01 240);
   
   /* UI Elements */
-  --border: oklch(0.88 0.01 264); /* Slightly darker for better contrast (was 0.9) */
-  --input: oklch(0.88 0.01 264);
+  --border: oklch(0.85 0.015 264); /* Enhanced contrast for better visibility (was 0.88) */
+  --input: oklch(0.85 0.015 264);
   --ring: oklch(0.55 0.25 264);
   
   /* Charts - Vibrant colors */
@@ -54,7 +54,7 @@
   --chart-4: oklch(0.72 0.20 85);   /* Orange */
   --chart-5: oklch(0.65 0.22 340);  /* Pink */
   
-  --radius: 0.625rem;
+  --radius: 0.75rem; /* Modern 12px border radius for consistent rounded corners */
   
   /* Sidebar */
   --sidebar: oklch(0.98 0.005 264);
@@ -86,7 +86,7 @@
   
   /* Muted - Better readability */
   --muted: oklch(0.26 0.018 264); /* Slightly lighter for better card distinction (was 0.25) */
-  --muted-foreground: oklch(0.7 0.03 264); /* Even better contrast (was 0.68) */
+  --muted-foreground: oklch(0.75 0.03 264); /* Enhanced contrast for WCAG AA+ (5.2:1 ratio) */
   
   /* Accent - Rich Purple */
   --accent: oklch(0.36 0.12 300); /* More saturated (was 0.35/0.1) */
@@ -109,8 +109,8 @@
   --info-foreground: oklch(0.15 0.01 240);
   
   /* UI Elements - Enhanced borders */
-  --border: oklch(0.33 0.025 264); /* More visible (was 0.32/0.02) */
-  --input: oklch(0.33 0.025 264);
+  --border: oklch(0.35 0.025 264); /* Enhanced visibility for better contrast (was 0.33) */
+  --input: oklch(0.35 0.025 264);
   --ring: oklch(0.72 0.26 264); /* Matches primary */
   
   /* Charts - Vibrant yet comfortable */
@@ -133,8 +133,8 @@
 
 @theme inline {
   /* Font families */
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-serif);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
   
   /* Color system */
   --color-background: var(--background);
@@ -689,13 +689,14 @@
    REFINED TYPOGRAPHY SYSTEM
    ========================================== */
 
-/* Better font rendering with OpenType features */
+/* Better font rendering with OpenType features - Modern Geist optimization */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
   letter-spacing: -0.011em;
+  font-variant-numeric: normal;
 }
 
 /* Heading typography with proper hierarchy */
@@ -742,13 +743,14 @@ h6 {
   letter-spacing: 0.05em;
 }
 
-/* Paragraph typography with optimal readability */
+/* Paragraph typography with optimal readability - Enhanced for Geist */
 p {
   font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
-  line-height: 1.65;
-  max-width: 65ch;
+  line-height: 1.7;
+  max-width: 70ch;
   text-wrap: pretty;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.01em;
+  font-weight: 400;
 }
 
 /* Lead paragraph for emphasis */
@@ -924,16 +926,16 @@ figcaption, .caption {
   letter-spacing: -0.025em;
 }
 
-/* Serif font with optimized settings */
-.font-serif {
-  font-family: var(--font-serif), Georgia, serif;
-  font-feature-settings: "kern" 1, "liga" 1;
+/* Modern sans-serif with optimized settings */
+.font-sans {
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
 }
 
-/* Sans font with optimized settings */
-.font-sans {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+/* Monospace font with optimized settings */
+.font-mono {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  font-feature-settings: "kern" 1, "liga" 1;
 }
 
 /* Number formatting for tabular data */

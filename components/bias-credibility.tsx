@@ -23,13 +23,13 @@ export function BiasCredibility({ bias }: BiasCredibilityProps) {
   const getResearchLevelColor = (level?: string) => {
     switch (level) {
       case "established":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-success text-success-foreground border-success/50 dark:bg-success dark:text-success-foreground dark:border-success/60 font-semibold"
       case "emerging":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-warning text-warning-foreground border-warning/50 dark:bg-warning dark:text-warning-foreground dark:border-warning/60 font-semibold"
       case "contested":
-        return "bg-orange-100 text-orange-800 border-orange-200"
+        return "bg-destructive text-destructive-foreground border-destructive/50 dark:bg-destructive dark:text-destructive-foreground dark:border-destructive/60 font-semibold"
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-muted text-muted-foreground border-border dark:bg-muted dark:text-muted-foreground dark:border-border font-semibold"
     }
   }
 

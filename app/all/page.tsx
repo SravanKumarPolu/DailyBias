@@ -148,7 +148,7 @@ export default function AllBiasesPage() {
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div>
-            <h1 className="mb-1 font-serif text-2xl font-bold sm:mb-2 sm:text-3xl">All Biases</h1>
+            <h1 className="mb-1 text-2xl font-bold tracking-tight sm:mb-2 sm:text-3xl">All Biases</h1>
             <p className="text-muted-foreground text-sm sm:text-base">
               Browse all {allBiases.length} cognitive biases from the collection
             </p>

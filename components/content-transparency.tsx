@@ -55,21 +55,21 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      social: "bg-blue-100 text-blue-800 border-blue-200",
-      decision: "bg-green-100 text-green-800 border-green-200",
-      memory: "bg-purple-100 text-purple-800 border-purple-200",
-      perception: "bg-orange-100 text-orange-800 border-orange-200",
-      misc: "bg-gray-100 text-gray-800 border-gray-200"
+      social: "bg-info text-info-foreground border-info/50 dark:bg-info dark:text-info-foreground dark:border-info/60 font-semibold",
+      decision: "bg-success text-success-foreground border-success/50 dark:bg-success dark:text-success-foreground dark:border-success/60 font-semibold",
+      memory: "bg-accent text-accent-foreground border-accent/50 dark:bg-accent dark:text-accent-foreground dark:border-accent/60 font-semibold",
+      perception: "bg-warning text-warning-foreground border-warning/50 dark:bg-warning dark:text-warning-foreground dark:border-warning/60 font-semibold",
+      misc: "bg-muted text-muted-foreground border-border dark:bg-muted dark:text-muted-foreground dark:border-border font-semibold"
     }
     return colors[category as keyof typeof colors] || colors.misc
   }
 
   const getResearchLevelColor = (level: string) => {
     const colors = {
-      established: "bg-green-100 text-green-800 border-green-200",
-      emerging: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      contested: "bg-red-100 text-red-800 border-red-200",
-      unknown: "bg-gray-100 text-gray-800 border-gray-200"
+      established: "bg-success text-success-foreground border-success/50 dark:bg-success dark:text-success-foreground dark:border-success/60 font-semibold",
+      emerging: "bg-warning text-warning-foreground border-warning/50 dark:bg-warning dark:text-warning-foreground dark:border-warning/60 font-semibold",
+      contested: "bg-destructive text-destructive-foreground border-destructive/50 dark:bg-destructive dark:text-destructive-foreground dark:border-destructive/60 font-semibold",
+      unknown: "bg-muted text-muted-foreground border-border dark:bg-muted dark:text-muted-foreground dark:border-border font-semibold"
     }
     return colors[level as keyof typeof colors] || colors.unknown
   }

@@ -63,9 +63,9 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
 
 
   const getHealthBadge = (score: number) => {
-    if (score >= 0.8) return { label: "Excellent", color: "bg-green-100 text-green-800" }
-    if (score >= 0.6) return { label: "Good", color: "bg-yellow-100 text-yellow-800" }
-    return { label: "Needs Improvement", color: "bg-red-100 text-red-800" }
+    if (score >= 0.8) return { label: "Excellent", color: "bg-success text-success-foreground border-success/50 dark:bg-success dark:text-success-foreground dark:border-success/60 font-semibold" }
+    if (score >= 0.6) return { label: "Good", color: "bg-warning text-warning-foreground border-warning/50 dark:bg-warning dark:text-warning-foreground dark:border-warning/60 font-semibold" }
+    return { label: "Needs Improvement", color: "bg-destructive text-destructive-foreground border-destructive/50 dark:bg-destructive dark:text-destructive-foreground dark:border-destructive/60 font-semibold" }
   }
 
   const formatDate = (timestamp: number) => {

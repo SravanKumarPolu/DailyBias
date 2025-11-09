@@ -32,7 +32,7 @@ export function RecommendationCard({
           <Badge className={`mb-2 ${getCategoryColor(bias.category)}`}>
             {getCategoryLabel(bias.category)}
           </Badge>
-          <h3 className="mb-2 font-serif text-xl font-bold text-balance">{bias.title}</h3>
+          <h3 className="mb-2 text-xl font-bold tracking-tight text-balance">{bias.title}</h3>
           <p className="text-muted-foreground mb-4 line-clamp-2 text-sm text-pretty">
             {bias.summary}
           </p>

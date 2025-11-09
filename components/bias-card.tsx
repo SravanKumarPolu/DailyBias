@@ -221,12 +221,12 @@ export function BiasCard({
               {bias.researchLevel && (
                 <Badge 
                   variant="outline" 
-                  className={`text-xs ${
+                  className={`text-xs font-semibold ${
                     bias.researchLevel === 'established' 
-                      ? 'border-success/30 text-success-foreground bg-success/10 dark:border-success/40 dark:bg-success/20' 
+                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground' 
                       : bias.researchLevel === 'emerging'
-                      ? 'border-warning/30 text-warning-foreground bg-warning/10 dark:border-warning/40 dark:bg-warning/20'
-                      : 'border-destructive/30 text-destructive-foreground bg-destructive/10 dark:border-destructive/40 dark:bg-destructive/20'
+                      ? 'border-warning/50 bg-warning text-warning-foreground dark:border-warning/60 dark:bg-warning dark:text-warning-foreground'
+                      : 'border-destructive/50 bg-destructive text-destructive-foreground dark:border-destructive/60 dark:bg-destructive dark:text-destructive-foreground'
                   }`}
                 >
                   {bias.researchLevel === 'established' ? 'Well-Established' : 
@@ -235,7 +235,7 @@ export function BiasCard({
                 </Badge>
               )}
             </div>
-            <h3 className="mb-1.5 font-serif text-base leading-tight font-semibold text-balance sm:mb-2 sm:text-lg">
+            <h3 className="mb-1.5 text-base leading-tight font-semibold tracking-tight text-balance sm:mb-2 sm:text-lg">
               {bias.title}
             </h3>
             <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm">
@@ -320,12 +320,12 @@ export function BiasCard({
               {bias.researchLevel && (
                 <Badge 
                   variant="outline" 
-                  className={`text-xs ${
+                  className={`text-xs font-semibold ${
                     bias.researchLevel === 'established' 
-                      ? 'border-success/30 text-success-foreground bg-success/10 dark:border-success/40 dark:bg-success/20' 
+                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground' 
                       : bias.researchLevel === 'emerging'
-                      ? 'border-warning/30 text-warning-foreground bg-warning/10 dark:border-warning/40 dark:bg-warning/20'
-                      : 'border-destructive/30 text-destructive-foreground bg-destructive/10 dark:border-destructive/40 dark:bg-destructive/20'
+                      ? 'border-warning/50 bg-warning text-warning-foreground dark:border-warning/60 dark:bg-warning dark:text-warning-foreground'
+                      : 'border-destructive/50 bg-destructive text-destructive-foreground dark:border-destructive/60 dark:bg-destructive dark:text-destructive-foreground'
                   }`}
                 >
                   {bias.researchLevel === 'established' ? 'Well-Established' : 
@@ -336,7 +336,7 @@ export function BiasCard({
             </div>
             <h1
               id="bias-title"
-              className="font-serif text-xl font-bold text-balance sm:text-2xl md:text-3xl"
+              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl"
             >
               {bias.title}
             </h1>

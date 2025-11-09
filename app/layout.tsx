@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Inter, Instrument_Serif } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Toaster } from "@/components/ui/toaster"
@@ -11,24 +12,6 @@ import { ServiceWorkerRegistration } from "@/components/service-worker-registrat
 import { SWUpdateToaster } from "@/components/sw-update-toaster"
 import { PlausibleAnalytics } from "@/components/plausible-analytics"
 import { siteConfig } from "@/lib/site-config"
-
-// Inter: Modern, highly legible sans-serif
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
-  preload: true,
-})
-
-// Instrument Serif: Elegant, modern serif for headings
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  weight: "400",
-  display: "swap",
-  preload: true,
-})
 
 export const metadata: Metadata = {
   // Basic Metadata
@@ -138,7 +121,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${instrumentSerif.variable} font-sans antialiased`}
+      className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}
       suppressHydrationWarning
     >
       <body className="bg-background text-foreground min-h-screen font-sans" suppressHydrationWarning>
