@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, CheckCircle, GraduationCap, Archive } from "lucide-react"
+import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, CheckCircle, GraduationCap } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
@@ -103,19 +103,6 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
-                <div className="shrink-0">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
-                    <Archive className="text-primary h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Archive & Search</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
-                    Access the complete archive of past biases with powerful search and filtering capabilities.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -315,9 +302,6 @@ export default function AboutPage() {
               </p>
               <p className="text-balance">
                 <strong>Daily Rotation:</strong> With 50 biases, you'll see each bias approximately every 2 months, ensuring variety while allowing for deep learning and retention.
-              </p>
-              <p className="text-balance">
-                <strong>Archive Access:</strong> All past biases are available in the Archive section, where you can search, filter, and revisit any bias you've encountered.
               </p>
               <p className="text-balance">
                 <strong>Continuous Growth:</strong> We're actively expanding our collection through expert curation and community contributions, with a goal of reaching 100+ biases.

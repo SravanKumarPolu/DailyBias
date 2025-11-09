@@ -2,13 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Grid3x3, Heart, Plus, BarChart3, Settings, Archive } from "lucide-react"
+import { Home, Grid3x3, Heart, Plus, BarChart3, Settings } from "lucide-react"
 import { motion } from "framer-motion"
 
 const navItems = [
   { href: "/", icon: Home, label: "Daily" },
   { href: "/all", icon: Grid3x3, label: "All" },
-  { href: "/archive", icon: Archive, label: "Archive" },
   { href: "/favorites", icon: Heart, label: "Favorites" },
   { href: "/add", icon: Plus, label: "Add" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
