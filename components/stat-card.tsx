@@ -100,7 +100,7 @@ export function StatCard({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: delay + 0.2, duration: 0.4 }}
-              className="font-serif text-3xl font-bold sm:text-4xl"
+              className="text-3xl font-bold sm:text-4xl"
             >
               <motion.span
                 initial={{ opacity: 0 }}

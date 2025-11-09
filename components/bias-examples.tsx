@@ -659,7 +659,7 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h3 className="text-muted-foreground mb-3 flex items-center gap-2 font-serif text-sm font-semibold uppercase tracking-wider sm:text-base">
+        <h3 className="text-muted-foreground mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider sm:text-base">
           <Lightbulb className="h-4 w-4 text-primary" />
           Real-World Examples
         </h3>
@@ -687,7 +687,7 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <h3 className="text-muted-foreground mb-3 flex items-center gap-2 font-serif text-sm font-semibold uppercase tracking-wider sm:text-base">
+        <h3 className="text-muted-foreground mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider sm:text-base">
           <CheckCircle2 className="h-4 w-4 text-success" />
           Quick Tips
         </h3>

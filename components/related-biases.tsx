@@ -72,7 +72,7 @@ export function RelatedBiases({
         {/* Header */}
         <div className="mb-4 flex items-center gap-2">
           <Link2 className="h-5 w-5 text-primary" />
-          <h3 className="font-serif text-lg font-semibold sm:text-xl">
+          <h3 className="text-lg font-semibold sm:text-xl">
             Related Biases
           </h3>
           <Sparkles className="h-4 w-4 text-primary/60" />

@@ -109,7 +109,7 @@ export function EnhancedBiasCard({
             <Badge className="mb-3 bg-gradient-to-r from-primary/20 to-accent/20 text-primary border-primary/30 hover:from-primary/30 hover:to-accent/30 transition-all duration-300">
               {bias.category}
             </Badge>
-            <h1 className="font-serif text-2xl font-bold text-balance gradient-text sm:text-3xl md:text-4xl">
+            <h1 className="text-2xl font-bold text-balance gradient-text sm:text-3xl md:text-4xl">
               {bias.title}
             </h1>
           </div>
@@ -146,7 +146,7 @@ export function EnhancedBiasCard({
           </p>
 
           <div className="rounded-xl bg-muted/30 p-4 border border-border/50">
-            <h3 className="mb-3 flex items-center gap-2 font-serif text-sm font-semibold tracking-wide uppercase text-primary">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-primary">
               <Lightbulb className="h-4 w-4" />
               Why it happens
             </h3>
@@ -156,7 +156,7 @@ export function EnhancedBiasCard({
           </div>
 
           <div className="rounded-xl bg-muted/30 p-4 border border-border/50">
-            <h3 className="mb-3 flex items-center gap-2 font-serif text-sm font-semibold tracking-wide uppercase text-primary">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-primary">
               <Target className="h-4 w-4" />
               How to counter it
             </h3>

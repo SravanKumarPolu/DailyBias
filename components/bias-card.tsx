@@ -386,7 +386,7 @@ export function BiasCard({
 
         {/* Why it happens */}
         <div>
-          <h2 className="text-muted-foreground mb-1.5 font-serif text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
+          <h2 className="text-muted-foreground mb-1.5 text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
             Why it happens
           </h2>
           <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.why}</p>
@@ -394,7 +394,7 @@ export function BiasCard({
 
         {/* How to counter */}
         <div>
-          <h2 className="text-muted-foreground mb-1.5 font-serif text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
+          <h2 className="text-muted-foreground mb-1.5 text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
             How to counter it
           </h2>
           <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.counter}</p>

@@ -52,7 +52,7 @@ export function EmptyState({
         transition={{ delay: 0.3, duration: 0.4 }}
         className="space-y-3 text-center max-w-md"
       >
-        <h3 className="font-serif text-xl font-semibold sm:text-2xl">
+        <h3 className="text-xl font-semibold sm:text-2xl">
           {title}
         </h3>
         <p className="text-muted-foreground text-sm leading-relaxed sm:text-base">

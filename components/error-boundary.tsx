@@ -92,7 +92,7 @@ Timestamp: ${new Date().toISOString()}
                   transition={{ delay: 0.3, duration: 0.4 }}
                   className="space-y-4 text-center"
                 >
-                  <h2 className="font-serif text-2xl font-bold sm:text-3xl">
+                  <h2 className="text-2xl font-bold sm:text-3xl">
                     Something went wrong
                   </h2>
                   <p className="text-muted-foreground text-sm leading-relaxed sm:text-base">

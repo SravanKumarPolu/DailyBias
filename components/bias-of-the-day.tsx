@@ -22,7 +22,7 @@ export function BiasOfTheDay({ bias }: BiasOfTheDayProps) {
         </div>
         <h2
           id="bias-of-day-title"
-          className="text-primary font-serif text-sm font-bold tracking-wider uppercase"
+          className="text-primary text-sm font-bold tracking-wider uppercase"
         >
           Bias of the Day
         </h2>
@@ -34,7 +34,7 @@ export function BiasOfTheDay({ bias }: BiasOfTheDayProps) {
           <Badge className={`mb-3 ${getCategoryColor(bias.category)}`}>
             {getCategoryLabel(bias.category)}
           </Badge>
-          <h3 className="mb-3 font-serif text-2xl font-bold text-balance">{bias.title}</h3>
+          <h3 className="mb-3 text-2xl font-bold text-balance">{bias.title}</h3>
         </div>
 
         {/* Summary */}
@@ -42,7 +42,7 @@ export function BiasOfTheDay({ bias }: BiasOfTheDayProps) {
 
         {/* Why it happens */}
         <div>
-          <h4 className="text-muted-foreground mb-2 font-serif text-xs font-semibold tracking-wide uppercase">
+          <h4 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
             Why it happens
           </h4>
           <p className="text-muted-foreground text-sm leading-relaxed text-pretty">{bias.why}</p>
@@ -50,7 +50,7 @@ export function BiasOfTheDay({ bias }: BiasOfTheDayProps) {
 
         {/* How to counter */}
         <div>
-          <h4 className="text-muted-foreground mb-2 font-serif text-xs font-semibold tracking-wide uppercase">
+          <h4 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
             How to counter it
           </h4>
           <p className="text-muted-foreground text-sm leading-relaxed text-pretty">

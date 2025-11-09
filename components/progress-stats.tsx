@@ -73,7 +73,7 @@ export function ProgressStatsComponent({ stats }: ProgressStatsProps) {
                   {item.label}
                 </p>
                 <p 
-                  className="font-serif text-base font-bold leading-tight sm:text-lg md:text-xl"
+                  className="text-base font-bold leading-tight sm:text-lg md:text-xl"
                   aria-label={item.ariaLabel}
                 >
                   <span>{item.value}</span>
