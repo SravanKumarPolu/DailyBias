@@ -8,8 +8,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { NetworkStatus } from "@/components/network-status"
 import { TelegramRedirectBanner } from "@/components/telegram-redirect-banner"
 import { AppProvider } from "@/contexts/app-context"
-import { ServiceWorkerRegistration } from "@/components/service-worker-registration"
-import { SWUpdateToaster } from "@/components/sw-update-toaster"
 import { PlausibleAnalytics } from "@/components/plausible-analytics"
 import { siteConfig } from "@/lib/site-config"
 
@@ -27,15 +25,13 @@ export const metadata: Metadata = {
     "decision making",
     "critical thinking",
     "mental models",
-    "PWA",
-    "offline app",
   ],
   authors: [{ name: siteConfig.name }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
   category: "education",
 
-  // PWA & Theme
+  // App Manifest (for Capacitor native apps)
   manifest: "/manifest.json",
 
   // Icons (Next.js way - replaces manual <link> tags)
@@ -58,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Bias Daily - Learn One Cognitive Bias Every Day",
     description:
-      "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Free, offline-first PWA.",
+      "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Available on Android and iOS.",
     url: siteConfig.url,
     siteName: siteConfig.name,
     images: [
@@ -134,8 +130,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         <ErrorBoundary>
           <AppProvider>
-            <ServiceWorkerRegistration />
-            <SWUpdateToaster />
             <NetworkStatus />
             <TelegramRedirectBanner />
             {children}

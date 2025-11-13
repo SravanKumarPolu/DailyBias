@@ -18,6 +18,11 @@ const config: CapacitorConfig = {
       keystoreAliasPassword: undefined,
     },
   },
+  ios: {
+    // iOS-specific configuration
+    // Add iOS platform with: npx cap add ios
+    contentInset: 'automatic',
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,

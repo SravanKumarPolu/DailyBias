@@ -173,9 +173,12 @@ Timestamp: ${new Date().toISOString()}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.4 }}
-                  className="mt-6 text-center text-xs text-muted-foreground"
+                  className="mt-6 text-center text-xs text-muted-foreground space-y-1"
                 >
-                  If this keeps happening, try clearing your browser cache
+                  <div>If this keeps happening, try clearing your browser cache</div>
+                  <div className="text-xs opacity-75">
+                    Error details copied to clipboard - share with support if needed
+                  </div>
                 </motion.p>
               </div>
             </motion.div>

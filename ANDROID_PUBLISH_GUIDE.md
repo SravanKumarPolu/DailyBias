@@ -225,7 +225,7 @@ The following scripts have been added to `package.json`:
 ### ✅ Advantages of This Approach
 - **Single codebase** - One project for web and Android
 - **Easy updates** - Update web, rebuild, sync, publish
-- **PWA features work** - Service workers, offline support, etc.
+- **Native app experience** - Full access to device features via Capacitor
 - **No separate Android code** - Pure web app wrapped in native container
 - **No breaking changes** - Your web app continues to work exactly as before
 

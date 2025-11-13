@@ -3,7 +3,7 @@
   "short_name": "Bias Daily",
   "version": "1.0.2",
   "description": "Learn one cognitive bias every day from Elon Musk's list of 50 biases",
-  "start_url": "/?source=pwa&v=1760087999283",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
