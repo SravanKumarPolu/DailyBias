@@ -6,6 +6,9 @@
 		"androidScheme": "https"
 	},
 	"android": {},
+	"ios": {
+		"contentInset": "automatic"
+	},
 	"plugins": {
 		"SplashScreen": {
 			"launchShowDuration": 2000,
