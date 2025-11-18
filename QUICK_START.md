@@ -1,16 +1,91 @@
-# Quick Start: Android App Setup ✅
+# Quick Start Guide
 
-## Status: Everything is Ready!
+Get up and running with Bias Daily development in minutes.
 
-Your project is **fully configured** for both **Web** and **Android**. You **DO NOT need a separate project**.
+## 🚀 Quick Start Options
 
-## ✅ What's Working
+### Option 1: Install Android Studio (Recommended) ⭐
 
+**One command to open download page:**
+```bash
+open https://developer.android.com/studio
+```
+
+**Then:**
+1. Download and install Android Studio
+2. Open it and complete setup wizard
+3. Run: `pnpm android:open`
+4. Build and test! ✅
+
+**Time:** ~15 minutes (mostly downloading)
+
+**Why Android Studio?**
+- ✅ Installs everything automatically
+- ✅ Visual debugging tools
+- ✅ Built-in emulator
+- ✅ Easy APK building
+- ✅ Play Store publishing tools
+
+---
+
+### Option 2: Install Java Only (Quick Start)
+
+**If you just want to build APKs quickly:**
+
+```bash
+# Install Java
+brew install openjdk@17
+
+# Set JAVA_HOME
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 17)' >> ~/.zshrc
+source ~/.zshrc
+
+# Verify
+java -version
+
+# Build APK
+cd android
+./gradlew assembleDebug
+```
+
+**Time:** ~5 minutes
+
+**Note:** You'll still need Android SDK tools for full development. See `NEXT_STEPS_GUIDE.md` for complete command-line setup.
+
+---
+
+### Option 3: Test on Physical Device
+
+**If you have an Android phone:**
+
+1. Enable Developer Options on phone
+2. Enable USB Debugging
+3. Connect phone via USB
+4. Install ADB (comes with Android Studio or SDK Platform Tools)
+5. Run: `adb devices` to verify connection
+6. Build and install: `cd android && ./gradlew installDebug`
+
+---
+
+## ✅ Current Status
+
+**Working:**
 - ✅ Next.js web app builds successfully
 - ✅ Android platform properly initialized
 - ✅ Capacitor configuration complete
 - ✅ All build scripts ready
 - ✅ Static export enabled (required for Android)
+- ✅ Code synced to Android
+- ✅ Live reload configured
+- ✅ Gradle wrapper ready
+- ✅ Project structure complete
+
+**Needed:**
+- ⚠️ Java JDK (for building)
+- ⚠️ Android SDK (for building)
+- ⚠️ Android Studio (recommended) or command line tools
+
+---
 
 ## 🚀 Quick Commands
 
@@ -34,6 +109,8 @@ pnpm android:run
 # Build, sync, and open Android Studio
 pnpm android:build
 ```
+
+---
 
 ## 📱 Next Steps to Publish
 
@@ -65,6 +142,8 @@ pnpm android:build
    - Complete store listing (screenshots, description, etc.)
    - Submit for review
 
+---
+
 ## 📋 Important Notes
 
 ### ✅ Your Web App is Safe
@@ -90,6 +169,8 @@ When you update your app:
 - **App Name**: `Bias Daily`
 - **Current Version**: 1.0 (versionCode: 1)
 
+---
+
 ## 🛠️ Troubleshooting
 
 ### Build Errors?
@@ -104,7 +185,31 @@ When you update your app:
 
 ### Need Help?
 - See `ANDROID_PUBLISH_GUIDE.md` for detailed steps
-- See `ANDROID_SETUP_STATUS.md` for overview
+- See `TROUBLESHOOTING.md` for common issues
+- See `SUPPORT.md` for getting help
+
+---
+
+## ⚡ Quick Test Script
+
+Run this to check what you have:
+```bash
+./quick-start.sh
+```
+
+This will tell you exactly what's installed and what you need! ✅
+
+---
+
+## 📚 More Help
+
+- **Detailed guide:** `NEXT_STEPS_GUIDE.md`
+- **Android Studio setup:** See `ANDROID_PUBLISH_GUIDE.md`
+- **Development workflow:** `DEVELOPMENT_WORKFLOW.md`
+- **Publishing guide:** `ANDROID_PUBLISH_GUIDE.md`
+- **Troubleshooting:** `TROUBLESHOOTING.md`
+
+---
 
 ## ✨ Summary
 
@@ -113,8 +218,4 @@ When you update your app:
 - ✅ Android app (ready to build)
 
 **No separate project needed. Maximum efficiency!**
-
----
-
-For detailed publishing guide: `ANDROID_PUBLISH_GUIDE.md`
 

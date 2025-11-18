@@ -198,23 +198,23 @@ export function BiasCard({
   if (variant === "compact") {
     return (
       <motion.div
-        className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all duration-300 hover:border-primary/30 hover:shadow-depth-3 sm:rounded-2xl sm:p-5 md:p-6"
+        className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:rounded-2xl sm:p-5 md:p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        whileHover={{ y: -4, scale: 1.01 }}
+        whileHover={{ y: -2, scale: 1.01 }}
         role="article"
         tabIndex={0}
         aria-label={`${bias.title} - ${bias.category} bias`}
       >
         {/* Gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
         
         {/* Inner highlight */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        <div className="flex items-start justify-between gap-3 sm:gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-1.5 mb-1.5 sm:mb-2">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        <div className="relative flex items-start justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
                 {getCategoryLabel(bias.category)}
               </Badge>
@@ -235,14 +235,14 @@ export function BiasCard({
                 </Badge>
               )}
             </div>
-            <h3 className="mb-1.5 text-base leading-tight font-semibold tracking-tight text-balance sm:mb-2 sm:text-lg">
+            <h3 className="text-base leading-tight font-semibold tracking-tight text-balance sm:text-lg">
               {bias.title}
             </h3>
             <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm">
               {bias.summary}
             </p>
           </div>
-          <div className="flex shrink-0 flex-col gap-1 sm:gap-2">
+          <div className="flex shrink-0 flex-col gap-2">
             {onToggleFavorite && (
               <Button
                 ref={favoriteRef}
@@ -252,7 +252,7 @@ export function BiasCard({
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
                 tabIndex={0}
-                className="touch-target hover-grow h-8 w-8 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
+                className="touch-target h-8 w-8 sm:h-10 sm:w-10"
               >
                 <Heart
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
@@ -270,7 +270,7 @@ export function BiasCard({
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
                 tabIndex={0}
-                className="touch-target hover-grow h-8 w-8 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
+                className="touch-target h-8 w-8 sm:h-10 sm:w-10"
               >
                 <Star
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
@@ -287,11 +287,11 @@ export function BiasCard({
 
   return (
     <motion.div
-      className="group relative mx-auto max-w-2xl overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-4 shadow-depth-2 transition-all duration-300 hover:border-primary/40 hover:shadow-depth-4 sm:rounded-2xl sm:p-6 md:p-8"
+      className="group relative mx-auto max-w-2xl overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-200 hover:border-primary/40 hover:shadow-lg sm:rounded-2xl sm:p-8 md:p-10"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: 0.5,
+        duration: 0.4,
         type: "spring",
         stiffness: 100,
         damping: 15,
@@ -301,19 +301,19 @@ export function BiasCard({
       aria-labelledby="bias-title"
     >
       {/* Gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       
       {/* Top highlight */}
-      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       
       {/* Side glow effect */}
-      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="relative space-y-4 sm:space-y-5 md:space-y-6">
+      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      <div className="relative space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="relative flex items-start justify-between gap-3 sm:gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3">
+        <div className="relative flex items-start justify-between gap-4">
+          <div className="min-w-0 flex-1 space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
               <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
                 {getCategoryLabel(bias.category)}
               </Badge>
@@ -341,7 +341,7 @@ export function BiasCard({
               {bias.title}
             </h1>
           </div>
-          <div className="flex shrink-0 gap-1 sm:gap-2">
+          <div className="flex shrink-0 gap-2">
             {onToggleFavorite && (
               <Button
                 variant="ghost"
@@ -349,7 +349,7 @@ export function BiasCard({
                 onClick={handleFavoriteClick}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
-                className="touch-target hover-grow h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
+                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
               >
                 <Heart
                   className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
@@ -365,7 +365,7 @@ export function BiasCard({
                 onClick={handleMasteredClick}
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
-                className="touch-target hover-grow h-9 w-9 cursor-pointer transition-all duration-200 sm:h-10 sm:w-10"
+                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
               >
                 <Star
                   className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
@@ -385,23 +385,23 @@ export function BiasCard({
         </div>
 
         {/* Why it happens */}
-        <div>
-          <h2 className="text-muted-foreground mb-1.5 text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
+        <div className="space-y-2">
+          <h2 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase sm:text-sm">
             Why it happens
           </h2>
           <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.why}</p>
         </div>
 
         {/* How to counter */}
-        <div>
-          <h2 className="text-muted-foreground mb-1.5 text-xs font-semibold tracking-wide uppercase sm:mb-2 sm:text-sm">
+        <div className="space-y-2">
+          <h2 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase sm:text-sm">
             How to counter it
           </h2>
           <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.counter}</p>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:pt-4">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:pt-4">
           <Button
             onClick={handleSpeak}
             onTouchStart={(e) => {
@@ -410,7 +410,7 @@ export function BiasCard({
               e.currentTarget.style.touchAction = 'manipulation'
             }}
             variant="outline"
-            className={`button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base ${
+            className={`flex-1 text-sm transition-all duration-200 sm:text-base ${
               isSpeaking ? "animate-pulse" : ""
             }`}
             style={{ touchAction: 'manipulation' }}
@@ -451,7 +451,7 @@ export function BiasCard({
           <Button
             onClick={handleShare}
             variant="outline"
-            className="button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base"
+            className="flex-1 text-sm transition-all duration-200 sm:text-base"
             aria-label="Share this bias"
           >
             <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
@@ -460,7 +460,7 @@ export function BiasCard({
           <Button
             onClick={handleCopy}
             variant="outline"
-            className={`button-press hover-lift flex-1 cursor-pointer bg-transparent text-sm transition-all duration-200 sm:text-base ${
+            className={`flex-1 text-sm transition-all duration-200 sm:text-base ${
               copied ? "animate-scale-in" : ""
             }`}
             aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
@@ -499,7 +499,7 @@ export function BiasCard({
 
         {/* Source badge */}
         {bias.source === "user" && (
-          <div className="pt-2">
+          <div className="pt-4">
             <Badge variant="outline" className="text-xs">
               Custom Bias
             </Badge>

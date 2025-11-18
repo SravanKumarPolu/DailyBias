@@ -8,6 +8,117 @@ You **DO NOT need a separate project**. Your Next.js web app can be packaged as 
 2. **Java Development Kit (JDK)** - Version 17 or higher (usually comes with Android Studio)
 3. **Google Play Developer Account** - $25 one-time fee at [play.google.com/console](https://play.google.com/console)
 
+## Installing Android Studio
+
+### Step 1: Download Android Studio
+
+1. Go to [https://developer.android.com/studio](https://developer.android.com/studio)
+2. Click "Download Android Studio"
+3. Download the macOS version (.dmg file)
+
+### Step 2: Install
+
+1. Open the downloaded .dmg file
+2. Drag "Android Studio" to your Applications folder
+3. Open Android Studio from Applications
+4. Follow the setup wizard:
+   - Choose "Standard" installation
+   - Accept licenses
+   - Let it download SDK components (this takes a while)
+
+### Step 3: Verify Installation
+
+```bash
+# Check if Android Studio is installed
+ls -la /Applications/Android\ Studio.app
+
+# If installed, you can now use:
+pnpm android:open
+```
+
+### Step 4: Configure Android SDK
+
+1. Open Android Studio
+2. Go to `Android Studio` → `Settings` (or `Preferences` on macOS)
+3. Navigate to `Appearance & Behavior` → `System Settings` → `Android SDK`
+4. Ensure these are installed:
+   - Android SDK Platform (latest)
+   - Android SDK Build-Tools
+   - Android Emulator
+   - Android SDK Platform-Tools
+
+### Alternative: Command Line Tools Only
+
+If you prefer not to install Android Studio, you can use command line tools:
+
+1. Download Android SDK Command Line Tools:
+   ```bash
+   # Create SDK directory
+   mkdir -p ~/android-sdk
+   cd ~/android-sdk
+   
+   # Download command line tools (check latest version)
+   # Visit: https://developer.android.com/studio#command-tools
+   ```
+
+2. Set environment variables:
+   ```bash
+   # Add to ~/.zshrc or ~/.bash_profile
+   export ANDROID_HOME=$HOME/android-sdk
+   export PATH=$PATH:$ANDROID_HOME/platform-tools
+   export PATH=$PATH:$ANDROID_HOME/tools
+   export PATH=$PATH:$ANDROID_HOME/tools/bin
+   ```
+
+3. Build from command line:
+   ```bash
+   # Sync (already working)
+   pnpm android:sync
+   
+   # Build APK
+   cd android
+   ./gradlew assembleDebug
+   
+   # Install on connected device
+   ./gradlew installDebug
+   ```
+
+### Troubleshooting Android Studio Installation
+
+**Android Studio Not Found:**
+1. Find the exact path:
+   ```bash
+   find /Applications -name "Android Studio.app" -type d
+   ```
+
+2. Set environment variable:
+   ```bash
+   export CAPACITOR_ANDROID_STUDIO_PATH="/Applications/Android Studio.app"
+   ```
+
+3. Or create alias:
+   ```bash
+   # Add to ~/.zshrc
+   alias android-studio="open -a 'Android Studio'"
+   ```
+
+**Build Errors:**
+1. Make sure Java JDK 17+ is installed:
+   ```bash
+   java -version
+   ```
+
+2. Install JDK if needed:
+   ```bash
+   # macOS
+   brew install openjdk@17
+   ```
+
+3. Set JAVA_HOME:
+   ```bash
+   export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+   ```
+
 ## Step-by-Step Process
 
 ### 1. Install Dependencies

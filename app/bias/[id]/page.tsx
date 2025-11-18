@@ -61,7 +61,7 @@ export default function BiasDetailPage() {
       <div className="min-h-screen pb-24">
         <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={0} />
         <DailyHeader />
-        <main className="mx-auto w-full max-w-2xl px-4 py-8">
+        <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
           <div className="glass rounded-2xl p-12 text-center">
             <p className="text-muted-foreground">Loading...</p>
           </div>
@@ -76,7 +76,7 @@ export default function BiasDetailPage() {
       <div className="min-h-screen pb-24">
         <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={0} />
         <DailyHeader />
-        <main className="mx-auto w-full max-w-2xl px-4 py-8">
+        <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
           <div className="glass space-y-4 rounded-2xl p-12 text-center">
             <p className="text-lg font-medium">Bias not found</p>
             <Button onClick={() => router.back()}>Go Back</Button>
@@ -92,8 +92,9 @@ export default function BiasDetailPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={bias.id.length} />
       <DailyHeader />
 
-      <main id="main-content" className="mx-auto w-full max-w-2xl px-4 py-8">
-        <Button variant="ghost" onClick={() => router.back()} className="mb-6 cursor-pointer">
+      <main id="main-content" className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
+        <div className="space-y-6 sm:space-y-8">
+          <Button variant="ghost" onClick={() => router.back()} className="mb-0">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
@@ -109,6 +110,7 @@ export default function BiasDetailPage() {
 
         {/* Related biases */}
         <RelatedBiases currentBias={bias} allBiases={allBiases} maxResults={3} />
+        </div>
       </main>
 
       <DynamicNavigation />

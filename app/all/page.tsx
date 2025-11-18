@@ -144,11 +144,11 @@ export default function AllBiasesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={42} />
       <DailyHeader />
 
-      <main id="main-content" className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
-        <div className="space-y-4 sm:space-y-6">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
+        <div className="space-y-6 sm:space-y-8">
           {/* Header */}
-          <div>
-            <h1 className="mb-1 text-2xl font-bold tracking-tight sm:mb-2 sm:text-3xl">All Biases</h1>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">All Biases</h1>
             <p className="text-muted-foreground text-sm sm:text-base">
               Browse all {allBiases.length} cognitive biases from the collection
             </p>
@@ -162,7 +162,7 @@ export default function AllBiasesPage() {
           )}
 
           {/* Search and Filter */}
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative flex-1">
               <Search
                 className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
@@ -181,7 +181,7 @@ export default function AllBiasesPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2 cursor-pointer"
+                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2"
                   onClick={() => setSearchQuery("")}
                   aria-label="Clear search"
                 >
@@ -193,7 +193,7 @@ export default function AllBiasesPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="glass border-border/50 w-full cursor-pointer bg-transparent text-sm sm:w-auto sm:text-base"
+                  className="glass border-border/50 w-full bg-transparent text-sm sm:w-auto sm:text-base"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filter
@@ -230,7 +230,7 @@ export default function AllBiasesPage() {
 
           {/* Biases grid */}
           {biasesLoading ? (
-            <div className="grid gap-4 sm:gap-5 md:grid-cols-2" role="status" aria-live="polite" aria-busy="true" aria-label="Loading biases">
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-2" role="status" aria-live="polite" aria-busy="true" aria-label="Loading biases">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="glass space-y-3 rounded-xl p-4 sm:rounded-2xl sm:p-6">
                   <Skeleton className="h-5 w-16 sm:h-6 sm:w-20" />
@@ -264,12 +264,12 @@ export default function AllBiasesPage() {
             />
           ) : (
             <>
-              <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 {visibleResults.map(({ bias, score }, index) => (
                 <Link
                   key={bias.id}
                   href={`/bias/${bias.id}`}
-                  className="group cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl"
+                  className="group focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                 >
                   <div className="relative transition-all duration-200 group-hover:scale-[1.01] group-focus:scale-[1.01]">

@@ -140,10 +140,21 @@ For detailed help, see:
 
 ## 📚 Documentation
 
-- [Android Publishing Guide](./ANDROID_PUBLISH_GUIDE.md) - How to publish to Play Store
-- [Troubleshooting Guide](./TROUBLESHOOTING.md) - Common issues and fixes
+### Essential Guides
+- [Quick Start Guide](./QUICK_START.md) - Get started quickly with setup instructions
+- [Android Publishing Guide](./ANDROID_PUBLISH_GUIDE.md) - Complete guide to publish to Play Store
+- [Troubleshooting Guide](./TROUBLESHOOTING.md) - Common issues and solutions
 - [Support Guide](./SUPPORT.md) - Getting help and reporting issues
-- [Cleanup Summary](./CLEANUP_COMPLETE.md) - Recent cleanup changes
+- [Quick Reference](./QUICK_REFERENCE.md) - Quick command reference
+
+### Additional Documentation
+- [Development Workflow](./DEVELOPMENT_WORKFLOW.md) - Development best practices
+- [Next Steps Guide](./NEXT_STEPS_GUIDE.md) - Next steps after setup
+- [Technology Comparison](./TECHNOLOGY_COMPARISON.md) - Tech stack analysis
+- [UI/UX Review](./COMPREHENSIVE_UI_UX_REVIEW_2025.md) - Complete design system review
+- [Email Setup](./EMAIL_SETUP.md) - Email feedback configuration
+- [Analytics Setup](./ANALYTICS_SETUP.md) - Analytics configuration
+- [Implementation Safety](./IMPLEMENTATION_SAFETY.md) - Safety analysis for features
 
 ## 🚢 Deployment
 

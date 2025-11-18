@@ -506,11 +506,11 @@ export default function SettingsPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={456} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
-        <div className="space-y-4 sm:space-y-6">
+      <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
+        <div className="space-y-6 sm:space-y-8">
           {/* Header */}
-          <div>
-            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">Settings</h1>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Settings</h1>
             <p className="text-muted-foreground text-sm sm:text-base">
               Customize your Bias Daily experience
             </p>
@@ -518,9 +518,9 @@ export default function SettingsPage() {
 
 
           {/* Appearance Section */}
-          <div className="glass space-y-4 rounded-xl p-4 sm:space-y-6 sm:rounded-2xl sm:p-6">
-            <div>
-              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+          <div className="glass space-y-6 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+            <div className="space-y-1">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                 <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
                 Appearance
               </h2>
@@ -562,9 +562,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Notifications Section */}
-          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
-            <div>
-              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+            <div className="space-y-1">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                 <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 Notifications
               </h2>
@@ -592,10 +592,10 @@ export default function SettingsPage() {
           </div>
 
           {/* Voice Settings Section */}
-          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
+          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+              <div className="space-y-1">
+                <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                   <Mic className="h-4 w-4 sm:h-5 sm:w-5" />
                   Voice Settings
                 </h2>
@@ -808,9 +808,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Daily Bias Section */}
-          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
-            <div>
-              <h2 className="mb-1 text-lg font-semibold sm:text-xl">{siteConfig.name}</h2>
+          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold tracking-tight sm:text-xl">{siteConfig.name}</h2>
               <p className="text-muted-foreground text-xs sm:text-sm">
                 Configure daily bias selection
               </p>
@@ -835,9 +835,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Smart Timezone Settings Section */}
-          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
-            <div>
-              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+            <div className="space-y-1">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                 <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
                 Timezone
               </h2>
@@ -949,9 +949,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Data Management Section */}
-          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
-            <div>
-              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+            <div className="space-y-1">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                 <Database className="h-4 w-4 sm:h-5 sm:w-5" />
                 Data Management
               </h2>
@@ -1010,9 +1010,9 @@ export default function SettingsPage() {
           </div>
 
           {/* About Section */}
-          <div className="glass space-y-3 rounded-xl p-4 sm:space-y-4 sm:rounded-2xl sm:p-6">
-            <div>
-              <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold sm:text-xl">
+          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+            <div className="space-y-1">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                 <Info className="h-4 w-4 sm:h-5 sm:w-5" />
                 About
               </h2>

@@ -198,17 +198,17 @@ export default function HomePage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-4 sm:py-6 md:py-8"
+        className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10"
         aria-label="Daily cognitive bias"
       >
         {loading || !dailyBias ? (
-          <div className="space-y-4 sm:space-y-6" role="status" aria-live="polite" aria-busy="true" aria-label="Loading daily bias">
+          <div className="space-y-6 sm:space-y-8" role="status" aria-live="polite" aria-busy="true" aria-label="Loading daily bias">
             {/* Stats grid skeleton */}
-            <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4">
+            <div className="mb-8 grid grid-cols-2 gap-4 sm:mb-10 sm:gap-6">
               {[1, 2, 3, 4].map((i) => (
                 <div 
                   key={i} 
-                  className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 shadow-depth-1 sm:rounded-2xl"
+                  className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 shadow-sm sm:rounded-2xl"
                 >
                   <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/5 to-transparent" 
                        style={{ animationDelay: `${i * 100}ms` }} />
@@ -220,12 +220,12 @@ export default function HomePage() {
             </div>
 
             {/* Featured card skeleton */}
-            <div className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border-2 border-primary/20 p-4 shadow-depth-2 sm:rounded-2xl sm:p-6">
+            <div className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border-2 border-primary/20 p-6 shadow-md sm:rounded-2xl sm:p-8">
               <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/10 to-transparent" 
                    style={{ animationDuration: '2s' }} />
               <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent animate-pulse" />
               
-              <div className="relative space-y-3 sm:space-y-4">
+              <div className="relative space-y-4">
                 <div className="h-5 w-32 rounded bg-muted/50 sm:h-6 sm:w-40" />
                 <div className="h-7 w-40 rounded bg-muted/50 sm:h-8 sm:w-48" />
                 <div className="h-16 w-full rounded bg-muted/50 sm:h-20" />
@@ -233,12 +233,12 @@ export default function HomePage() {
             </div>
 
             {/* Main card skeleton */}
-            <div className="group relative overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-4 shadow-depth-2 sm:rounded-2xl sm:p-6 md:p-8">
+            <div className="group relative overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md sm:rounded-2xl sm:p-8 md:p-10">
               <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-primary/8 to-transparent" 
                    style={{ animationDuration: '2s' }} />
               <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-pulse" />
               
-              <div className="relative space-y-4 sm:space-y-6">
+              <div className="relative space-y-6">
                 <div className="h-6 w-24 rounded bg-muted/50 sm:h-8 sm:w-32" />
                 <div className="h-10 w-full rounded bg-muted/50 sm:h-12" />
                 <div className="h-20 w-full rounded bg-muted/50 sm:h-24" />
@@ -256,8 +256,8 @@ export default function HomePage() {
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>
         ) : (
-          <>
-            <TiltCard className="mb-6" tiltStrength={8} glareEnabled>
+          <div className="space-y-6 sm:space-y-8">
+            <TiltCard className="mb-0" tiltStrength={8} glareEnabled>
               <DynamicBiasCard
                 bias={dailyBias}
                 variant="detailed"
@@ -276,7 +276,7 @@ export default function HomePage() {
 
             {/* Progress Indicator */}
             <BiasProgressIndicator />
-          </>
+          </div>
         )}
       </main>
 
