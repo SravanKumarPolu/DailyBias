@@ -37,12 +37,20 @@ export function PlausibleAnalytics() {
     return null
   }
 
+  // Don't load Plausible in Android WebView to avoid conflicts
+  if (typeof window !== "undefined" && window.navigator?.userAgent?.includes("wv")) {
+    return null
+  }
+
   return (
     <Script
       data-domain={domain}
       src="https://plausible.io/js/script.js"
       strategy="afterInteractive"
       defer
+      onError={(e) => {
+        console.warn("Plausible Analytics script failed to load:", e)
+      }}
     />
   )
 }

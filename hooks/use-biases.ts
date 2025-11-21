@@ -8,30 +8,74 @@ import { toast } from "@/hooks/use-toast"
 import { logger } from "@/lib/logger"
 
 export function useBiases() {
+  // Initialize with core biases immediately so app can render
+  const coreBiases = getCoreBiases()
+  logger.debug("[BiasesHook] Initializing - core biases count:", coreBiases.length)
+  
   const [userBiases, setUserBiases] = useState<Bias[]>([])
-  const [allBiases, setAllBiases] = useState<Bias[]>([])
-  const [loading, setLoading] = useState(true)
+  const [allBiases, setAllBiases] = useState<Bias[]>(coreBiases) // Start with core biases
+  // Only show loading if we have NO biases at all (neither core nor user)
+  const [loading, setLoading] = useState(coreBiases.length === 0)
   const [error, setError] = useState<string | null>(null)
+  
+  // Log initial state
+  useEffect(() => {
+    logger.debug("[BiasesHook] Initial state - allBiases:", allBiases.length, "loading:", loading, "coreBiases:", coreBiases.length)
+    // If we have core biases but allBiases is empty, fix it immediately
+    if (coreBiases.length > 0 && allBiases.length === 0) {
+      logger.warn("[BiasesHook] Fixing empty allBiases - setting to core biases")
+      setAllBiases(coreBiases)
+      setLoading(false)
+    }
+  }, [])
 
   const loadBiases = useCallback(async () => {
     try {
       logger.debug("[BiasesHook] Loading user biases...")
       setError(null)
-      const userBiasesData = await getUserBiases()
-      logger.debug("[BiasesHook] Loaded user biases:", userBiasesData.length, userBiasesData.map(b => b.title))
+      
+      // Always ensure core biases are available, even if IndexedDB fails
+      const coreBiases = getCoreBiases()
+      logger.debug("[BiasesHook] Core biases available:", coreBiases.length)
+      
+      // Try to load user biases from IndexedDB
+      let userBiasesData: Bias[] = []
+      try {
+        userBiasesData = await getUserBiases()
+        logger.debug("[BiasesHook] Loaded user biases:", userBiasesData.length, userBiasesData.map(b => b.title))
+      } catch (dbError) {
+        logger.warn("[BiasesHook] IndexedDB failed, using core biases only:", dbError)
+        // Continue with empty user biases - core biases will still work
+      }
+      
       setUserBiases(userBiasesData)
       const allBiasesData = getAllBiases(userBiasesData)
       logger.debug("[BiasesHook] Total biases (core + user):", allBiasesData.length)
+      
+      if (allBiasesData.length === 0) {
+        logger.error("[BiasesHook] No biases available at all - this should not happen!")
+        throw new Error("No biases data available. Please refresh the app.")
+      }
+      
       setAllBiases(allBiasesData)
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to load biases"
       logger.error("[BiasesHook] Error loading biases:", error)
       setError(message)
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      })
+      
+      // Even on error, try to set core biases as fallback
+      const coreBiases = getCoreBiases()
+      if (coreBiases.length > 0) {
+        logger.debug("[BiasesHook] Using core biases as fallback")
+        setAllBiases(coreBiases)
+        setUserBiases([])
+      } else {
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        })
+      }
     } finally {
       setLoading(false)
     }

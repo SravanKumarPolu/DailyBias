@@ -87,11 +87,17 @@ export default function HomePage() {
 
   // Calculate daily bias only once per day using cache
   const selectedDailyBias = useMemo(() => {
-    logger.debug("[DailyBias] Calculating daily bias - biases:", allBiases.length, "progress:", progressList.length, "loading:", progressLoading)
+    logger.debug("[DailyBias] Calculating daily bias - biases:", allBiases.length, "progress:", progressList.length, "loading:", progressLoading, "biasesLoading:", biasesLoading)
     
-    if (allBiases.length === 0 || progressLoading) {
-      logger.debug("[DailyBias] Skipping daily bias calculation - insufficient data")
+    // Don't wait for progress if we have biases - we can calculate without progress
+    if (allBiases.length === 0) {
+      logger.warn("[DailyBias] No biases available - cannot calculate daily bias")
       return null
+    }
+    
+    // If progress is still loading, use empty progress list (will still work)
+    if (progressLoading) {
+      logger.debug("[DailyBias] Progress still loading, using empty progress list")
     }
 
     const today = getTodayDateString()

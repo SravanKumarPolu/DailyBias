@@ -4,7 +4,15 @@ import { getLocalDateString } from "./timezone-utils"
 import { logger } from "./logger"
 
 // Ensure the data is properly typed
-const coreBiases = coreBiasesData as Bias[]
+const coreBiases = (coreBiasesData as Bias[]) || []
+
+// Log immediately to verify data is loaded
+if (typeof window !== "undefined") {
+  logger.debug("[DailyBias] Module loaded - coreBiases count:", coreBiases.length)
+  if (coreBiases.length === 0) {
+    logger.error("[DailyBias] CRITICAL: Core biases array is empty at module load!")
+  }
+}
 
 // Simple hash function for deterministic selection
 function hashString(str: string): number {

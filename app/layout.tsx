@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
+import Script from "next/script"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import "./globals.css"
@@ -9,6 +10,7 @@ import { NetworkStatus } from "@/components/network-status"
 import { TelegramRedirectBanner } from "@/components/telegram-redirect-banner"
 import { AppProvider } from "@/contexts/app-context"
 import { PlausibleAnalytics } from "@/components/plausible-analytics"
+import { DisableServiceWorker } from "@/components/disable-service-worker"
 import { siteConfig } from "@/lib/site-config"
 
 export const metadata: Metadata = {
@@ -121,6 +123,36 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <body className="bg-background text-foreground min-h-screen font-sans" suppressHydrationWarning>
+        {/* Immediately unregister service workers before anything else loads */}
+        <Script
+          id="disable-service-worker-immediate"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if ('serviceWorker' in navigator) {
+                  // Unregister all service workers immediately
+                  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(var i = 0; i < registrations.length; i++) {
+                      registrations[i].unregister().catch(function(err) {
+                        console.warn('[ServiceWorker] Error unregistering:', err);
+                      });
+                    }
+                  }).catch(function(err) {
+                    console.warn('[ServiceWorker] Error getting registrations:', err);
+                  });
+                  
+                  // Prevent new registrations
+                  var originalRegister = navigator.serviceWorker.register;
+                  navigator.serviceWorker.register = function() {
+                    console.warn('[ServiceWorker] Service worker registration blocked');
+                    return Promise.reject(new Error('Service workers are disabled'));
+                  };
+                }
+              })();
+            `,
+          }}
+        />
         {/* Skip link for keyboard navigation accessibility */}
         <a
           href="#main-content"
@@ -128,6 +160,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Skip to main content
         </a>
+        <DisableServiceWorker />
         <ErrorBoundary>
           <AppProvider>
             <NetworkStatus />

@@ -248,9 +248,17 @@ export default function SettingsPage() {
       const a = document.createElement("a")
       a.href = url
       a.download = `bias-daily-backup-${new Date().toISOString().slice(0, 10)}.json`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+      a.style.display = "none"
+      
+      // Safely append to body with null check
+      if (document.body) {
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      } else {
+        // Fallback: try to trigger download without appending
+        a.click()
+      }
       URL.revokeObjectURL(url)
       
       console.log('[Settings] Data exported successfully')
