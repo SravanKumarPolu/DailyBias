@@ -133,8 +133,13 @@ export default function HomePage() {
   useEffect(() => {
     if (selectedDailyBias) {
       setDailyBias(selectedDailyBias)
+    } else if (allBiases.length > 0 && !dailyBias) {
+      // Fallback: if we have biases but no daily bias calculated yet, use the first one
+      // This prevents the app from staying in loading state
+      logger.debug("[DailyBias] Using fallback bias - first available bias")
+      setDailyBias(allBiases[0])
     }
-  }, [selectedDailyBias])
+  }, [selectedDailyBias, allBiases, dailyBias])
 
   useEffect(() => {
     if (dailyBias) {
@@ -159,7 +164,9 @@ export default function HomePage() {
     setIsMast(newState)
   }
 
-  const loading = biasesLoading || settingsLoading || progressLoading
+  // Only show loading if we truly have no data - don't wait for progress or settings
+  // Core biases should be available immediately, so we can show content even if progress is loading
+  const loading = biasesLoading && allBiases.length === 0
 
   // Generate seed from today's date for consistent background
   const seed = getTodayDateString()
@@ -207,7 +214,7 @@ export default function HomePage() {
         className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10"
         aria-label="Daily cognitive bias"
       >
-        {loading || !dailyBias ? (
+        {loading || (allBiases.length === 0) || !dailyBias ? (
           <div className="space-y-6 sm:space-y-8" role="status" aria-live="polite" aria-busy="true" aria-label="Loading daily bias">
             {/* Stats grid skeleton */}
             <div className="mb-8 grid grid-cols-2 gap-4 sm:mb-10 sm:gap-6">

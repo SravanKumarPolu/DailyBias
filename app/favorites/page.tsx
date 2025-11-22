@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Heart, Download } from "lucide-react"
+import { Heart } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicBiasCard } from "@/components/dynamic-bias-card"
@@ -98,34 +98,6 @@ export default function FavoritesPage() {
     }
   }
 
-  const handleExport = () => {
-    console.log("[FavoritesPage] Exporting favorites:", favoriteBiases.length)
-    
-    try {
-      const data = favoriteBiases.map((bias) => ({
-        title: bias.title,
-        category: bias.category,
-        summary: bias.summary,
-        why: bias.why,
-        counter: bias.counter,
-        source: bias.source,
-        addedAt: favorites.find(f => f.biasId === bias.id)?.addedAt || Date.now()
-      }))
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `bias-daily-favorites-${new Date().toISOString().slice(0, 10)}.json`
-      a.click()
-      URL.revokeObjectURL(url)
-      
-      console.log("[FavoritesPage] Export completed successfully")
-    } catch (error) {
-      console.error("[FavoritesPage] Export failed:", error)
-    }
-  }
-
   const loading = biasesLoading || favoritesLoading
 
   return (
@@ -136,23 +108,9 @@ export default function FavoritesPage() {
       <main id="main-content" className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-start justify-between gap-3 sm:gap-4">
-            <div className="min-w-0 flex-1">
-              <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl md:text-4xl">Favorites</h1>
-              <p className="text-muted-foreground text-sm sm:text-base">Your saved biases for quick reference</p>
-            </div>
-            {favoriteBiases.length > 0 && (
-              <Button
-                onClick={handleExport}
-                variant="outline"
-                size="sm"
-                className="glass border-border/50 touch-target hover-lift button-press shrink-0 cursor-pointer bg-transparent transition-all duration-200 sm:size-default"
-                aria-label="Export favorites as JSON"
-              >
-                <Download className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Export</span>
-              </Button>
-            )}
+          <div>
+            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl md:text-4xl">Favorites</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">Your saved biases for quick reference</p>
           </div>
 
           {/* Favorites count */}
@@ -194,7 +152,7 @@ export default function FavoritesPage() {
                   className="group cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                 >
-                  <div className="animate-fade-in-up transition-all duration-200 group-hover:scale-[1.01] group-focus:scale-[1.01]">
+                  <div className="animate-fade-in-up transition-all duration-200 group-hover:scale-[1.01] group-focus:scale-[1.01]" style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}>
                     <DynamicBiasCard
                       bias={bias}
                       variant="compact"

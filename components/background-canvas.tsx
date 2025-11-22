@@ -21,6 +21,8 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
     const ctx = canvas.getContext("2d", {
       alpha: false,
       desynchronized: true,
+      // Android performance optimization
+      willReadFrequently: false,
     })
     if (!ctx) return
 
@@ -97,7 +99,13 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
     <motion.canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10"
-      style={{ willChange: "transform" }}
+      style={{ 
+        willChange: "transform",
+        transform: "translate3d(0, 0, 0)",
+        WebkitTransform: "translate3d(0, 0, 0)",
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
+      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.3 }}
       transition={{ duration: 1 }}

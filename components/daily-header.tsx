@@ -29,19 +29,28 @@ export function DailyHeader({
     setToday(getTimezoneAwareDateString())
   }, [])
 
+  // Apply theme changes with requestAnimationFrame to prevent flicker
   useEffect(() => {
     if (!mounted) return
 
-    const root = document.documentElement
-    if (settings.theme === "dark") {
-      root.classList.add("dark")
-      root.classList.remove("light")
-    } else if (settings.theme === "light") {
-      root.classList.add("light")
-      root.classList.remove("dark")
-    } else {
-      root.classList.remove("dark", "light")
+    // Use requestAnimationFrame to batch DOM updates and prevent flicker
+    const updateTheme = () => {
+      const root = document.documentElement
+      if (settings.theme === "dark") {
+        root.classList.add("dark")
+        root.classList.remove("light")
+      } else if (settings.theme === "light") {
+        root.classList.add("light")
+        root.classList.remove("dark")
+      } else {
+        // System theme - remove both and let CSS media query handle it
+        root.classList.remove("dark", "light")
+      }
     }
+
+    // Batch theme updates to prevent flicker during rapid changes
+    const rafId = requestAnimationFrame(updateTheme)
+    return () => cancelAnimationFrame(rafId)
   }, [settings.theme, mounted])
 
   // Cycle through theme modes: light -> dark -> system -> light
@@ -77,7 +86,85 @@ export function DailyHeader({
 
   const themeDisplay = getThemeDisplay()
 
-  if (!mounted) return null
+  // Render skeleton immediately to prevent flicker - don't return null
+  // The component will render with empty/loading state until mounted
+  if (!mounted) {
+    return (
+      <header className="mx-auto w-full max-w-2xl px-4 py-4 sm:px-6 sm:py-5 md:py-6">
+        <div className="flex items-center justify-between gap-2 sm:gap-3">
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <Link href="/" className="group inline-block cursor-pointer">
+              <h1 className="group-hover:text-primary inline-block truncate text-lg font-bold tracking-tight transition-all duration-200 group-hover:scale-[1.02] sm:text-xl md:text-2xl">
+                {siteConfig.name}
+              </h1>
+            </Link>
+            <p className="text-muted-foreground truncate text-xs transition-colors duration-200 sm:text-sm">
+              {/* Empty until mounted to prevent layout shift */}
+            </p>
+            <p className="text-muted-foreground truncate text-xs transition-colors duration-200">
+              One bias daily • 50 total • ~2 months rotation
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-1 sm:gap-2">
+            {/* Render buttons with same layout to prevent shift */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
+              aria-label="Visit Boostlly - Tiny words. Big impact."
+              title="Visit Boostlly - Tiny words. Big impact."
+              className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+            >
+              <Rocket
+                className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
+                aria-hidden="true"
+              />
+            </Button>
+            {voiceCommandsSupported && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleVoiceCommands}
+                aria-label="Click to enable voice commands"
+                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+                title="Enable voice commands"
+              >
+                <MicOff
+                  className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
+                  aria-hidden="true"
+                />
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title="Toggle theme"
+              className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+            >
+              <span className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5">
+                <Sun className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+              </span>
+            </Button>
+            <Link href="/settings">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open settings"
+                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+              >
+                <Bell
+                  className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
+                  aria-hidden="true"
+                />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+    )
+  }
 
   return (
     <header className="mx-auto w-full max-w-2xl px-4 py-4 sm:px-6 sm:py-5 md:py-6">

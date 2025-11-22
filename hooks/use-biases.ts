@@ -18,14 +18,21 @@ export function useBiases() {
   const [loading, setLoading] = useState(coreBiases.length === 0)
   const [error, setError] = useState<string | null>(null)
   
-  // Log initial state
+  // Log initial state and ensure core biases are always set
   useEffect(() => {
     logger.debug("[BiasesHook] Initial state - allBiases:", allBiases.length, "loading:", loading, "coreBiases:", coreBiases.length)
-    // If we have core biases but allBiases is empty, fix it immediately
-    if (coreBiases.length > 0 && allBiases.length === 0) {
-      logger.warn("[BiasesHook] Fixing empty allBiases - setting to core biases")
-      setAllBiases(coreBiases)
-      setLoading(false)
+    // Always ensure core biases are set, even if something went wrong
+    if (coreBiases.length > 0) {
+      if (allBiases.length === 0) {
+        logger.warn("[BiasesHook] Fixing empty allBiases - setting to core biases")
+        setAllBiases(coreBiases)
+      }
+      // If we have core biases, we're not loading
+      if (loading && coreBiases.length > 0) {
+        setLoading(false)
+      }
+    } else {
+      logger.error("[BiasesHook] CRITICAL: No core biases available!")
     }
   }, [])
 
