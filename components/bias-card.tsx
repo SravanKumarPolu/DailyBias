@@ -2,9 +2,10 @@
 
 import type React from "react"
 
-import { motion } from "framer-motion"
+// Removed framer-motion import - using static divs to prevent flickering
 import { Heart, Share2, Copy, Check, Star, Volume2, VolumeX } from "lucide-react"
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
+// Removed unused useEffect import
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -41,6 +42,8 @@ export function BiasCard({
   const masteredRef = useRef<HTMLButtonElement>(null)
   const { speak, stop, isSpeaking, isEnabled, isSupported } = useSpeech()
   const { toast } = useToast()
+  
+  // Removed all animation state - using static rendering to prevent flickering
 
   const handleShare = async () => {
     const shareText = `🧠 ${bias.title}\n\n${bias.summary}\n\n💡 Learn more cognitive biases at ${window.location.origin}`
@@ -80,29 +83,45 @@ export function BiasCard({
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  // Memoize handlers to prevent recreation and ensure buttons work properly
+  // FIX: Don't use preventDefault/stopPropagation on touch events - they can block Android touch handling
+  const handleFavoriteClick = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    // Only prevent default for mouse events, not touch events (Android needs touch events)
+    if (e.type === 'click' && 'button' in e && e.button !== 0) {
+      e.preventDefault()
+    }
+    // Don't stop propagation - let events bubble naturally for Android
     haptics.light()
 
     // Trigger heart-beat animation
     setFavoriteAnimating(true)
     setTimeout(() => setFavoriteAnimating(false), 500)
 
-    onToggleFavorite?.(e)
-  }
+    // Call the handler - ensure it's called even if component re-renders
+    if (onToggleFavorite) {
+      // Pass empty event or undefined instead of the event object
+      onToggleFavorite()
+    }
+  }, [onToggleFavorite])
 
-  const handleMasteredClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleMasteredClick = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    // Only prevent default for mouse events, not touch events (Android needs touch events)
+    if (e.type === 'click' && 'button' in e && e.button !== 0) {
+      e.preventDefault()
+    }
+    // Don't stop propagation - let events bubble naturally for Android
     haptics.success()
 
     // Trigger bounce animation
     setMasteredAnimating(true)
     setTimeout(() => setMasteredAnimating(false), 600)
 
-    onToggleMastered?.(e)
-  }
+    // Call the handler - ensure it's called even if component re-renders
+    if (onToggleMastered) {
+      // Pass empty event or undefined instead of the event object
+      onToggleMastered()
+    }
+  }, [onToggleMastered])
 
   const handleSpeak = async () => {
     if (!isSupported) {
@@ -197,21 +216,18 @@ export function BiasCard({
 
   if (variant === "compact") {
     return (
-      <motion.div
+      <div
         className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:rounded-2xl sm:p-5 md:p-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        whileHover={{ y: -2, scale: 1.01 }}
+        // Removed motion.div to prevent flickering - using static div instead
         role="article"
         tabIndex={0}
         aria-label={`${bias.title} - ${bias.category} bias`}
       >
-        {/* Gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
         
-        {/* Inner highlight */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        {/* Inner highlight - FIX: pointer-events-none to prevent blocking buttons */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
         <div className="relative flex items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -249,10 +265,19 @@ export function BiasCard({
                 variant="ghost"
                 size="icon"
                 onClick={handleFavoriteClick}
+                onTouchEnd={handleFavoriteClick}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
                 tabIndex={0}
-                className="touch-target h-8 w-8 sm:h-10 sm:w-10"
+                className="touch-target min-h-[44px] min-w-[44px]"
+                style={{ 
+                  touchAction: 'manipulation', 
+                  WebkitTouchCallout: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  pointerEvents: 'auto', 
+                  zIndex: 10,
+                  userSelect: 'none'
+                }}
               >
                 <Heart
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
@@ -267,10 +292,19 @@ export function BiasCard({
                 variant="ghost"
                 size="icon"
                 onClick={handleMasteredClick}
+                onTouchEnd={handleMasteredClick}
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
                 tabIndex={0}
-                className="touch-target h-8 w-8 sm:h-10 sm:w-10"
+                className="touch-target min-h-[44px] min-w-[44px]"
+                style={{ 
+                  touchAction: 'manipulation', 
+                  WebkitTouchCallout: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  pointerEvents: 'auto', 
+                  zIndex: 10,
+                  userSelect: 'none'
+                }}
               >
                 <Star
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
@@ -281,34 +315,26 @@ export function BiasCard({
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
     )
   }
 
   return (
-    <motion.div
+    <div
       className="group relative mx-auto max-w-2xl overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-200 hover:border-primary/40 hover:shadow-lg sm:rounded-2xl sm:p-8 md:p-10"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.4,
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-      }}
-      whileHover={{ y: -2 }}
+      // Removed motion.div props to prevent flickering - using static div instead
       role="article"
       aria-labelledby="bias-title"
     >
-      {/* Gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
       
-      {/* Top highlight */}
-      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      {/* Top highlight - FIX: pointer-events-none to prevent blocking buttons */}
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
       
-      {/* Side glow effect */}
-      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      {/* Side glow effect - FIX: pointer-events-none to prevent blocking buttons */}
+      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
       <div className="relative space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="relative flex items-start justify-between gap-4">
@@ -336,7 +362,7 @@ export function BiasCard({
             </div>
             <h1
               id="bias-title"
-              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl"
+              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl break-words"
             >
               {bias.title}
             </h1>
@@ -347,9 +373,18 @@ export function BiasCard({
                 variant="ghost"
                 size="icon"
                 onClick={handleFavoriteClick}
+                onTouchEnd={handleFavoriteClick}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
-                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+                className="touch-target min-h-[44px] min-w-[44px]"
+                style={{ 
+                  touchAction: 'manipulation', 
+                  WebkitTouchCallout: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  pointerEvents: 'auto', 
+                  zIndex: 10,
+                  userSelect: 'none'
+                }}
               >
                 <Heart
                   className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
@@ -363,9 +398,18 @@ export function BiasCard({
                 variant="ghost"
                 size="icon"
                 onClick={handleMasteredClick}
+                onTouchEnd={handleMasteredClick}
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
-                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+                className="touch-target min-h-[44px] min-w-[44px]"
+                style={{ 
+                  touchAction: 'manipulation', 
+                  WebkitTouchCallout: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  pointerEvents: 'auto', 
+                  zIndex: 10,
+                  userSelect: 'none'
+                }}
               >
                 <Star
                   className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
@@ -404,16 +448,18 @@ export function BiasCard({
         <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:pt-4">
           <Button
             onClick={handleSpeak}
-            onTouchStart={(e) => {
-              // MOBILE FIX: Ensure touch events work properly
-              // Prevent double-tap zoom on mobile
-              e.currentTarget.style.touchAction = 'manipulation'
-            }}
+            onTouchEnd={handleSpeak}
             variant="outline"
-            className={`flex-1 text-sm transition-all duration-200 sm:text-base ${
+            className={`flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target ${
               isSpeaking ? "animate-pulse" : ""
             }`}
-            style={{ touchAction: 'manipulation' }}
+            style={{ 
+              touchAction: 'manipulation', 
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              pointerEvents: 'auto',
+              userSelect: 'none'
+            }}
             aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
             title={
               !isSupported 
@@ -450,8 +496,16 @@ export function BiasCard({
           </Button>
           <Button
             onClick={handleShare}
+            onTouchEnd={handleShare}
             variant="outline"
-            className="flex-1 text-sm transition-all duration-200 sm:text-base"
+            className="flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target"
+            style={{ 
+              touchAction: 'manipulation', 
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              pointerEvents: 'auto',
+              userSelect: 'none'
+            }}
             aria-label="Share this bias"
           >
             <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
@@ -459,10 +513,18 @@ export function BiasCard({
           </Button>
           <Button
             onClick={handleCopy}
+            onTouchEnd={handleCopy}
             variant="outline"
-            className={`flex-1 text-sm transition-all duration-200 sm:text-base ${
+            className={`flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target ${
               copied ? "animate-scale-in" : ""
             }`}
+            style={{ 
+              touchAction: 'manipulation', 
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              pointerEvents: 'auto',
+              userSelect: 'none'
+            }}
             aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
           >
             {copied ? (
@@ -506,6 +568,6 @@ export function BiasCard({
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   )
 }

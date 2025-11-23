@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Home, Grid3x3, Heart, Plus, BarChart3, Settings } from "lucide-react"
-import { motion } from "framer-motion"
+// Removed motion imports - using static CSS transitions instead to prevent flickering on Android
 
 const navItems = [
   { href: "/", icon: Home, label: "Daily" },
@@ -18,7 +18,22 @@ export function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="pb-safe fixed right-0 bottom-0 left-0 z-50" aria-label="Main navigation">
+    <nav 
+      className="pb-safe fixed right-0 bottom-0 left-0 z-50" 
+      aria-label="Main navigation"
+      style={{
+        // FIX: Ensure navigation is always visible and above all content
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        display: 'flex',
+        visibility: 'visible',
+        opacity: 1,
+        pointerEvents: 'auto',
+      }}
+    >
       <div className="glass border-border/50 border-t backdrop-blur-xl bg-background/80 dark:bg-background/90">
         <div className="mx-auto max-w-2xl px-2 sm:px-4">
           <div className="flex items-center justify-around py-2 sm:py-3">
@@ -30,32 +45,21 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="hover:bg-accent/50 focus:ring-ring touch-target relative flex cursor-pointer flex-col items-center gap-1 rounded-xl px-2 py-1.5 transition-all duration-200 hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 sm:gap-1.5 sm:px-3 sm:py-2"
+                  // FIX: Increased touch target to minimum 44px for accessibility
+                  className="hover:bg-accent/50 focus:ring-ring touch-target relative flex cursor-pointer flex-col items-center gap-1 rounded-xl px-3 py-2.5 transition-all duration-200 hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 sm:gap-1.5 sm:px-4 sm:py-3 min-h-[44px] min-w-[44px]"
                   aria-label={`${item.label} page`}
                   aria-current={isActive ? "page" : undefined}
                 >
                   {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
+                    <div
                       className="bg-accent absolute inset-0 rounded-xl"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 30,
-                        mass: 0.8,
-                      }}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
                       aria-hidden="true"
                     />
                   )}
-                  <motion.div
-                    className="relative z-10"
-                    animate={{
-                      scale: isActive ? 1.1 : 1,
-                      y: isActive ? -1 : 0,
-                    }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  <div
+                    className={`relative z-10 transition-all duration-200 ${
+                      isActive ? "scale-110 -translate-y-0.5" : "scale-100 translate-y-0"
+                    }`}
                   >
                     <Icon
                       className={`h-5 w-5 transition-colors duration-200 sm:h-6 sm:w-6 ${
@@ -63,7 +67,7 @@ export function Navigation() {
                       }`}
                       aria-hidden="true"
                     />
-                  </motion.div>
+                  </div>
                   <span
                     className={`relative z-10 text-[10px] transition-all duration-200 sm:text-xs ${
                       isActive

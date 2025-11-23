@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { motion } from "framer-motion"
+// Removed unused imports: useState, motion - using static rendering to prevent flickering
 
 interface BackgroundCanvasProps {
   style: "gradient" | "glass" | "minimal"
@@ -10,7 +10,7 @@ interface BackgroundCanvasProps {
 
 export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationFrameRef = useRef<number | undefined>(undefined)
+  // Removed all animation state - using static rendering to prevent flickering
 
   useEffect(() => {
     if (style !== "gradient") return
@@ -26,26 +26,13 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
     })
     if (!ctx) return
 
-    // Set canvas size
+    // Set canvas size once - no animation loop to prevent flickering
     const updateSize = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
-    }
-    updateSize()
-    window.addEventListener("resize", updateSize)
-
-    // Track visibility to pause animation when tab is hidden
-    let isVisible = !document.hidden
-
-    // Animated gradient background
-    const animate = () => {
-      if (!isVisible) {
-        // Pause animation when page is hidden
-        animationFrameRef.current = requestAnimationFrame(animate)
-        return
-      }
-
-      // Create gradient
+      
+      // Draw static gradient once - no animation loop
+      // This prevents flickering on Android from continuous requestAnimationFrame
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
 
       // Rotate colors based on seed
@@ -58,25 +45,14 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
 
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      animationFrameRef.current = requestAnimationFrame(animate)
     }
-
-    // Handle visibility change
-    const handleVisibilityChange = () => {
-      isVisible = !document.hidden
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-
-    animate()
+    
+    updateSize()
+    window.addEventListener("resize", updateSize)
 
     return () => {
       window.removeEventListener("resize", updateSize)
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
-      }
+      // No animation frame to cancel - we're using static rendering
     }
   }, [style, seed])
 
@@ -95,20 +71,25 @@ export function BackgroundCanvas({ style, seed = 0 }: BackgroundCanvasProps) {
     )
   }
 
+  // Only render motion.canvas for gradient style
+  if (style !== "gradient") {
+    return null
+  }
+
+  // Use static canvas instead of motion.canvas to prevent flickering
+  // No animations - just render once and stay static
   return (
-    <motion.canvas
+    <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10"
       style={{ 
-        willChange: "transform",
+        opacity: 0.3,
+        willChange: "auto", // Changed from "transform" to prevent unnecessary GPU layer
         transform: "translate3d(0, 0, 0)",
         WebkitTransform: "translate3d(0, 0, 0)",
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
       }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 0.3 }}
-      transition={{ duration: 1 }}
     />
   )
 }

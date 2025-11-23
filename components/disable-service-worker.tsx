@@ -50,6 +50,7 @@ export function DisableServiceWorker() {
     }
 
     // Prevent new service worker registrations by overriding the register method
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     navigator.serviceWorker.register = function(..._args: unknown[]) {
       console.warn("[ServiceWorker] Service worker registration blocked")
       return Promise.reject(new Error("Service workers are disabled"))

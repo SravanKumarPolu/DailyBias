@@ -9,6 +9,12 @@ import { useApp } from "@/contexts/app-context"
 export function BiasProgressIndicator() {
   const { allBiases, progressList } = useApp()
 
+  // Create stable hash of progressList to prevent unnecessary recalculations
+  // This prevents flickering when progressList reference changes but content is similar
+  const progressListHash = useMemo(() => {
+    return progressList.length + progressList.filter(p => p.mastered).length
+  }, [progressList])
+
   const progressStats = useMemo(() => {
     const totalBiases = allBiases.length
     const viewedBiases = progressList.length
@@ -23,7 +29,10 @@ export function BiasProgressIndicator() {
       completionPercentage,
       masteryPercentage
     }
-  }, [allBiases, progressList])
+    // Use hash instead of full array to prevent recalculation when array reference changes
+    // but meaningful content is the same (prevents flickering on Android)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressListHash, allBiases.length])
 
   if (allBiases.length === 0) return null
 

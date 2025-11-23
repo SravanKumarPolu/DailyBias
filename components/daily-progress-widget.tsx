@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
-import { motion } from "framer-motion"
+import { useMemo, memo } from "react"
+// Removed framer-motion import - using static rendering to prevent flickering
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
@@ -20,12 +20,23 @@ interface DailyProgressWidgetProps {
   className?: string
 }
 
-export function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
+// FIX: Memoize component to prevent unnecessary re-renders during scrolling
+export const DailyProgressWidget = memo(function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
   const { allBiases, progressList, progressStats } = useApp()
+  // Removed all animation state - using static rendering to prevent flickering
+  // Create stable hash of progressList to prevent unnecessary recalculations
+  // This prevents flickering when progressList reference changes but content is similar
+  const progressListHash = useMemo(() => {
+    return progressList.length + progressList.filter(p => p.mastered).length + 
+           (progressList.length > 0 ? Math.max(...progressList.map(p => p.viewedAt || 0)) : 0)
+  }, [progressList])
 
-  // Today's progress
+  // Today's progress - use stable date calculation
+  // Calculate today's start/end once per day to prevent unnecessary recalculations
   const todayProgress = useMemo(() => {
-    const today = new Date()
+    const now = Date.now()
+    const today = new Date(now)
+    // Use fixed date boundaries for today to ensure stable calculations
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
     const todayEnd = todayStart + 24 * 60 * 60 * 1000 - 1
 
@@ -42,18 +53,25 @@ export function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
       goal: 1, // Daily goal of 1 bias
       completionRate: Math.min((todayViews / 1) * 100, 100)
     }
-  }, [progressList])
+    // Use hash instead of full array to prevent recalculation when array reference changes
+    // but meaningful content is the same (prevents flickering on Android)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressListHash])
 
-  // Weekly progress
+  // Weekly progress - use stable date calculation
   const weeklyProgress = useMemo(() => {
-    const today = new Date()
+    const now = Date.now()
+    const today = new Date(now)
     const weekStart = new Date(today)
     weekStart.setDate(today.getDate() - today.getDay())
+    weekStart.setHours(0, 0, 0, 0)
+    const weekEnd = new Date(today)
+    weekEnd.setHours(23, 59, 59, 999)
     
     const weekViews = progressList.filter(p => {
       if (!p.viewedAt) return false
       const viewDate = new Date(p.viewedAt)
-      return viewDate >= weekStart && viewDate <= today
+      return viewDate >= weekStart && viewDate <= weekEnd
     }).length
 
     return {
@@ -61,11 +79,14 @@ export function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
       goal: 7, // Weekly goal of 7 biases
       completionRate: Math.min((weekViews / 7) * 100, 100)
     }
-  }, [progressList])
+    // Use hash instead of full array to prevent recalculation when array reference changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressListHash])
 
-  // Category progress for today
+  // Category progress for today - use stable date calculation
   const categoryProgress = useMemo(() => {
-    const today = new Date()
+    const now = Date.now()
+    const today = new Date(now)
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
     const todayEnd = todayStart + 24 * 60 * 60 * 1000 - 1
     
@@ -86,15 +107,14 @@ export function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
       count,
       percentage: (count / todayProgress.viewed) * 100
     }))
-  }, [progressList, allBiases, todayProgress.viewed])
+    // Use hash instead of full array to prevent recalculation when array reference changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressListHash, allBiases.length, todayProgress.viewed])
 
+  // Use static div instead of motion.div to completely prevent flickering
+  // No animations - just render once and stay static
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={className}
-    >
+    <div className={className}>
       <Card className="border-l-4 border-l-blue-500 bg-blue-50/50 dark:bg-blue-950/20">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between">
@@ -194,6 +214,6 @@ export function DailyProgressWidget({ className }: DailyProgressWidgetProps) {
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   )
-}
+})

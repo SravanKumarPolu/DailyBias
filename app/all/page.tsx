@@ -264,7 +264,8 @@ export default function AllBiasesPage() {
             />
           ) : (
             <>
-              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+              {/* FIX: Use responsive grid that works on all screen sizes */}
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2">
                 {visibleResults.map(({ bias, score }, index) => (
                 <Link
                   key={bias.id}

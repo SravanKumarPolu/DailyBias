@@ -168,7 +168,10 @@ function useToast() {
         listeners.splice(index, 1)
       }
     }
-  }, [state])
+    // Empty dependency array - setState function is stable and listeners array is module-level
+    // This prevents infinite re-renders that cause flickering on Android
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     ...state,

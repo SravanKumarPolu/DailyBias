@@ -20,7 +20,7 @@ import {
   type AnalyticsMetrics,
   type RecentActivity 
 } from "@/lib/analytics-utils"
-import { getAllFeedback, type FeedbackData } from "@/lib/db"
+import { getAllFeedback } from "@/lib/db"
 
 export default function AnalyticsPage() {
   const { 
@@ -34,7 +34,7 @@ export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "progress" | "quality" | "reviews">("overview")
   const [contentNeedingReview, setContentNeedingReview] = useState<string[]>([])
   const [qualityMetrics, setQualityMetrics] = useState<ContentQualityMetrics[]>([])
-  const [feedbackList, setFeedbackList] = useState<FeedbackData[]>([])
+  // feedbackList state removed - feedback is used directly in calculations, not stored in state
   const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null)
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
   const [loading, setLoading] = useState(true)
@@ -55,7 +55,6 @@ export default function AnalyticsPage() {
         
         // Load feedback data
         const feedback = await getAllFeedback()
-        setFeedbackList(feedback)
         
         // Calculate analytics metrics
         const calculatedMetrics = await calculateAnalyticsMetrics(

@@ -107,13 +107,14 @@ export function DailyHeader({
           </div>
           <div className="flex shrink-0 gap-1 sm:gap-2">
             {/* Render buttons with same layout to prevent shift */}
+            {/* FIX: Increased touch target to minimum 44px (iOS) / 48px (Android) for accessibility */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
               aria-label="Visit Boostlly - Tiny words. Big impact."
               title="Visit Boostlly - Tiny words. Big impact."
-              className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+              className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
             >
               <Rocket
                 className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
@@ -126,7 +127,7 @@ export function DailyHeader({
                 size="icon"
                 onClick={onToggleVoiceCommands}
                 aria-label="Click to enable voice commands"
-                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+                className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
                 title="Enable voice commands"
               >
                 <MicOff
@@ -141,7 +142,7 @@ export function DailyHeader({
               onClick={toggleTheme}
               aria-label="Toggle theme"
               title="Toggle theme"
-              className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+              className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
             >
               <span className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5">
                 <Sun className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
@@ -152,7 +153,7 @@ export function DailyHeader({
                 variant="ghost"
                 size="icon"
                 aria-label="Open settings"
-                className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+                className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
               >
                 <Bell
                   className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
@@ -183,13 +184,14 @@ export function DailyHeader({
           </p>
         </div>
         <div className="flex shrink-0 gap-1 sm:gap-2">
+          {/* FIX: Increased touch target to minimum 44px (iOS) / 48px (Android) for accessibility */}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
             aria-label="Visit Boostlly - Tiny words. Big impact."
             title="Visit Boostlly - Tiny words. Big impact."
-            className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+            className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
           >
             <Rocket
               className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"
@@ -206,7 +208,7 @@ export function DailyHeader({
                   ? "Voice commands active - Click to stop"
                   : "Click to enable voice commands"
               }
-              className={`touch-target h-9 w-9 sm:h-10 sm:w-10 ${
+              className={`touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px] ${
                 isVoiceListening ? "animate-pulse" : ""
               }`}
               title={
@@ -234,7 +236,7 @@ export function DailyHeader({
             onClick={toggleTheme}
             aria-label={themeDisplay.label}
             title={themeDisplay.label}
-            className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+            className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
           >
             <span className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5">
               {themeDisplay.icon}
@@ -245,7 +247,7 @@ export function DailyHeader({
               variant="ghost"
               size="icon"
               aria-label="Open settings"
-              className="touch-target h-9 w-9 sm:h-10 sm:w-10"
+              className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px]"
             >
               <Bell
                 className="h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5"

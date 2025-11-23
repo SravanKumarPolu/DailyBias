@@ -45,8 +45,13 @@ export function usePullToRefresh({
       const resistedDistance = distance / resistance
       setPullDistance(Math.min(resistedDistance, threshold * 1.5))
 
-      // Prevent default scrolling when pulling down
-      if (distance > 10) {
+      // FIX: Only prevent default when actually pulling down (not on buttons)
+      // Check if touch target is a button or interactive element - if so, don't prevent default
+      const target = e.target as HTMLElement
+      const isInteractive = target.closest('button, a, [role="button"], input, textarea, select')
+      
+      // Only prevent default scrolling when pulling down AND not on interactive elements
+      if (distance > 10 && !isInteractive) {
         e.preventDefault()
       }
     },

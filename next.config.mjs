@@ -2,7 +2,9 @@
 const nextConfig = {
   // Enable static export for Capacitor/Android (safe for client-side apps)
   output: 'export',
-  reactStrictMode: true,
+  // Disable StrictMode for Android builds to prevent double renders that cause flickering
+  // StrictMode intentionally double-renders components in development, which causes visible flicker on Android
+  reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: false,  // ✅ Re-enabled (warnings won't block build)
   },

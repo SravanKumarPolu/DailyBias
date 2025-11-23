@@ -198,6 +198,16 @@
   body {
     @apply bg-background text-foreground;
     overscroll-behavior-y: contain; /* Prevent pull-to-refresh conflicts */
+    /* FIX: Ensure smooth scrolling on Android */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  /* FIX: Prevent text selection on buttons and interactive elements for better Android touch handling */
+  button, [role="button"], a {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
 }
 

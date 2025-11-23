@@ -19,6 +19,7 @@ export function useBiases() {
   const [error, setError] = useState<string | null>(null)
   
   // Log initial state and ensure core biases are always set
+  // Only run once on mount to prevent re-renders
   useEffect(() => {
     logger.debug("[BiasesHook] Initial state - allBiases:", allBiases.length, "loading:", loading, "coreBiases:", coreBiases.length)
     // Always ensure core biases are set, even if something went wrong
@@ -34,6 +35,8 @@ export function useBiases() {
     } else {
       logger.error("[BiasesHook] CRITICAL: No core biases available!")
     }
+    // Empty deps - only run once on mount to prevent infinite loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadBiases = useCallback(async () => {
