@@ -1169,6 +1169,35 @@ select {
     padding-bottom: 0.375rem;
   }
   
+  /* Bottom-centered navigation container */
+  .nav-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .nav-container-inner {
+    width: 100%;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  
+  .nav-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+  }
+  
   /* Compact spacing for sections */
   .spacing-section {
     margin-bottom: 1rem;

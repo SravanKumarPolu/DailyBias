@@ -19,24 +19,12 @@ export function Navigation() {
 
   return (
     <nav 
-      className="pb-safe fixed right-0 bottom-0 left-0 z-50" 
+      className="nav-container pb-safe" 
       aria-label="Main navigation"
-      style={{
-        // FIX: Ensure navigation is always visible and above all content
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        display: 'flex',
-        visibility: 'visible',
-        opacity: 1,
-        pointerEvents: 'auto',
-      }}
     >
-      <div className="glass border-border/50 border-t backdrop-blur-xl bg-background/80 dark:bg-background/90">
-        <div className="mx-auto max-w-2xl px-2 sm:px-4">
-          <div className="flex items-center justify-around py-2 sm:py-3">
+      <div className="nav-container-inner glass border-border/50 border-t backdrop-blur-xl bg-background/80 dark:bg-background/90">
+        <div className="px-2 sm:px-4">
+          <div className="nav-buttons py-2 sm:py-3">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               const Icon = item.icon

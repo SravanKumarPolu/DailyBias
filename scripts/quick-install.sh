@@ -39,3 +39,6 @@ echo "✅ App installed and launched!"
 
 
 
+
+
+
