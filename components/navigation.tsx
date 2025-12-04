@@ -40,10 +40,7 @@ export function Navigation() {
       {/* Mobile & Tablet: Full-width bar */}
       {/* Desktop & Big Screens: Centered pill-shaped container */}
       <div 
-        className="glass border-border/50 border-t backdrop-blur-xl bg-background/80 dark:bg-background/90 w-full
-                   lg:border lg:border-border/50 lg:border-t lg:border-l lg:border-r lg:rounded-t-3xl lg:mx-auto lg:max-w-4xl lg:shadow-lg
-                   xl:max-w-5xl
-                   3xl:max-w-6xl"
+        className="glass border-border/50 border-t backdrop-blur-xl bg-background/80 dark:bg-background/90 w-full lg:border lg:border-border/50 lg:border-t lg:border-l lg:border-r lg:rounded-t-3xl lg:mx-auto lg:max-w-4xl lg:shadow-lg xl:max-w-5xl 3xl:max-w-6xl"
       >
         {/* Container wrapper for responsive centering */}
         <div className="mx-auto w-full max-w-7xl px-safe">
@@ -51,14 +48,7 @@ export function Navigation() {
           {/* Tablet: More breathing room */}
           {/* Desktop: Elegant centered layout with optimal spacing */}
           <div 
-            className="flex items-center justify-around w-full
-                       py-2.5 px-2
-                       sm:py-3 sm:px-3
-                       md:py-3.5 md:px-4 md:gap-1
-                       lg:py-4 lg:px-6 lg:justify-evenly lg:gap-2
-                       xl:py-4 xl:px-8 xl:gap-3
-                       2xl:py-5 2xl:px-10 2xl:gap-4
-                       3xl:py-6 3xl:px-12"
+            className="flex items-center justify-around w-full py-2.5 px-2 sm:py-3 sm:px-3 md:py-3.5 md:px-4 md:gap-1 lg:py-4 lg:px-6 lg:justify-evenly lg:gap-2 xl:py-4 xl:px-8 xl:gap-3 2xl:py-5 2xl:px-10 2xl:gap-4 3xl:py-6 3xl:px-12"
           >
             {navItems.map((item) => {
               const isActive = pathname === item.href
@@ -69,26 +59,7 @@ export function Navigation() {
                   key={item.href}
                   href={item.href}
                   // Responsive touch targets: Mobile (44px min), Desktop (elegant hover states)
-                  className="hover:bg-accent/50 focus:ring-ring touch-target relative flex cursor-pointer 
-                           flex-col items-center justify-center
-                           gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2
-                           rounded-xl lg:rounded-2xl
-                           px-2 py-2
-                           sm:px-3 sm:py-2.5
-                           md:px-3 md:py-3
-                           lg:px-4 lg:py-3
-                           xl:px-5 xl:py-4
-                           2xl:px-6 2xl:py-4
-                           transition-all duration-200 ease-out
-                           hover:scale-105 
-                           lg:hover:scale-110
-                           focus:ring-2 focus:ring-offset-2 focus:outline-none 
-                           active:scale-95 lg:active:scale-100
-                           min-h-[44px] min-w-[44px]
-                           sm:min-h-[48px] sm:min-w-[48px]
-                           lg:min-h-[56px] lg:min-w-[56px]
-                           xl:min-h-[64px] xl:min-w-[64px]
-                           flex-shrink-0"
+                  className="hover:bg-accent/50 focus:ring-ring touch-target relative flex cursor-pointer flex-col items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2 rounded-xl lg:rounded-2xl px-2 py-2 sm:px-3 sm:py-2.5 md:px-3 md:py-3 lg:px-4 lg:py-3 xl:px-5 xl:py-4 2xl:px-6 2xl:py-4 transition-all duration-200 ease-out hover:scale-105 lg:hover:scale-110 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 lg:active:scale-100 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] lg:min-h-[56px] lg:min-w-[56px] xl:min-h-[64px] xl:min-w-[64px] flex-shrink-0"
                   aria-label={`${item.label} page`}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -107,38 +78,13 @@ export function Navigation() {
                   >
                     {/* Responsive icon sizes: Mobile (small) → Desktop (elegant larger) */}
                     <Icon
-                      className={`transition-colors duration-200 ease-out
-                                h-4 w-4
-                                xs:h-[18px] xs:w-[18px]
-                                sm:h-5 sm:w-5
-                                md:h-5 md:w-5
-                                lg:h-6 lg:w-6
-                                xl:h-7 xl:w-7
-                                2xl:h-8 2xl:w-8
-                                ${
-                                  isActive 
-                                    ? "text-foreground" 
-                                    : "text-muted-foreground hover:text-foreground"
-                                }`}
+                      className={`transition-colors duration-200 ease-out h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6 xl:h-7 xl:w-7 2xl:h-8 2xl:w-8 ${isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                       aria-hidden="true"
                     />
                   </div>
                   {/* Responsive text sizes: Mobile (tiny) → Desktop (readable) */}
                   <span
-                    className={`relative z-10 transition-all duration-200 ease-out
-                              text-[9px] leading-tight
-                              xs:text-[10px]
-                              sm:text-xs sm:leading-snug
-                              md:text-xs md:leading-normal
-                              lg:text-sm lg:leading-relaxed lg:font-medium
-                              xl:text-sm xl:leading-relaxed
-                              2xl:text-base 2xl:leading-relaxed
-                              whitespace-nowrap
-                              ${
-                                isActive
-                                  ? "text-foreground font-semibold lg:font-bold"
-                                  : "text-muted-foreground hover:text-foreground font-medium lg:font-normal"
-                              }`}
+                    className={`relative z-10 transition-all duration-200 ease-out text-[9px] leading-tight sm:text-xs sm:leading-snug md:text-xs md:leading-normal lg:text-sm lg:leading-relaxed lg:font-medium xl:text-sm xl:leading-relaxed 2xl:text-base 2xl:leading-relaxed whitespace-nowrap ${isActive ? "text-foreground font-semibold lg:font-bold" : "text-muted-foreground hover:text-foreground font-medium lg:font-normal"}`}
                   >
                     {item.label}
                   </span>

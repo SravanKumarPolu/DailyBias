@@ -282,10 +282,12 @@ const config = {
         '9xl': '96rem',
       },
 
-      // Screen breakpoints (you can customize these)
+      // Screen breakpoints - Custom breakpoints that extend Tailwind's defaults
+      // Note: 'xs' (475px) is a custom breakpoint between default mobile (0px) and 'sm' (640px)
+      // Standard Tailwind breakpoints (sm, md, lg, xl, 2xl) remain available
       screens: {
-        'xs': '475px',
-        '3xl': '1920px',
+        'xs': '475px',   // Extra small devices - between mobile and tablet
+        '3xl': '1920px', // 3X large devices - large desktops
       },
     },
   },

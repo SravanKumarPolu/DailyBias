@@ -478,8 +478,8 @@ export function BiasCard({
                   className="mr-2 h-4 w-4 transition-transform duration-200"
                   aria-hidden="true"
                 />
-                <span className="xs:inline hidden">Stop</span>
-                <span className="xs:hidden">Stop</span>
+                <span className="sm:inline hidden">Stop</span>
+                <span className="sm:hidden">Stop</span>
               </>
             ) : (
               <>
@@ -489,8 +489,8 @@ export function BiasCard({
                   }`}
                   aria-hidden="true"
                 />
-                <span className="xs:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
-                <span className="xs:hidden">{!isEnabled ? "Off" : "Listen"}</span>
+                <span className="sm:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
+                <span className="sm:hidden">{!isEnabled ? "Off" : "Listen"}</span>
               </>
             )}
           </Button>

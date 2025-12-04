@@ -43,12 +43,15 @@ export default function HomePage() {
   // Track if we've shown content once to prevent skeleton from reappearing (prevents flickering)
   const hasShownContentRef = useRef(false)
 
-  // Check if user needs onboarding
+  // Check if user needs onboarding - do this in useEffect to avoid blocking render
+  // The redirect will happen but the page structure will be consistent, minimizing flash
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hasSeenOnboarding = localStorage.getItem("onboarding-completed")
       if (!hasSeenOnboarding) {
-        window.location.href = "/onboarding"
+        // Use replace to prevent back button issues
+        // This happens after initial render, but page structure is already consistent
+        window.location.replace("/onboarding")
       }
     }
   }, [])
@@ -158,6 +161,7 @@ export default function HomePage() {
   // Use selectedDailyBias or fallback to first bias if available (for immediate render on Android)
   // This must be after selectedDailyBias is declared
   // Use ref to track and prevent unnecessary recalculations
+  // FIX: Initialize immediately with first available bias to prevent skeleton flash
   const effectiveDailyBiasRef = useRef<Bias | null>(null)
   const effectiveDailyBias = useMemo(() => {
     // If we have a selectedDailyBias, use it and cache it
@@ -167,7 +171,8 @@ export default function HomePage() {
       }
       return selectedDailyBias
     }
-    // Fallback to first bias if available
+    // Fallback to first bias if available - this ensures we always have something to render
+    // Core biases are always available, so this should never be null
     if (allBiases.length > 0) {
       const fallback = allBiases[0]
       if (effectiveDailyBiasRef.current?.id !== fallback.id) {
@@ -176,11 +181,12 @@ export default function HomePage() {
       return fallback
     }
     // Return cached value if available, otherwise null
+    // This should be rare since core biases are always available
     return effectiveDailyBiasRef.current
     // Only depend on selectedDailyBias ID - not the full object or array
     // This prevents recalculation when object references change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDailyBias?.id])
+  }, [selectedDailyBias?.id, allBiases.length])
 
   // Track if we've synced to prevent unnecessary updates
   const syncedBiasIdRef = useRef<string | null>(null)
@@ -286,32 +292,24 @@ export default function HomePage() {
     }
   }, [toggleMastered]) // Only depend on toggleMastered function
 
-  // Only show loading if we truly have no data - don't wait for progress or settings
-  // Core biases should be available immediately, so we can show content even if progress is loading
-  // Memoize loading state to prevent flickering from condition toggling
-  const loading = useMemo(() => {
-    return biasesLoading && allBiases.length === 0
-  }, [biasesLoading, allBiases.length])
-  
-  // Stabilize the show skeleton condition to prevent flickering
-  // Only show skeleton when we truly have no data, not when data is just updating
-  // Once we've shown content, don't show skeleton again (prevents flickering on Android)
+  // FIX: Never show skeleton if we have core biases available
+  // Core biases are always available synchronously, so we should never show skeleton
+  // This prevents the flash on Android where SSR might render differently
   const showSkeleton = useMemo(() => {
-    // FIX: More aggressive check - once content is shown, never show skeleton again
-    // This prevents flickering when context re-renders or progressList updates
-    if (hasShownContentRef.current) {
-      return false // Never show skeleton again once content has been shown
-    }
-    
-    const shouldShow = loading || (allBiases.length === 0) || !effectiveDailyBias
-    if (!shouldShow && effectiveDailyBias) {
+    // Core biases are always available immediately from useBiases hook
+    // So if allBiases.length > 0, we should always have a bias to show
+    // The effectiveDailyBias will be calculated immediately from allBiases (fallback to first)
+    if (allBiases.length > 0 && effectiveDailyBias) {
       hasShownContentRef.current = true
       return false
     }
-    return shouldShow
-    // Only depend on effectiveDailyBias?.id to prevent recalculation when object reference changes
+    
+    // Only show skeleton if we truly have no data at all
+    // This should never happen since core biases are always available
+    // But we need to handle the edge case where effectiveDailyBias is null
+    return !effectiveDailyBias
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, allBiases.length, effectiveDailyBias?.id])
+  }, [allBiases.length, effectiveDailyBias?.id])
 
   // Generate seed from today's date for consistent background
   const seed = getTodayDateString()
@@ -347,7 +345,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-20 sm:pb-24" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
       {/* FIX: PullToRefresh should not block touch events on buttons */}
-      <PullToRefresh onRefresh={handleRefresh} enabled={!loading} />
+      <PullToRefresh onRefresh={handleRefresh} enabled={!biasesLoading} />
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={seed} />
       <DailyHeader
         isVoiceListening={isListening}
@@ -409,11 +407,11 @@ export default function HomePage() {
             </div>
             <span className="sr-only">Loading today's cognitive bias...</span>
           </div>
-        ) : (
+        ) : effectiveDailyBias ? (
           <div className="space-y-6 sm:space-y-8">
             <TiltCard className="mb-0" tiltStrength={8} glareEnabled>
               <DynamicBiasCard
-                bias={effectiveDailyBias!}
+                bias={effectiveDailyBias}
                 variant="detailed"
                 isFavorite={isFav}
                 onToggleFavorite={handleToggleFavorite}
@@ -431,7 +429,7 @@ export default function HomePage() {
             {/* Progress Indicator */}
             <BiasProgressIndicator />
           </div>
-        )}
+        ) : null}
       </main>
 
       <DynamicNavigation />
