@@ -1,0 +1,71 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e5]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - link "Bias Daily" [ref=e11] [cursor=pointer]:
+              - /url: /
+              - heading "Bias Daily" [level=1] [ref=e12]
+            - paragraph [ref=e13]: One bias daily • 50 total • ~2 months rotation
+          - generic [ref=e14]:
+            - button "Visit Boostlly - Tiny words. Big impact." [ref=e15] [cursor=pointer]:
+              - img [ref=e16]
+            - button "System mode (click to cycle)" [ref=e17] [cursor=pointer]:
+              - generic [ref=e18]:
+                - img
+            - link "Open settings" [ref=e19] [cursor=pointer]:
+              - /url: /settings
+              - button "Open settings" [ref=e20]:
+                - img
+        - paragraph [ref=e22]: Thursday, December 4, 2025
+    - main [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - heading "Favorites" [level=1] [ref=e26]
+          - paragraph [ref=e27]: Your saved biases for quick reference
+        - generic [ref=e28]:
+          - img [ref=e32]
+          - generic [ref=e34]:
+            - heading "No favorites yet" [level=3] [ref=e35]
+            - paragraph [ref=e36]: Start adding biases to your favorites to build your personal collection for quick reference
+          - link "Browse All Biases" [ref=e38] [cursor=pointer]:
+            - /url: /all
+            - button "Browse All Biases" [ref=e39]
+    - navigation "Main navigation" [ref=e40]:
+      - generic [ref=e43]:
+        - link "Daily page" [ref=e44] [cursor=pointer]:
+          - /url: /
+          - img [ref=e46]
+          - generic [ref=e49]: Daily
+        - link "All page" [ref=e50] [cursor=pointer]:
+          - /url: /all
+          - img [ref=e52]
+          - generic [ref=e58]: All
+        - link "Favorites page" [ref=e59] [cursor=pointer]:
+          - /url: /favorites
+          - img [ref=e62]
+          - generic [ref=e64]: Favorites
+        - link "Add page" [ref=e65] [cursor=pointer]:
+          - /url: /add
+          - img [ref=e67]
+          - generic [ref=e70]: Add
+        - link "Analytics page" [ref=e71] [cursor=pointer]:
+          - /url: /analytics
+          - img [ref=e73]
+          - generic [ref=e78]: Analytics
+        - link "Settings page" [ref=e79] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e81]
+          - generic [ref=e84]: Settings
+  - region "Notifications (F8)":
+    - region "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e90] [cursor=pointer]:
+    - img [ref=e91]
+  - alert [ref=e95]
+```

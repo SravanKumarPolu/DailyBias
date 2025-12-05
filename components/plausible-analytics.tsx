@@ -37,10 +37,6 @@ export function PlausibleAnalytics() {
     return null
   }
 
-  // Don't load Plausible in Android WebView to avoid conflicts
-  if (typeof window !== "undefined" && window.navigator?.userAgent?.includes("wv")) {
-    return null
-  }
 
   return (
     <Script

@@ -1,14 +1,8 @@
 {
-	"appId": "com.dailybias.app",
+	"appId": "com.debiasdaily.app",
 	"appName": "Bias Daily",
 	"webDir": "out",
-	"server": {
-		"androidScheme": "https"
-	},
-	"android": {},
-	"ios": {
-		"contentInset": "automatic"
-	},
+	"server": {},
 	"plugins": {
 		"SplashScreen": {
 			"launchShowDuration": 2000,
@@ -17,11 +11,18 @@
 			"androidSplashResourceName": "splash",
 			"androidScaleType": "CENTER_CROP",
 			"showSpinner": false,
-			"androidSpinnerStyle": "large",
 			"iosSpinnerStyle": "small",
-			"spinnerColor": "#999999",
-			"splashFullScreen": true,
-			"splashImmersive": true
+			"spinnerColor": "#ffffff"
+		},
+		"LocalNotifications": {
+			"smallIcon": "ic_stat_icon_config_sample",
+			"iconColor": "#000000",
+			"sound": "beep.wav"
 		}
+	},
+	"android": {},
+	"ios": {
+		"scheme": "Bias Daily",
+		"contentInset": "automatic"
 	}
 }

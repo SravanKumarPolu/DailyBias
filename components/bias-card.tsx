@@ -17,6 +17,7 @@ import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
 import { useToast } from "@/hooks/use-toast"
+import { shareBias } from "@/lib/native-features"
 
 interface BiasCardProps {
   bias: Bias
@@ -46,20 +47,16 @@ export function BiasCard({
   // Removed all animation state - using static rendering to prevent flickering
 
   const handleShare = async () => {
-    const shareText = `🧠 ${bias.title}\n\n${bias.summary}\n\n💡 Learn more cognitive biases at ${window.location.origin}`
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${bias.title} - Cognitive Bias`,
-          text: shareText,
-          url: window.location.href,
-        })
-        haptics.light()
-      } catch {
-        console.log("[DailyBias] Share cancelled")
-      }
-    } else {
+    haptics.light()
+    try {
+      await shareBias({
+        title: bias.title,
+        summary: bias.summary,
+        why: bias.why,
+        counter: bias.counter,
+      })
+    } catch {
+      // Fallback to copy if share fails
       handleCopy()
     }
   }

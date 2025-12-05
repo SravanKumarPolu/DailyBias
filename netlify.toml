@@ -13,7 +13,7 @@
 
 # Next.js plugin handles all routing; remove SPA catch-all redirect that breaks /_next assets
 
-# Headers for app manifest (used by Capacitor native apps)
+# Headers for app manifest (PWA)
 [[headers]]
   for = "/manifest.json"
   [headers.values]

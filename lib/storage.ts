@@ -53,3 +53,18 @@ export function cacheDailyBias(date: string, biasId: string): void {
     logger.error("Error caching daily bias:", error)
   }
 }
+
+// Get current daily bias from storage (for app start)
+export function getStoredDailyBias(): { date: string; biasId: string } | null {
+  if (typeof window === "undefined") return null
+  try {
+    const cached = localStorage.getItem("daily-bias-cache")
+    if (cached) {
+      const data: DailyBiasCache = JSON.parse(cached)
+      return { date: data.date, biasId: data.biasId }
+    }
+  } catch (error) {
+    logger.error("Error reading stored daily bias:", error)
+  }
+  return null
+}

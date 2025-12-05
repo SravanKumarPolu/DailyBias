@@ -1,0 +1,192 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e5]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - link "Bias Daily" [ref=e11] [cursor=pointer]:
+              - /url: /
+              - heading "Bias Daily" [level=1] [ref=e12]
+            - paragraph [ref=e13]: One bias daily • 50 total • ~2 months rotation
+          - generic [ref=e14]:
+            - button "Visit Boostlly - Tiny words. Big impact." [ref=e15] [cursor=pointer]:
+              - img [ref=e16]
+            - button "Click to enable voice commands" [ref=e17] [cursor=pointer]:
+              - img
+            - button "System mode (click to cycle)" [ref=e18] [cursor=pointer]:
+              - generic [ref=e19]:
+                - img
+            - link "Open settings" [ref=e20] [cursor=pointer]:
+              - /url: /settings
+              - button "Open settings" [ref=e21]:
+                - img
+        - paragraph [ref=e23]: Thursday, December 4, 2025
+    - main "Daily cognitive bias" [ref=e24]:
+      - generic [ref=e25]:
+        - article "Sunk Cost Fallacy" [ref=e28]:
+          - generic [ref=e29]:
+            - generic [ref=e30]:
+              - generic [ref=e31]:
+                - generic [ref=e33]: Decision Making
+                - heading "Sunk Cost Fallacy" [level=1] [ref=e34]
+              - generic [ref=e35]:
+                - button "Add to favorites" [ref=e36] [cursor=pointer]:
+                  - img
+                - button "Mark as mastered" [ref=e37] [cursor=pointer]:
+                  - img
+            - paragraph [ref=e39]: We continue investing in something because we've already invested, even when it's clearly not working. We throw good money after bad to avoid 'wasting' what we've already spent.
+            - generic [ref=e40]:
+              - heading "Why it happens" [level=2] [ref=e41]
+              - paragraph [ref=e42]: Admitting a loss feels like failure. We want to believe our past investments were worthwhile. Quitting feels like waste, even though sunk costs are already gone and shouldn't influence future decisions.
+            - generic [ref=e43]:
+              - heading "How to counter it" [level=2] [ref=e44]
+              - paragraph [ref=e45]: "Ignore sunk costs—they're gone regardless of what you do next. Ask: 'If I were starting today with no prior investment, would I choose this?' Focus on future costs and benefits only. Practice cutting losses early."
+            - generic [ref=e46]:
+              - button "Read bias aloud" [ref=e47] [cursor=pointer]:
+                - img
+                - generic [ref=e48]: Listen
+              - button "Share this bias" [ref=e49] [cursor=pointer]:
+                - img
+                - text: Share
+              - button "Copy bias to clipboard" [ref=e50] [cursor=pointer]:
+                - img
+                - text: Copy
+            - generic [ref=e51]:
+              - generic [ref=e52]:
+                - heading "Real-World Examples" [level=3] [ref=e53]:
+                  - img [ref=e54]
+                  - text: Real-World Examples
+                - generic [ref=e56]:
+                  - generic [ref=e57]:
+                    - img [ref=e59]
+                    - paragraph [ref=e61]: Continuing to watch a boring movie because you already paid for the ticket
+                  - generic [ref=e62]:
+                    - img [ref=e64]
+                    - paragraph [ref=e66]: Staying in an unfulfilling relationship because of years already invested
+                  - generic [ref=e67]:
+                    - img [ref=e69]
+                    - paragraph [ref=e71]: Pouring more money into a failing project to justify past investments
+              - generic [ref=e72]:
+                - heading "Quick Tips" [level=3] [ref=e73]:
+                  - img [ref=e74]
+                  - text: Quick Tips
+                - list [ref=e77]:
+                  - listitem [ref=e78]:
+                    - img [ref=e79]
+                    - generic [ref=e82]: Focus on future costs and benefits, not past investments
+                  - listitem [ref=e83]:
+                    - img [ref=e84]
+                    - generic [ref=e87]: "Ask: 'If I hadn't already invested, would I start now?'"
+                  - listitem [ref=e88]:
+                    - img [ref=e89]
+                    - generic [ref=e92]: Practice cutting losses early in low-stakes situations
+                  - listitem [ref=e93]:
+                    - img [ref=e94]
+                    - generic [ref=e97]: "Remember: you can't recover sunk costs by doubling down"
+            - generic [ref=e101] [cursor=pointer]:
+              - generic [ref=e102]:
+                - img [ref=e104]
+                - generic [ref=e107]:
+                  - generic [ref=e108]: Research & Sources
+                  - paragraph [ref=e109]: 0 references • Research Status Unknown
+              - button [ref=e110]:
+                - img
+            - generic [ref=e113] [cursor=pointer]:
+              - generic [ref=e114]:
+                - img [ref=e116]
+                - generic [ref=e118]:
+                  - generic [ref=e119]: Help Improve This Content
+                  - paragraph [ref=e120]: Found an error or have suggestions? Your feedback helps us improve.
+              - button [ref=e121]:
+                - img
+        - generic [ref=e123]:
+          - generic [ref=e125]:
+            - generic [ref=e126]:
+              - img [ref=e127]
+              - generic [ref=e130]: Today's Progress
+            - link "View Details" [ref=e131] [cursor=pointer]:
+              - /url: /analytics
+              - button "View Details" [ref=e132]:
+                - text: View Details
+                - img
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]: Daily Goal
+                - generic [ref=e137]: 0/1
+              - progressbar [ref=e138]
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - generic [ref=e142]: Weekly Progress
+                - generic [ref=e143]: 0/7
+              - progressbar [ref=e144]
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - generic [ref=e148]: "0"
+                - generic [ref=e149]: Today
+              - generic [ref=e150]:
+                - generic [ref=e151]: "0"
+                - generic [ref=e152]: Mastered
+            - generic [ref=e154]:
+              - generic [ref=e155]:
+                - img [ref=e156]
+                - generic [ref=e158]: "Current Streak: 0 days"
+              - generic [ref=e159]:
+                - img [ref=e160]
+                - generic [ref=e166]: "Best: 0 days"
+        - generic [ref=e167]:
+          - generic [ref=e169]:
+            - img [ref=e170]
+            - text: Your Learning Progress
+          - generic [ref=e172]:
+            - generic [ref=e173]:
+              - generic [ref=e174]:
+                - generic [ref=e175]: Bias Coverage
+                - generic [ref=e176]: 0 / 50
+              - progressbar [ref=e177]
+              - generic [ref=e179]: 0.0% of all biases viewed
+            - generic [ref=e180]:
+              - generic [ref=e181]:
+                - generic [ref=e182]: "0"
+                - generic [ref=e183]: Viewed
+              - generic [ref=e184]:
+                - generic [ref=e185]: "0"
+                - generic [ref=e186]: Mastered
+            - generic [ref=e188]:
+              - img [ref=e189]
+              - generic [ref=e191]: With 50 biases, you'll see each one approximately every 2 months
+    - navigation "Main navigation" [ref=e192]:
+      - generic [ref=e195]:
+        - link "Daily page" [ref=e196] [cursor=pointer]:
+          - /url: /
+          - img [ref=e199]
+          - generic [ref=e202]: Daily
+        - link "All page" [ref=e203] [cursor=pointer]:
+          - /url: /all
+          - img [ref=e205]
+          - generic [ref=e207]: All
+        - link "Favorites page" [ref=e208] [cursor=pointer]:
+          - /url: /favorites
+          - img [ref=e210]
+          - generic [ref=e212]: Favorites
+        - link "Add page" [ref=e213] [cursor=pointer]:
+          - /url: /add
+          - img [ref=e215]
+          - generic [ref=e216]: Add
+        - link "Analytics page" [ref=e217] [cursor=pointer]:
+          - /url: /analytics
+          - img [ref=e219]
+          - generic [ref=e221]: Analytics
+        - link "Settings page" [ref=e222] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e224]
+          - generic [ref=e227]: Settings
+  - region "Notifications (F8)":
+    - region "Notifications"
+  - alert [ref=e228]
+```

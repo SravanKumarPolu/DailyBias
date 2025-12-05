@@ -117,43 +117,13 @@ else
 fi
 echo ""
 
-echo "📱 Native App Status"
-echo "------------------"
-if [ -d "android" ]; then
-    echo -e "${GREEN}✓${NC} Android project exists"
-    if [ -f "android/app/build.gradle" ]; then
-        echo -e "${GREEN}✓${NC} Android build.gradle found"
-    fi
-else
-    echo -e "${YELLOW}⚠${NC} Android project not found"
-fi
-echo ""
-
-if [ -d "ios" ]; then
-    echo -e "${GREEN}✓${NC} iOS project exists"
-    if [ -f "ios/App/App.xcworkspace" ]; then
-        echo -e "${GREEN}✓${NC} iOS workspace found"
-    fi
-else
-    echo -e "${YELLOW}⚠${NC} iOS project not found (add with 'npx cap add ios')"
-fi
-echo ""
-
-if [ -f "capacitor.config.ts" ]; then
-    echo -e "${GREEN}✓${NC} capacitor.config.ts exists"
-    web_dir=$(grep "webDir:" capacitor.config.ts | cut -d"'" -f2)
-    echo "  Web directory: $web_dir"
-else
-    echo -e "${RED}✗${NC} capacitor.config.ts not found"
-fi
-echo ""
 
 echo "🔍 Configuration Check"
 echo "---------------------"
 if [ -f "next.config.mjs" ]; then
     echo -e "${GREEN}✓${NC} next.config.mjs exists"
     if grep -q "output: 'export'" next.config.mjs; then
-        echo -e "${GREEN}✓${NC} Static export enabled (required for Capacitor)"
+        echo -e "${GREEN}✓${NC} Static export enabled"
     else
         echo -e "${YELLOW}⚠${NC} Static export may not be enabled"
     fi
@@ -178,10 +148,6 @@ if [ ! -d "node_modules" ]; then
     issues=$((issues + 1))
 fi
 
-if [ ! -f "capacitor.config.ts" ]; then
-    echo -e "${RED}✗${NC} Capacitor config missing"
-    issues=$((issues + 1))
-fi
 
 if [ -f "out/sw.js" ]; then
     echo -e "${YELLOW}⚠${NC} Old service worker files present"
@@ -200,7 +166,7 @@ echo "-------------"
 echo "If issues found, try:"
 echo "  1. pnpm install          # Install dependencies"
 echo "  2. pnpm clean:build      # Clean and rebuild"
-echo "  3. pnpm android:sync     # Sync Android (if needed)"
+echo "  3. pnpm build            # Build for production"
 echo "  4. Check TROUBLESHOOTING.md for more help"
 echo ""
 

@@ -114,11 +114,23 @@ vi.mock('@/hooks/use-toast', () => ({
 vi.mock('@/lib/daily-selector', () => ({
   getPersonalizedDailyBias: vi.fn((biases) => biases[0]),
   getTodayDateString: vi.fn(() => '2024-01-15'),
+  getCoreBiases: vi.fn(() => [
+    {
+      id: 'bias-1',
+      title: 'Test Bias',
+      category: 'decision',
+      summary: 'Test summary',
+      why: 'Test why',
+      counter: 'Test counter',
+      source: 'core',
+    },
+  ]),
 }))
 
 vi.mock('@/lib/storage', () => ({
   getCachedDailyBias: vi.fn(() => null),
   cacheDailyBias: vi.fn(),
+  getStoredDailyBias: vi.fn(() => null),
 }))
 
 describe('HomePage', () => {
@@ -137,10 +149,12 @@ describe('HomePage', () => {
     expect(screen.getByTestId('navigation')).toBeInTheDocument()
   })
 
-  it('should render loading state initially', () => {
+  it('should render content even when biases are loading', () => {
     mockAppContext.biasesLoading = true
     render(<HomePage />)
-    expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
+    // Page should still show content (using core biases) even when loading
+    expect(screen.getByTestId('daily-header')).toBeInTheDocument()
+    expect(screen.getByTestId('navigation')).toBeInTheDocument()
   })
 })
 

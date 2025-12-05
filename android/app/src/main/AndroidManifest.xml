@@ -15,7 +15,6 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
-            android:hardwareAccelerated="true"
             android:exported="true">
 
             <intent-filter>
@@ -39,4 +38,10 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Notification permissions for Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- Vibration permission for notifications -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

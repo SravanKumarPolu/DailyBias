@@ -21,23 +21,31 @@ export function DailyHeader({
   voiceCommandsSupported = false,
 }: DailyHeaderProps) {
   const { settings, saveSetting } = useSettings()
-  // FIX: Initialize with today's date immediately to prevent flash
-  // Use a function to get initial state synchronously
-  const [today, setToday] = useState(() => {
-    if (typeof window !== "undefined") {
-      return getTimezoneAwareDateString()
-    }
+  // FIX: Prevent hydration mismatch by using suppressHydrationWarning
+  // Date formatting can legitimately differ between server and client due to locale
+  const [today, setToday] = useState<string>(() => {
+    // Always return empty string on initial render to match server
+    // Will be set in useEffect after mount
     return ""
   })
-  const [mounted, setMounted] = useState(true) // Start as mounted to prevent flash
 
   useEffect(() => {
+    // Set date after mount to prevent hydration mismatch
+    setToday(getTimezoneAwareDateString())
+    
     // Update date if it changed (e.g., day changed)
-    const currentDate = getTimezoneAwareDateString()
-    if (currentDate !== today) {
-      setToday(currentDate)
-    }
-  }, [today])
+    const interval = setInterval(() => {
+      const currentDate = getTimezoneAwareDateString()
+      setToday(prev => {
+        if (prev !== currentDate) {
+          return currentDate
+        }
+        return prev
+      })
+    }, 60000) // Check every minute
+    
+    return () => clearInterval(interval)
+  }, [])
 
   // Apply theme changes with requestAnimationFrame to prevent flicker
   useEffect(() => {
@@ -198,8 +206,9 @@ export function DailyHeader({
               </div>
             </div>
             {/* Bottom section: Date centered */}
+            {/* FIX: Suppress hydration warning - date format can legitimately differ between server/client due to locale */}
             <div className="flex justify-center pt-3 border-t border-white/10 dark:border-white/10">
-              <p className="text-sm font-medium opacity-75 text-foreground/75 tracking-wide">
+              <p className="text-sm font-medium opacity-75 text-foreground/75 tracking-wide" suppressHydrationWarning>
                 {today || getTimezoneAwareDateString()}
               </p>
             </div>

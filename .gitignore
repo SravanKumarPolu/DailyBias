@@ -51,3 +51,8 @@ next-env.d.ts
 .netlify
 bugreport-*.zip
 bugreport-*/
+
+# Capacitor
+/android
+/ios
+.capacitor

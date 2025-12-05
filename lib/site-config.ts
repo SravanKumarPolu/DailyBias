@@ -52,7 +52,7 @@ export const siteConfig = {
   shortName: getSiteName(),
   
   /** Site description */
-  description: "Learn one cognitive bias every day from Elon Musk's list of 50 biases. Available on Android and iOS.",
+  description: "Learn one cognitive bias every day from Elon Musk's list of 50 biases.",
 } as const
 
 /**

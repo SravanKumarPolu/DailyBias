@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   publisher: siteConfig.name,
   category: "education",
 
-  // App Manifest (for Capacitor native apps)
+  // App Manifest (for PWA)
   manifest: "/manifest.json",
 
   // Icons (Next.js way - replaces manual <link> tags)
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Bias Daily - Learn One Cognitive Bias Every Day",
     description:
-      "Discover a new cognitive bias each day from Elon Musk's list of 50 biases. Available on Android and iOS.",
+      "Discover a new cognitive bias each day from Elon Musk's list of 50 biases.",
     url: siteConfig.url,
     siteName: siteConfig.name,
     images: [
