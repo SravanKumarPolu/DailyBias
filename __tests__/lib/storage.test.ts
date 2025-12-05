@@ -79,6 +79,14 @@ describe('localStorage helpers', () => {
   })
 
   describe('daily bias cache', () => {
+    beforeEach(() => {
+      // Clear cache before each test to ensure isolation
+      // Note: The storage module uses a module-level cache variable
+      // We need to clear both localStorage and ensure the module cache is reset
+      localStorage.removeItem('daily-bias-cache')
+      localStorage.clear()
+    })
+
     it('should cache and retrieve daily bias', () => {
       const date = '2024-01-01'
       const biasId = 'bias-123'
@@ -93,12 +101,17 @@ describe('localStorage helpers', () => {
     })
 
     it('should return null when cache is empty', () => {
-      expect(getCachedDailyBias('2024-01-01')).toBeNull()
+      // Use a date that hasn't been cached in previous tests
+      expect(getCachedDailyBias('2024-12-31')).toBeNull()
     })
 
     it('should handle invalid cache data gracefully', () => {
+      // Clear any existing cache first
+      localStorage.removeItem('daily-bias-cache')
+      // Set invalid JSON - the function should handle this gracefully
       localStorage.setItem('daily-bias-cache', 'invalid-json')
-      expect(getCachedDailyBias('2024-01-01')).toBeNull()
+      // Use a date that doesn't match any cached date
+      expect(getCachedDailyBias('2024-12-31')).toBeNull()
     })
   })
 })

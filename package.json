@@ -31,7 +31,13 @@
     "android:build": "cd android && ./gradlew assembleDebug",
     "ios:open": "npx cap open ios",
     "android:sync": "pnpm build && npx cap sync android",
-    "ios:sync": "pnpm build && npx cap sync ios"
+    "ios:sync": "pnpm build && npx cap sync ios",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
+    "e2e:debug": "playwright test --debug",
+    "e2e:check": "bash scripts/check-e2e-setup.sh",
+    "e2e:manual": "SKIP_WEBSERVER=1 playwright test"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",
@@ -98,6 +104,8 @@
     "zod": "3.25.67"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -109,6 +117,7 @@
     "@vitest/ui": "^4.0.8",
     "eslint": "^9.37.0",
     "eslint-config-next": "^15.5.4",
+    "fake-indexeddb": "^6.2.5",
     "jsdom": "^27.2.0",
     "netlify-cli": "^23.9.1",
     "postcss": "^8.5",
