@@ -44,7 +44,7 @@ function BiasCardComponent({
   const masteredRef = useRef<HTMLButtonElement>(null)
   const { speak, stop, isSpeaking, isEnabled, isSupported } = useSpeech()
   const { toast } = useToast()
-  
+
   // Removed all animation state - using static rendering to prevent flickering
 
   const handleShare = async () => {
@@ -125,7 +125,7 @@ function BiasCardComponent({
     if (!isSupported) {
       // Check if we're in an in-app browser
       const userAgent = navigator.userAgent.toLowerCase()
-      const isInAppBrowser = 
+      const isInAppBrowser =
         userAgent.includes('telegram') ||
         userAgent.includes('whatsapp') ||
         userAgent.includes('fbav') ||
@@ -134,7 +134,7 @@ function BiasCardComponent({
         userAgent.includes('twitterandroid') ||
         userAgent.includes('twitterios') ||
         userAgent.includes('linkedinapp')
-      
+
       if (isInAppBrowser) {
         toast({
           title: "Open in Browser",
@@ -176,28 +176,28 @@ function BiasCardComponent({
         description: "Preparing to read the bias aloud.",
         duration: 2000,
       })
-      
+
       // MOBILE FIX: Small delay to ensure toast appears before speech starts
       // This gives user feedback that something is happening
       await new Promise(resolve => setTimeout(resolve, 100))
-      
+
       // Generate examples and tips
       const examples = generateExamples(bias)
       const tips = generateTips(bias)
-      
+
       // Build comprehensive text including examples and tips
       let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
-      
+
       // Add real-world examples
       if (examples.length > 0) {
         text += ` Real world examples: ${examples.join('. ')}.`
       }
-      
+
       // Add quick tips
       if (tips.length > 0) {
         text += ` Quick tips: ${tips.join('. ')}.`
       }
-      
+
       // MOBILE FIX: Speak is now awaited to catch any errors
       try {
         await speak(text)
@@ -224,7 +224,7 @@ function BiasCardComponent({
       >
         {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
-        
+
         {/* Inner highlight - FIX: pointer-events-none to prevent blocking buttons */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
         <div className="relative flex items-start justify-between gap-3 sm:gap-4">
@@ -234,23 +234,23 @@ function BiasCardComponent({
                 {getCategoryLabel(bias.category)}
               </Badge>
               {bias.researchLevel && (
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className={`text-xs font-semibold ${
-                    bias.researchLevel === 'established' 
-                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground' 
+                    bias.researchLevel === 'established'
+                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground'
                       : bias.researchLevel === 'emerging'
                       ? 'border-warning/50 bg-warning text-warning-foreground dark:border-warning/60 dark:bg-warning dark:text-warning-foreground'
                       : 'border-destructive/50 bg-destructive text-destructive-foreground dark:border-destructive/60 dark:bg-destructive dark:text-destructive-foreground'
                   }`}
                 >
-                  {bias.researchLevel === 'established' ? 'Well-Established' : 
-                   bias.researchLevel === 'emerging' ? 'Emerging Research' : 
+                  {bias.researchLevel === 'established' ? 'Well-Established' :
+                   bias.researchLevel === 'emerging' ? 'Emerging Research' :
                    'Contested'}
                 </Badge>
               )}
             </div>
-            <h3 className="text-base leading-tight font-semibold tracking-tight text-balance sm:text-lg line-clamp-2">
+            <h3 className="text-base leading-tight font-semibold tracking-tight text-balance sm:text-lg sm:line-clamp-2">
               {bias.title}
             </h3>
             <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm line-clamp-3">
@@ -270,11 +270,11 @@ function BiasCardComponent({
                 tabIndex={0}
                 data-testid="bias-favorite-button"
                 className="touch-target min-h-[44px] min-w-[44px]"
-                style={{ 
-                  touchAction: 'manipulation', 
+                style={{
+                  touchAction: 'manipulation',
                   WebkitTouchCallout: 'none',
                   WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto', 
+                  pointerEvents: 'auto',
                   zIndex: 10,
                   userSelect: 'none'
                 }}
@@ -297,11 +297,11 @@ function BiasCardComponent({
                 aria-pressed={isMastered}
                 tabIndex={0}
                 className="touch-target min-h-[44px] min-w-[44px]"
-                style={{ 
-                  touchAction: 'manipulation', 
+                style={{
+                  touchAction: 'manipulation',
                   WebkitTouchCallout: 'none',
                   WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto', 
+                  pointerEvents: 'auto',
                   zIndex: 10,
                   userSelect: 'none'
                 }}
@@ -329,10 +329,10 @@ function BiasCardComponent({
     >
       {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
-      
+
       {/* Top highlight - FIX: pointer-events-none to prevent blocking buttons */}
       <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
-      
+
       {/* Side glow effect - FIX: pointer-events-none to prevent blocking buttons */}
       <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
       <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
@@ -345,25 +345,25 @@ function BiasCardComponent({
                 {getCategoryLabel(bias.category)}
               </Badge>
               {bias.researchLevel && (
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className={`text-xs font-semibold ${
-                    bias.researchLevel === 'established' 
-                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground' 
+                    bias.researchLevel === 'established'
+                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground'
                       : bias.researchLevel === 'emerging'
                       ? 'border-warning/50 bg-warning text-warning-foreground dark:border-warning/60 dark:bg-warning dark:text-warning-foreground'
                       : 'border-destructive/50 bg-destructive text-destructive-foreground dark:border-destructive/60 dark:bg-destructive dark:text-destructive-foreground'
                   }`}
                 >
-                  {bias.researchLevel === 'established' ? 'Well-Established' : 
-                   bias.researchLevel === 'emerging' ? 'Emerging Research' : 
+                  {bias.researchLevel === 'established' ? 'Well-Established' :
+                   bias.researchLevel === 'emerging' ? 'Emerging Research' :
                    'Contested'}
                 </Badge>
               )}
             </div>
             <h1
               id="bias-title"
-              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl break-words line-clamp-3"
+              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl break-words line-clamp-none sm:line-clamp-2"
             >
               {bias.title}
             </h1>
@@ -379,11 +379,11 @@ function BiasCardComponent({
                 aria-pressed={isFavorite}
                 data-testid="bias-favorite-button"
                 className="touch-target min-h-[44px] min-w-[44px]"
-                style={{ 
-                  touchAction: 'manipulation', 
+                style={{
+                  touchAction: 'manipulation',
                   WebkitTouchCallout: 'none',
                   WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto', 
+                  pointerEvents: 'auto',
                   zIndex: 10,
                   userSelect: 'none'
                 }}
@@ -404,11 +404,11 @@ function BiasCardComponent({
                 aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
                 aria-pressed={isMastered}
                 className="touch-target min-h-[44px] min-w-[44px]"
-                style={{ 
-                  touchAction: 'manipulation', 
+                style={{
+                  touchAction: 'manipulation',
                   WebkitTouchCallout: 'none',
                   WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto', 
+                  pointerEvents: 'auto',
                   zIndex: 10,
                   userSelect: 'none'
                 }}
@@ -455,8 +455,8 @@ function BiasCardComponent({
             className={`flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target ${
               isSpeaking ? "animate-pulse" : ""
             }`}
-            style={{ 
-              touchAction: 'manipulation', 
+            style={{
+              touchAction: 'manipulation',
               WebkitTouchCallout: 'none',
               WebkitTapHighlightColor: 'transparent',
               pointerEvents: 'auto',
@@ -464,12 +464,12 @@ function BiasCardComponent({
             }}
             aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
             title={
-              !isSupported 
-                ? "Speech not supported in this browser" 
-                : !isEnabled 
-                ? "Enable voice in Settings first" 
-                : isSpeaking 
-                ? "Stop reading" 
+              !isSupported
+                ? "Speech not supported in this browser"
+                : !isEnabled
+                ? "Enable voice in Settings first"
+                : isSpeaking
+                ? "Stop reading"
                 : "Read this bias aloud"
             }
             disabled={!isSupported || !isEnabled}
@@ -501,8 +501,8 @@ function BiasCardComponent({
             onTouchEnd={handleShare}
             variant="outline"
             className="flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target"
-            style={{ 
-              touchAction: 'manipulation', 
+            style={{
+              touchAction: 'manipulation',
               WebkitTouchCallout: 'none',
               WebkitTapHighlightColor: 'transparent',
               pointerEvents: 'auto',
@@ -520,8 +520,8 @@ function BiasCardComponent({
             className={`flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target ${
               copied ? "animate-scale-in" : ""
             }`}
-            style={{ 
-              touchAction: 'manipulation', 
+            style={{
+              touchAction: 'manipulation',
               WebkitTouchCallout: 'none',
               WebkitTapHighlightColor: 'transparent',
               pointerEvents: 'auto',
