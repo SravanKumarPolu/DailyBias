@@ -166,6 +166,7 @@ export default function HomePage() {
           aria-live="polite"
           aria-atomic="true"
           className="sr-only"
+          suppressHydrationWarning
         >
           {biasesLoading || dailyBiasLoading
             ? "Loading daily bias..."

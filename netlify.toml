@@ -1,5 +1,6 @@
 # Netlify configuration for Next.js deployment
 # Updated for static export (output: 'export' in next.config.mjs)
+# Note: Tests run in GitHub Actions CI before deployment
 [build]
   command = "pnpm install && pnpm build"
   publish = "out"

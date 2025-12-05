@@ -63,6 +63,7 @@ export function Navigation() {
                   className="hover:bg-accent/50 focus:ring-ring touch-target relative flex cursor-pointer flex-col items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2 rounded-xl lg:rounded-2xl px-2 py-2 sm:px-3 sm:py-2.5 md:px-3 md:py-3 lg:px-4 lg:py-3 xl:px-5 xl:py-4 2xl:px-6 2xl:py-4 transition-all duration-200 ease-out hover:scale-105 lg:hover:scale-110 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 lg:active:scale-100 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] lg:min-h-[56px] lg:min-w-[56px] xl:min-h-[64px] xl:min-w-[64px] flex-shrink-0"
                   aria-label={`${item.label} page`}
                   aria-current={isActive ? "page" : undefined}
+                  data-testid={`nav-${item.label.toLowerCase()}`}
                 >
                   {isActive && (
                     <div

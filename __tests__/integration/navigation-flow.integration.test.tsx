@@ -42,8 +42,8 @@ describe('Navigation + Active State', () => {
     await waitForNavigationToLoad(6000)
 
     // Verify all navigation items are present (use aria-label to avoid header link)
-    const nav = screen.getByTestId('bottom-navigation')
-    expect(nav).toBeInTheDocument()
+      const nav = screen.getByTestId('bottom-navigation')
+      expect(nav).toBeInTheDocument()
     
     // Find links within navigation only
     const navLinks = nav.querySelectorAll('a[aria-label]')

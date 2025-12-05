@@ -321,106 +321,63 @@ function BiasCardComponent({
 
   return (
     <div
-      className="group relative mx-auto max-w-2xl overflow-hidden rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-200 hover:border-primary/40 hover:shadow-lg sm:rounded-2xl sm:p-8 md:p-10"
+      className="group relative mx-auto max-w-2xl rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-200 hover:border-primary/40 hover:shadow-lg sm:rounded-2xl sm:p-8 md:p-10"
       // Removed motion.div props to prevent flickering - using static div instead
+      // Removed overflow-hidden to allow absolutely positioned buttons to be visible
       role="article"
       aria-labelledby="bias-title"
       data-testid="bias-card"
     >
-      {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
+      {/* Background and decorative elements wrapper with overflow-hidden for rounded corners */}
+      <div className="absolute inset-0 overflow-hidden rounded-xl sm:rounded-2xl pointer-events-none">
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
-      {/* Top highlight - FIX: pointer-events-none to prevent blocking buttons */}
-      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
+        {/* Top highlight */}
+        <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
-      {/* Side glow effect - FIX: pointer-events-none to prevent blocking buttons */}
-      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
+        {/* Side glow effect */}
+        <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      </div>
+
       <div className="relative space-y-6 sm:space-y-8">
-        {/* Header */}
-        <div className="relative flex items-start justify-between gap-4">
-          <div className="min-w-0 flex-1 space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
-                {getCategoryLabel(bias.category)}
+        {/* Header - Using CSS Grid for better mobile layout */}
+        {/* pr-28 (112px) reserves space for absolutely positioned buttons: 44px button + 8px gap + 44px button + 16px right margin */}
+        <div className="space-y-3 pr-28">
+          {/* Row 1: Category badges */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
+              {getCategoryLabel(bias.category)}
+            </Badge>
+            {bias.researchLevel && (
+              <Badge
+                variant="outline"
+                className={`text-xs font-semibold ${
+                  bias.researchLevel === 'established'
+                    ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground'
+                    : bias.researchLevel === 'emerging'
+                    ? 'border-warning/50 bg-warning text-warning-foreground dark:border-warning/60 dark:bg-warning dark:text-warning-foreground'
+                    : 'border-destructive/50 bg-destructive text-destructive-foreground dark:border-destructive/60 dark:bg-destructive dark:text-destructive-foreground'
+                }`}
+              >
+                {bias.researchLevel === 'established' ? 'Well-Established' :
+                 bias.researchLevel === 'emerging' ? 'Emerging Research' :
+                 'Contested'}
               </Badge>
-              {bias.researchLevel && (
-                <Badge
-                  variant="outline"
-                  className={`text-xs font-semibold ${
-                    bias.researchLevel === 'established'
-                      ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground'
-                      : bias.researchLevel === 'emerging'
-                      ? 'border-warning/50 bg-warning text-warning-foreground dark:border-warning/60 dark:bg-warning dark:text-warning-foreground'
-                      : 'border-destructive/50 bg-destructive text-destructive-foreground dark:border-destructive/60 dark:bg-destructive dark:text-destructive-foreground'
-                  }`}
-                >
-                  {bias.researchLevel === 'established' ? 'Well-Established' :
-                   bias.researchLevel === 'emerging' ? 'Emerging Research' :
-                   'Contested'}
-                </Badge>
-              )}
-            </div>
-            <h1
-              id="bias-title"
-              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl break-words line-clamp-none sm:line-clamp-2"
-            >
-              {bias.title}
-            </h1>
-          </div>
-          <div className="flex shrink-0 gap-2">
-            {onToggleFavorite && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleFavoriteClick}
-                onTouchEnd={handleFavoriteClick}
-                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                aria-pressed={isFavorite}
-                data-testid="bias-favorite-button"
-                className="touch-target min-h-[44px] min-w-[44px]"
-                style={{
-                  touchAction: 'manipulation',
-                  WebkitTouchCallout: 'none',
-                  WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto',
-                  zIndex: 10,
-                  userSelect: 'none'
-                }}
-              >
-                <Heart
-                  className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
-                    isFavorite ? "fill-destructive text-destructive" : ""
-                  } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
-                />
-              </Button>
-            )}
-            {onToggleMastered && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleMasteredClick}
-                onTouchEnd={handleMasteredClick}
-                aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
-                aria-pressed={isMastered}
-                className="touch-target min-h-[44px] min-w-[44px]"
-                style={{
-                  touchAction: 'manipulation',
-                  WebkitTouchCallout: 'none',
-                  WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto',
-                  zIndex: 10,
-                  userSelect: 'none'
-                }}
-              >
-                <Star
-                  className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
-                    isMastered ? "fill-warning text-warning-foreground" : ""
-                  } ${masteredAnimating ? "animate-bounce-subtle" : ""}`}
-                />
-              </Button>
             )}
           </div>
+
+          {/* Row 2: Title spans full width - padding-right prevents overlap with buttons */}
+          <h1
+            id="bias-title"
+            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto line-clamp-3"
+            style={{
+              fontSize: 'clamp(1.25rem, 4vw + 0.5rem, 1.875rem)',
+            }}
+          >
+            {bias.title}
+          </h1>
         </div>
 
         {/* Summary */}
@@ -570,6 +527,63 @@ function BiasCardComponent({
           </div>
         )}
       </div>
+
+      {/* Icons positioned absolutely at top-right of card - moved after main content for proper keyboard navigation order */}
+      {(onToggleFavorite || onToggleMastered) && (
+        <div className="absolute top-4 right-4 flex gap-2 z-20">
+          {onToggleFavorite && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleFavoriteClick}
+              onTouchEnd={handleFavoriteClick}
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              aria-pressed={isFavorite}
+              data-testid="bias-favorite-button"
+              className="touch-target min-h-[44px] min-w-[44px]"
+              style={{
+                touchAction: 'manipulation',
+                WebkitTouchCallout: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                pointerEvents: 'auto',
+                zIndex: 20,
+                userSelect: 'none'
+              }}
+            >
+              <Heart
+                className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
+                  isFavorite ? "fill-destructive text-destructive" : ""
+                } ${favoriteAnimating ? "animate-heart-beat" : ""}`}
+              />
+            </Button>
+          )}
+          {onToggleMastered && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleMasteredClick}
+              onTouchEnd={handleMasteredClick}
+              aria-label={isMastered ? "Unmark as mastered" : "Mark as mastered"}
+              aria-pressed={isMastered}
+              className="touch-target min-h-[44px] min-w-[44px]"
+              style={{
+                touchAction: 'manipulation',
+                WebkitTouchCallout: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                pointerEvents: 'auto',
+                zIndex: 20,
+                userSelect: 'none'
+              }}
+            >
+              <Star
+                className={`h-5 w-5 transition-all duration-200 sm:h-6 sm:w-6 ${
+                  isMastered ? "fill-warning text-warning-foreground" : ""
+                } ${masteredAnimating ? "animate-bounce-subtle" : ""}`}
+              />
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

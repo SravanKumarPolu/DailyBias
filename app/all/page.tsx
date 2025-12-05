@@ -69,17 +69,17 @@ export default function AllBiasesPage() {
       if (biasesToLoad.length === 0) return
 
       logger.debug("[AllPage] Loading mastered states for", biasesToLoad.length, "new biases")
-      const masts: Record<string, boolean> = { ...masteredStates }
       
       try {
         // Batch load mastered states
+        const masts: Record<string, boolean> = {}
         await Promise.all(
           biasesToLoad.map(async (bias) => {
             masts[bias.id] = await isMastered(bias.id)
             loadedBiasIdsRef.current.add(bias.id)
           })
         )
-        setMasteredStates(masts)
+        setMasteredStates((prev) => ({ ...prev, ...masts }))
         logger.debug("[AllPage] Loaded mastered states for", biasesToLoad.length, "biases")
       } catch (error) {
         logger.error("[AllPage] Error loading mastered states:", error)

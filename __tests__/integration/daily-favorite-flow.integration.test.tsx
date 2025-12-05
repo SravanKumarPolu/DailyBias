@@ -40,7 +40,7 @@ describe('Daily → Favorite → Favorites Flow', () => {
     // Verify bias card is rendered
     const biasCard = screen.queryByTestId('bias-card')
     if (biasCard) {
-      expect(biasCard).toBeInTheDocument()
+        expect(biasCard).toBeInTheDocument()
     }
   })
 

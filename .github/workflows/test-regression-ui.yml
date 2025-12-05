@@ -1,0 +1,105 @@
+name: Regression & UI Tests
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'hooks/**'
+      - '__tests__/**'
+      - '*.config.*'
+  pull_request:
+    branches: [main, master, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'hooks/**'
+      - '__tests__/**'
+      - '*.config.*'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  regression-tests:
+    name: Regression Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.14.0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run regression tests
+        run: pnpm test:run __tests__/regression
+  
+  ui-tests:
+    name: UI Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.14.0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run UI tests
+        run: pnpm test:run __tests__/ui
+
+  all-tests:
+    name: All Test Suites
+    runs-on: ubuntu-latest
+    needs: [regression-tests, ui-tests]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.14.0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run all tests
+        run: pnpm test:run
+      
+      - name: Test summary
+        run: |
+          echo "## Test Results ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Regression tests: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- UI tests: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- All tests: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+
