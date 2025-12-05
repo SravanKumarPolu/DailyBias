@@ -1,10 +1,44 @@
 import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
-import { afterEach, vi } from 'vitest'
+import { afterEach, beforeEach, vi } from 'vitest'
 
-// Cleanup after each test
+// Deterministic time setup - freeze time to fixed date
+// 2025-12-05T08:00:00+05:30 (Asia/Kolkata)
+const FIXED_DATE_STRING = '2025-12-05T08:00:00+05:30'
+const FIXED_DATE = new Date(FIXED_DATE_STRING)
+const FIXED_TIMESTAMP = FIXED_DATE.getTime()
+const FIXED_DATE_STRING_ISO = '2025-12-05' // Date string format used in the app
+
+// Mock timezone-utils to return consistent date
+vi.mock('@/lib/timezone-utils', async () => {
+  const actual = await vi.importActual('@/lib/timezone-utils')
+  return {
+    ...actual,
+    getLocalDateString: vi.fn(() => FIXED_DATE_STRING_ISO),
+    detectTimezone: vi.fn(() => ({
+      timezone: 'Asia/Kolkata',
+      offset: '+05:30',
+      region: 'Asia',
+      city: 'Kolkata',
+    })),
+  }
+})
+
+beforeEach(() => {
+  // Use fake timers with fixed time
+  vi.useFakeTimers({
+    now: FIXED_TIMESTAMP,
+    shouldAdvanceTime: false,
+  })
+  
+  // Clear localStorage
+  localStorage.clear()
+})
+
 afterEach(() => {
   cleanup()
+  vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 // Mock Next.js router
@@ -46,14 +80,34 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-}
-global.localStorage = localStorageMock as any
+// Mock localStorage with proper implementation
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString()
+    },
+    removeItem: (key: string) => {
+      delete store[key]
+    },
+    clear: () => {
+      store = {}
+    },
+    get length() {
+      return Object.keys(store).length
+    },
+    key: (index: number) => {
+      const keys = Object.keys(store)
+      return keys[index] || null
+    },
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+})
 
 // Mock IndexedDB
 global.indexedDB = {
@@ -101,3 +155,7 @@ window.location = {
   href: 'http://localhost:3000',
 } as any
 
+// Export constants for use in tests
+export const TEST_FIXED_DATE = FIXED_DATE
+export const TEST_FIXED_TIMESTAMP = FIXED_TIMESTAMP
+export const TEST_FIXED_DATE_STRING = FIXED_DATE_STRING_ISO
