@@ -1,9 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import FavoritesPage from '@/app/favorites/page'
+import type { Bias, FavoriteItem } from '@/lib/types'
 
-// Mock the app context
-const mockAppContext = {
+// Mock the app context with proper types
+const mockAppContext: {
+  allBiases: Bias[]
+  biasesLoading: boolean
+  favorites: FavoriteItem[]
+  toggleFavorite: Mock
+  favoritesLoading: boolean
+  settings: {
+    theme: 'light' | 'dark' | 'system'
+    backgroundStyle: 'gradient' | 'glass' | 'minimal'
+  }
+  toggleMastered: Mock
+  isMastered: Mock
+} = {
   allBiases: [],
   biasesLoading: false,
   favorites: [],
@@ -34,11 +47,11 @@ vi.mock('@/components/dynamic-navigation', () => ({
 }))
 
 vi.mock('@/components/dynamic-bias-card', () => ({
-  DynamicBiasCard: ({ bias }: any) => <div data-testid={`bias-${bias.id}`}>{bias.title}</div>,
+  DynamicBiasCard: ({ bias }: { bias: Bias }) => <div data-testid={`bias-${bias.id}`}>{bias.title}</div>,
 }))
 
 vi.mock('@/components/empty-state', () => ({
-  EmptyState: ({ title }: any) => <div data-testid="empty-state">{title}</div>,
+  EmptyState: ({ title }: { title: string }) => <div data-testid="empty-state">{title}</div>,
 }))
 
 describe('FavoritesPage', () => {

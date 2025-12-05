@@ -1,6 +1,6 @@
 "use client"
 
-import { Moon, Sun, Bell, Mic, MicOff, Monitor } from "lucide-react"
+import { Moon, Sun, Bell, Monitor } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSettings } from "@/hooks/use-settings"
 import { useEffect, useState } from "react"
@@ -9,17 +9,7 @@ import Image from "next/image"
 import { getTimezoneAwareDateString } from "@/lib/timezone-utils"
 import { siteConfig } from "@/lib/site-config"
 
-interface DailyHeaderProps {
-  isVoiceListening?: boolean
-  onToggleVoiceCommands?: () => void
-  voiceCommandsSupported?: boolean
-}
-
-export function DailyHeader({
-  isVoiceListening = false,
-  onToggleVoiceCommands,
-  voiceCommandsSupported = false,
-}: DailyHeaderProps) {
+export function DailyHeader() {
   const { settings, saveSetting } = useSettings()
   // FIX: Prevent hydration mismatch by using suppressHydrationWarning
   // Date formatting can legitimately differ between server and client due to locale
@@ -146,38 +136,6 @@ export function DailyHeader({
                     aria-hidden="true"
                   />
                 </Button>
-                {voiceCommandsSupported && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={onToggleVoiceCommands}
-                    aria-label={
-                      isVoiceListening
-                        ? "Voice commands active - Click to stop"
-                        : "Click to enable voice commands"
-                    }
-                    className={`touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px] relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 ${
-                      isVoiceListening ? "animate-pulse bg-green-500/20 border-green-500/40" : ""
-                    }`}
-                    title={
-                      isVoiceListening
-                        ? "Voice commands active - Say 'read' or 'stop'"
-                        : "Enable voice commands"
-                    }
-                  >
-                    {isVoiceListening ? (
-                      <Mic
-                        className="h-5 w-5 text-green-500 transition-all duration-300 relative z-10"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <MicOff
-                        className="h-5 w-5 transition-all duration-300 relative z-10"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </Button>
-                )}
                 <Button
                   variant="ghost"
                   size="icon"

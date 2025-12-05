@@ -313,7 +313,7 @@ vi.mock('@/lib/analytics-utils', () => ({
     totalFeedback: 0,
   }),
   getRecentActivity: vi.fn().mockResolvedValue([]),
-  formatRelativeTime: vi.fn((time: number) => 'recently'),
+  formatRelativeTime: vi.fn((_time: number) => 'recently'),
 }))
 
 vi.mock('@/lib/timezone-utils', () => ({
@@ -336,7 +336,7 @@ vi.mock('@/lib/haptics', () => ({
 }))
 
 vi.mock('@/lib/search-utils', () => ({
-  searchBiases: vi.fn((biases, query) => biases.map((bias: any) => ({ bias, score: 1.0 }))),
+  searchBiases: vi.fn((biases, _query) => biases.map((bias: any) => ({ bias, score: 1.0 }))),
 }))
 
 vi.mock('@/lib/validation', () => ({

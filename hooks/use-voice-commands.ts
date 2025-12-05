@@ -1,6 +1,11 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import type {
+  SpeechRecognition,
+  SpeechRecognitionEvent,
+  SpeechRecognitionErrorEvent,
+} from "@/lib/speech-recognition-types"
 
 interface VoiceCommandsOptions {
   onReadCommand?: () => void
@@ -16,14 +21,14 @@ export function useVoiceCommands({
   const [isListening, setIsListening] = useState(false)
   const [isSupported, setIsSupported] = useState(false)
   const [transcript, setTranscript] = useState("")
-  const recognitionRef = useRef<any>(null)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
   const commandTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     // Check if speech recognition is supported
     if (typeof window !== "undefined") {
       const SpeechRecognition =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+        window.SpeechRecognition || window.webkitSpeechRecognition
       if (SpeechRecognition) {
         setIsSupported(true)
         recognitionRef.current = new SpeechRecognition()
@@ -70,7 +75,7 @@ export function useVoiceCommands({
   useEffect(() => {
     if (!recognitionRef.current) return
 
-    recognitionRef.current.onresult = (event: any) => {
+    recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
       try {
         let finalTranscript = ""
         let interimTranscript = ""
@@ -204,7 +209,7 @@ export function useVoiceCommands({
       }
     }
 
-    recognitionRef.current.onerror = (event: any) => {
+    recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
       try {
         console.error("[Voice Commands] Error:", event.error)
 

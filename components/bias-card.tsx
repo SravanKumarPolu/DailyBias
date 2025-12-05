@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { memo } from "react"
 
 // Removed framer-motion import - using static divs to prevent flickering
 import { Heart, Share2, Copy, Check, Star, Volume2, VolumeX } from "lucide-react"
@@ -28,7 +29,7 @@ interface BiasCardProps {
   onToggleMastered?: (e?: React.MouseEvent) => void
 }
 
-export function BiasCard({
+function BiasCardComponent({
   bias,
   variant = "detailed",
   isFavorite = false,
@@ -219,6 +220,7 @@ export function BiasCard({
         role="article"
         tabIndex={0}
         aria-label={`${bias.title} - ${bias.category} bias`}
+        data-testid="bias-card"
       >
         {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
@@ -248,10 +250,10 @@ export function BiasCard({
                 </Badge>
               )}
             </div>
-            <h3 className="text-base leading-tight font-semibold tracking-tight text-balance sm:text-lg">
+            <h3 className="text-base leading-tight font-semibold tracking-tight text-balance sm:text-lg line-clamp-2">
               {bias.title}
             </h3>
-            <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm">
+            <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm line-clamp-3">
               {bias.summary}
             </p>
           </div>
@@ -266,6 +268,7 @@ export function BiasCard({
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
                 tabIndex={0}
+                data-testid="bias-favorite-button"
                 className="touch-target min-h-[44px] min-w-[44px]"
                 style={{ 
                   touchAction: 'manipulation', 
@@ -322,6 +325,7 @@ export function BiasCard({
       // Removed motion.div props to prevent flickering - using static div instead
       role="article"
       aria-labelledby="bias-title"
+      data-testid="bias-card"
     >
       {/* Gradient overlay for depth - FIX: pointer-events-none to prevent blocking buttons */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/8 opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
@@ -359,7 +363,7 @@ export function BiasCard({
             </div>
             <h1
               id="bias-title"
-              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl break-words"
+              className="text-xl font-bold tracking-tight text-balance sm:text-2xl md:text-3xl break-words line-clamp-3"
             >
               {bias.title}
             </h1>
@@ -373,6 +377,7 @@ export function BiasCard({
                 onTouchEnd={handleFavoriteClick}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={isFavorite}
+                data-testid="bias-favorite-button"
                 className="touch-target min-h-[44px] min-w-[44px]"
                 style={{ 
                   touchAction: 'manipulation', 
@@ -568,3 +573,18 @@ export function BiasCard({
     </div>
   )
 }
+
+// Memoize BiasCard to prevent unnecessary re-renders
+export const BiasCard = memo(BiasCardComponent, (prevProps: BiasCardProps, nextProps: BiasCardProps) => {
+  // Custom comparison function for better performance
+  return (
+    prevProps.bias.id === nextProps.bias.id &&
+    prevProps.bias.title === nextProps.bias.title &&
+    prevProps.bias.summary === nextProps.bias.summary &&
+    prevProps.isFavorite === nextProps.isFavorite &&
+    prevProps.isMastered === nextProps.isMastered &&
+    prevProps.variant === nextProps.variant &&
+    prevProps.onToggleFavorite === nextProps.onToggleFavorite &&
+    prevProps.onToggleMastered === nextProps.onToggleMastered
+  )
+})

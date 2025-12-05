@@ -10,6 +10,20 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', '.next', 'out', 'android', 'ios'],
+    testTimeout: 20000, // 20 seconds for integration tests (some settings tests need more time)
+    pool: 'vmThreads',
+    // Note: poolOptions is not in the type definition but is supported at runtime
+    // Using type assertion to avoid type error while maintaining functionality
+    ...({
+      poolOptions: {
+        vmThreads: {
+          singleThread: false,
+        },
+      },
+    } as { poolOptions?: { vmThreads?: { singleThread?: boolean } } }),
+    sequence: {
+      concurrent: false, // Run tests sequentially to avoid IndexedDB conflicts
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],

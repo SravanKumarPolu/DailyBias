@@ -1,3 +1,5 @@
+// Import fake-indexeddb FIRST before any other imports that might use indexedDB
+import 'fake-indexeddb/auto'
 import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
@@ -25,20 +27,57 @@ vi.mock('@/lib/timezone-utils', async () => {
 })
 
 beforeEach(() => {
-  // Use fake timers with fixed time
-  vi.useFakeTimers({
-    now: FIXED_TIMESTAMP,
-    shouldAdvanceTime: false,
-  })
+  // Use real timers for integration tests to allow async operations
+  // Date is already mocked via timezone-utils mock for date strings
+  vi.useRealTimers()
+  
+  // Mock Date.now() to return fixed timestamp for deterministic testing
+  // Note: vi.setSystemTime() only works with fake timers, so we mock Date.now() directly
+  vi.spyOn(Date, 'now').mockReturnValue(FIXED_TIMESTAMP)
   
   // Clear localStorage
   localStorage.clear()
+  
+  // Clear test biases (will be set by test utilities)
+  // @ts-ignore - global variable for test mocking
+  globalThis.__TEST_BIASES__ = undefined
+  
+  // Reset pathname to default
+  // @ts-ignore - global variable for test mocking
+  globalThis.__TEST_PATHNAME__ = '/'
 })
 
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
   vi.restoreAllMocks()
+})
+
+// Global variables for test mocking
+declare global {
+  var __TEST_BIASES__: any[] | undefined
+  var __TEST_PATHNAME__: string | undefined
+}
+
+// Mock getCoreBiases to use test biases if available
+vi.mock('@/lib/daily-selector', async () => {
+  const actual = await vi.importActual('@/lib/daily-selector')
+  return {
+    ...actual,
+    getCoreBiases: () => {
+      // Use test biases if set, otherwise use actual core biases
+      if (globalThis.__TEST_BIASES__ && globalThis.__TEST_BIASES__.length > 0) {
+        return globalThis.__TEST_BIASES__
+      }
+      return (actual as any).getCoreBiases()
+    },
+    getAllBiases: (userBiases: any[] = []) => {
+      const coreBiases = globalThis.__TEST_BIASES__ && globalThis.__TEST_BIASES__.length > 0
+        ? globalThis.__TEST_BIASES__
+        : (actual as any).getCoreBiases()
+      return [...coreBiases, ...userBiases]
+    },
+  }
 })
 
 // Mock Next.js router
@@ -48,11 +87,12 @@ vi.mock('next/navigation', () => ({
     replace: vi.fn(),
     prefetch: vi.fn(),
     back: vi.fn(),
-    pathname: '/',
+    refresh: vi.fn(),
+    pathname: globalThis.__TEST_PATHNAME__ || '/',
     query: {},
-    asPath: '/',
+    asPath: globalThis.__TEST_PATHNAME__ || '/',
   }),
-  usePathname: () => '/',
+  usePathname: () => globalThis.__TEST_PATHNAME__ || '/',
   useSearchParams: () => new URLSearchParams(),
 }))
 
@@ -109,10 +149,7 @@ Object.defineProperty(window, 'localStorage', {
   writable: true,
 })
 
-// Mock IndexedDB
-global.indexedDB = {
-  open: vi.fn(),
-} as any
+// IndexedDB is mocked via fake-indexeddb/auto import above
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
@@ -133,13 +170,15 @@ global.ResizeObserver = class ResizeObserver {
   unobserve() {}
 } as any
 
-// Mock SpeechSynthesis
+// Mock SpeechSynthesis with addEventListener
 global.speechSynthesis = {
   speak: vi.fn(),
   cancel: vi.fn(),
   pause: vi.fn(),
   resume: vi.fn(),
   getVoices: vi.fn(() => []),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
 } as any
 
 // Mock SpeechSynthesisUtterance
@@ -147,13 +186,8 @@ global.SpeechSynthesisUtterance = class SpeechSynthesisUtterance {
   constructor(public text?: string) {}
 } as any
 
-// Mock window.location
-delete (window as any).location
-window.location = {
-  ...window.location,
-  reload: vi.fn(),
-  href: 'http://localhost:3000',
-} as any
+// Note: window.location is read-only in vmThreads, so we skip mocking it
+// Tests should work fine without location.reload mock
 
 // Export constants for use in tests
 export const TEST_FIXED_DATE = FIXED_DATE

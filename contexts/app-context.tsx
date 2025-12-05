@@ -53,31 +53,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const settingsHook = useSettings()
   const progressHook = useProgress()
 
-  // Create stable hash of favorites to prevent unnecessary context re-renders
-  // This prevents flickering when favorites array reference changes but content is similar
-  const favoritesHash = useMemo(() => {
-    if (favoritesHook.favorites.length === 0) return '0'
-    // Create stable hash from sorted bias IDs
-    const sortedIds = favoritesHook.favorites.map(f => f.biasId).sort().join(',')
-    return `${favoritesHook.favorites.length}-${sortedIds}`
+  // Create stable comparison keys to prevent unnecessary re-renders
+  // Only re-render when meaningful data changes, not when array references change
+  const favoritesKey = useMemo(() => {
+    return favoritesHook.favorites.map(f => f.biasId).sort().join(',')
   }, [favoritesHook.favorites])
 
-  // Create stable hash of progressList to prevent unnecessary context re-renders
-  // This prevents flickering when progressList reference changes but content is similar
-  // Only re-render when meaningful progress changes (new views, mastered status)
-  // FIX: Don't include viewedAt timestamp in hash - only include whether bias is viewed or not
-  // This prevents hash from changing every time markAsViewed updates the timestamp
-  const progressListHash = useMemo(() => {
-    if (progressHook.progressList.length === 0) return '0'
-    // Create stable hash from progress data that matters (biasId, mastered, viewed status)
-    // Don't include exact viewedAt timestamp - only whether it's viewed or not
-    const sorted = [...progressHook.progressList].sort((a, b) => a.biasId.localeCompare(b.biasId))
-    const hash = sorted.map(p => `${p.biasId}:${p.mastered ? '1' : '0'}:${p.viewedAt > 0 ? '1' : '0'}`).join(',')
-    return `${progressHook.progressList.length}-${progressHook.progressList.filter(p => p.mastered).length}-${hash}`
+  const progressKey = useMemo(() => {
+    return progressHook.progressList
+      .map(p => `${p.biasId}:${p.mastered ? '1' : '0'}`)
+      .sort()
+      .join(',')
   }, [progressHook.progressList])
 
   // Memoize context value to prevent unnecessary re-renders
-  // This is critical for preventing flickering on Android where re-renders are more noticeable
+  // Only re-render when actual data changes, not when object references change
   const value: AppContextType = useMemo(() => ({
     // Biases
     userBiases: biasesHook.userBiases,
@@ -101,7 +91,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // Settings
     settings: settingsHook.settings,
     settingsLoading: settingsHook.loading,
-    settingsError: null, // Settings hook doesn't have error state
+    settingsError: null,
     saveSetting: settingsHook.saveSetting,
     refreshSettings: settingsHook.refresh,
 
@@ -115,27 +105,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     isMastered: progressHook.isMastered,
     refreshProgress: progressHook.refresh,
   }), [
-    // Only include data values that should trigger re-renders when they change
-    // Functions from hooks are stable (wrapped in useCallback), so they don't need to be in deps
-    // Use length for arrays to prevent re-renders when array reference changes but content is same
+    // Biases - use length to prevent re-renders when array reference changes but content is same
     biasesHook.userBiases.length,
     biasesHook.allBiases.length,
     biasesHook.coreBiases.length,
     biasesHook.loading,
     biasesHook.error,
-    // FIX: Use stable hash instead of favorites.length to prevent re-renders when array reference changes
-    // This prevents flickering when favorites toggle optimistically updates the array
-    favoritesHash,
+    // Favorites - use stable key instead of array reference
+    favoritesKey,
     favoritesHook.loading,
     favoritesHook.error,
-    // For settings object, use a stable key - only re-render when theme or other critical settings change
+    // Settings - use theme and backgroundStyle as keys
     settingsHook.settings.theme,
     settingsHook.settings.backgroundStyle,
     settingsHook.loading,
-    // FIX: Use stable hash instead of progressList.length to prevent re-renders when array reference changes
-    // This prevents flickering when markAsViewed updates progressList optimistically
-    progressListHash,
-    // For stats, use individual values instead of object
+    // Progress - use stable key and stats values
+    progressKey,
     progressHook.stats.totalBiasesRead,
     progressHook.stats.currentStreak,
     progressHook.stats.longestStreak,

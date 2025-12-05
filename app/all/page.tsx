@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect, useCallback } from "react"
+import { useState, useMemo, useEffect, useCallback, useRef } from "react"
 import { Search, Filter, Sparkles, X, SearchX, Loader2 } from "lucide-react"
 import { useLazyLoad } from "@/hooks/use-virtual-scroll"
 import { DailyHeader } from "@/components/daily-header"
@@ -36,7 +36,6 @@ export default function AllBiasesPage() {
     biasesLoading,
     favorites,
     toggleFavorite,
-    isFavorite,
     settings,
     toggleMastered,
     isMastered,
@@ -46,35 +45,51 @@ export default function AllBiasesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const [selectedCategories, setSelectedCategories] = useState<BiasCategory[]>([])
-  const [favStates, setFavStates] = useState<Record<string, boolean>>({})
-  const [masteredStates, setMasteredStates] = useState<Record<string, boolean>>({})
 
-  // Load favorite and mastered states
+  // Optimize: Use favorites from context instead of loading individually
+  // Only load states for biases not in favorites list (for mastered state)
+  const favStates = useMemo(() => {
+    const favMap: Record<string, boolean> = {}
+    favorites.forEach((fav) => {
+      favMap[fav.biasId] = true
+    })
+    return favMap
+  }, [favorites])
+
+  // Load mastered states only (favorites are already in context)
+  // Use a ref to track loaded bias IDs to avoid redundant calls
+  const [masteredStates, setMasteredStates] = useState<Record<string, boolean>>({})
+  const loadedBiasIdsRef = useRef<Set<string>>(new Set())
+
   useEffect(() => {
-    const loadStates = async () => {
-      logger.debug("[AllPage] Loading favorite and mastered states for", allBiases.length, "biases")
-      const favs: Record<string, boolean> = {}
-      const masts: Record<string, boolean> = {}
+    const loadMasteredStates = async () => {
+      // Only load states for biases we haven't loaded yet
+      const biasesToLoad = allBiases.filter((bias) => !loadedBiasIdsRef.current.has(bias.id))
+      
+      if (biasesToLoad.length === 0) return
+
+      logger.debug("[AllPage] Loading mastered states for", biasesToLoad.length, "new biases")
+      const masts: Record<string, boolean> = { ...masteredStates }
       
       try {
+        // Batch load mastered states
         await Promise.all(
-          allBiases.map(async (bias) => {
-            favs[bias.id] = await isFavorite(bias.id)
+          biasesToLoad.map(async (bias) => {
             masts[bias.id] = await isMastered(bias.id)
+            loadedBiasIdsRef.current.add(bias.id)
           })
         )
-        setFavStates(favs)
         setMasteredStates(masts)
-        logger.debug("[AllPage] Loaded states for", Object.keys(favs).length, "biases")
+        logger.debug("[AllPage] Loaded mastered states for", biasesToLoad.length, "biases")
       } catch (error) {
-        logger.error("[AllPage] Error loading states:", error)
+        logger.error("[AllPage] Error loading mastered states:", error)
       }
     }
+    
     if (allBiases.length > 0) {
-      loadStates()
+      loadMasteredStates()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allBiases, favorites])
+  }, [allBiases.length, isMastered]) // Only depend on length, not array reference
 
   const recommendation = useMemo(() => {
     if (progressLoading || allBiases.length === 0) return null
@@ -114,7 +129,7 @@ export default function AllBiasesPage() {
   const handleToggleFavorite = useCallback(
     async (biasId: string) => {
       await toggleFavorite(biasId)
-      setFavStates((prev) => ({ ...prev, [biasId]: !prev[biasId] }))
+      // State will update automatically from context favorites
     },
     [toggleFavorite]
   )
@@ -128,9 +143,10 @@ export default function AllBiasesPage() {
   )
 
   const hasActiveSearch = searchQuery.trim().length > 0
-  const avgScore = hasActiveSearch
-    ? searchResults.reduce((sum, r) => sum + r.score, 0) / Math.max(searchResults.length, 1)
-    : 1
+  const avgScore = useMemo(() => {
+    if (!hasActiveSearch) return 1
+    return searchResults.reduce((sum, r) => sum + r.score, 0) / Math.max(searchResults.length, 1)
+  }, [hasActiveSearch, searchResults])
 
   // Use lazy loading for better performance
   const { visibleItems: visibleResults, hasMore, loadMoreRef } = useLazyLoad(

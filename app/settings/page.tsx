@@ -197,8 +197,8 @@ export default function SettingsPage() {
       fetchAndFilterVoices()
       window.speechSynthesis.onvoiceschanged = fetchAndFilterVoices
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.voiceName])
+    // saveSetting is stable from context, settings.voiceName triggers re-fetch
+  }, [settings.voiceName, saveSetting])
 
   const handleRefreshVoices = async () => {
     try {
@@ -548,19 +548,19 @@ export default function SettingsPage() {
                 }
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="gradient" id="gradient" />
+                  <RadioGroupItem value="gradient" id="gradient" data-testid="setting-bg-gradient" />
                   <Label htmlFor="gradient" className="cursor-pointer font-normal">
                     Gradient (Animated)
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="glass" id="glass" />
+                  <RadioGroupItem value="glass" id="glass" data-testid="setting-bg-glass" />
                   <Label htmlFor="glass" className="cursor-pointer font-normal">
                     Glass (Blurred)
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="minimal" id="minimal" />
+                  <RadioGroupItem value="minimal" id="minimal" data-testid="setting-bg-minimal" />
                   <Label htmlFor="minimal" className="cursor-pointer font-normal">
                     Minimal (Solid)
                   </Label>
@@ -595,6 +595,7 @@ export default function SettingsPage() {
                 checked={settings.dailyReminder}
                 onCheckedChange={handleReminderToggle}
                 className="cursor-pointer"
+                data-testid="setting-daily-reminder"
               />
             </div>
           </div>
@@ -637,6 +638,7 @@ export default function SettingsPage() {
                 checked={settings.voiceEnabled}
                 onCheckedChange={(checked) => saveSetting("voiceEnabled", checked)}
                 className="cursor-pointer"
+                data-testid="setting-voice-enabled"
               />
             </div>
 
@@ -838,6 +840,7 @@ export default function SettingsPage() {
                 checked={settings.mixUserBiasesInDaily}
                 onCheckedChange={(checked) => saveSetting("mixUserBiasesInDaily", checked)}
                 className="cursor-pointer"
+                data-testid="setting-mix-user-biases"
               />
             </div>
           </div>

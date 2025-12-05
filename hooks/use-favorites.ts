@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import type { FavoriteItem } from "@/lib/types"
 import { getFavorites, addFavorite, removeFavorite, isFavorite } from "@/lib/db"
 import { toast } from "@/hooks/use-toast"
@@ -11,11 +11,7 @@ export function useFavorites() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    loadFavorites()
-  }, [])
-
-  async function loadFavorites() {
+  const loadFavorites = useCallback(async () => {
     try {
       logger.debug("[FavoritesHook] Loading favorites...")
       setError(null)
@@ -34,12 +30,16 @@ export function useFavorites() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    loadFavorites()
+  }, [loadFavorites])
 
   // Track reload timeout to debounce
   const reloadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  async function toggleFavorite(biasId: string) {
+  const toggleFavorite = useCallback(async (biasId: string) => {
     try {
       logger.debug("[FavoritesHook] Toggling favorite for bias:", biasId)
       const isFav = await isFavorite(biasId)
@@ -94,16 +94,16 @@ export function useFavorites() {
       })
       throw error
     }
-  }
+  }, [loadFavorites])
 
-  async function checkIsFavorite(biasId: string): Promise<boolean> {
+  const checkIsFavorite = useCallback(async (biasId: string): Promise<boolean> => {
     try {
       return await isFavorite(biasId)
     } catch (error) {
       logger.error("[DailyBias] Failed to check favorite status:", error)
       return false
     }
-  }
+  }, [])
 
   return {
     favorites,

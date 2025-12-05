@@ -21,6 +21,7 @@ export function Navigation() {
     <nav 
       className="pb-safe fixed right-0 bottom-0 left-0 z-50 w-full" 
       aria-label="Main navigation"
+      data-testid="bottom-navigation"
       style={{
         // Responsive navigation: fixed at bottom, centered, works across all screen sizes
         position: 'fixed',

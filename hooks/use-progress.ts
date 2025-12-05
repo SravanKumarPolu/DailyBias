@@ -25,7 +25,6 @@ function calculateStreak(progressList: BiasProgress[]): { current: number; longe
 
   // Calculate current streak using local timezone
   let currentStreak = 0
-  const todayStr = getLocalDateString()
 
   for (let i = 0; i < uniqueDates.length; i++) {
     const expectedStr = getDaysAgoDateString(i)
@@ -92,8 +91,8 @@ export function useProgress() {
         masteredCount,
       })
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load progress"
-      setError(message)
+      const errorMessage = error instanceof Error ? error.message : "Failed to load progress"
+      setError(errorMessage)
       logger.error("[DailyBias] Failed to load progress:", error)
     } finally {
       setLoading(false)
@@ -190,7 +189,6 @@ export function useProgress() {
           reloadTimeoutRef.current = null
         }, 10000) // Increased debounce to 10 seconds to prevent flickering
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to mark as viewed"
         logger.error("[DailyBias] Failed to mark as viewed:", error)
         throw error
       }

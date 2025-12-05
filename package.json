@@ -16,6 +16,8 @@
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
+    "test:integration": "vitest run __tests__/integration",
+    "test:unit": "vitest run --exclude __tests__/integration/**",
     "validate": "pnpm type-check && pnpm lint && pnpm test",
     "audit:deps": "pnpm audit",
     "audit:security": "pnpm audit --audit-level=moderate",
