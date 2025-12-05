@@ -28,11 +28,8 @@ const mockRouter = {
   asPath: '/',
 }
 
-// Mock usePathname to return the current pathname
-let mockPathname = '/'
-
-// We need to dynamically update the mock, so we'll use vi.mocked
-// The base mock is in vitest.setup.ts
+// Mock usePathname is set up in vitest.setup.ts via globalThis.__TEST_PATHNAME__
+// We update it via globalThis.__TEST_PATHNAME__ and mockRouter.pathname
 
 interface RenderWithProvidersOptions extends Omit<RenderOptions, 'wrapper'> {
   /**
@@ -189,7 +186,6 @@ export async function renderWithProviders(
   globalThis.__TEST_PATHNAME__ = route
   mockRouter.pathname = route
   mockRouter.asPath = route
-  mockPathname = route
 
   // Set up core biases mock using global variable (set up in vitest.setup.ts)
   const testBiases = biases || createTestBiases(5)
@@ -538,7 +534,8 @@ export function resetRouterMock() {
   mockRouter.refresh.mockClear()
   mockRouter.pathname = '/'
   mockRouter.asPath = '/'
-  mockPathname = '/'
+  // @ts-ignore - global variable for test mocking
+  globalThis.__TEST_PATHNAME__ = '/'
 }
 
 /**

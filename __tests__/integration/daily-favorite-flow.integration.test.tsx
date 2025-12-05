@@ -14,7 +14,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import HomePage from '@/app/page'
 import FavoritesPage from '@/app/favorites/page'
-import { renderWithProviders, createTestBiases, waitForHooksToLoad, waitForDailyPageToLoad, waitForDailyPageWithBias } from './test-utils'
+import { renderWithProviders, createTestBiases, waitForHooksToLoad, waitForDailyPageWithBias } from './test-utils'
 import { getTodayDateString } from '@/lib/daily-selector'
 
 describe('Daily → Favorite → Favorites Flow', () => {

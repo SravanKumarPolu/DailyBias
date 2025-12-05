@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { AppProvider } from '@/contexts/app-context'
 
 // Mock localStorage
@@ -492,13 +492,14 @@ describe('Comprehensive Smoke Tests', () => {
 
     it('should render BiasDetailPage (/bias/[id])', async () => {
       // Update mock to return the correct id
-      vi.mocked(await import('next/navigation')).useParams = () => ({ id: 'test-bias-1' })
+      const navModule = await import('next/navigation')
+      vi.mocked(navModule).useParams = vi.fn(() => ({ id: 'test-bias-1' }))
       
       const BiasDetailPage = (await import('@/app/bias/[id]/page')).default
       expect(() => {
         render(
           <AppProvider>
-            <BiasDetailPage params={{ id: 'test-bias-1' }} />
+            <BiasDetailPage />
           </AppProvider>
         )
       }).not.toThrow()
@@ -748,13 +749,14 @@ describe('Comprehensive Smoke Tests', () => {
 
     it('should handle invalid bias ID gracefully', async () => {
       // Update mock to return the invalid id
-      vi.mocked(await import('next/navigation')).useParams = () => ({ id: 'invalid-id' })
+      const navModule = await import('next/navigation')
+      vi.mocked(navModule).useParams = vi.fn(() => ({ id: 'invalid-id' }))
       
       const BiasDetailPage = (await import('@/app/bias/[id]/page')).default
       expect(() => {
         render(
           <AppProvider>
-            <BiasDetailPage params={{ id: 'invalid-id' }} />
+            <BiasDetailPage />
           </AppProvider>
         )
       }).not.toThrow()

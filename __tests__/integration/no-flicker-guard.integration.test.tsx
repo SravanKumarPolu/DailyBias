@@ -10,7 +10,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import HomePage from '@/app/page'
-import { renderWithProviders, createTestBiases, waitForHooksToLoad, waitForDailyPageToLoad, waitForDailyPageWithBias } from './test-utils'
+import { renderWithProviders, createTestBiases, waitForHooksToLoad, waitForDailyPageWithBias } from './test-utils'
 import { getTodayDateString } from '@/lib/daily-selector'
 
 describe('No Flicker Guard', () => {

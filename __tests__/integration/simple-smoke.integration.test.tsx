@@ -9,7 +9,6 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderWithProviders, createTestBiases, waitForHooksToLoad, waitFor } from './test-utils'
-import { screen } from '@testing-library/react'
 
 describe('Simple Smoke Test', () => {
   const testBiases = createTestBiases(5)

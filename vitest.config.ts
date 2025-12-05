@@ -9,7 +9,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    exclude: ['node_modules', 'dist', '.next', 'out', 'android', 'ios'],
+    exclude: ['node_modules', 'dist', '.next', 'out', 'android', 'ios', 'tests/e2e/**'],
     testTimeout: 20000, // 20 seconds for integration tests (some settings tests need more time)
     pool: 'vmThreads',
     // Note: poolOptions is not in the type definition but is supported at runtime
