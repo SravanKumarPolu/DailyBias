@@ -4,6 +4,9 @@ import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
 
+// Extend Vitest matchers with jest-axe (only in test environment)
+// Note: jest-axe is imported conditionally in test files to avoid build issues
+
 // Deterministic time setup - freeze time to fixed date
 // 2025-12-05T08:00:00+05:30 (Asia/Kolkata)
 const FIXED_DATE_STRING = '2025-12-05T08:00:00+05:30'

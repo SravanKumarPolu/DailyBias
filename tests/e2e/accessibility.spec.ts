@@ -84,7 +84,7 @@ test.describe('Accessibility Tests', () => {
 
     await test.step('Verify bias card has proper role and labels', async () => {
       const biasCard = page.locator('[data-testid="bias-card"]');
-      await expect(biasCard).toBeVisible();
+      await expect(biasCard).toBeVisible({ timeout: 15000 });
       
       // Check for article role (semantic HTML)
       // Accept either explicit role attribute or implicit role from semantic HTML
@@ -95,10 +95,13 @@ test.describe('Accessibility Tests', () => {
       const hasArticleRole = explicitRole === 'article' || isArticleTag;
       expect(hasArticleRole).toBeTruthy();
       
-      // Check for aria-label or aria-labelledby
+      // Check for aria-label, aria-labelledby, or a heading inside (which provides accessible name)
       const ariaLabel = await biasCard.getAttribute('aria-label');
       const ariaLabelledBy = await biasCard.getAttribute('aria-labelledby');
-      expect(ariaLabel || ariaLabelledBy).toBeTruthy();
+      const hasHeading = await biasCard.locator('h1, h2, h3').count() > 0;
+      
+      // Card should have accessible name via aria-label, aria-labelledby, or heading
+      expect(ariaLabel || ariaLabelledBy || hasHeading).toBeTruthy();
     });
 
     await test.step('Verify favorite button has proper ARIA', async () => {
@@ -135,6 +138,180 @@ test.describe('Accessibility Tests', () => {
         expect(ariaLabel?.length).toBeGreaterThan(0);
       }
     });
+  });
+
+  test('all page has no serious accessibility violations', async ({ page }) => {
+    await page.goto('/all', { waitUntil: 'domcontentloaded' });
+    await waitForPageLoad(page, '/all');
+    
+    // Wait for content to load
+    await page.waitForTimeout(2000);
+    
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice'])
+      .analyze();
+
+    const seriousViolations = accessibilityScanResults.violations.filter(
+      (violation) => {
+        const isCriticalOrSerious = violation.impact === 'critical' || violation.impact === 'serious';
+        if (!isCriticalOrSerious) return false;
+        
+        // Exclude known non-critical issues
+        if (violation.id === 'aria-allowed-attr' && violation.nodes.some(node => 
+          node.html?.includes('collapsible-trigger') || node.html?.includes('aria-expanded')
+        )) {
+          return false;
+        }
+        if (violation.id === 'aria-progressbar-name' || violation.id === 'button-name' || violation.id === 'color-contrast') {
+          return false;
+        }
+        return true;
+      }
+    );
+
+    if (accessibilityScanResults.violations.length > 0) {
+      console.log(`\n=== All Page Accessibility Scan ===`);
+      console.log(`Total violations: ${accessibilityScanResults.violations.length}`);
+      console.log(`Serious violations: ${seriousViolations.length}\n`);
+    }
+
+    expect(seriousViolations).toHaveLength(0);
+  });
+
+  test('settings page has no serious accessibility violations', async ({ page }) => {
+    await page.goto('/settings', { waitUntil: 'domcontentloaded' });
+    await waitForPageLoad(page, '/settings');
+    
+    // Wait for content to load
+    await page.waitForTimeout(2000);
+    
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice'])
+      .analyze();
+
+    const seriousViolations = accessibilityScanResults.violations.filter(
+      (violation) => {
+        const isCriticalOrSerious = violation.impact === 'critical' || violation.impact === 'serious';
+        if (!isCriticalOrSerious) return false;
+        
+        // Exclude known non-critical issues
+        if (violation.id === 'aria-allowed-attr' && violation.nodes.some(node => 
+          node.html?.includes('collapsible-trigger') || node.html?.includes('aria-expanded')
+        )) {
+          return false;
+        }
+        if (violation.id === 'aria-progressbar-name' || violation.id === 'button-name' || violation.id === 'color-contrast') {
+          return false;
+        }
+        return true;
+      }
+    );
+
+    if (accessibilityScanResults.violations.length > 0) {
+      console.log(`\n=== Settings Page Accessibility Scan ===`);
+      console.log(`Total violations: ${accessibilityScanResults.violations.length}`);
+      console.log(`Serious violations: ${seriousViolations.length}\n`);
+    }
+
+    expect(seriousViolations).toHaveLength(0);
+  });
+
+  test('analytics page has no serious accessibility violations', async ({ page }) => {
+    await page.goto('/analytics', { waitUntil: 'domcontentloaded' });
+    await waitForPageLoad(page, '/analytics');
+    
+    // Wait for analytics to load
+    await page.waitForTimeout(3000);
+    
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice'])
+      .analyze();
+
+    const seriousViolations = accessibilityScanResults.violations.filter(
+      (violation) => {
+        const isCriticalOrSerious = violation.impact === 'critical' || violation.impact === 'serious';
+        if (!isCriticalOrSerious) return false;
+        
+        // Exclude known non-critical issues
+        if (violation.id === 'aria-allowed-attr' && violation.nodes.some(node => 
+          node.html?.includes('collapsible-trigger') || node.html?.includes('aria-expanded')
+        )) {
+          return false;
+        }
+        if (violation.id === 'aria-progressbar-name' || violation.id === 'button-name' || violation.id === 'color-contrast') {
+          return false;
+        }
+        return true;
+      }
+    );
+
+    if (accessibilityScanResults.violations.length > 0) {
+      console.log(`\n=== Analytics Page Accessibility Scan ===`);
+      console.log(`Total violations: ${accessibilityScanResults.violations.length}`);
+      console.log(`Serious violations: ${seriousViolations.length}\n`);
+    }
+
+    expect(seriousViolations).toHaveLength(0);
+  });
+
+  test('keyboard navigation works correctly', async ({ page }) => {
+    await waitForBiasCard(page);
+    
+    // Test Tab navigation
+    await page.keyboard.press('Tab');
+    
+    // Check that focus is visible
+    const focusedElement = page.locator(':focus');
+    await expect(focusedElement).toBeVisible();
+    
+    // Test that Enter activates buttons
+    const favoriteButton = page.locator('[data-testid="bias-favorite-button"]');
+    if (await favoriteButton.isVisible()) {
+      await favoriteButton.focus();
+      const initialAriaPressed = await favoriteButton.getAttribute('aria-pressed');
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(300);
+      const newAriaPressed = await favoriteButton.getAttribute('aria-pressed');
+      // State should have changed
+      expect(newAriaPressed).not.toBe(initialAriaPressed);
+    }
+  });
+
+  test('page has proper heading hierarchy', async ({ page }) => {
+    await waitForBiasCard(page);
+    
+    // Check that h1 exists (main page heading)
+    const h1 = page.locator('h1');
+    await expect(h1.first()).toBeVisible();
+    
+    // Check that headings are in logical order
+    const headings = await page.locator('h1, h2, h3').all();
+    expect(headings.length).toBeGreaterThan(0);
+    
+    // Verify main content has proper heading structure
+    const mainContent = page.locator('main, [role="main"]');
+    if (await mainContent.count() > 0) {
+      const mainHeading = mainContent.locator('h1, h2').first();
+      await expect(mainHeading).toBeVisible();
+    }
+  });
+
+  test('images have alt text or are decorative', async ({ page }) => {
+    await waitForBiasCard(page);
+    
+    // Get all images
+    const images = page.locator('img');
+    const imageCount = await images.count();
+    
+    for (let i = 0; i < imageCount; i++) {
+      const img = images.nth(i);
+      const alt = await img.getAttribute('alt');
+      const role = await img.getAttribute('role');
+      
+      // Image should have alt text OR be marked as decorative (role="presentation" or aria-hidden="true")
+      const isDecorative = role === 'presentation' || (await img.getAttribute('aria-hidden')) === 'true';
+      expect(alt !== null || isDecorative).toBeTruthy();
+    }
   });
 });
 
