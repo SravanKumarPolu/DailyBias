@@ -13,7 +13,7 @@ import { BiasProgressIndicator } from "@/components/bias-progress-indicator"
 import { DailyProgressWidget } from "@/components/daily-progress-widget"
 import { useApp } from "@/contexts/app-context"
 import { useDailyBias } from "@/hooks/use-daily-bias"
-import { getTodayDateString, getCoreBiases } from "@/lib/daily-selector"
+import { getTodayDateString } from "@/lib/daily-selector"
 import { scheduleDailyReminder, isNativeApp } from "@/lib/native-features"
 import { logger } from "@/lib/logger"
 
@@ -65,9 +65,10 @@ export default function HomePage() {
     }
   }, [router])
 
-  // Get bias to display (use dailyBias from hook or fallback to core biases)
-  // Compute this early so it can be used in effects and handlers
-  const biasToShow = dailyBias || (allBiases.length > 0 ? allBiases[0] : getCoreBiases()[0] || null)
+  // Get bias to display - only use dailyBias from hook to prevent hydration mismatches
+  // During SSR, dailyBias will be null, so biasToShow will be null and loading state will show
+  // The bias will be calculated on the client after hydration
+  const biasToShow = dailyBias
 
   // Load favorite and mastered states when bias changes
   // Use biasToShow instead of dailyBias to work with fallback biases
@@ -191,7 +192,7 @@ export default function HomePage() {
             </div>
           </div>
         ) : biasToShow ? (
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-6 sm:space-y-8" suppressHydrationWarning>
             <TiltCard className="mb-0" tiltStrength={8} glareEnabled>
               <DynamicBiasCard
                 bias={biasToShow}

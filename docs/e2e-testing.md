@@ -62,7 +62,7 @@ To prevent flaky tests caused by the daily bias changing during test execution, 
 import { freezeDate } from './helpers';
 
 test.beforeEach(async ({ page }) => {
-  await freezeDate(page, '2024-12-04'); // Freeze to specific date
+  await freezeDate(page, '2025-12-05'); // Freeze to specific date
   await page.goto('/');
 });
 ```
@@ -110,7 +110,7 @@ import { freezeDate, waitForBiasCard } from './helpers';
 
 test.describe('My Feature Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await freezeDate(page, '2024-12-04');
+    await freezeDate(page, '2025-12-05');
     await page.goto('/');
   });
 

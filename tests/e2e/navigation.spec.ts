@@ -3,7 +3,7 @@ import { setupTestPage, waitForNavigation, waitForPageLoad } from './helpers';
 
 test.describe('Navigation Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     await page.goto('/');
     await waitForPageLoad(page, '/');
     await waitForNavigation(page);
@@ -11,12 +11,12 @@ test.describe('Navigation Tests', () => {
 
   test('navigates to all pages via bottom navigation', async ({ page }) => {
     const navItems = [
-      { testId: 'nav-daily', href: '/', expectedHeading: /Bias Daily|Daily/i, selector: 'header h1, main h1, h1' },
-      { testId: 'nav-all', href: '/all', expectedHeading: /All Biases|All/i, selector: 'main h1, [id="main-content"] h1, h1' },
-      { testId: 'nav-favorites', href: '/favorites', expectedHeading: /Favorites/i, selector: 'main h1, [id="main-content"] h1, h1' },
-      { testId: 'nav-add', href: '/add', expectedHeading: /Your Biases|Add|Create/i, selector: 'main h1, [id="main-content"] h1, h1' },
-      { testId: 'nav-analytics', href: '/analytics', expectedHeading: /Content Analytics|Analytics|Statistics|Progress/i, selector: 'main h1, [id="main-content"] h1, h1' },
-      { testId: 'nav-settings', href: '/settings', expectedHeading: /Settings/i, selector: 'main h1, [id="main-content"] h1, h1' },
+      { testId: 'nav-daily', href: '/', expectedHeading: /Bias Daily|Daily/i, selector: 'header h1' },
+      { testId: 'nav-all', href: '/all', expectedHeading: /All Biases|All/i, selector: '[id="main-content"] h1, main h1' },
+      { testId: 'nav-favorites', href: '/favorites', expectedHeading: /Favorites/i, selector: '[id="main-content"] h1, main h1' },
+      { testId: 'nav-add', href: '/add', expectedHeading: /Your Biases|Add|Create/i, selector: '[id="main-content"] h1, main h1' },
+      { testId: 'nav-analytics', href: '/analytics', expectedHeading: /Content Analytics|Analytics|Statistics|Progress/i, selector: 'main h1' },
+      { testId: 'nav-settings', href: '/settings', expectedHeading: /Settings/i, selector: '[id="main-content"] h1, main h1' },
     ];
 
     for (const item of navItems) {
@@ -56,10 +56,11 @@ test.describe('Navigation Tests', () => {
           
           // Verify page-specific content appears using the selector for this page
           // This is the most reliable way to confirm the page loaded correctly
-          const headingSelector = item.selector || 'main h1, [id="main-content"] h1, h1';
+          // Use the specific selector that excludes the header
+          const headingSelector = item.selector || '[id="main-content"] h1, main h1';
           const heading = page.locator(headingSelector).first();
           await expect(heading).toBeVisible({ timeout: 15000 });
-          await expect(heading).toContainText(item.expectedHeading, { timeout: 5000 });
+          await expect(heading).toContainText(item.expectedHeading, { timeout: 10000 });
         }
       });
     }

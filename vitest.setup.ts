@@ -63,10 +63,12 @@ declare global {
 }
 
 // Mock getCoreBiases to use test biases if available
+// Also mock getTodayDateString to ensure deterministic date selection
 vi.mock('@/lib/daily-selector', async () => {
   const actual = await vi.importActual('@/lib/daily-selector')
   return {
     ...actual,
+    getTodayDateString: vi.fn(() => FIXED_DATE_STRING_ISO),
     getCoreBiases: () => {
       // Use test biases if set, otherwise use actual core biases
       if (globalThis.__TEST_BIASES__ && globalThis.__TEST_BIASES__.length > 0) {

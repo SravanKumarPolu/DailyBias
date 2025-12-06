@@ -42,7 +42,7 @@
     "e2e:visual": "playwright test tests/e2e/visual-regression.spec.ts",
     "e2e:visual:update": "playwright test tests/e2e/visual-regression.spec.ts --update-snapshots",
     "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
-    "test:all": "pnpm test:run && pnpm test:integration && pnpm e2e --project=chromium --project=mobile-chrome",
+    "test:all": "pnpm test:run && pnpm test:integration && pnpm e2e --project=chromium --project=mobile-chrome --project=mobile-safari",
     "test:lighthouse": "node scripts/lighthouse-test.js",
     "test:load": "k6 run tests/load/load-test.js",
     "test:security": "bash scripts/security-check.sh"

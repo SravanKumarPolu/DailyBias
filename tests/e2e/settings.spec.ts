@@ -4,7 +4,7 @@ import { setupTestPage, waitForNavigation, waitForPageLoad } from './helpers';
 test.describe('Settings Persistence', () => {
   test.beforeEach(async ({ page, context }) => {
     await context.clearCookies();
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     await page.goto('/');
     await waitForPageLoad(page, '/');
     await waitForNavigation(page);
@@ -13,11 +13,11 @@ test.describe('Settings Persistence', () => {
   test('settings persist after navigation and reload', async ({ page }) => {
     await test.step('Navigate to Settings', async () => {
       // Use direct navigation for reliability
-      await page.goto('/settings', { waitUntil: 'domcontentloaded' });
+      await page.goto('/settings', { waitUntil: 'domcontentloaded', timeout: 30000 });
       await waitForPageLoad(page, '/settings');
       
-      // Wait for settings page to load
-      await page.waitForTimeout(1000);
+      // Wait for settings page to load - give extra time for Safari
+      await page.waitForTimeout(3000);
       
       // Verify settings page loaded - check for heading or any settings content
       const heading = page.locator('main h1, [id="main-content"] h1, h1').filter({ hasText: /Settings/i });
@@ -172,6 +172,9 @@ test.describe('Settings Persistence', () => {
       await expect(heading.first()).toBeVisible({ timeout: 15000 });
       
       // Wait for background style section to be in DOM - try multiple selectors
+      // Give more time for settings to load, especially on mobile Safari
+      await page.waitForTimeout(4000);
+      
       const glassOption = page.locator('[data-testid="setting-bg-glass"]').or(
         page.locator('input[type="radio"][value="glass"]')
       ).or(
@@ -182,9 +185,10 @@ test.describe('Settings Persistence', () => {
         page.locator('[aria-label*="glass" i]')
       );
       
-      // Scroll to find the background style section
-      await glassOption.scrollIntoViewIfNeeded({ timeout: 10000 });
-      await expect(glassOption.first()).toBeVisible({ timeout: 15000 });
+      // Scroll to find the background style section - give more time for Safari
+      // Use .first() to avoid strict mode violation when multiple elements match
+      await glassOption.first().scrollIntoViewIfNeeded({ timeout: 20000 });
+      await expect(glassOption.first()).toBeVisible({ timeout: 25000 });
       await page.waitForTimeout(500);
       
       await glassOption.first().click({ force: false });

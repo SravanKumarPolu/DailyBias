@@ -77,6 +77,7 @@ export default defineConfig({
         timeout: 180 * 1000, // Increased to 3 minutes for first-time compilation
         stdout: process.env.CI ? 'ignore' : 'pipe', // Show output in local dev
         stderr: process.env.CI ? 'ignore' : 'pipe',
+        // Wait for the server to be ready - check for successful response
         // Next.js dev server can take time on first run to compile
         // If it hangs, try: SKIP_WEBSERVER=1 pnpm e2e (after starting server manually)
       },

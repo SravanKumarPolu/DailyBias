@@ -54,7 +54,11 @@ export default function SettingsPage() {
 
 
   // Helper to fetch and filter voices consistently
-  const fetchAndFilterVoices = () => {
+  const fetchAndFilterVoices = async () => {
+    // Ensure voices are loaded before fetching (fixes iOS/Safari loading issue)
+    if (speechSupported) {
+      await ensureVoicesLoaded()
+    }
     const voices = window.speechSynthesis.getVoices()
     console.log("[Settings] Loading voices:", voices.length, "available")
 
@@ -194,11 +198,18 @@ export default function SettingsPage() {
   // Load available voices
   useEffect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      fetchAndFilterVoices()
-      window.speechSynthesis.onvoiceschanged = fetchAndFilterVoices
+      fetchAndFilterVoices().catch((error) => {
+        console.error("[Settings] Error loading voices:", error)
+      })
+      window.speechSynthesis.onvoiceschanged = () => {
+        fetchAndFilterVoices().catch((error) => {
+          console.error("[Settings] Error loading voices on change:", error)
+        })
+      }
     }
     // saveSetting is stable from context, settings.voiceName triggers re-fetch
-  }, [settings.voiceName, saveSetting])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.voiceName, saveSetting, speechSupported, ensureVoicesLoaded])
 
   const handleRefreshVoices = async () => {
     try {
@@ -207,11 +218,20 @@ export default function SettingsPage() {
         await ensureVoicesLoaded()
       }
       
-      fetchAndFilterVoices()
+      await fetchAndFilterVoices()
       haptics.selection()
-    } catch {
-      // no-op; we still attempt to refresh list
-      fetchAndFilterVoices()
+    } catch (error) {
+      console.error("[Settings] Error refreshing voices:", error)
+      // Still attempt to refresh list even if ensureVoicesLoaded fails
+      try {
+        await fetchAndFilterVoices()
+      } catch {
+        // Final fallback - just try to get voices directly
+        const voices = window.speechSynthesis.getVoices()
+        if (voices.length > 0) {
+          setAvailableVoices(voices.filter(v => v.lang.startsWith("en")))
+        }
+      }
     }
   }
 
@@ -493,10 +513,15 @@ export default function SettingsPage() {
       if (speechSupported) {
         await ensureVoicesLoaded()
       }
-      fetchAndFilterVoices()
+      await fetchAndFilterVoices()
       setVoiceSearch("")
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error("[Settings] Error opening voice picker:", error)
+      // Still try to fetch voices directly as fallback
+      const voices = window.speechSynthesis.getVoices()
+      if (voices.length > 0) {
+        setAvailableVoices(voices.filter(v => v.lang.startsWith("en")))
+      }
     }
   }
 
@@ -514,7 +539,7 @@ export default function SettingsPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={456} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
+      <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10" aria-label="Settings">
         <div className="space-y-6 sm:space-y-8">
           {/* Header */}
           <div className="space-y-1">
@@ -662,15 +687,18 @@ export default function SettingsPage() {
                       <div className="border-b p-4">
                         <h4 className="font-medium">Select a voice</h4>
                         <div className="relative mt-3">
+                          <label htmlFor="voice-search" className="sr-only">Search voices</label>
                           <input
+                            id="voice-search"
                             type="text"
                             inputMode="search"
                             placeholder="Search voices by name or language"
                             value={voiceSearch}
                             onChange={(e) => setVoiceSearch(e.target.value)}
                             className="bg-secondary text-foreground placeholder:text-muted-foreground w-full rounded-md border px-9 py-2"
+                            aria-label="Search voices by name or language"
                           />
-                          <Search className="text-muted-foreground pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2" />
+                          <Search className="text-muted-foreground pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2" aria-hidden="true" />
                         </div>
                       </div>
                       <div className="max-h-64 overflow-auto">
@@ -685,6 +713,8 @@ export default function SettingsPage() {
                                 setVoicePopoverOpen(false)
                                 haptics.selection()
                               }}
+                              aria-label={`Select voice ${voice.name}${selected ? ' (currently selected)' : ''}`}
+                              aria-pressed={selected}
                             >
                               <div className="min-w-0 grow">
                                 <div className="truncate font-medium">{voice.name}</div>
@@ -707,7 +737,7 @@ export default function SettingsPage() {
                           </div>
                         )}
                         <div className="border-t p-3">
-                          <Button size="sm" variant="ghost" className="w-full" onClick={handleRefreshVoices}>
+                          <Button size="sm" variant="ghost" className="w-full" onClick={handleRefreshVoices} aria-label="Refresh available voices list">
                             Refresh voices
                           </Button>
                         </div>
@@ -932,6 +962,7 @@ export default function SettingsPage() {
                   value={settings.timezone || currentTimezoneInfo.timezone}
                   onChange={(e) => handleTimezoneChange(e.target.value)}
                   className="bg-secondary border-border text-foreground focus:ring-ring w-full cursor-pointer rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                  aria-label="Select timezone"
                 >
                   {availableTimezones.map((tz) => (
                     <option key={tz.value} value={tz.value}>

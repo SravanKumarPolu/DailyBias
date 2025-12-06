@@ -4,7 +4,7 @@ import { setupTestPage, waitForPageLoad } from './helpers';
 test.describe('Add Page Tests', () => {
   test.beforeEach(async ({ page, context }) => {
     await context.clearCookies();
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     await page.goto('/add', { waitUntil: 'domcontentloaded' });
     await waitForPageLoad(page, '/add');
   });

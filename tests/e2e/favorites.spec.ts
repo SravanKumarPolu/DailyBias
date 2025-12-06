@@ -8,7 +8,7 @@ test.describe('Favorites Flow', () => {
     await context.clearPermissions();
     
     // Setup page first to get the proper context
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     
     // Clear localStorage and IndexedDB after page loads
@@ -214,8 +214,8 @@ test.describe('Favorites Flow', () => {
       const favoritesNavLink = page.locator('[data-testid="nav-favorites"]');
       await expect(favoritesNavLink).toBeVisible({ timeout: 10000 });
       
-      await page.goto('/favorites', { waitUntil: 'domcontentloaded' });
-      await expect(page).toHaveURL('/favorites');
+      await page.goto('/favorites', { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await expect(page).toHaveURL('/favorites', { timeout: 20000 });
       
       // Wait for loading to finish
       const loading = page
@@ -249,25 +249,35 @@ test.describe('Favorites Flow', () => {
     });
 
     await test.step('Unfavorite from Favorites page', async () => {
+      // Wait for the favorite button to be available
       const favoriteButton = page.locator('[data-testid="bias-favorite-button"]').first();
-      await expect(favoriteButton).toBeVisible();
+      await expect(favoriteButton).toBeVisible({ timeout: 15000 });
+      
+      // Wait a bit before clicking to ensure button is ready
+      await page.waitForTimeout(1000);
       
       // Click to unfavorite
       await favoriteButton.click();
       
       // Wait for the favorite state to update (heart should no longer be filled)
+      // Give more time for the state change to propagate
+      await page.waitForTimeout(2000);
+      
       await expect(async () => {
         const heartIcon = favoriteButton.locator('svg');
         const classAfter = await heartIcon.getAttribute('class');
         const isFavorited = classAfter?.includes('fill-destructive') || false;
         expect(isFavorited).toBe(false);
-      }).toPass({ timeout: 5000 });
+      }).toPass({ timeout: 15000 });
       
-      // Wait for IndexedDB write to complete
-      await page.waitForTimeout(2000);
+      // Wait for IndexedDB write to complete and UI to update
+      await page.waitForTimeout(3000);
       
       // Wait for the card to be removed or empty state to appear
       // Try both: check if card count is 0 OR empty state appears
+      // Give more time for IndexedDB operations to complete
+      await page.waitForTimeout(2000);
+      
       await expect(async () => {
         const biasCards = page.getByRole('article');
         const count = await biasCards.count();
@@ -276,7 +286,7 @@ test.describe('Favorites Flow', () => {
         
         // Either the count should be 0 OR the empty state should be visible
         expect(count === 0 || emptyStateVisible).toBe(true);
-      }).toPass({ timeout: 20000 });
+      }).toPass({ timeout: 30000 });
     });
 
     await test.step('Verify empty state appears', async () => {

@@ -110,10 +110,10 @@ describe('AnalyticsPage', () => {
     render(<AnalyticsPage />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /overview/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /learning progress/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /content quality/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /reviews/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /overview/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /learning progress/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /content quality/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /reviews/i })).toBeInTheDocument()
     }, { timeout: 3000 })
   })
 
@@ -131,7 +131,9 @@ describe('AnalyticsPage', () => {
     }, { timeout: 3000 })
 
     // Page should still render tabs even when loading
-    expect(screen.getByRole('button', { name: /overview/i })).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('tab', { name: /overview/i })).toBeInTheDocument()
+    }, { timeout: 3000 })
   })
 
   it('should render content when data is loaded', async () => {

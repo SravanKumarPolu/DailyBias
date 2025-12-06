@@ -146,8 +146,14 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-            {isOpen ? <X className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-green-600 hover:text-green-800"
+            aria-label={isOpen ? "Close feedback form" : "Open feedback form"}
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <MessageSquare className="h-4 w-4" aria-hidden="true" />}
           </Button>
         </div>
       </CardHeader>
@@ -175,6 +181,8 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                         size="sm"
                         onClick={() => setFeedbackType(type.id as FeedbackData["type"])}
                         className="justify-start text-left h-auto p-3"
+                        aria-label={`Select ${type.label} feedback type: ${type.description}`}
+                        aria-pressed={feedbackType === type.id}
                       >
                         <div>
                           <div className="font-medium">{type.label}</div>
@@ -201,8 +209,10 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                         size="sm"
                         onClick={() => setRating("positive")}
                         className="flex items-center gap-2"
+                        aria-label="Rate content as good"
+                        aria-pressed={rating === "positive"}
                       >
-                        <ThumbsUp className="h-4 w-4" />
+                        <ThumbsUp className="h-4 w-4" aria-hidden="true" />
                         Good
                       </Button>
                       <Button
@@ -210,8 +220,10 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                         size="sm"
                         onClick={() => setRating("negative")}
                         className="flex items-center gap-2"
+                        aria-label="Rate content as needing improvement"
+                        aria-pressed={rating === "negative"}
                       >
-                        <ThumbsDown className="h-4 w-4" />
+                        <ThumbsDown className="h-4 w-4" aria-hidden="true" />
                         Needs Improvement
                       </Button>
                     </div>
@@ -248,15 +260,16 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                       onClick={handleSubmit}
                       disabled={isSubmitting}
                       className="flex-1"
+                      aria-label={isSubmitting ? "Submitting feedback" : "Submit feedback"}
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" aria-hidden="true" />
                           Submitting...
                         </>
                       ) : (
                         <>
-                          <Send className="h-4 w-4 mr-2" />
+                          <Send className="h-4 w-4 mr-2" aria-hidden="true" />
                           Submit Feedback
                         </>
                       )}
@@ -265,6 +278,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                       variant="outline"
                       onClick={handleClose}
                       disabled={isSubmitting}
+                      aria-label="Cancel feedback submission"
                     >
                       Cancel
                     </Button>

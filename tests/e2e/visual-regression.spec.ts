@@ -3,7 +3,7 @@ import { setupTestPage, waitForBiasCard, waitForPageLoad } from './helpers';
 
 test.describe('Visual Regression Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
   });
 
   test('daily page visual snapshot', async ({ page }) => {

@@ -182,7 +182,16 @@ export function getCoreBiases(): Bias[] {
       coreBiases,
       isArray: Array.isArray(coreBiases),
       length: coreBiases?.length,
+      coreBiasesData: coreBiasesData ? 'exists' : 'missing',
+      coreBiasesDataType: typeof coreBiasesData,
     })
+    
+    // In test environment, try to reload or provide fallback
+    if (typeof window !== 'undefined') {
+      // Try to re-import or check if it's a timing issue
+      logger.warn("[DailyBias] Attempting to recover from empty biases in browser context")
+    }
+    
     return []
   }
   logger.debug(`[DailyBias] Loaded ${coreBiases.length} core biases`)

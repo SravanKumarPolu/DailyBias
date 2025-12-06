@@ -179,3 +179,4 @@ pnpm ios:open
 **Status**: Everything else is ready, just need Xcode! 🚀
 
 
+

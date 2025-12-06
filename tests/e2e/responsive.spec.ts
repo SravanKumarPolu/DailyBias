@@ -3,7 +3,7 @@ import { setupTestPage, waitForBiasCard, waitForNavigation, waitForPageLoad } fr
 
 test.describe('Responsive Design Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
   });
 
   test('mobile viewport - bottom nav visible and tappable', async ({ page }) => {

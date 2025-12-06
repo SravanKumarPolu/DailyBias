@@ -1,218 +1,206 @@
 # DebiasDaily Testing Strategy
 
-This document maps all 20 testing types to DebiasDaily test coverage, tools, and execution strategy.
-
 ## Overview
 
-DebiasDaily is a Next.js web app with Capacitor mobile support. Testing covers:
-- **Routes**: Daily (/), All (/all), Favorites (/favorites), Add (/add), Analytics (/analytics), Settings (/settings)
-- **Data Sources**: Local JSON (`data/biases.json`), IndexedDB (favorites, progress, settings, user biases)
-- **State Management**: React Context API (`app-context.tsx`)
-- **Theming**: next-themes (light/dark/system)
-- **i18n**: English only (localization tests prepare for future expansion)
-- **Build**: Next.js 15 (static export), TypeScript, Tailwind CSS, Capacitor 7
+This document maps all 20 production-grade testing types to DebiasDaily's test coverage, tools, test locations, and CI/local execution strategy.
 
----
+## Testing Types Coverage
 
-## Testing Types & Coverage
-
-### 1. Unit Tests
-**What to Test:**
-- Individual components (BiasCard, Navigation, etc.)
-- Utility functions (daily-selector, search-utils, validation, etc.)
-- Hooks (use-debounce, use-favorites, use-settings, etc.)
-- Date/time logic (timezone handling, daily bias selection)
-
-**Tools:** Vitest + React Testing Library + @testing-library/jest-dom
-
-**Location:** `__tests__/components/`, `__tests__/hooks/`, `__tests__/lib/`
-
-**Execution:**
-- Local: `pnpm test:unit`
-- CI: Runs in parallel, < 30s target
-
-**Key Tests:**
-- Component rendering without errors
-- Hook state management
-- Utility function edge cases
-- Date-dependent logic with mocked dates
-
----
-
-### 2. Integration Tests
-**What to Test:**
-- Multi-component interactions
-- Context provider integration
-- IndexedDB operations (favorites, progress, settings persistence)
-- Navigation flows
-- Settings persistence across sessions
-- Daily bias selection with progress tracking
-- Analytics computation
-
-**Tools:** Vitest + React Testing Library + fake-indexeddb
-
-**Location:** `__tests__/integration/`
-
-**Execution:**
-- Local: `pnpm test:integration`
-- CI: Runs sequentially (to avoid IndexedDB conflicts), < 2min target
-
-**Key Tests:**
-- Daily page → Favorite → Persist → Reload
-- Settings toggle → Persist → Reload
-- Navigation between pages
-- Analytics page with seeded data
-- No flicker on Daily page first load
-
----
-
-### 3. E2E Tests
-**What to Test:**
-- Complete user flows across pages
-- Navigation bottom tabs
-- Favorite/unfavorite persistence
-- Add custom bias flow
-- Settings toggles and persistence
-- Analytics page rendering
-- Daily page no-flicker guarantee
-
-**Tools:** Playwright
-
-**Location:** `tests/e2e/`
-
-**Execution:**
-- Local: `pnpm e2e`
-- CI: Runs on 3 browsers (Chromium, Firefox, WebKit), < 5min target
-
-**Key Tests:**
-- `smoke.spec.ts` - Basic app loads and navigation works
-- `navigation.spec.ts` - All bottom tabs navigate correctly
-- `favorites.spec.ts` - Favorite/unfavorite works and persists
-- `settings.spec.ts` - Settings toggles work and persist
-- `flicker.spec.ts` - Daily page doesn't flicker on first load
-- `responsive.spec.ts` - Mobile/tablet/desktop layouts
-- `accessibility.spec.ts` - Axe checks on all pages
-
----
-
-### 4. Smoke Tests
-**What to Test:**
-- App builds successfully
-- Main pages load without errors
-- Critical paths work (Daily page, Navigation)
-
-**Tools:** Vitest (integration) + Playwright
-
-**Location:** `__tests__/smoke*.test.tsx`, `tests/e2e/smoke.spec.ts`
-
-**Execution:**
-- Local: `pnpm test:run --smoke` or `pnpm e2e --grep smoke`
-- CI: Runs first in pipeline, < 1min target
-
-**Key Tests:**
-- App builds without TypeScript/lint errors
-- Daily page renders
-- Navigation renders and links work
-- No console errors on load
-
----
-
-### 5. Sanity Tests
-**What to Test:**
-- Core functionality works after changes
-- No regressions in critical flows
-- Data persistence intact
-
-**Tools:** Vitest (integration) + Playwright
-
-**Location:** `__tests__/sanity-comprehensive.test.tsx`, `tests/e2e/`
-
-**Execution:**
-- Local: `pnpm test:run --sanity`
-- CI: Runs after smoke, < 2min target
-
-**Key Tests:**
-- Daily bias displays correctly
-- Favorites work
-- Settings persist
-- Navigation works
-- Analytics computes correctly
-
----
-
-### 6. Regression Tests
-**What to Test:**
-- Previously fixed bugs don't reappear
-- Critical flows remain stable
-- Performance doesn't degrade
-
-**Tools:** Vitest (integration) + Playwright
-
-**Location:** `__tests__/regression/`, `tests/e2e/`
-
-**Execution:**
-- Local: `pnpm test:run --regression`
-- CI: Runs in full test suite, < 3min target
-
-**Key Tests:**
-- No flicker on Daily page (critical fix)
-- Navigation state persists
-- Settings don't reset unexpectedly
-- Analytics calculations remain accurate
-
----
-
-### 7. UI Tests
-**What to Test:**
-- Component interactions (clicks, inputs, toggles)
-- Form validation
-- Error states
-- Loading states
-- Empty states
+### 1. Unit Testing
+**What to test:**
+- Individual components (BiasCard, Navigation, DailyHeader, etc.)
+- Utility functions (daily-selector, timezone-utils, analytics-utils)
+- Hooks (use-biases, use-favorites, use-settings, use-progress)
+- Business logic (bias selection, progress tracking, favorites management)
 
 **Tools:** Vitest + React Testing Library + @testing-library/user-event
 
-**Location:** `__tests__/ui/`, `__tests__/components/`
+**Test Location:** `__tests__/components/`, `__tests__/hooks/`, `__tests__/lib/`
 
-**Execution:**
-- Local: `pnpm test:ui` (custom script) or `pnpm test`
-- CI: Runs with unit tests, < 1min target
+**CI vs Local:**
+- **CI:** Runs on every push/PR (`pnpm test:run`)
+- **Local:** `pnpm test` (watch mode) or `pnpm test:unit`
 
-**Key Tests:**
-- Button clicks trigger actions
-- Form inputs validate correctly
-- Toggles change state
-- Modals open/close
-- Dropdowns work
+**Coverage Target:** >80% for utilities, >70% for components
 
 ---
 
-### 8. Visual Regression Tests
-**What to Test:**
-- UI appearance doesn't change unexpectedly
-- Layout consistency across pages
-- Component visual states
+### 2. Integration Testing
+**What to test:**
+- Component interactions (favorite toggle + persistence)
+- Context providers (AppContext with multiple hooks)
+- Data flow (biases → favorites → progress)
+- Settings persistence across sessions
+- Navigation flows between pages
 
-**Tools:** Playwright screenshots + Percy/Chromatic (optional)
+**Tools:** Vitest + React Testing Library + fake-indexeddb
 
-**Location:** `tests/e2e/visual-regression.spec.ts`
+**Test Location:** `__tests__/integration/`
 
-**Execution:**
-- Local: `pnpm e2e:visual` (custom script)
-- CI: Runs on Chromium only, compares screenshots, < 2min target
+**CI vs Local:**
+- **CI:** Runs with unit tests (`pnpm test:run`)
+- **Local:** `pnpm test:integration`
 
 **Key Tests:**
-- Daily page screenshot matches baseline
-- All pages screenshots match baselines
-- Settings page in light/dark mode
-- Mobile/desktop viewport screenshots
-
-**Baseline Location:** `tests/e2e/screenshots/baseline/`
+- Daily page → favorite → favorites page
+- Settings changes persist
+- Navigation between all pages
+- No flicker on daily page load
 
 ---
 
-### 9. Accessibility Tests
-**What to Test:**
+### 3. End-to-End (E2E) Testing
+**What to test:**
+- Complete user flows:
+  - Daily page loads with correct bias (no flicker)
+  - Favorite/unfavorite works and persists
+  - Navigation tabs work (Daily/All/Favorites/Add/Analytics/Settings)
+  - Add page: creating custom bias works
+  - Settings toggles work and persist
+  - Analytics page renders with correct values
+
+**Tools:** Playwright
+
+**Test Location:** `tests/e2e/`
+
+**CI vs Local:**
+- **CI:** Runs on 3 browsers (Chromium, Firefox, WebKit) + mobile emulation
+- **Local:** `pnpm e2e` (Chromium only) or `pnpm e2e:ui` (interactive)
+
+**Key Test Files:**
+- `smoke.spec.ts` - Basic app functionality
+- `navigation.spec.ts` - Navigation flows
+- `favorites.spec.ts` - Favorite functionality
+- `settings.spec.ts` - Settings persistence
+- `analytics.spec.ts` - Analytics page
+- `add-page.spec.ts` - Add custom bias
+- `flicker.spec.ts` - No flicker on load
+
+---
+
+### 4. Smoke Testing
+**What to test:**
+- Critical paths work after deployment
+- App loads without errors
+- Daily bias displays
+- Navigation renders
+- No console errors
+
+**Tools:** Playwright (E2E) + Vitest (unit smoke)
+
+**Test Location:** 
+- E2E: `tests/e2e/smoke.spec.ts`
+- Unit: `__tests__/smoke.test.tsx`, `__tests__/smoke-comprehensive.test.tsx`
+
+**CI vs Local:**
+- **CI:** Runs first in E2E pipeline (fastest tests)
+- **Local:** `pnpm e2e tests/e2e/smoke.spec.ts`
+
+**Execution Time:** <30 seconds
+
+---
+
+### 5. Sanity Testing
+**What to test:**
+- Core features work after changes
+- Daily page → All page → Favorites page
+- Settings save/load
+- Favorite toggle works
+
+**Tools:** Playwright + Vitest
+
+**Test Location:** 
+- E2E: `tests/e2e/smoke.spec.ts` (subset)
+- Unit: `__tests__/sanity-comprehensive.test.tsx`
+
+**CI vs Local:**
+- **CI:** Runs after smoke tests
+- **Local:** `pnpm test:run __tests__/sanity-comprehensive.test.tsx`
+
+**Execution Time:** <2 minutes
+
+---
+
+### 6. Regression Testing
+**What to test:**
+- Previously fixed bugs don't reappear
+- Critical flows still work after changes
+- No performance degradation
+- No UI regressions
+
+**Tools:** Playwright (E2E) + Visual Regression
+
+**Test Location:** 
+- `__tests__/regression/critical-flows.regression.test.tsx`
+- `tests/e2e/visual-regression.spec.ts`
+
+**CI vs Local:**
+- **CI:** Runs full E2E suite
+- **Local:** `pnpm e2e` or `pnpm test:run __tests__/regression/`
+
+**Key Areas:**
+- Daily page flicker fix
+- Favorite persistence
+- Settings persistence
+- Navigation state
+
+---
+
+### 7. UI Testing
+**What to test:**
+- Component rendering
+- User interactions (clicks, inputs, toggles)
+- Form validation
+- Error states
+- Loading states
+
+**Tools:** Vitest + React Testing Library
+
+**Test Location:** `__tests__/ui/`, `__tests__/components/`
+
+**CI vs Local:**
+- **CI:** Runs with unit tests
+- **Local:** `pnpm test:watch` (filter by component)
+
+**Key Tests:**
+- BiasCard renders correctly
+- Navigation buttons work
+- Settings toggles update UI
+- Form validation messages
+
+---
+
+### 8. Visual Regression Testing
+**What to test:**
+- UI appearance matches baseline
+- No unintended visual changes
+- Responsive layouts correct
+- Dark mode renders correctly
+
+**Tools:** Playwright screenshots + `toHaveScreenshot()`
+
+**Test Location:** `tests/e2e/visual-regression.spec.ts`
+
+**CI vs Local:**
+- **CI:** Runs on all browsers, uploads snapshots as artifacts
+- **Local:** `pnpm e2e:visual` or `pnpm e2e:visual:update` (update snapshots)
+
+**Snapshots:** `tests/e2e/visual-regression.spec.ts-snapshots/`
+
+**Coverage:**
+- Daily page (light/dark)
+- All page
+- Favorites page
+- Analytics page
+- Settings page (light/dark)
+- Navigation component
+- Bias card component
+- Mobile/tablet/desktop viewports
+
+---
+
+### 9. Accessibility (a11y) Testing
+**What to test:**
 - WCAG 2.1 AA compliance
 - Keyboard navigation
 - Screen reader compatibility
@@ -220,404 +208,433 @@ DebiasDaily is a Next.js web app with Capacitor mobile support. Testing covers:
 - Color contrast
 - Focus management
 
-**Tools:** Axe-core (@axe-core/playwright, @axe-core/react)
+**Tools:** 
+- `@axe-core/playwright` (E2E)
+- `jest-axe` (unit/integration)
 
-**Location:** `tests/e2e/accessibility.spec.ts`, `__tests__/a11y/` (unit-level)
+**Test Location:**
+- E2E: `tests/e2e/accessibility.spec.ts`
+- Unit: `__tests__/**/*.a11y.test.*`
 
-**Execution:**
-- Local: `pnpm e2e --grep accessibility` or `pnpm test:a11y`
-- CI: Runs on all pages, non-blocking warnings, < 2min target
+**CI vs Local:**
+- **CI:** Runs `pnpm test:a11y` (E2E) + `pnpm test:a11y:unit` (unit)
+- **Local:** Same commands
 
-**Key Tests:**
-- All pages pass Axe checks (no critical violations)
-- Navigation is keyboard accessible
-- Forms have proper labels
-- Focus indicators visible
-- ARIA live regions work
+**Key Checks:**
+- All pages have proper headings
+- Interactive elements keyboard accessible
+- Images have alt text
+- Forms have labels
+- Color contrast ratios meet WCAG AA
 
 ---
 
-### 10. Responsiveness Tests
-**What to Test:**
-- Layout works on mobile (320px+), tablet (768px+), desktop (1024px+)
-- Touch targets are adequate (44x44px minimum)
+### 10. Responsiveness Testing
+**What to test:**
+- Layout works on mobile (320px+)
+- Layout works on tablet (768px+)
+- Layout works on desktop (1024px+)
+- Navigation adapts to screen size
 - Text is readable at all sizes
-- Navigation works on all viewports
+- Touch targets are adequate (44x44px minimum)
 
 **Tools:** Playwright with viewport emulation
 
-**Location:** `tests/e2e/responsive.spec.ts`
+**Test Location:** `tests/e2e/responsive.spec.ts`
 
-**Execution:**
-- Local: `pnpm e2e --grep responsive`
-- CI: Runs on multiple viewports, < 3min target
+**CI vs Local:**
+- **CI:** Runs on multiple viewports (mobile, tablet, desktop)
+- **Local:** `pnpm e2e tests/e2e/responsive.spec.ts`
 
-**Key Tests:**
-- iPhone SE (375x667), iPad (768x1024), Desktop (1920x1080)
-- Navigation bottom bar visible on mobile
-- Cards stack correctly on mobile
-- Settings page usable on all sizes
+**Viewports Tested:**
+- Mobile: 375x667 (iPhone SE), 390x844 (iPhone 12)
+- Tablet: 768x1024 (iPad)
+- Desktop: 1280x720, 1920x1080
 
 ---
 
-### 11. Cross-Browser Tests
-**What to Test:**
-- App works in Chromium, Firefox, WebKit
+### 11. Cross-Browser Testing
+**What to test:**
+- App works in Chromium (Chrome/Edge)
+- App works in Firefox
+- App works in WebKit (Safari)
 - Feature parity across browsers
 - No browser-specific bugs
 
-**Tools:** Playwright (multi-browser)
+**Tools:** Playwright (Chromium, Firefox, WebKit)
 
-**Location:** `playwright.config.ts` (projects), `tests/e2e/`
+**Test Location:** All E2E tests run on all browsers
 
-**Execution:**
-- Local: `pnpm e2e` (runs all browsers)
-- CI: Runs on Chromium, Firefox, WebKit, < 5min target
+**CI vs Local:**
+- **CI:** Runs all E2E tests on 3 browsers (`chromium`, `firefox`, `webkit`)
+- **Local:** `pnpm e2e` (Chromium by default), `pnpm e2e --project=firefox` for specific browser
 
-**Key Tests:**
-- All E2E tests pass on all browsers
-- IndexedDB works (Chromium/WebKit)
-- CSS animations work
-- Touch events work (WebKit mobile)
-
----
-
-### 12. API Tests
-**What to Test:**
-- No external APIs currently (static app)
-- Future: Analytics API, feedback API (if added)
-- Mock API responses with MSW
-
-**Tools:** MSW (Mock Service Worker) + Vitest
-
-**Location:** `__tests__/api/` (when APIs are added)
-
-**Execution:**
-- Local: `pnpm test:api` (when implemented)
-- CI: Runs with integration tests
-
-**Key Tests:**
-- API endpoints return expected data
-- Error handling for API failures
-- Request/response validation
+**Browser Coverage:**
+- Chromium: Chrome, Edge, Opera
+- Firefox: Latest stable
+- WebKit: Safari (iOS/macOS)
 
 ---
 
-### 13. Load/Stress Tests
-**What to Test:**
-- App handles concurrent users (mostly static, but IndexedDB operations)
-- Page load performance under load
-- IndexedDB write performance with many biases
+### 12. API Testing
+**What to test:**
+- Static export works (Next.js `output: 'export'`)
+- No API endpoints (app is static)
+- Data loading from JSON files
+- IndexedDB operations (favorites, settings, progress)
 
-**Tools:** k6
+**Tools:** Vitest + fake-indexeddb (for IndexedDB mocking)
 
-**Location:** `tests/load/`
+**Test Location:** `__tests__/lib/db.test.ts`, `__tests__/hooks/use-*.test.ts`
 
-**Execution:**
-- Local: `pnpm test:load` (manual)
-- CI: Runs on schedule (weekly), non-blocking, < 5min target
+**CI vs Local:**
+- **CI:** Runs with unit tests
+- **Local:** `pnpm test:run __tests__/lib/db.test.ts`
 
-**Key Tests:**
-- 50 concurrent users load Daily page
-- IndexedDB write performance (100 biases)
-- Memory usage stays reasonable
-
----
-
-### 14. Security Tests
-**What to Test:**
-- Dependency vulnerabilities (npm audit)
-- HTTP security headers
-- XSS prevention (input sanitization)
-- CSRF protection (if APIs added)
-- Content Security Policy
-
-**Tools:** npm audit, OWASP ZAP (baseline scan), manual header checks
-
-**Location:** `scripts/security-check.sh`, `.github/workflows/security.yml`
-
-**Execution:**
-- Local: `pnpm audit:security`
-- CI: Runs on every PR, blocks on high/critical, < 2min target
-
-**Key Tests:**
-- No high/critical vulnerabilities
-- Security headers present (CSP, X-Frame-Options, etc.)
-- Input validation prevents XSS
-- ZAP baseline scan passes
+**Note:** DebiasDaily is a static app with no backend API. Testing focuses on:
+- Data loading from `data/biases.json`
+- IndexedDB CRUD operations
+- Local storage operations
 
 ---
 
-### 15. Contract Tests
-**What to Test:**
+### 13. Load/Stress Testing
+**What to test:**
+- App handles large datasets (1000+ biases)
+- IndexedDB operations scale
+- No memory leaks on long sessions
+- Performance with many favorites/progress entries
+
+**Tools:** k6 (for load simulation) + Playwright (for stress scenarios)
+
+**Test Location:** `tests/load/load-test.js`
+
+**CI vs Local:**
+- **CI:** Runs `pnpm test:load` (non-blocking)
+- **Local:** `pnpm test:load`
+
+**Scenarios:**
+- Load 1000 biases
+- 100 concurrent favorite toggles
+- 1000 progress entries
+- Long session (1 hour simulated)
+
+---
+
+### 14. Security Testing
+**What to test:**
+- Dependency vulnerabilities
+- XSS prevention (React auto-escapes)
+- No sensitive data in client code
+- Secure headers (if deployed with server)
+- IndexedDB data isolation
+
+**Tools:** 
+- `pnpm audit` (dependency audit)
+- OWASP ZAP baseline scan (optional)
+- Manual security review
+
+**Test Location:** `scripts/security-check.sh`
+
+**CI vs Local:**
+- **CI:** Runs `pnpm test:security` (non-blocking)
+- **Local:** `pnpm test:security`
+
+**Checks:**
+- Dependency audit (`pnpm audit`)
+- Security headers check
+- XSS vulnerability scan
+- Data exposure review
+
+---
+
+### 15. Contract Testing
+**What to test:**
 - Data structure contracts (Bias type, Settings type)
-- IndexedDB schema compatibility
-- LocalStorage key contracts
+- JSON schema validation
+- Type safety (TypeScript)
 
-**Tools:** Vitest + Zod (validation)
+**Tools:** TypeScript compiler + Zod (if used) + JSON schema validation
 
-**Location:** `__tests__/contracts/`
+**Test Location:** `__tests__/lib/types.test.ts`
 
-**Execution:**
-- Local: `pnpm test:contracts`
-- CI: Runs with unit tests, < 30s target
+**CI vs Local:**
+- **CI:** Runs `pnpm type-check` (TypeScript)
+- **Local:** `pnpm type-check`
 
-**Key Tests:**
-- Bias JSON schema validation
-- Settings migration (version compatibility)
-- IndexedDB upgrade paths
-- Type definitions match runtime
+**Contracts:**
+- `Bias` type matches JSON structure
+- `Settings` type matches stored format
+- `BiasProgress` type matches IndexedDB schema
 
 ---
 
-### 16. Mobile Tests
-**What to Test:**
-- Capacitor Android/iOS builds
-- Native features (notifications, haptics, share)
-- PWA installation
-- Touch gestures
-- Device orientation
+### 16. Mobile Testing
+**What to test:**
+- Capacitor Android app works
+- Capacitor iOS app works
+- Native features (notifications, share)
+- Touch interactions
+- App state persistence
+- Offline functionality
 
 **Tools:** Manual testing + Playwright mobile emulation
 
-**Location:** `docs/mobile-testing-checklist.md`, `tests/e2e/mobile.spec.ts`
+**Test Location:** 
+- Manual: See `docs/mobile-testing-checklist.md`
+- Automated: `tests/e2e/mobile-emulation.spec.ts`
 
-**Execution:**
-- Local: Manual on devices, `pnpm e2e --project mobile`
-- CI: Emulation only (limited), manual checklist required
+**CI vs Local:**
+- **CI:** Playwright mobile emulation only (limited)
+- **Local:** Manual device testing + `pnpm e2e --project=mobile-chrome`
 
-**Key Tests:**
-- App installs on Android/iOS
-- Notifications work
-- Share functionality works
-- Haptics work
-- Orientation changes handled
-
----
-
-### 17. Device Tests
-**What to Test:**
-- Real device testing (Android/iOS)
-- Performance on low-end devices
-- Battery usage
-- Network conditions (offline mode)
-
-**Tools:** Manual testing, Firebase Test Lab (optional)
-
-**Location:** `docs/mobile-testing-checklist.md`
-
-**Execution:**
-- Local: Manual on physical devices
-- CI: Not automated (requires physical devices)
-
-**Key Tests:**
-- Android 8+ devices
-- iOS 13+ devices
-- Offline functionality
-- Performance on low-end devices
+**Automation Limitations:**
+- Native features (notifications, share) require real devices
+- Capacitor plugins need device testing
+- App store builds need manual verification
 
 ---
 
-### 18. Usability Tests
-**What to Test:**
-- User flows are intuitive
+### 17. Device Testing
+**What to test:**
+- Real Android devices (various OS versions)
+- Real iOS devices (various OS versions)
+- Different screen sizes
+- Performance on low-end devices
+
+**Tools:** Manual testing on real devices
+
+**Test Location:** Manual testing checklist
+
+**CI vs Local:**
+- **CI:** Not automated (requires physical devices)
+- **Local:** Manual testing on devices
+
+**Device Matrix:**
+- Android: 8.0+, various manufacturers
+- iOS: 13.0+, iPhone and iPad
+- Screen sizes: Small (320px) to Large (tablets)
+
+---
+
+### 18. Usability Testing
+**What to test:**
+- User can complete core tasks
+- Navigation is intuitive
 - Error messages are clear
-- Onboarding is helpful
-- Navigation is discoverable
+- Onboarding flow works
+- Settings are discoverable
 
-**Tools:** Manual testing, user feedback
+**Tools:** Manual testing + User feedback
 
-**Location:** Manual testing sessions
+**Test Location:** Manual testing + user research
 
-**Execution:**
-- Local: Manual user testing
-- CI: Not automated
+**CI vs Local:**
+- **CI:** Not automated (requires human evaluation)
+- **Local:** Manual usability sessions
 
-**Key Tests:**
-- New users can complete onboarding
-- Daily bias is clear and actionable
-- Settings are easy to find
-- Favorites are easy to access
+**Key Areas:**
+- First-time user onboarding
+- Daily bias discovery
+- Favorite management
+- Settings configuration
+- Analytics understanding
 
 ---
 
-### 19. Beta Tests
-**What to Test:**
+### 19. Beta Testing
+**What to test:**
 - Pre-release validation
-- Real-world usage patterns
-- Performance in production-like environment
+- Real-world usage scenarios
+- Performance under real conditions
 - User feedback collection
 
-**Tools:** Beta testing program, analytics
+**Tools:** Beta distribution (TestFlight, Google Play Beta)
 
-**Location:** Staging environment
+**Test Location:** External beta testing
 
-**Execution:**
-- Local: Beta tester feedback
-- CI: Staging deployment tests
+**CI vs Local:**
+- **CI:** Not applicable
+- **Local:** Beta distribution process
 
-**Key Tests:**
-- Beta users can use all features
-- No critical bugs reported
-- Performance acceptable
-- Analytics show healthy usage
+**Process:**
+1. Build beta version
+2. Distribute via TestFlight (iOS) / Google Play Beta (Android)
+3. Collect feedback
+4. Fix issues
+5. Release to production
 
 ---
 
-### 20. Localization Tests
-**What to Test:**
-- Text doesn't overflow in other languages
-- Date/time formatting for other locales
-- RTL support (if added)
-- Currency/number formatting
+### 20. Localization Testing
+**What to test:**
+- Date formatting in different locales
+- Timezone handling
+- Text rendering (if i18n added)
+- RTL support (if needed)
 
-**Tools:** Manual testing, i18n testing tools
+**Tools:** Manual testing + Playwright locale emulation
 
-**Location:** `__tests__/i18n/` (when i18n added)
+**Test Location:** Manual testing (i18n not yet implemented)
 
-**Execution:**
-- Local: Manual with locale switching
-- CI: Runs when i18n is implemented
+**CI vs Local:**
+- **CI:** Not automated (i18n not implemented)
+- **Local:** Manual locale testing
 
-**Key Tests:**
-- UI text fits in all supported languages
-- Dates format correctly per locale
-- Navigation works in RTL
-- No hardcoded English strings
+**Current Status:**
+- App uses English only
+- Date formatting uses browser locale
+- Timezone detection works globally
+- Future: Add i18n support for multiple languages
 
 ---
 
 ## Test Execution Commands
 
 ### Local Development
+
 ```bash
+# Unit + Integration tests (watch mode)
+pnpm test
+
+# Unit + Integration tests (single run)
+pnpm test:run
+
 # Unit tests only
 pnpm test:unit
 
 # Integration tests only
 pnpm test:integration
 
-# All unit + integration
-pnpm test
-
-# E2E tests (Playwright)
+# E2E tests (Chromium)
 pnpm e2e
 
-# E2E with UI mode
-pnpm e2e:ui
+# E2E tests (all browsers)
+pnpm e2e --project=chromium --project=firefox --project=webkit
 
-# All tests (unit + integration + e2e)
-pnpm test:all
+# E2E tests (mobile emulation)
+pnpm e2e --project=mobile-chrome --project=mobile-safari
+
+# Visual regression tests
+pnpm e2e:visual
+
+# Update visual snapshots
+pnpm e2e:visual:update
 
 # Accessibility tests
 pnpm test:a11y
+pnpm test:a11y:unit
 
-# Visual regression
-pnpm e2e:visual
+# Run all tests (unit + integration + E2E)
+pnpm test:all
 
-# Security audit
-pnpm audit:security
-
-# Lighthouse performance
+# Performance (Lighthouse)
 pnpm test:lighthouse
 
-# Load testing (k6)
+# Load testing
 pnpm test:load
+
+# Security audit
+pnpm test:security
+
+# Type checking
+pnpm type-check
 ```
 
 ### CI/CD
-- **On PR**: Unit, Integration, E2E (Chromium), A11y, Security audit
-- **On Merge**: Full E2E (3 browsers), Visual regression, Lighthouse (non-blocking)
-- **Weekly**: Load tests, full security scan
+
+CI runs automatically on:
+- Push to `main`, `master`, `develop`
+- Pull requests
+- Manual workflow dispatch
+
+**CI Workflow Jobs:**
+1. **Lint & Format** - Code quality checks
+2. **Security Audit** - Dependency vulnerabilities
+3. **Unit + Integration Tests** - Fast feedback (<30s)
+4. **E2E Tests (Chromium)** - Core flows (<5min)
+5. **E2E Tests (Firefox)** - Cross-browser (<5min)
+6. **E2E Tests (WebKit)** - Cross-browser (<5min)
+7. **E2E Tests (Mobile)** - Mobile emulation (<5min)
+8. **Visual Regression** - UI snapshots (non-blocking)
+9. **Accessibility** - A11y checks
+10. **Lighthouse** - Performance (non-blocking)
+11. **Load Testing** - Stress tests (non-blocking)
 
 ---
 
 ## Test Data Management
 
-### Deterministic Dates
-- All date-dependent tests use mocked dates in `vitest.setup.ts`
-- Fixed date: `2025-12-05T08:00:00+05:30` (Asia/Kolkata)
-- Timezone utilities are mocked to return consistent values
+### Deterministic Date Handling
 
-### Test Biases
-- Core biases loaded from `data/biases.json`
-- Test-specific biases can be injected via `globalThis.__TEST_BIASES__`
-- User biases stored in IndexedDB (cleared between tests)
+All tests use fixed dates to ensure deterministic results:
 
-### IndexedDB
-- Uses `fake-indexeddb` for unit/integration tests
-- Real IndexedDB in E2E tests (Playwright)
-- Cleared between test runs
+- **Unit/Integration:** `vitest.setup.ts` mocks `Date.now()` and `getLocalDateString()` to return `2025-12-05`
+- **E2E:** `tests/e2e/helpers.ts` freezes browser Date to `2025-12-05`
 
----
+This ensures:
+- Daily bias selection is consistent
+- Progress tracking uses fixed timestamps
+- No flaky time-dependent tests
 
-## CI/CD Workflows
+### Test Data
 
-### `.github/workflows/test.yml`
-- Unit + Integration tests
-- Runs on every PR
-- Fast feedback (< 2min)
-
-### `.github/workflows/e2e.yml`
-- E2E tests on 3 browsers
-- Visual regression
-- Runs on PR and merge
-- < 5min target
-
-### `.github/workflows/security.yml`
-- Dependency audit
-- Security headers check
-- ZAP baseline scan
-- Runs on PR (blocking on high/critical)
-
-### `.github/workflows/performance.yml`
-- Lighthouse CI
-- Runs on merge (non-blocking)
-- Reports performance metrics
-
----
-
-## Mobile Testing Checklist
-
-See `docs/mobile-testing-checklist.md` for detailed Android/iOS manual testing procedures.
+- **Core Biases:** Loaded from `data/biases.json`
+- **User Biases:** Created in tests via `useBiases().addBias()`
+- **Favorites:** Stored in IndexedDB (mocked with `fake-indexeddb`)
+- **Settings:** Stored in IndexedDB
+- **Progress:** Stored in IndexedDB
 
 ---
 
 ## Test Coverage Goals
 
-- **Unit Tests**: > 80% coverage
-- **Integration Tests**: All critical flows covered
-- **E2E Tests**: All user journeys covered
-- **Accessibility**: 0 critical violations
-- **Performance**: Lighthouse score > 90
+- **Unit Tests:** >80% coverage for utilities, >70% for components
+- **Integration Tests:** All critical flows covered
+- **E2E Tests:** All user journeys covered
+- **Accessibility:** WCAG 2.1 AA compliance
+- **Visual Regression:** All pages and components
+
+---
+
+## Continuous Improvement
+
+1. **Monitor test flakiness** - Track and fix flaky tests
+2. **Update snapshots** - Review visual changes before updating
+3. **Expand coverage** - Add tests for new features
+4. **Performance** - Keep test suite fast (<5min for E2E)
+5. **Documentation** - Keep this doc updated with new test types
 
 ---
 
 ## Troubleshooting
 
-### Tests are flaky
-- Check date/time mocking
-- Ensure IndexedDB is cleared between tests
-- Use `test.retry()` for network-dependent tests
-
-### E2E tests fail in CI
-- Check webServer timeout (increased to 3min)
-- Verify baseURL is correct
-- Check browser installation in CI
+### Tests failing due to date issues
+- Ensure `vitest.setup.ts` mocks are active
+- Check E2E tests use `freezeDate()` helper
+- Verify timezone mocks are correct
 
 ### Visual regression failures
-- Update baselines: `pnpm e2e:visual --update`
-- Check for dynamic content (dates, random IDs)
-- Ensure consistent viewport sizes
+- Review screenshots in `test-results/`
+- Update snapshots if change is intentional: `pnpm e2e:visual:update`
+- Check for browser-specific rendering differences
+
+### E2E tests timing out
+- Increase timeout in `playwright.config.ts` if needed
+- Check web server starts correctly
+- Verify test helpers wait for proper elements
+
+### IndexedDB errors in tests
+- Ensure `fake-indexeddb/auto` is imported first
+- Clear IndexedDB between tests
+- Use sequential test execution for IndexedDB tests
 
 ---
 
-## Future Enhancements
+## References
 
-- [ ] Add MSW for API mocking (when APIs are added)
-- [ ] Integrate Percy/Chromatic for visual regression
-- [ ] Add Firebase Test Lab for Android device testing
-- [ ] Implement i18n testing when localization is added
-- [ ] Add performance budgets in Lighthouse CI
-- [ ] Set up test result reporting (TestRail, etc.)
-
+- [Vitest Documentation](https://vitest.dev/)
+- [Playwright Documentation](https://playwright.dev/)
+- [React Testing Library](https://testing-library.com/react)
+- [Axe Core](https://www.deque.com/axe/)
+- [k6 Documentation](https://k6.io/docs/)

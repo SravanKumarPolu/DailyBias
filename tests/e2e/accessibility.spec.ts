@@ -4,7 +4,7 @@ import { setupTestPage, waitForBiasCard, waitForPageLoad } from './helpers';
 
 test.describe('Accessibility Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     await page.goto('/');
     await waitForPageLoad(page, '/');
   });
@@ -254,7 +254,9 @@ test.describe('Accessibility Tests', () => {
     expect(seriousViolations).toHaveLength(0);
   });
 
-  test('keyboard navigation works correctly', async ({ page }) => {
+  test('keyboard navigation works correctly', async ({ page, browserName }) => {
+    // Skip keyboard navigation test on mobile Safari - mobile devices don't have keyboards
+    test.skip(browserName === 'webkit' && page.viewportSize()?.width && page.viewportSize().width < 768, 'Keyboard navigation not applicable on mobile devices');
     await waitForBiasCard(page);
     
     // Test Tab navigation

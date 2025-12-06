@@ -160,7 +160,7 @@ export default function AllBiasesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={42} />
       <DailyHeader />
 
-      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:py-10" aria-label="All biases">
         <div className="space-y-6 sm:space-y-8">
           {/* Header */}
           <div className="space-y-1">
@@ -210,8 +210,9 @@ export default function AllBiasesPage() {
                 <Button
                   variant="outline"
                   className="glass border-border/50 w-full bg-transparent text-sm sm:w-auto sm:text-base"
+                  aria-label={`Filter biases by category${selectedCategories.length > 0 ? ` (${selectedCategories.length} selected)` : ''}`}
                 >
-                  <Filter className="mr-2 h-4 w-4" />
+                  <Filter className="mr-2 h-4 w-4" aria-hidden="true" />
                   Filter
                   {selectedCategories.length > 0 && ` (${selectedCategories.length})`}
                 </Button>
@@ -272,6 +273,7 @@ export default function AllBiasesPage() {
                     }}
                     variant="outline"
                     className="cursor-pointer"
+                    aria-label="Clear all search filters"
                   >
                     Clear Filters
                   </Button>

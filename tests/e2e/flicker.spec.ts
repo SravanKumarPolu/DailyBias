@@ -3,7 +3,7 @@ import { setupTestPage, waitForBiasCard, waitForPageLoad } from './helpers';
 
 test.describe('Flicker Regression Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     await page.goto('/');
     await waitForPageLoad(page, '/');
   });

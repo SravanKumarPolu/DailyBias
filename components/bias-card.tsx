@@ -327,6 +327,7 @@ function BiasCardComponent({
       role="article"
       aria-labelledby="bias-title"
       data-testid="bias-card"
+      suppressHydrationWarning
     >
       {/* Background and decorative elements wrapper with overflow-hidden for rounded corners */}
       <div className="absolute inset-0 overflow-hidden rounded-xl sm:rounded-2xl pointer-events-none">

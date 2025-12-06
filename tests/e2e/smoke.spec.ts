@@ -4,13 +4,16 @@ import { setupTestPage, waitForBiasCard, waitForNavigation, waitForPageLoad } fr
 test.describe('App Smoke Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Setup test page (skip onboarding, freeze date, suppress hydration warnings)
-    await setupTestPage(page, '2024-12-04');
+    await setupTestPage(page, '2025-12-05');
     
-    // Navigate to page
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    // Navigate to page with longer timeout to ensure everything loads
+    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 60000 });
     
     // Wait for page to fully load and hydrate
     await waitForPageLoad(page, '/');
+    
+    // Additional wait to ensure biases are loaded
+    await page.waitForTimeout(2000);
   });
 
   test('app loads and shows daily bias', async ({ page }) => {

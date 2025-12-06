@@ -92,7 +92,7 @@ export default function AnalyticsPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={888} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
+      <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8" aria-label="Content analytics">
         <Button 
           variant="ghost" 
           onClick={() => router.back()} 
@@ -115,18 +115,23 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Tab Navigation */}
-          <div className="glass shadow-glass animate-fade-in-up rounded-xl p-4 sm:rounded-2xl sm:p-6">
+          <div className="glass shadow-glass animate-fade-in-up rounded-xl p-4 sm:rounded-2xl sm:p-6" role="tablist" aria-label="Analytics sections">
             <div className="flex flex-wrap gap-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
                   <Button
                     key={tab.id}
+                    id={`tab-${tab.id}`}
                     variant={activeTab === tab.id ? "default" : "outline"}
                     onClick={() => setActiveTab(tab.id as typeof activeTab)}
                     className="flex items-center gap-2"
+                    aria-label={`Switch to ${tab.label} tab`}
+                    aria-pressed={activeTab === tab.id}
+                    role="tab"
+                    aria-controls={`tabpanel-${tab.id}`}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-4 w-4" aria-hidden="true" />
                     {tab.label}
                   </Button>
                 )
@@ -160,9 +165,15 @@ export default function AnalyticsPage() {
 
           {/* Tab Content */}
           <div className="space-y-6">
-            {activeTab === "overview" && (
-              <div className="space-y-6">
-                {loading || biasesLoading || progressLoading ? (
+            <div 
+              className="space-y-6" 
+              role="tabpanel" 
+              id="tabpanel-overview" 
+              aria-labelledby="tab-overview"
+              hidden={activeTab !== "overview"}
+            >
+              {activeTab === "overview" && (
+                loading || biasesLoading || progressLoading ? (
                   <Card>
                     <CardContent className="p-6">
                       <div className="animate-pulse space-y-4">
@@ -267,19 +278,35 @@ export default function AnalyticsPage() {
                       <p className="text-muted-foreground">No analytics data available yet</p>
                     </CardContent>
                   </Card>
-                )}
-              </div>
-            )}
+                )
+              )}
+            </div>
 
-            {activeTab === "progress" && (
-              <LearningProgressDashboard />
-            )}
+            <div 
+              role="tabpanel" 
+              id="tabpanel-progress" 
+              aria-labelledby="tab-progress"
+              hidden={activeTab !== "progress"}
+            >
+              {activeTab === "progress" && <LearningProgressDashboard />}
+            </div>
 
-            {activeTab === "quality" && (
-              <ContentQualityDashboard showAll={true} />
-            )}
+            <div 
+              role="tabpanel" 
+              id="tabpanel-quality" 
+              aria-labelledby="tab-quality"
+              hidden={activeTab !== "quality"}
+            >
+              {activeTab === "quality" && <ContentQualityDashboard showAll={true} />}
+            </div>
 
-            {activeTab === "reviews" && (
+            <div 
+              role="tabpanel" 
+              id="tabpanel-reviews" 
+              aria-labelledby="tab-reviews"
+              hidden={activeTab !== "reviews"}
+            >
+              {activeTab === "reviews" && (
               <div className="space-y-6">
                 {loading || biasesLoading || progressLoading ? (
                   <Card>
@@ -357,7 +384,8 @@ export default function AnalyticsPage() {
                   </Card>
                 )}
               </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </main>

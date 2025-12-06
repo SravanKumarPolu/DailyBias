@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
 import { AppProvider } from '@/contexts/app-context'
 
 // Mock localStorage
@@ -444,49 +444,65 @@ describe('Regression Tests - Critical User Flows', () => {
     it('should navigate between all main pages', async () => {
       // Test each page individually to avoid dynamic import issues
       const HomePage = (await import('@/app/page')).default
-      expect(() => {
+      await act(async () => {
         render(
           <AppProvider>
             <HomePage />
           </AppProvider>
         )
-      }).not.toThrow()
+      })
+      await waitFor(() => {
+        expect(screen.queryByTestId('daily-header')).toBeTruthy()
+      })
 
       const AllBiasesPage = (await import('@/app/all/page')).default
-      expect(() => {
+      await act(async () => {
         render(
           <AppProvider>
             <AllBiasesPage />
           </AppProvider>
         )
-      }).not.toThrow()
+      })
+      // Wait for any async state updates to complete
+      await waitFor(() => {
+        expect(document.body).toBeTruthy()
+      }, { timeout: 2000 })
 
       const FavoritesPage = (await import('@/app/favorites/page')).default
-      expect(() => {
+      await act(async () => {
         render(
           <AppProvider>
             <FavoritesPage />
           </AppProvider>
         )
-      }).not.toThrow()
+      })
+      await waitFor(() => {
+        expect(document.body).toBeTruthy()
+      })
 
       const AddPage = (await import('@/app/add/page')).default
-      expect(() => {
+      await act(async () => {
         render(
           <AppProvider>
             <AddPage />
           </AppProvider>
         )
-      }).not.toThrow()
+      })
+      await waitFor(() => {
+        expect(document.body).toBeTruthy()
+      })
 
       const AnalyticsPage = (await import('@/app/analytics/page')).default
-      expect(() => {
+      await act(async () => {
         render(
           <AppProvider>
             <AnalyticsPage />
           </AppProvider>
         )
-      }).not.toThrow()
+      })
+      await waitFor(() => {
+        expect(document.body).toBeTruthy()
+      })
     })
   })
 

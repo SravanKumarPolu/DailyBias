@@ -98,8 +98,14 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-                {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-blue-600 hover:text-blue-800"
+                aria-label={isOpen ? "Collapse research information" : "Expand research information"}
+                aria-expanded={isOpen}
+              >
+                {isOpen ? <ChevronUp className="h-4 w-4" aria-hidden="true" /> : <ChevronDown className="h-4 w-4" aria-hidden="true" />}
               </Button>
             </div>
           </CardHeader>
@@ -213,8 +219,9 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                                 size="sm"
                                 className="flex-shrink-0 text-blue-600 hover:text-blue-800"
                                 onClick={() => window.open(ref.url, '_blank')}
+                                aria-label={`Open reference: ${ref.title} in new tab`}
                               >
-                                <ExternalLink className="h-4 w-4" />
+                                <ExternalLink className="h-4 w-4" aria-hidden="true" />
                               </Button>
                             )}
                           </div>

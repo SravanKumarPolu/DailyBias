@@ -322,7 +322,11 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                       className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       onKeyPress={(e) => e.key === 'Enter' && addSuggestion()}
                     />
-                    <Button onClick={addSuggestion} size="sm">
+                    <Button 
+                      onClick={addSuggestion} 
+                      size="sm"
+                      aria-label="Add improvement suggestion"
+                    >
                       Add
                     </Button>
                   </div>
@@ -337,8 +341,9 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                             size="sm"
                             onClick={() => removeSuggestion(index)}
                             className="text-red-500 hover:text-red-700"
+                            aria-label={`Remove suggestion: ${suggestion}`}
                           >
-                            <XCircle className="h-4 w-4" />
+                            <XCircle className="h-4 w-4" aria-hidden="true" />
                           </Button>
                         </div>
                       ))}
@@ -352,6 +357,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                     onClick={handleSubmitReview}
                     disabled={isSubmitting}
                     className="flex-1"
+                    aria-label={isSubmitting ? "Submitting review" : "Submit expert review"}
                   >
                     {isSubmitting ? "Submitting..." : "Submit Review"}
                   </Button>
@@ -359,6 +365,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                     variant="outline"
                     onClick={() => setIsOpen(false)}
                     disabled={isSubmitting}
+                    aria-label="Cancel review submission"
                   >
                     Cancel
                   </Button>
