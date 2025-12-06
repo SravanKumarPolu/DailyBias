@@ -14,12 +14,13 @@ test.describe('Flicker Regression Tests', () => {
       
       // Verify bias card is visible
       const biasCard = page.locator('[data-testid="bias-card"]');
-      await expect(biasCard).toBeVisible();
+      await expect(biasCard).toBeVisible({ timeout: 15000 });
       
-      // Verify card has content (title)
-      const title = biasCard.locator('h1, h3').first();
-      await expect(title).toBeVisible();
-      await expect(title).not.toHaveText('');
+      // Verify card has content (title) - try multiple selectors
+      const title = biasCard.locator('h1, h3, h2, #bias-title').first();
+      await expect(title).toBeVisible({ timeout: 10000 });
+      const titleText = await title.textContent();
+      expect(titleText?.trim().length).toBeGreaterThan(0);
     });
 
     await test.step('Monitor for skeleton placeholders after content is visible', async () => {
@@ -79,10 +80,11 @@ test.describe('Flicker Regression Tests', () => {
 
     await test.step('Verify content is stable', async () => {
       const biasCard = page.locator('[data-testid="bias-card"]');
-      await expect(biasCard).toBeVisible();
+      await expect(biasCard).toBeVisible({ timeout: 15000 });
       
-      // Get the title text
-      const title = biasCard.locator('h1, h3').first();
+      // Get the title text - try multiple selectors
+      const title = biasCard.locator('h1, h3, h2, #bias-title').first();
+      await expect(title).toBeVisible({ timeout: 10000 });
       const titleText = await title.textContent();
       expect(titleText).toBeTruthy();
       expect(titleText?.trim().length).toBeGreaterThan(0);

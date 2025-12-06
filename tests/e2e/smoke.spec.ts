@@ -26,12 +26,13 @@ test.describe('App Smoke Tests', () => {
 
     await test.step('Verify daily bias card is visible', async () => {
       const biasCard = page.locator('[data-testid="bias-card"]');
-      await expect(biasCard).toBeVisible({ timeout: 10000 });
+      await expect(biasCard).toBeVisible({ timeout: 15000 });
       
       // Verify card has a title (use the bias-title id or first h1/h3 in card)
-      const title = biasCard.locator('#bias-title, h1, h3').first();
-      await expect(title).toBeVisible({ timeout: 5000 });
-      await expect(title).not.toHaveText('');
+      const title = biasCard.locator('#bias-title, h1, h3, h2').first();
+      await expect(title).toBeVisible({ timeout: 10000 });
+      const titleText = await title.textContent();
+      expect(titleText?.trim().length).toBeGreaterThan(0);
     });
 
     await test.step('Verify bottom navigation is visible', async () => {

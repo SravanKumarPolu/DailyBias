@@ -105,8 +105,9 @@ test.describe('Responsive Design Tests', () => {
       const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
       const viewportWidth = page.viewportSize()?.width || 375;
       
-      // Body width should not exceed viewport (allow small margin for rounding)
-      expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
+      // Body width should not exceed viewport (allow small margin for rounding and scrollbars)
+      // Some browsers add scrollbar width, so allow up to 20px difference
+      expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 20);
     });
   });
 
