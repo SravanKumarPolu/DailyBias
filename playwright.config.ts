@@ -59,11 +59,35 @@ export default defineConfig({
     // Mobile emulation
     {
       name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
+      use: { 
+        ...devices['Pixel 5'],
+        // Mobile tests may need longer timeouts
+        actionTimeout: 30000,
+        navigationTimeout: 60000,
+        // Enable touch events for mobile
+        hasTouch: true,
+        // Mobile viewport settings
+        viewport: { width: 393, height: 851 },
+        // User agent for mobile
+        userAgent: devices['Pixel 5'].userAgent,
+      },
+      timeout: 90000, // Longer timeout for mobile tests
     },
     {
       name: 'mobile-safari',
-      use: { ...devices['iPhone 13'] },
+      use: { 
+        ...devices['iPhone 13'],
+        // Mobile tests may need longer timeouts
+        actionTimeout: 30000,
+        navigationTimeout: 60000,
+        // Enable touch events for mobile
+        hasTouch: true,
+        // Mobile viewport settings
+        viewport: { width: 390, height: 844 },
+        // User agent for mobile
+        userAgent: devices['iPhone 13'].userAgent,
+      },
+      timeout: 90000, // Longer timeout for mobile tests
     },
   ],
 

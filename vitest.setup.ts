@@ -1,8 +1,9 @@
+/// <reference types="vitest/globals" />
 // Import fake-indexeddb FIRST before any other imports that might use indexedDB
 import 'fake-indexeddb/auto'
 import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeEach, vi } from 'vitest'
+// Note: With globals: true in vitest.config.ts, beforeEach, afterEach, vi are available globally
 
 // Extend Vitest matchers with jest-axe (only in test environment)
 // Note: jest-axe is imported conditionally in test files to avoid build issues
@@ -113,7 +114,7 @@ vi.mock('next/image', () => ({
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation((query) => ({
+  value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
     onchange: null,

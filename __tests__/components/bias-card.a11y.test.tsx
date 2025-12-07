@@ -1,11 +1,31 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import { axe, toHaveNoViolations } from 'jest-axe'
+import { axe } from 'jest-axe'
 import { BiasCard } from '@/components/bias-card'
 import type { Bias } from '@/lib/types'
 
-// Extend Vitest matchers with jest-axe
-expect.extend(toHaveNoViolations)
+// Custom matcher for Vitest compatibility with jest-axe
+// jest-axe's toHaveNoViolations is designed for Jest, so we create our own
+expect.extend({
+  toHaveNoViolations: (received: any) => {
+    const violations = received.violations || []
+    if (violations.length === 0) {
+      return {
+        message: () => 'Expected accessibility violations but found none',
+        pass: true,
+      }
+    }
+    
+    const violationMessages = violations
+      .map((v: any) => `- ${v.id}: ${v.description}\n  Help: ${v.helpUrl}`)
+      .join('\n')
+    
+    return {
+      message: () => `Expected no accessibility violations but found ${violations.length}:\n${violationMessages}`,
+      pass: false,
+    }
+  },
+} as any)
 
 const mockBias: Bias = {
   id: 'test-bias-1',
@@ -14,6 +34,7 @@ const mockBias: Bias = {
   why: 'This happens because our brains prefer information that aligns with what we already believe.',
   counter: 'Actively seek out opposing viewpoints and challenge your assumptions.',
   category: 'decision',
+  source: 'core',
   researchLevel: 'established',
 }
 
@@ -45,10 +66,10 @@ describe('BiasCard Accessibility', () => {
     const results = await axe(container)
     // Filter out known Radix UI Collapsible limitation (aria-expanded on div)
     const filteredViolations = results.violations.filter(
-      (violation) =>
+      (violation: { id: string; nodes: Array<{ html?: string }> }) =>
         !(
           violation.id === 'aria-allowed-attr' &&
-          violation.nodes.some((node) =>
+          violation.nodes.some((node: { html?: string }) =>
             node.html?.includes('collapsible-trigger') || node.html?.includes('aria-expanded')
           )
         )
@@ -74,10 +95,10 @@ describe('BiasCard Accessibility', () => {
     const results = await axe(container)
     // Filter out known Radix UI Collapsible limitation (aria-expanded on div)
     const filteredViolations = results.violations.filter(
-      (violation) =>
+      (violation: { id: string; nodes: Array<{ html?: string }> }) =>
         !(
           violation.id === 'aria-allowed-attr' &&
-          violation.nodes.some((node) =>
+          violation.nodes.some((node: { html?: string }) =>
             node.html?.includes('collapsible-trigger') || node.html?.includes('aria-expanded')
           )
         )
@@ -109,10 +130,10 @@ describe('BiasCard Accessibility', () => {
     const results = await axe(container)
     // Filter out known Radix UI Collapsible limitation (aria-expanded on div)
     const filteredViolations = results.violations.filter(
-      (violation) =>
+      (violation: { id: string; nodes: Array<{ html?: string }> }) =>
         !(
           violation.id === 'aria-allowed-attr' &&
-          violation.nodes.some((node) =>
+          violation.nodes.some((node: { html?: string }) =>
             node.html?.includes('collapsible-trigger') || node.html?.includes('aria-expanded')
           )
         )
