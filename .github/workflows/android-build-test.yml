@@ -1,0 +1,239 @@
+name: Android Build & Test
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'android/**'
+      - 'capacitor.config.ts'
+      - 'package.json'
+      - '.github/workflows/android-build-test.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'android/**'
+      - 'capacitor.config.ts'
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type (debug or release)'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+jobs:
+  build-and-test:
+    name: Build & Test Android
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web assets
+        run: pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Run Android Lint
+        working-directory: android
+        run: ./gradlew lint
+        continue-on-error: true
+
+      - name: Run Android Unit Tests
+        working-directory: android
+        run: ./gradlew test
+        continue-on-error: true
+
+      - name: Build Debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+        env:
+          BUILD_TYPE: ${{ github.event.inputs.build_type || 'debug' }}
+
+      - name: Build Release AAB (if release)
+        working-directory: android
+        if: github.event.inputs.build_type == 'release' || github.ref == 'refs/heads/main'
+        run: |
+          if [ -f "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "Keystore found, building release AAB"
+            ./gradlew bundleRelease
+          else
+            echo "No keystore configured, skipping release build"
+          fi
+        continue-on-error: true
+
+      - name: Check APK size
+        run: |
+          if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
+            SIZE=$(du -h android/app/build/outputs/apk/debug/app-debug.apk | cut -f1)
+            echo "APK size: $SIZE"
+            # Warn if APK is larger than 50MB
+            SIZE_BYTES=$(stat -f%z android/app/build/outputs/apk/debug/app-debug.apk 2>/dev/null || stat -c%s android/app/build/outputs/apk/debug/app-debug.apk 2>/dev/null)
+            if [ "$SIZE_BYTES" -gt 52428800 ]; then
+              echo "⚠️ Warning: APK size exceeds 50MB"
+            fi
+          fi
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+
+      - name: Upload Release AAB
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Upload Build Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-build-reports
+          path: |
+            android/app/build/reports/**
+            android/app/build/outputs/**
+          retention-days: 7
+
+  mobile-emulation-tests:
+    name: Mobile Emulation Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Run mobile emulation tests
+        run: pnpm e2e --project=mobile-chrome --project=mobile-safari
+        env:
+          CI: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-emulation-test-results
+          path: playwright-report/
+          retention-days: 7
+
+  quality-checks:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm type-check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check Android manifest
+        run: |
+          if [ ! -f "android/app/src/main/AndroidManifest.xml" ]; then
+            echo "❌ AndroidManifest.xml not found"
+            exit 1
+          fi
+          echo "✅ AndroidManifest.xml found"
+
+      - name: Check Capacitor config
+        run: |
+          if [ ! -f "capacitor.config.ts" ]; then
+            echo "❌ capacitor.config.ts not found"
+            exit 1
+          fi
+          echo "✅ capacitor.config.ts found"
+
+      - name: Validate app ID
+        run: |
+          APP_ID=$(grep -oP 'appId:\s*["\x27]\K[^"\x27]+' capacitor.config.ts || echo "")
+          if [ -z "$APP_ID" ]; then
+            echo "❌ App ID not found in capacitor.config.ts"
+            exit 1
+          fi
+          echo "✅ App ID: $APP_ID"

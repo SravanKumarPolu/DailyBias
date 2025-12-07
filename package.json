@@ -30,6 +30,13 @@
     "android:open": "npx cap open android",
     "android:run": "cd android && ./gradlew installDebug && adb shell am start -n com.debiasdaily.app/.MainActivity",
     "android:build": "cd android && ./gradlew assembleDebug",
+    "android:build:release": "bash scripts/android-build.sh --type release --output apk",
+    "android:build:aab": "bash scripts/android-build.sh --type release --output aab",
+    "android:build:clean": "bash scripts/android-build.sh --clean",
+    "android:test": "bash scripts/android-test.sh",
+    "android:lint": "cd android && ./gradlew lint",
+    "android:validate": "pnpm android:lint && pnpm android:test",
+    "android:check": "bash scripts/validate-android-build.sh",
     "ios:open": "npx cap open ios",
     "android:sync": "pnpm build && npx cap sync android",
     "ios:sync": "pnpm build && npx cap sync ios",
@@ -45,7 +52,12 @@
     "test:all": "pnpm test:run && pnpm test:integration && pnpm e2e --project=chromium --project=mobile-chrome --project=mobile-safari",
     "test:lighthouse": "node scripts/lighthouse-test.js",
     "test:load": "k6 run tests/load/load-test.js",
-    "test:security": "bash scripts/security-check.sh"
+    "test:security": "bash scripts/security-check.sh",
+    "device:check": "bash scripts/device-test-helper.sh check-android; bash scripts/device-test-helper.sh check-ios",
+    "device:check-android": "bash scripts/device-test-helper.sh check-android",
+    "device:check-ios": "bash scripts/device-test-helper.sh check-ios",
+    "device:helper": "bash scripts/device-test-helper.sh",
+    "device:test": "bash scripts/device-test-helper.sh test"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",

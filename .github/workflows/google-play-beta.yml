@@ -1,0 +1,189 @@
+name: Google Play Beta Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Release track (internal, alpha, beta, production)'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+      release_notes:
+        description: 'Release notes (optional)'
+        required: false
+        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - 'android/**'
+      - 'app/**'
+      - 'components/**'
+      - 'capacitor.config.ts'
+    tags:
+      - 'v*.*.*'
+
+env:
+  PLAY_STORE_TRACK: ${{ github.event.inputs.track || 'beta' }}
+
+jobs:
+  build-release:
+    name: Build Release AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web assets
+        run: pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Decode Keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/keystore.jks
+            echo "✅ Keystore decoded"
+          else
+            echo "⚠️ No keystore found in secrets"
+            echo "⚠️ Please configure ANDROID_KEYSTORE_BASE64 secret"
+            exit 1
+          fi
+
+      - name: Create gradle.properties for signing
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: |
+          cat >> android/gradle.properties << EOF
+          # Signing configuration (from GitHub Secrets)
+          ANDROID_KEYSTORE_FILE=keystore.jks
+          ANDROID_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+          echo "✅ Gradle properties configured"
+
+      - name: Update version code
+        run: |
+          # Extract version from package.json or use git tag
+          VERSION=$(node -p "require('./package.json').version")
+          VERSION_CODE=$(git rev-list --count HEAD)
+
+          # Update build.gradle with version
+          sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" android/app/build.gradle
+          sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
+
+          echo "Version: $VERSION"
+          echo "Version Code: $VERSION_CODE"
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build Release AAB
+        working-directory: android
+        run: ./gradlew bundleRelease
+        env:
+          ANDROID_KEYSTORE_FILE: keystore.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Verify AAB
+        run: |
+          if [ ! -f "android/app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "❌ AAB file not found"
+            exit 1
+          fi
+
+          SIZE=$(du -h android/app/build/outputs/bundle/release/app-release.aab | cut -f1)
+          echo "✅ AAB built successfully: $SIZE"
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 90
+
+  deploy-to-play-store:
+    name: Deploy to Google Play Beta
+    needs: build-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download AAB artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-aab
+          path: ./build
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Google Play Publisher
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.debiasdaily.app
+          releaseFiles: ./build/app-release.aab
+          track: ${{ env.PLAY_STORE_TRACK }}
+          status: completed
+          inAppUpdatePriority: 2
+          whatsNewDirectory: ./android/release-notes
+          mappingFile: ./android/app/build/outputs/mapping/release/mapping.txt
+          skipUploadMetadata: false
+          skipUploadImages: false
+          skipUploadScreenshots: false
+
+      - name: Create Release Summary
+        run: |
+          echo "## 🚀 Google Play Beta Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Track:** ${{ env.PLAY_STORE_TRACK }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** $(node -p "require('./package.json').version")" >> $GITHUB_STEP_SUMMARY
+          echo "**Version Code:** $(git rev-list --count HEAD)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully deployed to Google Play ${{ env.PLAY_STORE_TRACK }} track" >> $GITHUB_STEP_SUMMARY

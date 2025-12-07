@@ -4,7 +4,20 @@
 
 This checklist covers manual and automated testing for DebiasDaily's Capacitor mobile apps (Android & iOS).
 
+**Quick Links:**
+- 🚀 [Quick Start Guide](./device-testing-quick-start.md) - 5-minute essential tests
+- 📋 [Test Tracker Template](./device-testing-tracker.md) - Track your testing progress
+- 🔧 [Device Test Helper](../scripts/device-test-helper.sh) - Automated setup checks
+
 ## Pre-Testing Setup
+
+### Quick Setup Check
+Run the device test helper to verify your setup:
+```bash
+pnpm device:check
+# Or interactively:
+pnpm device:helper
+```
 
 ### Android
 - [ ] Android Studio installed
@@ -12,6 +25,7 @@ This checklist covers manual and automated testing for DebiasDaily's Capacitor m
 - [ ] Physical device connected OR emulator running
 - [ ] USB debugging enabled (for physical devices)
 - [ ] `pnpm mobile:build` completed successfully
+- [ ] Verify setup: `pnpm device:check-android`
 
 ### iOS
 - [ ] Xcode installed (latest stable)
@@ -19,20 +33,38 @@ This checklist covers manual and automated testing for DebiasDaily's Capacitor m
 - [ ] Physical device connected OR simulator running
 - [ ] Apple Developer account configured (for physical devices)
 - [ ] `pnpm mobile:build` completed successfully
+- [ ] Verify setup: `pnpm device:check-ios`
 
 ## Automated Testing (Limited)
 
 ### Playwright Mobile Emulation
-- [ ] Run `pnpm e2e --project=mobile-chrome` (Android emulation)
-- [ ] Run `pnpm e2e --project=mobile-safari` (iOS emulation)
-- [ ] Verify all E2E tests pass on mobile viewports
-- [ ] Check visual regression snapshots for mobile
+Run automated mobile emulation tests:
+```bash
+# Run all mobile emulation tests
+pnpm device:test
+
+# Or individually:
+pnpm e2e --project=mobile-chrome  # Android emulation
+pnpm e2e --project=mobile-safari  # iOS emulation
+```
+
+**Test Coverage:**
+- [ ] iPhone 13 viewport (390x844) - Daily page, navigation, touch targets
+- [ ] Pixel 5 viewport (393x851) - Navigation across all pages
+- [ ] iPhone SE viewport (375x667) - Favorite button, small screen
+- [ ] Galaxy S20 viewport (360x800) - Small screen readability
+- [ ] iPad Mini viewport (768x1024) - Tablet layout
+- [ ] Performance checks - Load times, layout shift
+- [ ] Touch target sizes - WCAG 2.5.5 compliance (44x44px minimum)
+- [ ] No horizontal scrolling - Responsive design
+- [ ] Visual regression snapshots for mobile
 
 **Limitations:**
 - Cannot test native Capacitor plugins (notifications, share)
 - Cannot test device-specific features (haptic feedback, biometrics)
 - Cannot test app store builds
 - Cannot test offline behavior accurately
+- Cannot test real device performance characteristics
 
 ## Manual Testing Checklist
 
