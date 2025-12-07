@@ -14,8 +14,8 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI 
-    ? [['html'], ['github']] 
+  reporter: process.env.CI
+    ? [['html'], ['github']]
     : [['html'], ['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -28,7 +28,7 @@ export default defineConfig({
     /* Video on failure */
     video: 'retain-on-failure',
   },
-  
+
   /* Screenshot configuration for visual regression */
   expect: {
     toHaveScreenshot: {
@@ -36,7 +36,7 @@ export default defineConfig({
       threshold: 0.2,
     },
   },
-  
+
   /* Global test timeout - increased for E2E tests that may take longer */
   timeout: 60000,
 
@@ -55,11 +55,11 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-    
+
     // Mobile emulation
     {
       name: 'mobile-chrome',
-      use: { 
+      use: {
         ...devices['Pixel 5'],
         // Mobile tests may need longer timeouts
         actionTimeout: 30000,
@@ -75,7 +75,7 @@ export default defineConfig({
     },
     {
       name: 'mobile-safari',
-      use: { 
+      use: {
         ...devices['iPhone 13'],
         // Mobile tests may need longer timeouts
         actionTimeout: 30000,

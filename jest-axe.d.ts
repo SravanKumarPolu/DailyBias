@@ -11,14 +11,14 @@ declare module 'jest-axe' {
     }>
     [key: string]: any
   }
-  
+
   interface MatcherResult {
     message: () => string
     pass: boolean
   }
-  
+
   export function toHaveNoViolations(received: AxeResults): MatcherResult
-  
+
   export function axe(container: Element | Document): Promise<AxeResults>
 }
 

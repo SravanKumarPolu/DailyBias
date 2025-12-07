@@ -15,11 +15,11 @@ expect.extend({
         pass: true,
       }
     }
-    
+
     const violationMessages = violations
       .map((v: any) => `- ${v.id}: ${v.description}\n  Help: ${v.helpUrl}`)
       .join('\n')
-    
+
     return {
       message: () => `Expected no accessibility violations but found ${violations.length}:\n${violationMessages}`,
       pass: false,
@@ -48,7 +48,7 @@ describe('BiasCard Accessibility', () => {
         isMastered={false}
       />
     )
-    
+
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
@@ -62,7 +62,7 @@ describe('BiasCard Accessibility', () => {
         isMastered={false}
       />
     )
-    
+
     const results = await axe(container)
     // Filter out known Radix UI Collapsible limitation (aria-expanded on div)
     const filteredViolations = results.violations.filter(
@@ -87,11 +87,11 @@ describe('BiasCard Accessibility', () => {
         onToggleFavorite={() => {}}
       />
     )
-    
+
     const favoriteButton = getByTestId('bias-favorite-button')
     expect(favoriteButton).toHaveAttribute('aria-label')
     expect(favoriteButton).toHaveAttribute('aria-pressed', 'false')
-    
+
     const results = await axe(container)
     // Filter out known Radix UI Collapsible limitation (aria-expanded on div)
     const filteredViolations = results.violations.filter(
@@ -115,18 +115,18 @@ describe('BiasCard Accessibility', () => {
         isMastered={false}
       />
     )
-    
+
     const biasCard = getByTestId('bias-card')
     // Should have article role or be an article element
     const role = biasCard.getAttribute('role')
     const tagName = biasCard.tagName.toLowerCase()
     expect(role === 'article' || tagName === 'article').toBe(true)
-    
+
     // Should have aria-label or aria-labelledby
     const ariaLabel = biasCard.getAttribute('aria-label')
     const ariaLabelledBy = biasCard.getAttribute('aria-labelledby')
     expect(ariaLabel || ariaLabelledBy).toBeTruthy()
-    
+
     const results = await axe(container)
     // Filter out known Radix UI Collapsible limitation (aria-expanded on div)
     const filteredViolations = results.violations.filter(

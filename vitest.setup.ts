@@ -34,18 +34,18 @@ beforeEach(() => {
   // Use real timers for integration tests to allow async operations
   // Date is already mocked via timezone-utils mock for date strings
   vi.useRealTimers()
-  
+
   // Mock Date.now() to return fixed timestamp for deterministic testing
   // Note: vi.setSystemTime() only works with fake timers, so we mock Date.now() directly
   vi.spyOn(Date, 'now').mockReturnValue(FIXED_TIMESTAMP)
-  
+
   // Clear localStorage
   localStorage.clear()
-  
+
   // Clear test biases (will be set by test utilities)
   // @ts-ignore - global variable for test mocking
   globalThis.__TEST_BIASES__ = undefined
-  
+
   // Reset pathname to default
   // @ts-ignore - global variable for test mocking
   globalThis.__TEST_PATHNAME__ = '/'
