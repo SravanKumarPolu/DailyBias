@@ -42,7 +42,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
     if (!feedbackType || !rating) return
 
     setIsSubmitting(true)
-    
+
     try {
       const feedback: FeedbackData = {
         biasId: bias.id,
@@ -146,9 +146,9 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
               </p>
             </div>
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="text-green-600 hover:text-green-800"
             aria-label={isOpen ? "Close feedback form" : "Open feedback form"}
             aria-expanded={isOpen}
@@ -157,7 +157,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
           </Button>
         </div>
       </CardHeader>
-      
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -254,34 +254,39 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-2 pt-2"
+                    className="space-y-2 pt-2"
                   >
-                    <Button
-                      onClick={handleSubmit}
-                      disabled={isSubmitting}
-                      className="flex-1"
-                      aria-label={isSubmitting ? "Submitting feedback" : "Submit feedback"}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" aria-hidden="true" />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" aria-hidden="true" />
-                          Submit Feedback
-                        </>
-                      )}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleClose}
-                      disabled={isSubmitting}
-                      aria-label="Cancel feedback submission"
-                    >
-                      Cancel
-                    </Button>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
+                      This feedback displays only your analytics page and is also forwarded to the developer's email.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="flex-1"
+                        aria-label={isSubmitting ? "Submitting feedback" : "Submit feedback"}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" aria-hidden="true" />
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4 mr-2" aria-hidden="true" />
+                            Submit Feedback
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={handleClose}
+                        disabled={isSubmitting}
+                        aria-label="Cancel feedback submission"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                   </motion.div>
                 )}
               </div>

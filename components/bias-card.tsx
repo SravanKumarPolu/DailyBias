@@ -214,8 +214,8 @@ function BiasCardComponent({
 
   if (variant === "compact") {
     return (
-      <div
-        className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:rounded-2xl sm:p-5 md:p-6"
+        <div
+        className="group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] cursor-pointer sm:rounded-2xl sm:p-5 md:p-6"
         // Removed motion.div to prevent flickering - using static div instead
         role="article"
         tabIndex={0}
@@ -227,8 +227,8 @@ function BiasCardComponent({
 
         {/* Inner highlight - FIX: pointer-events-none to prevent blocking buttons */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
-        <div className="relative flex items-start justify-between gap-3 sm:gap-4">
-          <div className="min-w-0 flex-1 space-y-2">
+        <div className="relative flex items-start justify-between gap-4 sm:gap-5">
+          <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
                 {getCategoryLabel(bias.category)}
@@ -250,10 +250,10 @@ function BiasCardComponent({
                 </Badge>
               )}
             </div>
-            <h3 className="text-base leading-tight font-semibold tracking-tight text-balance sm:text-lg sm:line-clamp-2">
+            <h3 className="text-lg leading-tight font-semibold tracking-tight text-balance sm:text-xl sm:line-clamp-2">
               {bias.title}
             </h3>
-            <p className="text-muted-foreground text-xs leading-relaxed text-pretty sm:text-sm line-clamp-3">
+            <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base line-clamp-3">
               {bias.summary}
             </p>
           </div>
@@ -321,7 +321,7 @@ function BiasCardComponent({
 
   return (
     <div
-      className="group relative mx-auto max-w-2xl rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-200 hover:border-primary/40 hover:shadow-lg sm:rounded-2xl sm:p-8 md:p-10"
+      className="group relative mx-auto max-w-2xl rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer sm:rounded-2xl sm:p-8 md:p-10"
       // Removed motion.div props to prevent flickering - using static div instead
       // Removed overflow-hidden to allow absolutely positioned buttons to be visible
       role="article"
@@ -342,10 +342,10 @@ function BiasCardComponent({
         <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       </div>
 
-      <div className="relative space-y-6 sm:space-y-8">
+      <div className="relative space-y-6 sm:space-y-8 md:space-y-10">
         {/* Header - Using CSS Grid for better mobile layout */}
         {/* pr-28 (112px) reserves space for absolutely positioned buttons: 44px button + 8px gap + 44px button + 16px right margin */}
-        <div className="space-y-3 pr-28">
+        <div className="space-y-4 pr-28">
           {/* Row 1: Category badges */}
           <div className="flex flex-wrap items-center gap-2">
             <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
@@ -372,10 +372,7 @@ function BiasCardComponent({
           {/* Row 2: Title spans full width - padding-right prevents overlap with buttons */}
           <h1
             id="bias-title"
-            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto line-clamp-3"
-            style={{
-              fontSize: 'clamp(1.25rem, 4vw + 0.5rem, 1.875rem)',
-            }}
+            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto line-clamp-3 text-2xl sm:text-3xl md:text-4xl"
           >
             {bias.title}
           </h1>
@@ -383,34 +380,34 @@ function BiasCardComponent({
 
         {/* Summary */}
         <div>
-          <p className="text-sm leading-relaxed text-pretty sm:text-base md:text-lg">
+          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl">
             {bias.summary}
           </p>
         </div>
 
         {/* Why it happens */}
-        <div className="space-y-2">
-          <h2 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase sm:text-sm">
+        <div className="space-y-3">
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base">
             Why it happens
           </h2>
-          <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.why}</p>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg">{bias.why}</p>
         </div>
 
         {/* How to counter */}
-        <div className="space-y-2">
-          <h2 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase sm:text-sm">
+        <div className="space-y-3">
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base">
             How to counter it
           </h2>
-          <p className="text-sm leading-relaxed text-pretty sm:text-base">{bias.counter}</p>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg">{bias.counter}</p>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:pt-4">
+        <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:pt-6">
           <Button
             onClick={handleSpeak}
             onTouchEnd={handleSpeak}
             variant="outline"
-            className={`flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target ${
+            className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
               isSpeaking ? "animate-pulse" : ""
             }`}
             style={{
@@ -458,7 +455,7 @@ function BiasCardComponent({
             onClick={handleShare}
             onTouchEnd={handleShare}
             variant="outline"
-            className="flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target"
+            className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
             style={{
               touchAction: 'manipulation',
               WebkitTouchCallout: 'none',
@@ -475,7 +472,7 @@ function BiasCardComponent({
             onClick={handleCopy}
             onTouchEnd={handleCopy}
             variant="outline"
-            className={`flex-1 text-sm transition-all duration-200 sm:text-base min-h-[44px] touch-target ${
+            className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
               copied ? "animate-scale-in" : ""
             }`}
             style={{

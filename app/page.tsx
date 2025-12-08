@@ -158,7 +158,7 @@ export default function HomePage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10"
+        className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16"
         aria-label="Daily cognitive bias"
       >
         {/* ARIA live region for dynamic content updates */}
@@ -181,7 +181,7 @@ export default function HomePage() {
             role="status"
             aria-live="polite"
             aria-busy="true"
-            className="space-y-6 sm:space-y-8"
+            className="space-y-8 sm:space-y-10"
           >
             <div className="glass rounded-xl p-6 sm:rounded-2xl sm:p-8 animate-pulse">
               <div className="space-y-4">
@@ -192,7 +192,7 @@ export default function HomePage() {
             </div>
           </div>
         ) : biasToShow ? (
-          <div className="space-y-6 sm:space-y-8" suppressHydrationWarning>
+          <div className="space-y-8 sm:space-y-10 md:space-y-12" suppressHydrationWarning>
             <TiltCard className="mb-0" tiltStrength={8} glareEnabled>
               <DynamicBiasCard
                 bias={biasToShow}

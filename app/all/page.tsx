@@ -65,11 +65,11 @@ export default function AllBiasesPage() {
     const loadMasteredStates = async () => {
       // Only load states for biases we haven't loaded yet
       const biasesToLoad = allBiases.filter((bias) => !loadedBiasIdsRef.current.has(bias.id))
-      
+
       if (biasesToLoad.length === 0) return
 
       logger.debug("[AllPage] Loading mastered states for", biasesToLoad.length, "new biases")
-      
+
       try {
         // Batch load mastered states
         const masts: Record<string, boolean> = {}
@@ -85,7 +85,7 @@ export default function AllBiasesPage() {
         logger.error("[AllPage] Error loading mastered states:", error)
       }
     }
-    
+
     if (allBiases.length > 0) {
       loadMasteredStates()
     }
@@ -101,7 +101,7 @@ export default function AllBiasesPage() {
     logger.debug("[AllPage] Query:", debouncedSearchQuery)
     logger.debug("[AllPage] Selected categories:", selectedCategories)
     logger.debug("[AllPage] Available biases:", allBiases.length)
-    
+
     const sanitizedQuery = validateSearchQuery(debouncedSearchQuery)
     logger.debug("[AllPage] Sanitized query:", sanitizedQuery)
 
@@ -115,7 +115,7 @@ export default function AllBiasesPage() {
         selectedCategories.length === 0 || selectedCategories.includes(result.bias.category)
       return matchesCategory
     })
-    
+
     logger.debug("[AllPage] Final filtered results:", filteredResults.length)
     return filteredResults
   }, [allBiases, debouncedSearchQuery, selectedCategories])
@@ -160,12 +160,12 @@ export default function AllBiasesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={42} />
       <DailyHeader />
 
-      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:py-10" aria-label="All biases">
-        <div className="space-y-6 sm:space-y-8">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16" aria-label="All biases">
+        <div className="space-y-8 sm:space-y-10 md:space-y-12">
           {/* Header */}
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">All Biases</h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">All Biases</h1>
+            <p className="text-foreground/80 text-base sm:text-lg leading-relaxed">
               Browse all {allBiases.length} cognitive biases from the collection
             </p>
           </div>
@@ -260,7 +260,7 @@ export default function AllBiasesPage() {
             <EmptyState
               icon={SearchX}
               title="No results found"
-              description={hasActiveSearch 
+              description={hasActiveSearch
                 ? `No biases match "${searchQuery}". Try adjusting your search terms or filters.`
                 : "No biases match your current filters. Try selecting different categories."
               }

@@ -13,12 +13,12 @@ import Link from "next/link"
 import type { Bias } from "@/lib/types"
 
 export default function FavoritesPage() {
-  const { 
-    allBiases, 
-    biasesLoading, 
-    favorites, 
-    toggleFavorite, 
-    favoritesLoading, 
+  const {
+    allBiases,
+    biasesLoading,
+    favorites,
+    toggleFavorite,
+    favoritesLoading,
     settings,
     toggleMastered,
     isMastered
@@ -30,21 +30,21 @@ export default function FavoritesPage() {
     console.log("[FavoritesPage] Updating favorite biases")
     console.log("[FavoritesPage] All biases:", allBiases.length)
     console.log("[FavoritesPage] Favorites:", favorites.length)
-    
+
     if (allBiases.length > 0 && favorites.length > 0) {
       const favoriteIds = new Set(favorites.map((f) => f.biasId))
       console.log("[FavoritesPage] Favorite IDs:", Array.from(favoriteIds))
-      
+
       const biases = allBiases.filter((bias) => favoriteIds.has(bias.id))
       console.log("[FavoritesPage] Filtered biases:", biases.length)
-      
+
       // Sort by when they were added to favorites
       biases.sort((a, b) => {
         const aFav = favorites.find((f) => f.biasId === a.id)
         const bFav = favorites.find((f) => f.biasId === b.id)
         return (bFav?.addedAt || 0) - (aFav?.addedAt || 0)
       })
-      
+
       console.log("[FavoritesPage] Sorted favorite biases:", biases.map(b => b.title))
       setFavoriteBiases(biases)
     } else {
@@ -59,7 +59,7 @@ export default function FavoritesPage() {
       if (favoriteBiases.length > 0) {
         console.log("[FavoritesPage] Loading mastered states for", favoriteBiases.length, "favorite biases")
         const mastered: Record<string, boolean> = {}
-        
+
         try {
           await Promise.all(
             favoriteBiases.map(async (bias) => {
@@ -73,7 +73,7 @@ export default function FavoritesPage() {
         }
       }
     }
-    
+
     loadMasteredStates()
   }, [favoriteBiases, isMastered])
 
@@ -105,18 +105,18 @@ export default function FavoritesPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={123} />
       <DailyHeader />
 
-      <main id="main-content" className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
-        <div className="space-y-4 sm:space-y-6">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16">
+        <div className="space-y-8 sm:space-y-10 md:space-y-12">
           {/* Header */}
-          <div>
-            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl md:text-4xl">Favorites</h1>
-            <p className="text-muted-foreground text-sm sm:text-base">Your saved biases for quick reference</p>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Favorites</h1>
+            <p className="text-foreground/80 text-base sm:text-lg leading-relaxed">Your saved biases for quick reference</p>
           </div>
 
           {/* Favorites count */}
           {!loading && favoriteBiases.length > 0 && (
-            <div className="text-muted-foreground flex items-center gap-2 text-sm sm:text-base">
-              <Heart className="h-4 w-4 text-destructive" aria-hidden="true" />
+            <div className="text-foreground/70 flex items-center gap-2 text-base sm:text-lg">
+              <Heart className="h-5 w-5 text-destructive" aria-hidden="true" />
               <span>
                 {favoriteBiases.length} {favoriteBiases.length === 1 ? "favorite" : "favorites"}
               </span>
@@ -144,11 +144,11 @@ export default function FavoritesPage() {
               }
             />
           ) : (
-            <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
+            <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
               {favoriteBiases.map((bias, index) => (
-                <Link 
-                  key={bias.id} 
-                  href={`/bias/${bias.id}`} 
+                <Link
+                  key={bias.id}
+                  href={`/bias/${bias.id}`}
                   className="group cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                 >

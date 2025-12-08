@@ -34,7 +34,7 @@ export function EmptyState({
       >
         {/* Glowing background */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 blur-2xl opacity-50" aria-hidden="true" />
-        
+
         {/* Icon container */}
         <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm border border-border/50 sm:h-24 sm:w-24">
           <Icon className="h-10 w-10 text-muted-foreground sm:h-12 sm:w-12" aria-hidden="true" />
@@ -43,13 +43,13 @@ export function EmptyState({
 
       {/* Content */}
       <div
-        className="space-y-3 text-center max-w-md animate-fade-in-up"
+        className="space-y-4 text-center max-w-md animate-fade-in-up"
         style={{ animationDelay: "0.3s", opacity: 0, animationFillMode: "forwards" }}
       >
-        <h3 className="text-xl font-semibold sm:text-2xl">
+        <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           {title}
         </h3>
-        <p className="text-muted-foreground text-sm leading-relaxed sm:text-base">
+        <p className="text-foreground/70 text-base leading-relaxed sm:text-lg">
           {description}
         </p>
       </div>

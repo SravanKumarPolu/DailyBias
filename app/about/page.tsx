@@ -18,10 +18,10 @@ export default function AboutPage() {
       <DynamicBackgroundCanvas style={settings.backgroundStyle} seed={999} />
       <DailyHeader />
 
-      <main className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-4 sm:py-6 md:py-8">
-        <Button 
-          variant="ghost" 
-          onClick={() => router.back()} 
+      <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16">
+        <Button
+          variant="ghost"
+          onClick={() => router.back()}
           className="touch-target hover-grow button-press mb-4 cursor-pointer transition-all duration-200 sm:mb-6"
           aria-label="Go back to previous page"
         >
@@ -29,11 +29,11 @@ export default function AboutPage() {
           Back
         </Button>
 
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-8 sm:space-y-10 md:space-y-12">
           {/* Header */}
-          <div className="glass shadow-glass animate-fade-in-up rounded-xl p-6 text-center sm:rounded-2xl sm:p-8 md:p-10">
-            <h1 className="text-responsive-3xl mb-3 font-bold tracking-tight sm:mb-4">Bias Daily</h1>
-            <p className="text-muted-foreground text-responsive-lg text-balance">
+          <div className="glass shadow-glass animate-fade-in-up rounded-xl p-8 text-center sm:rounded-2xl sm:p-10 md:p-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl mb-4 font-bold tracking-tight sm:mb-5">Bias Daily</h1>
+            <p className="text-foreground/80 text-base sm:text-lg md:text-xl text-balance leading-relaxed">
               Learn one cognitive bias every day and improve your decision-making
             </p>
           </div>
@@ -361,9 +361,9 @@ export default function AboutPage() {
                 </li>
               </ul>
             </div>
-            <Button 
-              asChild 
-              variant="outline" 
+            <Button
+              asChild
+              variant="outline"
               className="touch-target hover-lift button-press w-full cursor-pointer bg-transparent transition-all duration-200"
             >
               <a href="/code-splitting-demo">

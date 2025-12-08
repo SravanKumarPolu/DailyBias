@@ -18,8 +18,8 @@ export function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav 
-      className="pb-safe fixed right-0 bottom-0 left-0 z-50 w-full" 
+    <nav
+      className="pb-safe fixed right-0 bottom-0 left-0 z-50 w-full"
       aria-label="Main navigation"
       data-testid="bottom-navigation"
       style={{
@@ -40,7 +40,7 @@ export function Navigation() {
     >
       {/* Mobile & Tablet: Full-width bar */}
       {/* Desktop & Big Screens: Centered pill-shaped container */}
-      <div 
+      <div
         className="glass border-border/50 border-t backdrop-blur-xl bg-background/80 dark:bg-background/90 w-full lg:border lg:border-border/50 lg:border-t lg:border-l lg:border-r lg:rounded-t-3xl lg:mx-auto lg:max-w-4xl lg:shadow-lg xl:max-w-5xl 3xl:max-w-6xl"
       >
         {/* Container wrapper for responsive centering */}
@@ -48,7 +48,7 @@ export function Navigation() {
           {/* Mobile: Full width with tight spacing */}
           {/* Tablet: More breathing room */}
           {/* Desktop: Elegant centered layout with optimal spacing */}
-          <div 
+          <div
             className="flex items-center justify-around w-full py-2.5 px-2 sm:py-3 sm:px-3 md:py-3.5 md:px-4 md:gap-1 lg:py-4 lg:px-6 lg:justify-evenly lg:gap-2 xl:py-4 xl:px-8 xl:gap-3 2xl:py-5 2xl:px-10 2xl:gap-4 3xl:py-6 3xl:px-12"
           >
             {navItems.map((item) => {
@@ -73,8 +73,8 @@ export function Navigation() {
                   )}
                   <div
                     className={`relative z-10 transition-all duration-200 ease-out ${
-                      isActive 
-                        ? "scale-110 -translate-y-0.5 lg:scale-110 lg:-translate-y-1" 
+                      isActive
+                        ? "scale-110 -translate-y-0.5 lg:scale-110 lg:-translate-y-1"
                         : "scale-100 translate-y-0"
                     }`}
                   >
@@ -84,9 +84,9 @@ export function Navigation() {
                       aria-hidden="true"
                     />
                   </div>
-                  {/* Responsive text sizes: Mobile (tiny) → Desktop (readable) */}
+                  {/* Responsive text sizes: Mobile (readable minimum 11px) → Desktop (readable) */}
                   <span
-                    className={`relative z-10 transition-all duration-200 ease-out text-[9px] leading-tight sm:text-xs sm:leading-snug md:text-xs md:leading-normal lg:text-sm lg:leading-relaxed lg:font-medium xl:text-sm xl:leading-relaxed 2xl:text-base 2xl:leading-relaxed whitespace-nowrap ${isActive ? "text-foreground font-semibold lg:font-bold" : "text-muted-foreground hover:text-foreground font-medium lg:font-normal"}`}
+                    className={`relative z-10 transition-all duration-200 ease-out text-[11px] leading-tight sm:text-xs sm:leading-snug md:text-xs md:leading-normal lg:text-sm lg:leading-relaxed lg:font-medium xl:text-sm xl:leading-relaxed 2xl:text-base 2xl:leading-relaxed whitespace-nowrap ${isActive ? "text-foreground font-semibold lg:font-bold" : "text-foreground/70 hover:text-foreground font-medium lg:font-normal"}`}
                   >
                     {item.label}
                   </span>
