@@ -119,11 +119,11 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-blue-600" />
+              <TrendingUp className="h-5 w-5 text-blue-800 dark:text-blue-400" />
               <span className="text-blue-900 dark:text-blue-100">Today's Progress</span>
             </div>
             <Link href="/analytics">
-              <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-200 hover:text-blue-700 dark:hover:text-blue-100">
+              <Button variant="ghost" size="sm" className="text-blue-800 dark:text-blue-200 hover:text-blue-900 dark:hover:text-blue-100">
                 View Details
                 <ArrowRight className="ml-1 h-3 w-3" />
               </Button>
@@ -137,13 +137,13 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Daily Goal
               </span>
-              <span className="text-sm text-blue-700 dark:text-blue-200 font-medium">
+              <span className="text-sm text-blue-900 dark:text-blue-200 font-medium">
                 {todayProgress.viewed}/{todayProgress.goal}
               </span>
             </div>
             <Progress value={todayProgress.completionRate} className="h-2" />
             {todayProgress.completionRate >= 100 && (
-              <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-200 font-medium">
+              <div className="flex items-center gap-1 text-xs text-green-800 dark:text-green-200 font-medium">
                 <Award className="h-3 w-3" />
                 Goal achieved! 🎉
               </div>
@@ -156,7 +156,7 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Weekly Progress
               </span>
-              <span className="text-sm text-blue-700 dark:text-blue-200 font-medium">
+              <span className="text-sm text-blue-900 dark:text-blue-200 font-medium">
                 {weeklyProgress.viewed}/7
               </span>
             </div>
@@ -169,13 +169,13 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <div className="text-lg font-bold text-blue-900 dark:text-blue-100">
                 {todayProgress.viewed}
               </div>
-              <div className="text-xs text-blue-700 dark:text-blue-200 font-medium">Today</div>
+              <div className="text-xs text-blue-900 dark:text-blue-200 font-medium">Today</div>
             </div>
             <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <div className="text-lg font-bold text-green-900 dark:text-green-100">
                 {todayProgress.mastered}
               </div>
-              <div className="text-xs text-green-700 dark:text-green-200 font-medium">Mastered</div>
+              <div className="text-xs text-green-900 dark:text-green-200 font-medium">Mastered</div>
             </div>
           </div>
 
@@ -202,11 +202,11 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
           {/* Streak Info */}
           <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1 text-blue-600 dark:text-blue-200 font-medium">
+              <div className="flex items-center gap-1 text-blue-800 dark:text-blue-200 font-medium">
                 <Flame className="h-3 w-3" />
                 <span>Current Streak: {progressStats.currentStreak} days</span>
               </div>
-              <div className="flex items-center gap-1 text-purple-600 dark:text-purple-200 font-medium">
+              <div className="flex items-center gap-1 text-purple-800 dark:text-purple-200 font-medium">
                 <Trophy className="h-3 w-3" />
                 <span>Best: {progressStats.longestStreak} days</span>
               </div>

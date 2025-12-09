@@ -8,7 +8,6 @@ import { DynamicBiasCard } from "@/components/dynamic-bias-card"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { TiltCard } from "@/components/tilt-card"
 import { PullToRefresh } from "@/components/pull-to-refresh"
-import { ContentTransparency } from "@/components/content-transparency"
 import { BiasProgressIndicator } from "@/components/bias-progress-indicator"
 import { DailyProgressWidget } from "@/components/daily-progress-widget"
 import { useApp } from "@/contexts/app-context"
@@ -203,8 +202,6 @@ export default function HomePage() {
                 onToggleMastered={handleToggleMastered}
               />
             </TiltCard>
-
-            <ContentTransparency showDetails={false} />
 
             <DailyProgressWidget />
 
