@@ -27,7 +27,7 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
     if (allBiases.length > 0) {
       const coreBiases = allBiases.filter(bias => bias.source === "core")
       const userBiases = allBiases.filter(bias => bias.source === "user")
-      
+
       const categories = allBiases.reduce((acc, bias) => {
         acc[bias.category] = (acc[bias.category] || 0) + 1
         return acc
@@ -82,7 +82,7 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
           <div className="font-medium text-blue-900 dark:text-blue-100">
             {contentStats.totalBiases} of ~{contentStats.totalKnownBiases} known biases
           </div>
-          <div className="text-sm text-blue-700 dark:text-blue-300">
+          <div className="text-sm text-blue-700 dark:text-blue-200 font-medium">
             {contentStats.coveragePercentage.toFixed(1)}% coverage
           </div>
         </div>
@@ -106,19 +106,19 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
               <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                 {contentStats.totalBiases}
               </div>
-              <div className="text-sm text-blue-700 dark:text-blue-300">Total Biases</div>
+              <div className="text-sm text-blue-700 dark:text-blue-200 font-medium">Total Biases</div>
             </div>
             <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
               <div className="text-2xl font-bold text-green-900 dark:text-green-100">
                 {contentStats.coveragePercentage.toFixed(1)}%
               </div>
-              <div className="text-sm text-green-700 dark:text-green-300">Coverage</div>
+              <div className="text-sm text-green-700 dark:text-green-200 font-medium">Coverage</div>
             </div>
             <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
               <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                 ~{contentStats.totalKnownBiases}
               </div>
-              <div className="text-sm text-purple-700 dark:text-purple-300">Known Biases</div>
+              <div className="text-sm text-purple-700 dark:text-purple-200 font-medium">Known Biases</div>
             </div>
           </div>
 
@@ -126,7 +126,7 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
             <div>
               <div className="flex justify-between mb-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Content Coverage</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-gray-600 dark:text-gray-200 font-medium">
                   {contentStats.totalBiases} / {contentStats.totalKnownBiases}
                 </span>
               </div>
@@ -138,13 +138,13 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
                 <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {contentStats.coreBiases}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Core Biases</div>
+                <div className="text-xs text-gray-600 dark:text-gray-200 font-medium">Core Biases</div>
               </div>
               <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {contentStats.userBiases}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">User Added</div>
+                <div className="text-xs text-gray-600 dark:text-gray-200 font-medium">User Added</div>
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
                   <Badge className={getCategoryColor(category)}>
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                   </Badge>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-200 font-medium">
                     {count} bias{count !== 1 ? 'es' : ''}
                   </span>
                 </div>
@@ -196,7 +196,7 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
                   <Badge className={getResearchLevelColor(level)}>
                     {level.charAt(0).toUpperCase() + level.slice(1)}
                   </Badge>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-200 font-medium">
                     {count} bias{count !== 1 ? 'es' : ''}
                   </span>
                 </div>
@@ -225,17 +225,17 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span className="font-medium text-green-900 dark:text-green-100">Current Status</span>
                 </div>
-                <p className="text-sm text-green-700 dark:text-green-300">
+                <p className="text-sm text-green-700 dark:text-green-200 font-medium">
                   Daily bias rotation with {contentStats.totalBiases} biases means you'll see each bias approximately every {Math.ceil(contentStats.totalBiases / 365)} year{Math.ceil(contentStats.totalBiases / 365) !== 1 ? 's' : ''}.
                 </p>
               </div>
-              
+
               <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-4 w-4 text-blue-600" />
                   <span className="font-medium text-blue-900 dark:text-blue-100">Expansion Plan</span>
                 </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300">
+                <p className="text-sm text-blue-700 dark:text-blue-200 font-medium">
                   We're continuously adding new biases and improving existing content based on user feedback and expert review.
                 </p>
               </div>
@@ -246,7 +246,7 @@ export function ContentTransparency({ showDetails = true }: ContentTransparencyP
                 <Users className="h-4 w-4 text-purple-600" />
                 <span className="font-medium text-purple-900 dark:text-purple-100">Community Contributions</span>
               </div>
-              <p className="text-sm text-purple-700 dark:text-purple-300">
+              <p className="text-sm text-purple-700 dark:text-purple-200 font-medium">
                 Users can add custom biases, and all content is reviewed for accuracy. We aim to reach 100+ biases through community contributions and expert curation.
               </p>
             </div>

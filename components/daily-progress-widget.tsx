@@ -7,9 +7,9 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useApp } from "@/contexts/app-context"
-import { 
-  TrendingUp, 
-  Award, 
+import {
+  TrendingUp,
+  Award,
   Flame,
   Trophy,
   ArrowRight
@@ -27,7 +27,7 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
   // Create stable hash of progressList to prevent unnecessary recalculations
   // This prevents flickering when progressList reference changes but content is similar
   const progressListHash = useMemo(() => {
-    return progressList.length + progressList.filter(p => p.mastered).length + 
+    return progressList.length + progressList.filter(p => p.mastered).length +
            (progressList.length > 0 ? Math.max(...progressList.map(p => p.viewedAt || 0)) : 0)
   }, [progressList])
 
@@ -40,10 +40,10 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
     const todayEnd = todayStart + 24 * 60 * 60 * 1000 - 1
 
-    const todayViews = progressList.filter(p => 
+    const todayViews = progressList.filter(p =>
       p.viewedAt && p.viewedAt >= todayStart && p.viewedAt <= todayEnd
     ).length
-    const todayMastered = progressList.filter(p => 
+    const todayMastered = progressList.filter(p =>
       p.mastered && p.viewedAt && p.viewedAt >= todayStart && p.viewedAt <= todayEnd
     ).length
 
@@ -67,7 +67,7 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
     weekStart.setHours(0, 0, 0, 0)
     const weekEnd = new Date(today)
     weekEnd.setHours(23, 59, 59, 999)
-    
+
     const weekViews = progressList.filter(p => {
       if (!p.viewedAt) return false
       const viewDate = new Date(p.viewedAt)
@@ -89,8 +89,8 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
     const today = new Date(now)
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
     const todayEnd = todayStart + 24 * 60 * 60 * 1000 - 1
-    
-    const todayBiases = progressList.filter(p => 
+
+    const todayBiases = progressList.filter(p =>
       p.viewedAt && p.viewedAt >= todayStart && p.viewedAt <= todayEnd
     )
 
@@ -123,7 +123,7 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <span className="text-blue-900 dark:text-blue-100">Today's Progress</span>
             </div>
             <Link href="/analytics">
-              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+              <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-200 hover:text-blue-700 dark:hover:text-blue-100">
                 View Details
                 <ArrowRight className="ml-1 h-3 w-3" />
               </Button>
@@ -137,13 +137,13 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Daily Goal
               </span>
-              <span className="text-sm text-blue-700 dark:text-blue-300">
+              <span className="text-sm text-blue-700 dark:text-blue-200 font-medium">
                 {todayProgress.viewed}/{todayProgress.goal}
               </span>
             </div>
             <Progress value={todayProgress.completionRate} className="h-2" />
             {todayProgress.completionRate >= 100 && (
-              <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+              <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-200 font-medium">
                 <Award className="h-3 w-3" />
                 Goal achieved! 🎉
               </div>
@@ -156,7 +156,7 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Weekly Progress
               </span>
-              <span className="text-sm text-blue-700 dark:text-blue-300">
+              <span className="text-sm text-blue-700 dark:text-blue-200 font-medium">
                 {weeklyProgress.viewed}/7
               </span>
             </div>
@@ -169,13 +169,13 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               <div className="text-lg font-bold text-blue-900 dark:text-blue-100">
                 {todayProgress.viewed}
               </div>
-              <div className="text-xs text-blue-700 dark:text-blue-300">Today</div>
+              <div className="text-xs text-blue-700 dark:text-blue-200 font-medium">Today</div>
             </div>
             <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <div className="text-lg font-bold text-green-900 dark:text-green-100">
                 {todayProgress.mastered}
               </div>
-              <div className="text-xs text-green-700 dark:text-green-300">Mastered</div>
+              <div className="text-xs text-green-700 dark:text-green-200 font-medium">Mastered</div>
             </div>
           </div>
 
@@ -187,9 +187,9 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
               </div>
               <div className="flex flex-wrap gap-1">
                 {categoryProgress.map(({ category, count }) => (
-                  <Badge 
-                    key={category} 
-                    variant="outline" 
+                  <Badge
+                    key={category}
+                    variant="outline"
                     className="text-xs bg-info text-info-foreground border-info/50 dark:bg-info dark:text-info-foreground dark:border-info/60 font-semibold"
                   >
                     {category} ({count})
@@ -202,11 +202,11 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
           {/* Streak Info */}
           <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+              <div className="flex items-center gap-1 text-blue-600 dark:text-blue-200 font-medium">
                 <Flame className="h-3 w-3" />
                 <span>Current Streak: {progressStats.currentStreak} days</span>
               </div>
-              <div className="flex items-center gap-1 text-purple-600 dark:text-purple-400">
+              <div className="flex items-center gap-1 text-purple-600 dark:text-purple-200 font-medium">
                 <Trophy className="h-3 w-3" />
                 <span>Best: {progressStats.longestStreak} days</span>
               </div>

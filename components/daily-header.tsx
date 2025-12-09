@@ -71,19 +71,19 @@ export function DailyHeader() {
   const getThemeDisplay = () => {
     if (settings.theme === "dark") {
       return {
-        icon: <Moon className="h-5 w-5" aria-hidden="true" />,
+        icon: <Moon className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />,
         label: "Dark mode (click to cycle)",
         nextMode: "system",
       }
     } else if (settings.theme === "system") {
       return {
-        icon: <Monitor className="h-5 w-5" aria-hidden="true" />,
+        icon: <Monitor className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />,
         label: "System mode (click to cycle)",
         nextMode: "light",
       }
     } else {
       return {
-        icon: <Sun className="h-5 w-5" aria-hidden="true" />,
+        icon: <Sun className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />,
         label: "Light mode (click to cycle)",
         nextMode: "dark",
       }
@@ -125,13 +125,13 @@ export function DailyHeader() {
                   onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
                   aria-label="Visit Boostlly - Tiny words. Big impact."
                   title="Visit Boostlly - Tiny words. Big impact."
-                  className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px] relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+                  className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
                 >
                   <Image
                     src="/boostlly-logo.png"
                     alt="Boostlly"
-                    width={20}
-                    height={20}
+                    width={28}
+                    height={28}
                     className="transition-all duration-300 relative z-10 object-contain"
                     aria-hidden="true"
                   />
@@ -142,9 +142,9 @@ export function DailyHeader() {
                   onClick={toggleTheme}
                   aria-label={themeDisplay.label}
                   title={themeDisplay.label}
-                  className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px] relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+                  className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
                 >
-                  <span className="h-5 w-5 transition-all duration-300 relative z-10">
+                  <span className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10">
                     {themeDisplay.icon}
                   </span>
                 </Button>
@@ -153,10 +153,10 @@ export function DailyHeader() {
                     variant="ghost"
                     size="icon"
                     aria-label="Open settings"
-                    className="touch-target h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px] relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+                    className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
                   >
                     <Bell
-                      className="h-5 w-5 transition-all duration-300 relative z-10"
+                      className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10"
                       aria-hidden="true"
                     />
                   </Button>

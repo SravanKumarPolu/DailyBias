@@ -51,12 +51,12 @@ export function BiasProgressIndicator() {
             <span className="text-sm font-medium text-green-900 dark:text-green-100">
               Bias Coverage
             </span>
-            <span className="text-sm text-green-700 dark:text-green-300">
+            <span className="text-sm text-green-700 dark:text-green-200 font-medium">
               {progressStats.viewedBiases} / {progressStats.totalBiases}
             </span>
           </div>
           <Progress value={progressStats.completionPercentage} className="h-2" />
-          <div className="text-xs text-green-600 dark:text-green-400">
+          <div className="text-xs text-green-600 dark:text-green-200 font-medium">
             {progressStats.completionPercentage.toFixed(1)}% of all biases viewed
           </div>
         </div>
@@ -68,12 +68,12 @@ export function BiasProgressIndicator() {
               <span className="text-sm font-medium text-green-900 dark:text-green-100">
                 Mastery Rate
               </span>
-              <span className="text-sm text-green-700 dark:text-green-300">
+              <span className="text-sm text-green-700 dark:text-green-200 font-medium">
                 {progressStats.masteredBiases} / {progressStats.viewedBiases}
               </span>
             </div>
             <Progress value={progressStats.masteryPercentage} className="h-2" />
-            <div className="text-xs text-green-600 dark:text-green-400">
+            <div className="text-xs text-green-600 dark:text-green-200 font-medium">
               {progressStats.masteryPercentage.toFixed(1)}% of viewed biases mastered
             </div>
           </div>
@@ -85,19 +85,19 @@ export function BiasProgressIndicator() {
             <div className="text-lg font-bold text-green-900 dark:text-green-100">
               {progressStats.viewedBiases}
             </div>
-            <div className="text-xs text-green-700 dark:text-green-300">Viewed</div>
+            <div className="text-xs text-green-700 dark:text-green-200 font-medium">Viewed</div>
           </div>
           <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
             <div className="text-lg font-bold text-green-900 dark:text-green-100">
               {progressStats.masteredBiases}
             </div>
-            <div className="text-xs text-green-700 dark:text-green-300">Mastered</div>
+            <div className="text-xs text-green-700 dark:text-green-200 font-medium">Mastered</div>
           </div>
         </div>
 
         {/* Frequency Info */}
         <div className="pt-2 border-t border-green-200 dark:border-green-800">
-          <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+          <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-200 font-medium">
             <Calendar className="h-3 w-3" />
             <span>
               With {progressStats.totalBiases} biases, you'll see each one approximately every {Math.ceil(progressStats.totalBiases / 30)} month{Math.ceil(progressStats.totalBiases / 30) !== 1 ? 's' : ''}
