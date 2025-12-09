@@ -399,7 +399,49 @@ jobs:
         run: pnpm test:security
         continue-on-error: true
 
-  # 8. Load Tests (k6) - Optional
+  # 8. Android Build Validation Tests
+  android-validation:
+    name: Android Build Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.14.0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+      
+      - name: Run Android build validation tests
+        run: pnpm android:test
+        env:
+          CI: true
+      
+      - name: Upload Android test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-validation-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # 9. Load Tests (k6) - Optional
   load-test:
     name: Load Tests (k6)
     runs-on: ubuntu-latest

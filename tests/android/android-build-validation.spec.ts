@@ -23,12 +23,14 @@ test.describe('Android Build Validation', () => {
     expect(existsSync(manifestPath)).toBe(true);
   });
 
-  test('AndroidManifest.xml has correct package name', () => {
+  test('AndroidManifest.xml has MainActivity', () => {
     const manifestPath = join(APP_DIR, 'src/main/AndroidManifest.xml');
     const manifest = readFileSync(manifestPath, 'utf-8');
 
-    expect(manifest).toContain('com.debiasdaily.app');
+    // MainActivity should be referenced in the manifest
     expect(manifest).toContain('MainActivity');
+    // Package name is defined in build.gradle, not manifest (modern Android)
+    // The manifest uses ${applicationId} placeholder which is resolved at build time
   });
 
   test('build.gradle exists', () => {

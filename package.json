@@ -48,6 +48,7 @@
     "e2e:manual": "SKIP_WEBSERVER=1 playwright test",
     "e2e:visual": "playwright test tests/e2e/visual-regression.spec.ts",
     "e2e:visual:update": "playwright test tests/e2e/visual-regression.spec.ts --update-snapshots",
+    "android:test": "playwright test --config=playwright.android.config.ts",
     "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
     "test:all": "pnpm test:run && pnpm test:integration && pnpm e2e --project=chromium --project=mobile-chrome --project=mobile-safari",
     "test:lighthouse": "node scripts/lighthouse-test.js",

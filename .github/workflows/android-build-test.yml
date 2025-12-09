@@ -74,6 +74,14 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Android Build Validation Tests
+        run: pnpm android:test
+        env:
+          CI: true
+
       - name: Run Android Lint
         working-directory: android
         run: ./gradlew lint
@@ -237,3 +245,21 @@ jobs:
             exit 1
           fi
           echo "✅ App ID: $APP_ID"
+
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Android Build Validation Tests
+        run: pnpm android:test
+        env:
+          CI: true
+
+      - name: Upload Android validation results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-validation-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
