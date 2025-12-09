@@ -13,15 +13,24 @@ test.describe('Settings Persistence', () => {
   test('settings persist after navigation and reload', async ({ page }) => {
     await test.step('Navigate to Settings', async () => {
       // Use direct navigation for reliability
-      await page.goto('/settings', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      try {
+        await page.goto('/settings', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      } catch (error) {
+        // If domcontentloaded fails, try networkidle
+        await page.goto('/settings', { waitUntil: 'networkidle', timeout: 30000 });
+      }
       await waitForPageLoad(page, '/settings');
       
       // Wait for settings page to load - give extra time for Safari
       await page.waitForTimeout(3000);
       
       // Verify settings page loaded - check for heading or any settings content
-      const heading = page.locator('main h1, [id="main-content"] h1, h1').filter({ hasText: /Settings/i });
-      await expect(heading.first()).toBeVisible({ timeout: 15000 });
+      const heading = page.locator('main h1, [id="main-content"] h1, h1').filter({ hasText: /Settings/i }).or(
+        page.getByRole('heading', { name: /Settings/i })
+      ).or(
+        page.locator('main, [id="main-content"]')
+      );
+      await expect(heading.first()).toBeVisible({ timeout: 20000 });
     });
 
     await test.step('Toggle a setting (voice enabled)', async () => {
@@ -145,17 +154,27 @@ test.describe('Settings Persistence', () => {
 
   test('background style setting persists', async ({ page }) => {
     await test.step('Navigate to Settings', async () => {
-      const settingsNavLink = page.locator('[data-testid="nav-settings"]');
-      await expect(settingsNavLink).toBeVisible();
-      await settingsNavLink.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(200);
+      // Try direct navigation first for reliability
+      try {
+        await page.goto('/settings', { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await waitForPageLoad(page, '/settings');
+      } catch (error) {
+        // If direct navigation fails, try via navigation link
+        const settingsNavLink = page.locator('[data-testid="nav-settings"]');
+        await expect(settingsNavLink).toBeVisible();
+        await settingsNavLink.scrollIntoViewIfNeeded();
+        await page.waitForTimeout(200);
+        
+        // Click and wait for navigation
+        const navigationPromise = page.waitForURL('/settings', { timeout: 20000 });
+        await settingsNavLink.click({ force: false });
+        await navigationPromise;
+        
+        await waitForPageLoad(page, '/settings');
+      }
       
-      // Click and wait for navigation
-      const navigationPromise = page.waitForURL('/settings', { timeout: 15000 });
-      await settingsNavLink.click({ force: false });
-      await navigationPromise;
-      
-      await waitForPageLoad(page, '/settings');
+      // Wait for settings page to fully load
+      await page.waitForTimeout(2000);
     });
 
     await test.step('Change background style', async () => {

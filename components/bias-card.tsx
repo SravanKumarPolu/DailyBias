@@ -321,7 +321,7 @@ function BiasCardComponent({
 
   return (
     <div
-      className="group relative mx-auto max-w-2xl rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer sm:rounded-2xl sm:p-8 md:p-10"
+      className="group relative mx-auto w-full max-w-2xl rounded-xl bg-card/60 backdrop-blur-md border border-border/60 p-6 shadow-md transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer sm:rounded-2xl sm:p-8 md:p-10 xl:max-w-2xl 2xl:max-w-2xl"
       // Removed motion.div props to prevent flickering - using static div instead
       // Removed overflow-hidden to allow absolutely positioned buttons to be visible
       role="article"
@@ -342,7 +342,7 @@ function BiasCardComponent({
         <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-accent/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       </div>
 
-      <div className="relative space-y-6 sm:space-y-8 md:space-y-10">
+      <div className="relative space-y-8 sm:space-y-10 md:space-y-12">
         {/* Header - Using CSS Grid for better mobile layout */}
         {/* pr-28 (112px) reserves space for absolutely positioned buttons: 44px button + 8px gap + 44px button + 16px right margin */}
         <div className="space-y-4 pr-28">
@@ -372,33 +372,36 @@ function BiasCardComponent({
           {/* Row 2: Title spans full width - padding-right prevents overlap with buttons */}
           <h1
             id="bias-title"
-            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto line-clamp-3 text-2xl sm:text-3xl md:text-4xl"
+            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto line-clamp-3 text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl 2xl:text-5xl leading-tight"
           >
             {bias.title}
           </h1>
         </div>
 
-        {/* Summary */}
-        <div>
-          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl">
+        {/* Summary - Enhanced as key definition section */}
+        <div className="space-y-2 pt-2">
+          <h2 className="text-foreground/90 text-xs font-semibold tracking-wider uppercase sm:text-sm mb-3">
+            Definition
+          </h2>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl text-foreground/95 font-medium">
             {bias.summary}
           </p>
         </div>
 
         {/* Why it happens */}
-        <div className="space-y-3">
-          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base">
+        <div className="space-y-4 pt-2">
+          <h2 className="text-foreground text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl border-b border-border/50 pb-2">
             Why it happens
           </h2>
-          <p className="text-base leading-relaxed text-pretty sm:text-lg">{bias.why}</p>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl text-foreground/90">{bias.why}</p>
         </div>
 
         {/* How to counter */}
-        <div className="space-y-3">
-          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base">
+        <div className="space-y-4 pt-2">
+          <h2 className="text-foreground text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl border-b border-border/50 pb-2">
             How to counter it
           </h2>
-          <p className="text-base leading-relaxed text-pretty sm:text-lg">{bias.counter}</p>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl text-foreground/90">{bias.counter}</p>
         </div>
 
         {/* Actions */}

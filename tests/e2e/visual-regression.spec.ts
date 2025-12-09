@@ -123,8 +123,13 @@ test.describe('Visual Regression Tests', () => {
   });
 
   test('bias card component snapshot', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await waitForPageLoad(page, '/');
+    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    try {
+      await waitForPageLoad(page, '/');
+    } catch {
+      // If waitForPageLoad times out, just wait for the bias card directly
+      await page.waitForTimeout(2000);
+    }
     await waitForBiasCard(page);
     
     // Wait for animations to complete

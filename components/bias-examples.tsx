@@ -652,15 +652,15 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
   const tips = generateTips(bias)
 
   return (
-    <div className="mt-6 space-y-6">
+    <div className="mt-8 space-y-8">
       {/* Real-World Examples Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h3 className="text-muted-foreground mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider sm:text-base">
-          <Lightbulb className="h-4 w-4 text-primary" />
+        <h3 className="text-foreground mb-4 flex items-center gap-3 text-base font-bold uppercase tracking-wider sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl border-b border-border/50 pb-2">
+          <Lightbulb className="h-5 w-5 text-primary" />
           Real-World Examples
         </h3>
         <div className="space-y-3">
@@ -675,7 +675,7 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
               <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 group-hover:scale-110">
                 <Lightbulb className="h-3.5 w-3.5 text-primary" />
               </div>
-              <p className="text-sm leading-relaxed sm:text-base">{example}</p>
+              <p className="text-sm leading-relaxed sm:text-base md:text-lg text-foreground/90">{example}</p>
             </motion.div>
           ))}
         </div>
@@ -687,8 +687,8 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <h3 className="text-muted-foreground mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider sm:text-base">
-          <CheckCircle2 className="h-4 w-4 text-success" />
+        <h3 className="text-foreground mb-4 flex items-center gap-3 text-base font-bold uppercase tracking-wider sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl border-b border-border/50 pb-2">
+          <CheckCircle2 className="h-5 w-5 text-success" />
           Quick Tips
         </h3>
         <ul className="space-y-2">
@@ -701,7 +701,7 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
               className="flex gap-3"
             >
               <CheckCircle2 className="h-5 w-5 shrink-0 text-success transition-transform duration-200 hover:scale-110" />
-              <span className="text-sm leading-relaxed">{tip}</span>
+              <span className="text-sm leading-relaxed sm:text-base md:text-lg text-foreground/90">{tip}</span>
             </motion.li>
           ))}
         </ul>

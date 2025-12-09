@@ -96,7 +96,7 @@ export function DailyHeader() {
   // Removed the mounted check that was causing the skeleton flash
 
   return (
-    <header className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10">
+    <header className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10 xl:max-w-3xl 2xl:max-w-3xl">
       <div className="group relative overflow-hidden rounded-3xl border border-white/30 dark:border-white/15 bg-gradient-to-br from-white/15 via-white/10 to-white/5 dark:from-black/20 dark:via-black/15 dark:to-black/10 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] transition-all duration-500 ease-out hover:scale-[1.01] hover:shadow-[0_12px_40px_0_rgba(0,0,0,0.15)] dark:hover:shadow-[0_12px_40px_0_rgba(0,0,0,0.4)]">
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />

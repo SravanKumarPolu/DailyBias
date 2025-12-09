@@ -157,7 +157,7 @@ export default function HomePage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16"
+        className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16 xl:max-w-3xl 2xl:max-w-3xl"
         aria-label="Daily cognitive bias"
       >
         {/* ARIA live region for dynamic content updates */}

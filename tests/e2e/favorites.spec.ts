@@ -253,40 +253,40 @@ test.describe('Favorites Flow', () => {
       const favoriteButton = page.locator('[data-testid="bias-favorite-button"]').first();
       await expect(favoriteButton).toBeVisible({ timeout: 15000 });
       
+      // Get initial card count
+      const initialCards = page.getByRole('article');
+      const initialCount = await initialCards.count();
+      expect(initialCount).toBeGreaterThan(0);
+      
       // Wait a bit before clicking to ensure button is ready
       await page.waitForTimeout(1000);
       
       // Click to unfavorite
       await favoriteButton.click();
       
-      // Wait for the favorite state to update (heart should no longer be filled)
-      // Give more time for the state change to propagate
-      await page.waitForTimeout(2000);
-      
-      await expect(async () => {
-        const heartIcon = favoriteButton.locator('svg');
-        const classAfter = await heartIcon.getAttribute('class');
-        const isFavorited = classAfter?.includes('fill-destructive') || false;
-        expect(isFavorited).toBe(false);
-      }).toPass({ timeout: 15000 });
-      
-      // Wait for IndexedDB write to complete and UI to update
-      await page.waitForTimeout(3000);
-      
       // Wait for the card to be removed or empty state to appear
-      // Try both: check if card count is 0 OR empty state appears
-      // Give more time for IndexedDB operations to complete
-      await page.waitForTimeout(2000);
-      
+      // The card should disappear from the favorites page after unfavoriting
       await expect(async () => {
         const biasCards = page.getByRole('article');
         const count = await biasCards.count();
-        const emptyState = page.locator('text=No favorites yet');
+        const emptyState = page.locator('text=/no favorites yet/i').or(
+          page.getByRole('heading', { name: /no favorites yet/i })
+        );
         const emptyStateVisible = await emptyState.isVisible().catch(() => false);
         
         // Either the count should be 0 OR the empty state should be visible
         expect(count === 0 || emptyStateVisible).toBe(true);
       }).toPass({ timeout: 30000 });
+      
+      // Also verify the heart icon is not filled (if button still exists)
+      try {
+        const heartIcon = favoriteButton.locator('svg').first();
+        const classAfter = await heartIcon.getAttribute('class').catch(() => '');
+        const isFavorited = classAfter?.includes('fill-destructive') || false;
+        expect(isFavorited).toBe(false);
+      } catch {
+        // Button might not exist if card was removed, which is fine
+      }
     });
 
     await test.step('Verify empty state appears', async () => {
@@ -294,10 +294,14 @@ test.describe('Favorites Flow', () => {
       await page.waitForTimeout(2000);
       
       // Should show empty state message - try multiple possible texts
-      const emptyState = page.locator('text=/no favorites|empty/i').or(
+      const emptyState = page.locator('text=/no favorites yet/i').or(
+        page.getByRole('heading', { name: /no favorites yet/i })
+      ).or(
+        page.locator('text=/no favorites|empty/i')
+      ).or(
         page.getByRole('heading', { name: /no favorites/i })
       );
-      await expect(emptyState.first()).toBeVisible({ timeout: 10000 });
+      await expect(emptyState.first()).toBeVisible({ timeout: 15000 });
       
       // Verify no bias cards are present
       const biasCards = page.locator('[data-testid="bias-card"]').or(

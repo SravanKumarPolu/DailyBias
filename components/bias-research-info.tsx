@@ -90,10 +90,10 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                   <GraduationCap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+                  <CardTitle className="text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl text-blue-900 dark:text-blue-100">
                     Research & Sources
                   </CardTitle>
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <p className="text-sm sm:text-base text-blue-700 dark:text-blue-300 font-medium">
                     {bias.references?.length || 0} reference{(bias.references?.length || 0) !== 1 ? 's' : ''} • {getResearchLevelLabel(bias.researchLevel)}
                   </p>
                 </div>

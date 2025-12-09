@@ -138,10 +138,10 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
               <MessageSquare className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-green-900 dark:text-green-100">
+              <CardTitle className="text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl text-green-900 dark:text-green-100">
                 Help Improve This Content
               </CardTitle>
-              <p className="text-sm text-green-700 dark:text-green-300">
+              <p className="text-sm sm:text-base text-green-700 dark:text-green-300 font-medium">
                 Found an error or have suggestions? Your feedback helps us improve.
               </p>
             </div>

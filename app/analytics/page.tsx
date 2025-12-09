@@ -127,7 +127,7 @@ export default function AnalyticsPage() {
                     onClick={() => setActiveTab(tab.id as typeof activeTab)}
                     className="flex items-center gap-2"
                     aria-label={`Switch to ${tab.label} tab`}
-                    aria-pressed={activeTab === tab.id}
+                    aria-selected={activeTab === tab.id}
                     role="tab"
                     aria-controls={`tabpanel-${tab.id}`}
                   >
