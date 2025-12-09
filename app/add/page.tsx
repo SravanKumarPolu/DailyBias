@@ -120,7 +120,7 @@ export default function AddBiasPage() {
   const handleSubmit = async () => {
     console.log("[AddPage] Submitting bias form")
     console.log("[AddPage] Form data:", { title, category, summary: summary.substring(0, 50) + "...", why: why.substring(0, 50) + "...", counter: counter.substring(0, 50) + "..." })
-    
+
     if (!validateForm()) {
       console.log("[AddPage] Form validation failed")
       return
@@ -194,7 +194,7 @@ export default function AddBiasPage() {
                 Create and manage your custom cognitive biases
               </p>
             </div>
-            <Button 
+            <Button
               onClick={openAddDialog}
               size="sm"
               className="touch-target hover-lift button-press shrink-0 cursor-pointer transition-all duration-200 sm:size-default"
@@ -226,7 +226,7 @@ export default function AddBiasPage() {
                 <p className="text-muted-foreground mb-4 text-sm sm:mb-6 sm:text-base text-balance">
                   Create your own cognitive biases to add to your personal collection
                 </p>
-                <Button 
+                <Button
                   onClick={openAddDialog}
                   className="touch-target hover-lift button-press cursor-pointer transition-all duration-200"
                   aria-label="Add your first bias"
@@ -239,8 +239,8 @@ export default function AddBiasPage() {
           ) : (
             <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
               {userBiases.map((bias, index) => (
-                <div 
-                  key={bias.id} 
+                <div
+                  key={bias.id}
                   className="glass hover-lift animate-fade-in-up shadow-soft rounded-xl p-4 transition-all duration-200 sm:rounded-2xl sm:p-6 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
                   tabIndex={0}
@@ -254,8 +254,8 @@ export default function AddBiasPage() {
                         <h3 className="text-base font-semibold text-balance sm:text-lg">{bias.title}</h3>
                       </div>
                       <div className="flex shrink-0 gap-1">
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="icon"
                           onClick={() => openEditDialog(bias)}
                           className="touch-target hover-grow button-press h-8 w-8 cursor-pointer transition-all duration-200 sm:h-9 sm:w-9"
@@ -349,8 +349,8 @@ export default function AddBiasPage() {
                 className={errors.summary ? "border-destructive" : ""}
                 maxLength={500}
               />
-              {errors.summary && <p className="text-destructive text-sm">{errors.summary}</p>}
-              <p className="text-muted-foreground text-xs">{summary.length}/500 characters</p>
+              {errors.summary && <p className="text-destructive text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{errors.summary}</p>}
+              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{summary.length}/500 characters</p>
             </div>
 
             {/* Why */}
@@ -364,8 +364,8 @@ export default function AddBiasPage() {
                 rows={3}
                 maxLength={1000}
               />
-              {errors.why && <p className="text-destructive text-sm">{errors.why}</p>}
-              <p className="text-muted-foreground text-xs">{why.length}/1000 characters</p>
+              {errors.why && <p className="text-destructive text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{errors.why}</p>}
+              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{why.length}/1000 characters</p>
             </div>
 
             {/* Counter */}
@@ -379,11 +379,11 @@ export default function AddBiasPage() {
                 rows={3}
                 maxLength={1000}
               />
-              {errors.counter && <p className="text-destructive text-sm">{errors.counter}</p>}
-              <p className="text-muted-foreground text-xs">{counter.length}/1000 characters</p>
+              {errors.counter && <p className="text-destructive text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{errors.counter}</p>}
+              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{counter.length}/1000 characters</p>
             </div>
 
-            {errors.submit && <p className="text-destructive text-sm">{errors.submit}</p>}
+            {errors.submit && <p className="text-destructive text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{errors.submit}</p>}
           </div>
 
           <DialogFooter>

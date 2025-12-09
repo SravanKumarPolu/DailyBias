@@ -230,13 +230,13 @@ function BiasCardComponent({
         <div className="relative flex items-start justify-between gap-4 sm:gap-5">
           <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
+              <Badge className={`text-xs sm:text-sm lg:text-base xl:text-base 2xl:text-lg ${getCategoryColor(bias.category)}`}>
                 {getCategoryLabel(bias.category)}
               </Badge>
               {bias.researchLevel && (
                 <Badge
                   variant="outline"
-                  className={`text-xs font-semibold ${
+                  className={`text-xs sm:text-sm lg:text-base xl:text-base 2xl:text-lg font-semibold ${
                     bias.researchLevel === 'established'
                       ? 'border-success/50 bg-success text-success-foreground dark:border-success/60 dark:bg-success dark:text-success-foreground'
                       : bias.researchLevel === 'emerging'
@@ -250,7 +250,7 @@ function BiasCardComponent({
                 </Badge>
               )}
             </div>
-            <h3 className="text-lg leading-tight font-semibold tracking-tight text-balance sm:text-xl sm:line-clamp-2">
+            <h3 className="text-lg font-semibold tracking-tight text-balance leading-tight sm:text-xl sm:line-clamp-2">
               {bias.title}
             </h3>
             <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base line-clamp-3">
@@ -372,36 +372,36 @@ function BiasCardComponent({
           {/* Row 2: Title spans full width - padding-right prevents overlap with buttons */}
           <h1
             id="bias-title"
-            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto line-clamp-3 text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl 2xl:text-5xl leading-tight"
+            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-6xl"
           >
             {bias.title}
           </h1>
         </div>
 
         {/* Summary - Enhanced as key definition section */}
-        <div className="space-y-2 pt-2">
-          <h2 className="text-foreground/90 text-xs font-semibold tracking-wider uppercase sm:text-sm mb-3">
+        <div className="space-y-3 pt-2">
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
             Definition
           </h2>
-          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl text-foreground/95 font-medium">
+          <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">
             {bias.summary}
           </p>
         </div>
 
         {/* Why it happens */}
-        <div className="space-y-4 pt-2">
-          <h2 className="text-foreground text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl border-b border-border/50 pb-2">
+        <div className="space-y-3 pt-2">
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
             Why it happens
           </h2>
-          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl text-foreground/90">{bias.why}</p>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">{bias.why}</p>
         </div>
 
         {/* How to counter */}
-        <div className="space-y-4 pt-2">
-          <h2 className="text-foreground text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl border-b border-border/50 pb-2">
+        <div className="space-y-3 pt-2">
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
             How to counter it
           </h2>
-          <p className="text-base leading-relaxed text-pretty sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl text-foreground/90">{bias.counter}</p>
+          <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">{bias.counter}</p>
         </div>
 
         {/* Actions */}

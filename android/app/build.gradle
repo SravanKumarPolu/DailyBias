@@ -3,6 +3,19 @@ apply plugin: 'com.android.application'
 android {
     namespace "com.debiasdaily.app"
     compileSdk rootProject.ext.compileSdkVersion
+
+    // Define signing configs BEFORE buildTypes (order matters in Gradle)
+    signingConfigs {
+        release {
+            if (project.hasProperty('ANDROID_KEYSTORE_FILE')) {
+                storeFile file(ANDROID_KEYSTORE_FILE)
+                storePassword ANDROID_KEYSTORE_PASSWORD
+                keyAlias ANDROID_KEY_ALIAS
+                keyPassword ANDROID_KEY_PASSWORD
+            }
+        }
+    }
+
     defaultConfig {
         applicationId "com.debiasdaily.app"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -16,6 +29,7 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -25,17 +39,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-    }
-
-    signingConfigs {
-        release {
+            // Only use signing config if keystore properties are available
             if (project.hasProperty('ANDROID_KEYSTORE_FILE')) {
-                storeFile file(ANDROID_KEYSTORE_FILE)
-                storePassword ANDROID_KEYSTORE_PASSWORD
-                keyAlias ANDROID_KEY_ALIAS
-                keyPassword ANDROID_KEY_PASSWORD
+                signingConfig signingConfigs.release
             }
         }
     }

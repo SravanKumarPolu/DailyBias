@@ -16,7 +16,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
       className={cn(
-        "border-input bg-background ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 w-full items-center justify-between rounded-xl border px-4 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 transition-all duration-fast hover:border-border/80 focus:border-ring cursor-pointer",
+        "border-input bg-background ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 w-full items-center justify-between rounded-xl border px-4 py-2.5 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 transition-all duration-fast hover:border-border/80 focus:border-ring cursor-pointer",
         className
       )}
     {...props}
@@ -95,7 +95,7 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn("py-1.5 pr-2 pl-8 text-sm font-semibold", className)}
+    className={cn("py-1.5 pr-2 pl-8 text-sm font-semibold sm:text-base lg:text-lg xl:text-lg 2xl:text-xl", className)}
     {...props}
   />
 ))
@@ -108,7 +108,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center rounded-lg py-2 pr-3 pl-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors duration-fast",
+        "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center rounded-lg py-2 pr-3 pl-8 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors duration-fast",
         className
       )}
     {...props}

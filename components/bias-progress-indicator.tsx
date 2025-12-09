@@ -39,8 +39,8 @@ export function BiasProgressIndicator() {
   return (
     <Card className="border-l-4 border-l-green-500 bg-green-50/50 dark:bg-green-950/20">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-green-900 dark:text-green-100">
-          <BookOpen className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100 sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
+          <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />
           Your Learning Progress
         </CardTitle>
       </CardHeader>
@@ -48,15 +48,15 @@ export function BiasProgressIndicator() {
         {/* Overall Progress */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-green-900 dark:text-green-100">
+            <span className="text-sm font-medium text-green-900 dark:text-green-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               Bias Coverage
             </span>
-            <span className="text-sm text-green-900 dark:text-green-200 font-medium">
+            <span className="text-sm text-green-900 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               {progressStats.viewedBiases} / {progressStats.totalBiases}
             </span>
           </div>
-          <Progress value={progressStats.completionPercentage} className="h-2" />
-          <div className="text-xs text-green-800 dark:text-green-200 font-medium">
+          <Progress value={progressStats.completionPercentage} className="h-2 sm:h-2.5 lg:h-3" />
+          <div className="text-sm text-green-800 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
             {progressStats.completionPercentage.toFixed(1)}% of all biases viewed
           </div>
         </div>
@@ -65,15 +65,15 @@ export function BiasProgressIndicator() {
         {progressStats.viewedBiases > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-green-900 dark:text-green-100">
+              <span className="text-sm font-medium text-green-900 dark:text-green-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Mastery Rate
               </span>
-              <span className="text-sm text-green-900 dark:text-green-200 font-medium">
+              <span className="text-sm text-green-900 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 {progressStats.masteredBiases} / {progressStats.viewedBiases}
               </span>
             </div>
-            <Progress value={progressStats.masteryPercentage} className="h-2" />
-            <div className="text-xs text-green-800 dark:text-green-200 font-medium">
+            <Progress value={progressStats.masteryPercentage} className="h-2 sm:h-2.5 lg:h-3" />
+            <div className="text-sm text-green-800 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               {progressStats.masteryPercentage.toFixed(1)}% of viewed biases mastered
             </div>
           </div>
@@ -82,23 +82,23 @@ export function BiasProgressIndicator() {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-            <div className="text-lg font-bold text-green-900 dark:text-green-100">
+            <div className="text-lg font-bold text-green-900 dark:text-green-100 sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
               {progressStats.viewedBiases}
             </div>
-            <div className="text-xs text-green-900 dark:text-green-200 font-medium">Viewed</div>
+            <div className="text-sm text-green-900 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Viewed</div>
           </div>
           <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-            <div className="text-lg font-bold text-green-900 dark:text-green-100">
+            <div className="text-lg font-bold text-green-900 dark:text-green-100 sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
               {progressStats.masteredBiases}
             </div>
-            <div className="text-xs text-green-900 dark:text-green-200 font-medium">Mastered</div>
+            <div className="text-sm text-green-900 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Mastered</div>
           </div>
         </div>
 
         {/* Frequency Info */}
         <div className="pt-2 border-t border-green-200 dark:border-green-800">
-          <div className="flex items-center gap-2 text-xs text-green-800 dark:text-green-200 font-medium">
-            <Calendar className="h-3 w-3" />
+          <div className="flex items-center gap-2 text-sm text-green-800 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
+            <Calendar className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
             <span>
               With {progressStats.totalBiases} biases, you'll see each one approximately every {Math.ceil(progressStats.totalBiases / 30)} month{Math.ceil(progressStats.totalBiases / 30) !== 1 ? 's' : ''}
             </span>

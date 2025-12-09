@@ -170,7 +170,7 @@ export default function SettingsPage() {
         "Tessa",             // Good iOS voice
         "Tom"                // Alternative Android voice
       ]
-      
+
       // Find the best available voice based on priority
       let bestVoice = null
       for (const priorityVoice of voicePriority) {
@@ -180,13 +180,13 @@ export default function SettingsPage() {
           break
         }
       }
-      
+
       // If no priority voice found, use the first English voice
       if (!bestVoice && englishVoices.length > 0) {
         bestVoice = englishVoices[0]
         console.log("[Settings] Using first available voice:", bestVoice.name)
       }
-      
+
       // Set the best voice if it's different from current
       if (bestVoice && settings.voiceName !== bestVoice.name) {
         console.log("[Settings] Auto-selecting voice:", bestVoice.name)
@@ -217,7 +217,7 @@ export default function SettingsPage() {
       if (speechSupported) {
         await ensureVoicesLoaded()
       }
-      
+
       await fetchAndFilterVoices()
       haptics.selection()
     } catch (error) {
@@ -246,7 +246,7 @@ export default function SettingsPage() {
   useEffect(() => {
     setLocalVoiceRate(settings.voiceRate || 0.9)
     setLocalVoicePitch(settings.voicePitch || 1.0)
-    
+
     // Update timezone info when settings change (only after mounted)
     if (mounted && settings.timezone) {
       const timezoneInfo = detectTimezone()
@@ -262,14 +262,14 @@ export default function SettingsPage() {
         alert("No data to export. Make sure you have some biases or settings to backup.")
         return
       }
-      
+
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
       a.download = `bias-daily-backup-${new Date().toISOString().slice(0, 10)}.json`
       a.style.display = "none"
-      
+
       // Safely append to body with null check
       if (document.body) {
         document.body.appendChild(a)
@@ -280,7 +280,7 @@ export default function SettingsPage() {
         a.click()
       }
       URL.revokeObjectURL(url)
-      
+
       console.log('[Settings] Data exported successfully')
       setExportSuccess(true)
       setTimeout(() => setExportSuccess(false), 3000)
@@ -314,26 +314,26 @@ export default function SettingsPage() {
       console.log('[Settings] Importing data from file:', file.name)
       const text = await file.text()
       const data = JSON.parse(text)
-      
+
       // Validate data structure
       if (!data || typeof data !== 'object') {
         throw new Error('Invalid data format')
       }
-      
+
       // Check if it looks like a valid backup file
       const expectedKeys = ['settings', 'userBiases', 'favorites', 'progress', 'streak']
       const hasValidKeys = expectedKeys.some(key => key in data)
-      
+
       if (!hasValidKeys) {
         throw new Error('This does not appear to be a valid Bias Daily backup file.')
       }
-      
+
       await importAllData(data)
       await refresh()
       console.log('[Settings] Data imported successfully')
       setImportSuccess(true)
       haptics.success()
-      
+
       setTimeout(() => {
         setImportSuccess(false)
         router.refresh()
@@ -363,7 +363,7 @@ export default function SettingsPage() {
       const permission = await Notification.requestPermission()
       if (permission === "granted") {
         await saveSetting("dailyReminder", true)
-        
+
         // Show test notification
         if (Notification.permission === "granted") {
           new Notification("Bias Daily", {
@@ -371,7 +371,7 @@ export default function SettingsPage() {
             icon: "/icon-192.jpg",
           })
         }
-        
+
         haptics.success()
         return true
       } else {
@@ -445,17 +445,17 @@ export default function SettingsPage() {
     try {
       console.log('[Settings] Timezone auto-detect:', enabled ? 'enabled' : 'disabled')
       setTimezoneSwitching(true)
-      
+
       // Save the setting immediately
       await saveSetting("timezoneAutoDetect", enabled)
-      
+
       if (enabled) {
         const detected = detectTimezone()
         console.log('[Settings] Auto-detected timezone:', detected.timezone)
         await saveSetting("timezone", detected.timezone)
         setCurrentTimezoneInfo(detected)
       }
-      
+
       haptics.selection()
     } catch (error) {
       console.error('[Settings] Error toggling timezone auto-detect:', error)
@@ -472,7 +472,7 @@ export default function SettingsPage() {
         alert('Speech synthesis is not supported in this browser.')
         return
       }
-      
+
       await ensureVoicesLoaded()
 
       // Use the saved settings value for the most up-to-date selection
@@ -488,7 +488,7 @@ export default function SettingsPage() {
       const sample = `Hello. This is ${voiceLabel}. Testing voice quality and pronunciation.`
 
       console.log('[Settings] Testing voice:', selectedVoiceName)
-      
+
       // Pass the selected voice name explicitly to bypass settings cache
       speak(sample, selectedVoiceName || undefined)
 
@@ -544,7 +544,7 @@ export default function SettingsPage() {
           {/* Header */}
           <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Settings</h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
+            <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
               Customize your Bias Daily experience
             </p>
           </div>
@@ -557,7 +557,7 @@ export default function SettingsPage() {
                 <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
                 Appearance
               </h2>
-              <p className="text-muted-foreground text-xs sm:text-sm">
+              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Customize the look and feel
               </p>
             </div>
@@ -601,7 +601,7 @@ export default function SettingsPage() {
                 <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 Notifications
               </h2>
-              <p className="text-muted-foreground text-xs sm:text-sm">
+              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Get reminded about daily biases
               </p>
             </div>
@@ -611,7 +611,7 @@ export default function SettingsPage() {
                 <Label htmlFor="daily-reminder" className="cursor-pointer">
                   Daily Reminder
                 </Label>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
                   Receive a notification when a new bias is available
                 </p>
               </div>
@@ -633,7 +633,7 @@ export default function SettingsPage() {
                   <Mic className="h-4 w-4 sm:h-5 sm:w-5" />
                   Voice Settings
                 </h2>
-                <p className="text-muted-foreground text-xs sm:text-sm">
+                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                   Text-to-speech preferences
                 </p>
               </div>
@@ -656,7 +656,7 @@ export default function SettingsPage() {
                 <Label htmlFor="voice-enabled" className="cursor-pointer">
                   Enable Voice
                 </Label>
-                <p className="text-muted-foreground text-sm">Read bias content aloud</p>
+                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">Read bias content aloud</p>
               </div>
               <Switch
                 id="voice-enabled"
@@ -718,7 +718,7 @@ export default function SettingsPage() {
                             >
                               <div className="min-w-0 grow">
                                 <div className="truncate font-medium">{voice.name}</div>
-                                <div className="text-muted-foreground mt-0.5 text-xs">
+                                <div className="text-foreground/80 mt-0.5 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                                   {voice.lang || 'en'}
                                 </div>
                               </div>
@@ -732,7 +732,7 @@ export default function SettingsPage() {
                           )
                         })}
                         {filteredVoices.length === 0 && (
-                          <div className="p-4 text-center text-muted-foreground text-sm">
+                          <div className="p-4 text-center text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                             No voices found
                           </div>
                         )}
@@ -744,25 +744,25 @@ export default function SettingsPage() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                  
+
                   {/* Current Voice Status Display */}
                   <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                      <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                      <span className="text-sm font-medium text-blue-900 dark:text-blue-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                         Currently Active Voice:
                       </span>
                           </div>
-                    <div className="mt-1 text-sm text-blue-800 dark:text-blue-200">
+                    <div className="mt-1 text-sm text-blue-800 dark:text-blue-200 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       {settings.voiceName || "None selected"}
                     </div>
-                    <div className="mt-1 text-xs text-blue-600 dark:text-blue-300">
+                    <div className="mt-1 text-sm text-blue-600 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       Device: {typeof window !== "undefined" && (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768 || ('ontouchstart' in window)) ? "Mobile" : "Desktop"}
                     </div>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="mt-2 h-8 text-xs"
+                      className="mt-2 h-8 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl"
                       onClick={() => {
                         if (window.speechSynthesis) {
                           const utterance = new SpeechSynthesisUtterance("Hello, this is the current voice speaking.")
@@ -782,9 +782,9 @@ export default function SettingsPage() {
                       🔊 Test Current Voice
                     </Button>
                   </div>
-                  
+
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       ⭐ indicates high-quality local voices
                     </p>
                     <Button
@@ -861,7 +861,7 @@ export default function SettingsPage() {
                 <Label htmlFor="mix-user-biases" className="cursor-pointer">
                   Include Custom Biases
                 </Label>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
                   Mix your custom biases into the daily selection
                 </p>
               </div>
@@ -917,7 +917,7 @@ export default function SettingsPage() {
                         <div className="font-medium text-green-800 dark:text-green-200">
                           Auto-detected: {currentTimezoneInfo.city} ({currentTimezoneInfo.region})
                         </div>
-                        <div className="text-xs text-green-600 dark:text-green-300">
+                        <div className="text-sm text-green-600 dark:text-green-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                           {currentTimezoneInfo.timezone} {currentTimezoneInfo.offset} • Detected automatically
                         </div>
                       </div>
@@ -948,7 +948,7 @@ export default function SettingsPage() {
                         <div className="font-medium text-blue-800 dark:text-blue-200">
                           Manual Selection Active
                         </div>
-                        <div className="text-xs text-blue-600 dark:text-blue-300">
+                        <div className="text-sm text-blue-600 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                           Using manually selected timezone
                         </div>
                       </div>
@@ -971,7 +971,7 @@ export default function SettingsPage() {
                   ))}
                 </select>
               </div>
-                  
+
                   <div className="space-y-2">
                     <Button
                       variant="outline"
@@ -997,7 +997,7 @@ export default function SettingsPage() {
                 <Database className="h-4 w-4 sm:h-5 sm:w-5" />
                 Data Management
               </h2>
-              <p className="text-muted-foreground text-xs sm:text-sm">Export or import your data</p>
+              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Export or import your data</p>
             </div>
 
             <div className="space-y-3">
@@ -1010,7 +1010,7 @@ export default function SettingsPage() {
                 Export All Data
               </Button>
               {exportSuccess && (
-                <p className="text-sm text-green-600 dark:text-green-400">
+                <p className="text-sm text-green-600 dark:text-green-400 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                   Data exported successfully!
                 </p>
               )}
@@ -1039,12 +1039,12 @@ export default function SettingsPage() {
                 </Label>
               </div>
               {importSuccess && (
-                <p className="text-sm text-green-600 dark:text-green-400">
+                <p className="text-sm text-green-600 dark:text-green-400 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                   Data imported successfully!
                 </p>
               )}
 
-              <p className="text-muted-foreground text-xs">
+              <p className="text-foreground/80 text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Export includes your custom biases, favorites, and settings. Import will merge with
                 existing data.
               </p>
@@ -1060,7 +1060,7 @@ export default function SettingsPage() {
               </h2>
             </div>
 
-            <div className="text-muted-foreground space-y-2 text-xs sm:text-sm">
+            <div className="text-foreground/80 space-y-2 text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               <p>
                 <strong className="text-foreground">Bias Daily</strong> helps you learn one
                 cognitive bias every day from Elon Musk's curated list of 50 biases.

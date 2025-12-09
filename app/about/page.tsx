@@ -32,15 +32,15 @@ export default function AboutPage() {
         <div className="space-y-8 sm:space-y-10 md:space-y-12">
           {/* Header */}
           <div className="glass shadow-glass animate-fade-in-up rounded-xl p-8 text-center sm:rounded-2xl sm:p-10 md:p-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl mb-4 font-bold tracking-tight sm:mb-5">Bias Daily</h1>
-            <p className="text-foreground/80 text-base sm:text-lg md:text-xl text-balance leading-relaxed">
+            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl mb-4 sm:mb-5">Bias Daily</h1>
+            <p className="text-foreground/80 text-base sm:text-lg leading-relaxed text-pretty">
               Learn one cognitive bias every day and improve your decision-making
             </p>
           </div>
 
           {/* Features */}
           <div className="glass shadow-glass animate-fade-in-up space-y-5 rounded-xl p-5 sm:space-y-6 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.1s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">Features</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Features</h2>
 
             <div className="space-y-4 sm:space-y-5">
               <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
@@ -51,7 +51,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">{siteConfig.name}</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     Discover a new cognitive bias every day, selected deterministically so everyone
                     sees the same bias on the same date.
                   </p>
@@ -66,7 +66,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Privacy First</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     All your data stays on your device. No tracking, no analytics, no servers.
                     Complete privacy guaranteed.
                   </p>
@@ -81,7 +81,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Offline First</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     Install as a PWA and use the app completely offline. Works on any device,
                     anywhere.
                   </p>
@@ -96,7 +96,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Customizable</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     Save favorites, add your own biases, and customize the appearance to match your
                     preferences.
                   </p>
@@ -108,7 +108,7 @@ export default function AboutPage() {
 
           {/* Content Methodology */}
           <div className="glass shadow-glass animate-fade-in-up space-y-5 rounded-xl p-5 sm:space-y-6 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.15s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">Content Quality & Sources</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Content Quality & Sources</h2>
 
             <div className="space-y-4 sm:space-y-5">
               <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
@@ -119,7 +119,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Research-Based Content</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     All bias explanations are backed by peer-reviewed psychological research. Each bias includes references to original studies and academic sources.
                   </p>
                 </div>
@@ -133,7 +133,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Expert Review</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     Content is reviewed by psychology professionals and cognitive science experts to ensure accuracy and educational value.
                   </p>
                 </div>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Transparent Sources</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     Every bias includes academic references, research level indicators, and links to original studies when available.
                   </p>
                 </div>
@@ -161,7 +161,7 @@ export default function AboutPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Community Contributions</h3>
-                  <p className="text-muted-foreground text-responsive-sm text-balance">
+                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
                     Users can add custom biases, but all content is reviewed for accuracy and educational value before publication.
                   </p>
                 </div>
@@ -171,7 +171,7 @@ export default function AboutPage() {
 
           {/* Editorial Board & Authors */}
           <div className="glass shadow-glass animate-fade-in-up space-y-5 rounded-xl p-5 sm:space-y-6 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.175s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">Editorial Board & Authors</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Editorial Board & Authors</h2>
 
             {/* Editorial Board */}
             <div className="space-y-4">
@@ -295,8 +295,8 @@ export default function AboutPage() {
 
           {/* Content Transparency */}
           <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">Content Coverage & Transparency</h2>
-            <div className="text-muted-foreground space-y-3 text-responsive-sm leading-relaxed sm:space-y-4">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Content Coverage & Transparency</h2>
+            <div className="text-foreground/80 space-y-3 text-sm leading-relaxed sm:space-y-4 sm:text-base">
               <p className="text-balance">
                 This app currently features <strong>50 carefully curated cognitive biases</strong> out of approximately 180 known biases in the field. Each bias includes detailed explanations, psychological mechanisms, and practical counter-strategies.
               </p>
@@ -311,8 +311,8 @@ export default function AboutPage() {
 
           {/* About the Biases */}
           <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.25s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">About the Biases</h2>
-            <div className="text-muted-foreground space-y-3 text-responsive-sm leading-relaxed sm:space-y-4">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">About the Biases</h2>
+            <div className="text-foreground/80 space-y-3 text-sm leading-relaxed sm:space-y-4 sm:text-base">
               <p className="text-balance">
                 Cognitive biases are systematic patterns of deviation from rationality in judgment.
                 Understanding them helps you make better decisions, think more clearly, and avoid
@@ -327,7 +327,7 @@ export default function AboutPage() {
 
           {/* Tech Stack */}
           <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.3s" }}>
-            <h2 className="text-responsive-2xl font-semibold tracking-tight">Technology</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Technology</h2>
             <div className="text-muted-foreground space-y-3 text-responsive-sm sm:space-y-4">
               <p>Built with modern web technologies:</p>
               <ul className="ml-5 space-y-2 sm:ml-6">
@@ -374,7 +374,7 @@ export default function AboutPage() {
           </div>
 
           {/* Footer */}
-          <div className="text-muted-foreground animate-fade-in text-center text-responsive-sm" style={{ animationDelay: "0.4s" }}>
+          <div className="text-foreground/80 animate-fade-in text-center text-sm sm:text-base" style={{ animationDelay: "0.4s" }}>
             <p>Made with care for better thinking</p>
             <p className="mt-2 text-xs opacity-75 sm:text-sm">Version 1.0.0</p>
           </div>

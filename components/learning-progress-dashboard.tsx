@@ -2,13 +2,13 @@
 
 import { useMemo } from "react"
 import { motion } from "framer-motion"
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
   CartesianGrid,
   BarChart,
   Bar,
@@ -21,11 +21,11 @@ import { Progress } from "@/components/ui/progress"
 import { useApp } from "@/contexts/app-context"
 import { getCategoryLabel, getCategoryColor } from "@/lib/category-utils"
 import type { BiasCategory } from "@/lib/types"
-import { 
-  TrendingUp, 
-  Calendar, 
-  Target, 
-  BookOpen, 
+import {
+  TrendingUp,
+  Calendar,
+  Target,
+  BookOpen,
   Star,
   Flame,
   Trophy,
@@ -88,7 +88,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
   // Category distribution data
   const categoryData = useMemo(() => {
     const categoryCounts: { [key: string]: { viewed: number; mastered: number; total: number } } = {}
-    
+
     // Initialize categories
     allBiases.forEach(bias => {
       if (!categoryCounts[bias.category]) {
@@ -121,7 +121,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
   // Weekly progress data
   const weeklyData = useMemo(() => {
     const weeks: { [key: string]: { week: string; biases: number; mastered: number } } = {}
-    
+
     progressList.forEach(progress => {
       if (progress.viewedAt) {
         const date = new Date(progress.viewedAt)
@@ -129,7 +129,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
         weekStart.setDate(date.getDate() - date.getDay())
         const weekKey = weekStart.toISOString().split('T')[0]
         const weekLabel = `Week ${Math.ceil((new Date().getTime() - weekStart.getTime()) / (7 * 24 * 60 * 60 * 1000))}`
-        
+
         if (!weeks[weekKey]) {
           weeks[weekKey] = { week: weekLabel, biases: 0, mastered: 0 }
         }
@@ -182,7 +182,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                   <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                     {progressStats.totalBiasesRead}
                   </p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300">Biases Read</p>
+                  <p className="text-sm text-blue-700 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Biases Read</p>
                 </div>
               </div>
             </CardContent>
@@ -202,7 +202,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                   <p className="text-2xl font-bold text-green-900 dark:text-green-100">
                     {progressStats.masteredCount}
                   </p>
-                  <p className="text-xs text-green-700 dark:text-green-300">Mastered</p>
+                  <p className="text-sm text-green-700 dark:text-green-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Mastered</p>
                 </div>
               </div>
             </CardContent>
@@ -222,7 +222,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                   <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
                     {progressStats.currentStreak}
                   </p>
-                  <p className="text-xs text-orange-700 dark:text-orange-300">Day Streak</p>
+                  <p className="text-sm text-orange-700 dark:text-orange-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Day Streak</p>
                 </div>
               </div>
             </CardContent>
@@ -242,7 +242,7 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                   <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                     {progressStats.longestStreak}
                   </p>
-                  <p className="text-xs text-purple-700 dark:text-purple-300">Best Streak</p>
+                  <p className="text-sm text-purple-700 dark:text-purple-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Best Streak</p>
                 </div>
               </div>
             </CardContent>
@@ -258,8 +258,8 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
       >
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base font-semibold sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
+              <BarChart3 className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6" />
               Daily Learning Activity
             </CardTitle>
           </CardHeader>
@@ -278,15 +278,15 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#6b7280" 
+                  <XAxis
+                    dataKey="date"
+                    stroke="#6b7280"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
                   />
-                  <YAxis 
-                    stroke="#6b7280" 
+                  <YAxis
+                    stroke="#6b7280"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
@@ -333,8 +333,8 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
       >
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-600" />
+            <CardTitle className="flex items-center gap-2 text-base font-semibold sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
+              <Target className="h-5 w-5 text-green-600 sm:h-6 sm:w-6" />
               Category Progress
             </CardTitle>
           </CardHeader>
@@ -347,17 +347,17 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
                       <Badge className={getCategoryColor(category.category.toLowerCase() as BiasCategory)}>
                         {category.category}
                       </Badge>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-foreground/80 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                         {category.viewed}/{category.total}
                       </span>
                     </div>
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       {category.completionRate.toFixed(1)}%
                     </span>
                   </div>
-                  <Progress value={category.completionRate} className="h-2" />
+                  <Progress value={category.completionRate} className="h-2 sm:h-2.5 lg:h-3" />
                   {category.viewed > 0 && (
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between text-sm text-foreground/80 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       <span>Mastery: {category.masteryRate.toFixed(1)}%</span>
                       <span>{category.mastered} mastered</span>
                     </div>
@@ -377,8 +377,8 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
       >
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-purple-600" />
+            <CardTitle className="flex items-center gap-2 text-base font-semibold sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
+              <Calendar className="h-5 w-5 text-purple-600 sm:h-6 sm:w-6" />
               Weekly Progress
             </CardTitle>
           </CardHeader>
@@ -387,15 +387,15 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weeklyData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
-                  <XAxis 
-                    dataKey="week" 
-                    stroke="#6b7280" 
+                  <XAxis
+                    dataKey="week"
+                    stroke="#6b7280"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
                   />
-                  <YAxis 
-                    stroke="#6b7280" 
+                  <YAxis
+                    stroke="#6b7280"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
@@ -436,15 +436,15 @@ export function LearningProgressDashboard({ className }: LearningProgressDashboa
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={masteryData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#6b7280" 
+                  <XAxis
+                    dataKey="date"
+                    stroke="#6b7280"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
                   />
-                  <YAxis 
-                    stroke="#6b7280" 
+                  <YAxis
+                    stroke="#6b7280"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}

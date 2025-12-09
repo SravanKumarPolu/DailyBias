@@ -90,17 +90,17 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                   <GraduationCap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl text-blue-900 dark:text-blue-100">
+                  <CardTitle className="text-base font-bold tracking-wide uppercase sm:text-lg text-blue-900 dark:text-blue-100">
                     Research & Sources
                   </CardTitle>
-                  <p className="text-sm sm:text-base text-blue-700 dark:text-blue-300 font-medium">
+                  <p className="text-sm sm:text-base text-blue-700 dark:text-blue-300 font-medium leading-relaxed">
                     {bias.references?.length || 0} reference{(bias.references?.length || 0) !== 1 ? 's' : ''} • {getResearchLevelLabel(bias.researchLevel)}
                   </p>
                 </div>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="text-blue-600 hover:text-blue-800"
                 aria-label={isOpen ? "Collapse research information" : "Expand research information"}
                 aria-expanded={isOpen}
@@ -110,7 +110,7 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
             </div>
           </CardHeader>
         </CollapsibleTrigger>
-        
+
         <CollapsibleContent>
           <CardContent className="pt-0">
             <div className="space-y-4">
@@ -136,7 +136,7 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
               {/* Author Information */}
               {(bias.author || bias.reviewer) && (
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:text-base">
                     <Users className="h-4 w-4" />
                     Author & Review Information
                   </h4>
@@ -156,7 +156,7 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                         </div>
                       </div>
                     )}
-                    
+
                     {bias.reviewer && (
                       <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
                         <div className="flex items-start gap-3">
@@ -179,7 +179,7 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
               {/* References */}
               {bias.references && bias.references.length > 0 ? (
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:text-base">
                     <BookOpen className="h-4 w-4" />
                     Academic Sources
                   </h4>
@@ -242,8 +242,8 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
               {/* Methodology Note */}
               <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                 <p className="text-xs text-gray-600 dark:text-gray-400">
-                  <strong>Note:</strong> This bias is based on established psychological research. 
-                  The explanations and counter-strategies are derived from peer-reviewed studies and 
+                  <strong>Note:</strong> This bias is based on established psychological research.
+                  The explanations and counter-strategies are derived from peer-reviewed studies and
                   validated through experimental evidence.
                 </p>
               </div>

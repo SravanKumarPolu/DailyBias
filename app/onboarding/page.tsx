@@ -159,7 +159,7 @@ export default function OnboardingPage() {
                       <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
                         <Check className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-sm leading-relaxed sm:text-base">{feature}</span>
+                      <span className="text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{feature}</span>
                     </motion.li>
                   ))}
                 </motion.ul>

@@ -163,9 +163,9 @@ export default function AllBiasesPage() {
       <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16" aria-label="All biases">
         <div className="space-y-8 sm:space-y-10 md:space-y-12">
           {/* Header */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">All Biases</h1>
-            <p className="text-foreground/80 text-base sm:text-lg leading-relaxed">
+          <div className="space-y-3">
+            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl">All Biases</h1>
+            <p className="text-foreground/80 text-base sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl leading-relaxed text-pretty">
               Browse all {allBiases.length} cognitive biases from the collection
             </p>
           </div>
@@ -232,13 +232,13 @@ export default function AllBiasesPage() {
           </div>
 
           {/* Results count and search quality */}
-          <div className="flex items-center justify-between gap-2 text-xs sm:text-sm">
-            <p className="text-muted-foreground">
+          <div className="flex items-center justify-between gap-2 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            <p className="text-foreground/80">
               Showing {searchResults.length} of {allBiases.length}
             </p>
             {hasActiveSearch && avgScore > 0.7 && (
-              <Badge variant="secondary" className="gap-1 text-xs">
-                <Sparkles className="h-3 w-3" />
+              <Badge variant="secondary" className="gap-1 text-xs sm:text-sm lg:text-base xl:text-base 2xl:text-lg">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="xs:inline hidden">High relevance</span>
                 <span className="xs:hidden">Relevant</span>
               </Badge>

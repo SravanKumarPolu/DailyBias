@@ -22,18 +22,18 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
   const loadQualityMetrics = useCallback(async () => {
     try {
       setLoading(true)
-      
+
       let loadedMetrics: ContentQualityMetrics[] = []
-      
+
       if (biasId) {
         const singleMetric = await contentVersionManager.getQualityMetrics(biasId)
         loadedMetrics = singleMetric ? [singleMetric] : []
       } else {
         loadedMetrics = await contentVersionManager.getAllQualityMetrics()
       }
-      
+
       setMetrics(loadedMetrics)
-      
+
       // Calculate overall health score from the loaded metrics
       if (loadedMetrics.length > 0) {
         const totalHealth = loadedMetrics.reduce((sum, metric) => {
@@ -92,10 +92,10 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
       <Card>
         <CardContent className="p-6 text-center">
           <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl">
             No Quality Data Available
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
             Quality metrics will appear here once content is reviewed and rated.
           </p>
         </CardContent>
@@ -109,8 +109,8 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
       {showAll && (
         <Card className="border-l-4 border-l-blue-500">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base font-semibold sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
+              <TrendingUp className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6" />
               Overall Content Health
             </CardTitle>
           </CardHeader>
@@ -124,7 +124,7 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
               </Badge>
             </div>
             <Progress value={overallHealth * 100} className="h-2" />
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm text-foreground/80 mt-2 leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               Based on {metrics.length} content item{metrics.length !== 1 ? 's' : ''}
             </p>
           </CardContent>
@@ -151,7 +151,7 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
               <Card className="hover:shadow-md transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">
+                    <CardTitle className="text-base font-semibold sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
                       {metric.biasId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </CardTitle>
                     <Badge className={getHealthBadge(healthScore).color}>
@@ -166,45 +166,45 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 mb-1">
                           <CheckCircle className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Accuracy</span>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Accuracy</span>
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                           {(metric.accuracyScore * 10).toFixed(1)}
                         </div>
-                        <Progress value={metric.accuracyScore * 100} className="mt-1 h-1" />
+                        <Progress value={metric.accuracyScore * 100} className="mt-1 h-2 sm:h-2.5 lg:h-3" />
                       </div>
-                      
+
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 mb-1">
-                          <Users className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Clarity</span>
+                          <Users className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Clarity</span>
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                           {(metric.clarityScore * 10).toFixed(1)}
                         </div>
-                        <Progress value={metric.clarityScore * 100} className="mt-1 h-1" />
+                        <Progress value={metric.clarityScore * 100} className="mt-1 h-2 sm:h-2.5 lg:h-3" />
                       </div>
-                      
+
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 mb-1">
-                          <Star className="h-4 w-4 text-yellow-600" />
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Completeness</span>
+                          <Star className="h-4 w-4 text-yellow-600 sm:h-5 sm:w-5" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Completeness</span>
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                           {(metric.completenessScore * 10).toFixed(1)}
                         </div>
-                        <Progress value={metric.completenessScore * 100} className="mt-1 h-1" />
+                        <Progress value={metric.completenessScore * 100} className="mt-1 h-2 sm:h-2.5 lg:h-3" />
                       </div>
-                      
+
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 mb-1">
-                          <TrendingUp className="h-4 w-4 text-purple-600" />
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">User Rating</span>
+                          <TrendingUp className="h-4 w-4 text-purple-600 sm:h-5 sm:w-5" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">User Rating</span>
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                           {(metric.userRating * 10).toFixed(1)}
                         </div>
-                        <Progress value={metric.userRating * 100} className="mt-1 h-1" />
+                        <Progress value={metric.userRating * 100} className="mt-1 h-2 sm:h-2.5 lg:h-3" />
                       </div>
                     </div>
 
@@ -212,19 +212,19 @@ export function ContentQualityDashboard({ biasId, showAll = false }: ContentQual
                     {metric.expertReviewScore && (
                       <div className="bg-purple-50 dark:bg-purple-950/20 p-3 rounded-lg">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-purple-900 dark:text-purple-100">
+                          <span className="text-sm font-medium text-purple-900 dark:text-purple-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                             Expert Review Score
                           </span>
-                          <span className="text-lg font-bold text-purple-900 dark:text-purple-100">
+                          <span className="text-lg font-bold text-purple-900 dark:text-purple-100 sm:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl">
                             {(metric.expertReviewScore * 10).toFixed(1)}/10
                           </span>
                         </div>
-                        <Progress value={metric.expertReviewScore * 100} className="mt-2 h-2" />
+                        <Progress value={metric.expertReviewScore * 100} className="mt-2 h-2 sm:h-2.5 lg:h-3" />
                       </div>
                     )}
 
                     {/* Metadata */}
-                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 pt-2 border-t">
+                    <div className="flex items-center justify-between text-sm text-foreground/80 pt-2 border-t leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       <span>Last updated: {formatDate(metric.lastUpdated)}</span>
                       <span>Version: {metric.version}</span>
                     </div>

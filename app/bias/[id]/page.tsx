@@ -63,7 +63,7 @@ export default function BiasDetailPage() {
         <DailyHeader />
         <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
           <div className="glass rounded-2xl p-12 text-center">
-            <p className="text-muted-foreground">Loading...</p>
+            <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Loading...</p>
           </div>
         </main>
         <DynamicNavigation />
@@ -78,7 +78,7 @@ export default function BiasDetailPage() {
         <DailyHeader />
         <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
           <div className="glass space-y-4 rounded-2xl p-12 text-center">
-            <p className="text-lg font-medium">Bias not found</p>
+            <p className="text-lg font-medium sm:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl">Bias not found</p>
             <Button onClick={() => router.back()}>Go Back</Button>
           </div>
         </main>

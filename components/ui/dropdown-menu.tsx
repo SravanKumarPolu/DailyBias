@@ -21,7 +21,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      "focus:bg-accent data-[state=open]:bg-accent flex cursor-default items-center rounded-lg px-3 py-2 text-sm outline-none select-none transition-colors duration-fast",
+      "focus:bg-accent data-[state=open]:bg-accent flex cursor-default items-center rounded-lg px-3 py-2 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl outline-none select-none transition-colors duration-fast",
       inset && "pl-8",
       className
     )}
@@ -75,7 +75,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center rounded-lg px-3 py-2 text-sm transition-colors duration-fast outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center rounded-lg px-3 py-2 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl transition-colors duration-fast outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       inset && "pl-8",
       className
     )}
@@ -137,7 +137,7 @@ const DropdownMenuLabel = React.forwardRef<
 >(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn("px-2 py-1.5 text-sm font-semibold", inset && "pl-8", className)}
+    className={cn("px-2 py-1.5 text-sm font-semibold sm:text-base lg:text-lg xl:text-lg 2xl:text-xl", inset && "pl-8", className)}
     {...props}
   />
 ))
@@ -156,7 +156,7 @@ const DropdownMenuSeparator = React.forwardRef<
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 
 const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
-  return <span className={cn("ml-auto text-xs tracking-widest opacity-60", className)} {...props} />
+  return <span className={cn("ml-auto text-sm tracking-widest opacity-60 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl", className)} {...props} />
 }
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
 

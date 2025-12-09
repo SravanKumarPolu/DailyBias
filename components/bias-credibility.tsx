@@ -72,10 +72,10 @@ export function BiasCredibility({ bias }: BiasCredibilityProps) {
                   <GraduationCap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+                  <CardTitle className="text-base font-semibold text-blue-900 dark:text-blue-100 sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
                     Research & Sources
                   </CardTitle>
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                     {bias.references.length} reference{bias.references.length !== 1 ? 's' : ''} • {getResearchLevelLabel(bias.researchLevel)}
                   </p>
                 </div>
@@ -86,14 +86,14 @@ export function BiasCredibility({ bias }: BiasCredibilityProps) {
             </div>
           </CardHeader>
         </CollapsibleTrigger>
-        
+
         <CollapsibleContent>
           <CardContent className="pt-0">
             <div className="space-y-4">
               {/* Research Level Badge */}
               {bias.researchLevel && (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Research Status:</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Research Status:</span>
                   <Badge className={getResearchLevelColor(bias.researchLevel)}>
                     {getResearchLevelLabel(bias.researchLevel)}
                   </Badge>
@@ -102,7 +102,7 @@ export function BiasCredibility({ bias }: BiasCredibilityProps) {
 
               {/* References */}
               <div className="space-y-3">
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Academic Sources</h4>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Academic Sources</h4>
                 <div className="space-y-2">
                   {bias.references.map((ref, index) => (
                     <motion.div
@@ -118,14 +118,14 @@ export function BiasCredibility({ bias }: BiasCredibilityProps) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
-                            <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                            <p className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                               {ref.title}
                             </p>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
+                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                               {ref.authors} ({ref.year})
                             </p>
                             {ref.journal && (
-                              <p className="text-gray-500 dark:text-gray-500 text-xs">
+                              <p className="text-gray-500 dark:text-gray-500 text-xs sm:text-sm lg:text-base xl:text-base 2xl:text-lg">
                                 {ref.journal}
                               </p>
                             )}
@@ -149,9 +149,9 @@ export function BiasCredibility({ bias }: BiasCredibilityProps) {
 
               {/* Methodology Note */}
               <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  <strong>Note:</strong> This bias is based on established psychological research. 
-                  The explanations and counter-strategies are derived from peer-reviewed studies and 
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                  <strong>Note:</strong> This bias is based on established psychological research.
+                  The explanations and counter-strategies are derived from peer-reviewed studies and
                   validated through experimental evidence.
                 </p>
               </div>

@@ -72,7 +72,7 @@ export function RelatedBiases({
         {/* Header */}
         <div className="mb-4 flex items-center gap-2">
           <Link2 className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold sm:text-xl">
+          <h3 className="text-lg font-semibold sm:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl">
             Related Biases
           </h3>
           <Sparkles className="h-4 w-4 text-primary/60" />
@@ -127,7 +127,7 @@ export function RelatedBiases({
         >
           <Link
             href="/all"
-            className="text-sm text-primary hover:underline underline-offset-2 transition-colors"
+            className="text-sm text-primary hover:underline underline-offset-2 transition-colors sm:text-base lg:text-lg xl:text-lg 2xl:text-xl"
           >
             Explore all {allBiases.length} biases →
           </Link>

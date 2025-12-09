@@ -106,10 +106,10 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Header */}
           <div className="glass shadow-glass animate-fade-in-up rounded-xl p-6 text-center sm:rounded-2xl sm:p-8">
-            <h1 className="text-responsive-3xl mb-3 font-bold tracking-tight sm:mb-4">
+            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl mb-3 sm:mb-4">
               Content Analytics
             </h1>
-            <p className="text-muted-foreground text-responsive-lg text-balance">
+            <p className="text-foreground/80 text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl">
               Monitor content quality, user feedback, and expert reviews
             </p>
           </div>
@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
           {contentNeedingReview.length > 0 && (
             <Card className="border-l-4 border-l-warning bg-warning/10 dark:bg-warning/20">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-warning-foreground">
+                <CardTitle className="flex items-center gap-2 text-base font-semibold text-warning-foreground sm:text-lg">
                   <AlertTriangle className="h-5 w-5" />
                   Content Needing Review
                 </CardTitle>

@@ -82,7 +82,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
     if (!isExpert) return
 
     setIsSubmitting(true)
-    
+
     try {
       const review: ReviewData = {
         biasId: bias.id,
@@ -99,7 +99,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
 
       // Store review data
       localStorage.setItem(`expert-review-${bias.id}`, JSON.stringify(review))
-      
+
       // Update quality metrics
       await contentVersionManager.updateQualityMetrics(bias.id, {
         accuracyScore: scores.accuracy / 10,
@@ -161,7 +161,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
               <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+              <CardTitle className="text-base font-semibold text-blue-900 dark:text-blue-100 sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
                 Expert Review Status
               </CardTitle>
               <div className="flex items-center gap-2 mt-1">
@@ -169,37 +169,37 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                   {getStatusIcon(reviewData.status)}
                   <span className="ml-1 capitalize">{reviewData.status.replace('_', ' ')}</span>
                 </Badge>
-                <span className="text-sm text-blue-700 dark:text-blue-300">
+                <span className="text-sm text-blue-700 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                   by {reviewData.reviewerName}
                 </span>
               </div>
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent>
           <div className="space-y-4">
             {/* Quality Scores */}
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                   {reviewData.accuracyScore}/10
                 </div>
-                <div className="text-sm text-blue-700 dark:text-blue-300">Accuracy</div>
-                <Progress value={reviewData.accuracyScore * 10} className="mt-1" />
+                <div className="text-sm text-blue-700 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Accuracy</div>
+                <Progress value={reviewData.accuracyScore * 10} className="mt-1 h-2 sm:h-2.5 lg:h-3" />
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                   {reviewData.clarityScore}/10
                 </div>
-                <div className="text-sm text-blue-700 dark:text-blue-300">Clarity</div>
-                <Progress value={reviewData.clarityScore * 10} className="mt-1" />
+                <div className="text-sm text-blue-700 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Clarity</div>
+                <Progress value={reviewData.clarityScore * 10} className="mt-1 h-2 sm:h-2.5 lg:h-3" />
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100 sm:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl">
                   {reviewData.completenessScore}/10
                 </div>
-                <div className="text-sm text-blue-700 dark:text-blue-300">Completeness</div>
+                <div className="text-sm text-blue-700 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Completeness</div>
                 <Progress value={reviewData.completenessScore * 10} className="mt-1" />
               </div>
             </div>
@@ -207,8 +207,8 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
             {/* Comments */}
             {reviewData.comments && (
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Expert Comments</h4>
-                <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Expert Comments</h4>
+                <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                   {reviewData.comments}
                 </p>
               </div>
@@ -217,11 +217,11 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
             {/* Suggestions */}
             {reviewData.suggestions.length > 0 && (
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Improvement Suggestions</h4>
+                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Improvement Suggestions</h4>
                 <ul className="space-y-1">
                   {reviewData.suggestions.map((suggestion, index) => (
-                    <li key={index} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
-                      <Star className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                    <li key={index} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2 leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                      <Star className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0 sm:h-5 sm:w-5" />
                       {suggestion}
                     </li>
                   ))}
@@ -247,10 +247,10 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
               <Shield className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-purple-900 dark:text-purple-100">
+              <CardTitle className="text-base font-semibold text-purple-900 dark:text-purple-100 sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">
                 Expert Review Panel
               </CardTitle>
-              <p className="text-sm text-purple-700 dark:text-purple-300">
+              <p className="text-sm text-purple-700 dark:text-purple-300 leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Review and rate this bias content for accuracy and quality
               </p>
             </div>
@@ -260,7 +260,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
           </Button>
         </div>
       </CardHeader>
-      
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -274,14 +274,14 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                 {/* Quality Scoring */}
                 <div className="space-y-4">
                   <h4 className="font-medium text-gray-900 dark:text-gray-100">Quality Assessment</h4>
-                  
+
                   {Object.entries(scores).map(([category, score]) => (
                     <div key={category} className="space-y-2">
                       <div className="flex justify-between">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                           {category}
                         </label>
-                        <span className="text-sm text-gray-500">{score}/10</span>
+                        <span className="text-sm text-gray-500 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{score}/10</span>
                       </div>
                       <input
                         type="range"
@@ -297,7 +297,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
 
                 {/* Comments */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                     Review Comments
                   </label>
                   <Textarea
@@ -310,7 +310,7 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
 
                 {/* Suggestions */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                     Improvement Suggestions
                   </label>
                   <div className="flex gap-2">
@@ -322,20 +322,20 @@ export function ExpertReview({ bias, isExpert = false }: ExpertReviewProps) {
                       className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       onKeyPress={(e) => e.key === 'Enter' && addSuggestion()}
                     />
-                    <Button 
-                      onClick={addSuggestion} 
+                    <Button
+                      onClick={addSuggestion}
                       size="sm"
                       aria-label="Add improvement suggestion"
                     >
                       Add
                     </Button>
                   </div>
-                  
+
                   {suggestions.length > 0 && (
                     <div className="space-y-1">
                       {suggestions.map((suggestion, index) => (
                         <div key={index} className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-2 rounded">
-                          <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{suggestion}</span>
+                          <span className="text-sm text-gray-700 dark:text-gray-300 flex-1 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{suggestion}</span>
                           <Button
                             variant="ghost"
                             size="sm"

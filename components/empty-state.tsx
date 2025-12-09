@@ -46,10 +46,10 @@ export function EmptyState({
         className="space-y-4 text-center max-w-md animate-fade-in-up"
         style={{ animationDelay: "0.3s", opacity: 0, animationFillMode: "forwards" }}
       >
-        <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h3 className="text-2xl font-bold tracking-tight text-balance sm:text-3xl">
           {title}
         </h3>
-        <p className="text-foreground/70 text-base leading-relaxed sm:text-lg">
+        <p className="text-foreground/80 text-base leading-relaxed text-pretty sm:text-lg">
           {description}
         </p>
       </div>

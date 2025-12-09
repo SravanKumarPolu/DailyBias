@@ -109,11 +109,11 @@ export function DailyHeader() {
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 md:gap-8">
               <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
                 <Link href="/" className="group/link inline-block cursor-pointer">
-                  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground to-primary bg-clip-text text-transparent transition-all duration-500 ease-out group-hover/link:scale-[1.02] group-hover/link:from-primary group-hover/link:via-primary group-hover/link:to-accent">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground to-primary bg-clip-text text-transparent transition-all duration-500 ease-out group-hover/link:scale-[1.02] group-hover/link:from-primary group-hover/link:via-primary group-hover/link:to-accent">
                     {siteConfig.name}
                   </h1>
                 </Link>
-                <p className="text-sm sm:text-base opacity-75 text-foreground/75 font-normal tracking-wide">
+                <p className="text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl text-foreground/80 font-normal tracking-wide leading-relaxed">
                   One bias daily • 50 total • ~2 months rotation
                 </p>
               </div>
@@ -166,7 +166,7 @@ export function DailyHeader() {
             {/* Bottom section: Date centered */}
             {/* FIX: Suppress hydration warning - date format can legitimately differ between server/client due to locale */}
             <div className="flex justify-center pt-4 sm:pt-5 border-t border-white/10 dark:border-white/10">
-              <p className="text-base font-medium opacity-80 text-foreground/80 tracking-wide" suppressHydrationWarning>
+              <p className="text-sm font-medium text-foreground/80 tracking-wide sm:text-base" suppressHydrationWarning>
                 {today || getTimezoneAwareDateString()}
               </p>
             </div>

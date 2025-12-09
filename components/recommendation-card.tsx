@@ -28,12 +28,12 @@ export function RecommendationCard({
           <Lightbulb className="text-primary h-6 w-6" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-muted-foreground mb-2 text-sm">{reason}</p>
+          <p className="text-foreground/80 mb-2 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{reason}</p>
           <Badge className={`mb-2 ${getCategoryColor(bias.category)}`}>
             {getCategoryLabel(bias.category)}
           </Badge>
-          <h3 className="mb-2 text-xl font-bold tracking-tight text-balance">{bias.title}</h3>
-          <p className="text-muted-foreground mb-4 line-clamp-2 text-sm text-pretty">
+          <h3 className="mb-2 text-xl font-bold tracking-tight text-balance sm:text-2xl lg:text-3xl xl:text-3xl 2xl:text-4xl">{bias.title}</h3>
+          <p className="text-foreground/80 mb-4 line-clamp-2 text-sm text-pretty leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
             {bias.summary}
           </p>
           <Link href={`/bias/${bias.id}`} className="cursor-pointer">

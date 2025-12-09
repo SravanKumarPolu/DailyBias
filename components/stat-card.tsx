@@ -40,7 +40,7 @@ export function StatCard({
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      
+
       {/* Top glow */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -92,7 +92,7 @@ export function StatCard({
 
         {/* Stats */}
         <div className="min-w-0 flex-1">
-          <p className="text-muted-foreground mb-1 text-xs uppercase tracking-wider sm:text-sm">
+          <p className="text-foreground/80 mb-1 text-sm uppercase tracking-wider sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
             {label}
           </p>
           <div className="flex items-baseline gap-2">
@@ -100,7 +100,7 @@ export function StatCard({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: delay + 0.2, duration: 0.4 }}
-              className="text-3xl font-bold sm:text-4xl"
+              className="text-3xl font-bold sm:text-4xl lg:text-5xl xl:text-5xl 2xl:text-6xl"
             >
               <motion.span
                 initial={{ opacity: 0 }}
@@ -111,12 +111,12 @@ export function StatCard({
               </motion.span>
             </motion.p>
             {max && (
-              <span className="text-muted-foreground text-sm sm:text-base">
+              <span className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 / {max}
               </span>
             )}
             {suffix && (
-              <span className="text-muted-foreground text-xs sm:text-sm">
+              <span className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 {suffix}
               </span>
             )}
@@ -126,7 +126,7 @@ export function StatCard({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: delay + 0.6, duration: 0.4 }}
-              className="text-muted-foreground mt-1 text-xs sm:text-sm"
+              className="text-foreground/80 mt-1 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl"
             >
               {Math.round(percentage)}% complete
             </motion.p>

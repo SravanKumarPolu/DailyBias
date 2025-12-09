@@ -42,7 +42,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
     if (!feedbackType || !rating) return
 
     setIsSubmitting(true)
-
+    
     try {
       const feedback: FeedbackData = {
         biasId: bias.id,
@@ -117,10 +117,10 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
         <div className="flex items-center gap-3">
           <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
           <div>
-            <p className="font-medium text-green-900 dark:text-green-100">
+            <p className="text-base font-semibold text-green-900 dark:text-green-100">
               Feedback Submitted Successfully
             </p>
-            <p className="text-sm text-green-700 dark:text-green-300">
+            <p className="text-sm text-green-700 dark:text-green-300 leading-relaxed">
               Thank you for helping improve our content quality!
             </p>
           </div>
@@ -138,17 +138,17 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
               <MessageSquare className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <CardTitle className="text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl text-green-900 dark:text-green-100">
+              <CardTitle className="text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-2xl text-green-900 dark:text-green-100">
                 Help Improve This Content
               </CardTitle>
-              <p className="text-sm sm:text-base text-green-700 dark:text-green-300 font-medium">
+              <p className="text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl text-green-700 dark:text-green-300 font-medium leading-relaxed">
                 Found an error or have suggestions? Your feedback helps us improve.
               </p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
+          <Button 
+            variant="ghost" 
+            size="sm" 
             className="text-green-600 hover:text-green-800"
             aria-label={isOpen ? "Close feedback form" : "Open feedback form"}
             aria-expanded={isOpen}
@@ -157,7 +157,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
           </Button>
         </div>
       </CardHeader>
-
+      
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -170,7 +170,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
               <div className="space-y-4">
                 {/* Feedback Type Selection */}
                 <div>
-                  <label className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2 block">
+                  <label className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2 block sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                     What would you like to provide feedback on?
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -200,7 +200,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       How would you rate this content?
                     </label>
                     <div className="flex gap-2">
@@ -237,7 +237,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-2"
                   >
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       Additional Comments (Optional)
                     </label>
                     <Textarea
@@ -256,36 +256,36 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-2 pt-2"
                   >
-                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       This feedback displays only your analytics page and is also forwarded to the developer's email.
                     </p>
                     <div className="flex gap-2">
-                      <Button
-                        onClick={handleSubmit}
-                        disabled={isSubmitting}
-                        className="flex-1"
-                        aria-label={isSubmitting ? "Submitting feedback" : "Submit feedback"}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" aria-hidden="true" />
-                            Submitting...
-                          </>
-                        ) : (
-                          <>
-                            <Send className="h-4 w-4 mr-2" aria-hidden="true" />
-                            Submit Feedback
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={handleClose}
-                        disabled={isSubmitting}
-                        aria-label="Cancel feedback submission"
-                      >
-                        Cancel
-                      </Button>
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                      className="flex-1"
+                      aria-label={isSubmitting ? "Submitting feedback" : "Submit feedback"}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" aria-hidden="true" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4 mr-2" aria-hidden="true" />
+                          Submit Feedback
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleClose}
+                      disabled={isSubmitting}
+                      aria-label="Cancel feedback submission"
+                    >
+                      Cancel
+                    </Button>
                     </div>
                   </motion.div>
                 )}

@@ -53,10 +53,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const settingsHook = useSettings()
   const progressHook = useProgress()
 
-  // Create stable comparison keys to prevent unnecessary re-renders
-  // Only re-render when meaningful data changes, not when array references change
+  // Create stable comparison key to detect favorites changes
+  // Include length to ensure we detect when favorites array becomes empty
   const favoritesKey = useMemo(() => {
-    return favoritesHook.favorites.map(f => f.biasId).sort().join(',')
+    const ids = favoritesHook.favorites.map(f => f.biasId).sort().join(',')
+    return `${favoritesHook.favorites.length}:${ids}`
   }, [favoritesHook.favorites])
 
   const progressKey = useMemo(() => {
@@ -68,6 +69,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Memoize context value to prevent unnecessary re-renders
   // Only re-render when actual data changes, not when object references change
+  // IMPORTANT: Include favorites array directly in dependencies to ensure updates propagate immediately
   const value: AppContextType = useMemo(() => ({
     // Biases
     userBiases: biasesHook.userBiases,
@@ -80,7 +82,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     deleteBias: biasesHook.deleteBias,
     refreshBiases: biasesHook.refresh,
 
-    // Favorites
+    // Favorites - use the array directly to ensure immediate updates
     favorites: favoritesHook.favorites,
     favoritesLoading: favoritesHook.loading,
     favoritesError: favoritesHook.error,
@@ -111,8 +113,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     biasesHook.coreBiases.length,
     biasesHook.loading,
     biasesHook.error,
-    // Favorites - use stable key instead of array reference
+    // Favorites - include both the key AND the actual array to ensure immediate updates
+    // The key helps with memoization, but we need the array reference to change for React to detect updates
     favoritesKey,
+    favoritesHook.favorites, // Include the actual array to ensure context updates immediately when favorites change
     favoritesHook.loading,
     favoritesHook.error,
     // Settings - use theme and backgroundStyle as keys

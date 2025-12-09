@@ -120,12 +120,12 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-blue-800 dark:text-blue-400" />
-              <span className="text-blue-900 dark:text-blue-100">Today's Progress</span>
+              <span className="text-base font-semibold text-blue-900 dark:text-blue-100 sm:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">Today's Progress</span>
             </div>
             <Link href="/analytics">
-              <Button variant="ghost" size="sm" className="text-blue-800 dark:text-blue-200 hover:text-blue-900 dark:hover:text-blue-100">
+              <Button variant="ghost" size="sm" className="text-sm text-blue-800 dark:text-blue-200 hover:text-blue-900 dark:hover:text-blue-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 View Details
-                <ArrowRight className="ml-1 h-3 w-3" />
+                <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </Link>
           </CardTitle>
@@ -134,17 +134,17 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
           {/* Daily Goal Progress */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+              <span className="text-sm font-medium text-blue-900 dark:text-blue-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Daily Goal
               </span>
-              <span className="text-sm text-blue-900 dark:text-blue-200 font-medium">
+              <span className="text-sm text-blue-900 dark:text-blue-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 {todayProgress.viewed}/{todayProgress.goal}
               </span>
             </div>
-            <Progress value={todayProgress.completionRate} className="h-2" />
+            <Progress value={todayProgress.completionRate} className="h-2 sm:h-2.5 lg:h-3" />
             {todayProgress.completionRate >= 100 && (
-              <div className="flex items-center gap-1 text-xs text-green-800 dark:text-green-200 font-medium">
-                <Award className="h-3 w-3" />
+              <div className="flex items-center gap-1 text-sm text-green-800 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                <Award className="h-4 w-4 sm:h-5 sm:w-5" />
                 Goal achieved! 🎉
               </div>
             )}
@@ -153,36 +153,36 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
           {/* Weekly Progress */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+              <span className="text-sm font-medium text-blue-900 dark:text-blue-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Weekly Progress
               </span>
-              <span className="text-sm text-blue-900 dark:text-blue-200 font-medium">
+              <span className="text-sm text-blue-900 dark:text-blue-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 {weeklyProgress.viewed}/7
               </span>
             </div>
-            <Progress value={weeklyProgress.completionRate} className="h-2" />
+            <Progress value={weeklyProgress.completionRate} className="h-2 sm:h-2.5 lg:h-3" />
           </div>
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="text-center p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <div className="text-lg font-bold text-blue-900 dark:text-blue-100">
+              <div className="text-lg font-bold text-blue-900 dark:text-blue-100 sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
                 {todayProgress.viewed}
               </div>
-              <div className="text-xs text-blue-900 dark:text-blue-200 font-medium">Today</div>
+              <div className="text-sm text-blue-900 dark:text-blue-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Today</div>
             </div>
             <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <div className="text-lg font-bold text-green-900 dark:text-green-100">
+              <div className="text-lg font-bold text-green-900 dark:text-green-100 sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
                 {todayProgress.mastered}
               </div>
-              <div className="text-xs text-green-900 dark:text-green-200 font-medium">Mastered</div>
+              <div className="text-sm text-green-900 dark:text-green-200 font-medium sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Mastered</div>
             </div>
           </div>
 
           {/* Category Breakdown */}
           {categoryProgress.length > 0 && (
             <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
-              <div className="text-xs font-medium text-blue-900 dark:text-blue-100 mb-2">
+              <div className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                 Today's Categories
               </div>
               <div className="flex flex-wrap gap-1">
@@ -190,7 +190,7 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
                   <Badge
                     key={category}
                     variant="outline"
-                    className="text-xs bg-info text-info-foreground border-info/50 dark:bg-info dark:text-info-foreground dark:border-info/60 font-semibold"
+                    className="text-xs bg-info text-info-foreground border-info/50 dark:bg-info dark:text-info-foreground dark:border-info/60 font-semibold sm:text-sm lg:text-base xl:text-base 2xl:text-lg"
                   >
                     {category} ({count})
                   </Badge>
@@ -201,13 +201,13 @@ export const DailyProgressWidget = memo(function DailyProgressWidget({ className
 
           {/* Streak Info */}
           <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               <div className="flex items-center gap-1 text-blue-800 dark:text-blue-200 font-medium">
-                <Flame className="h-3 w-3" />
+                <Flame className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>Current Streak: {progressStats.currentStreak} days</span>
               </div>
               <div className="flex items-center gap-1 text-purple-800 dark:text-purple-200 font-medium">
-                <Trophy className="h-3 w-3" />
+                <Trophy className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>Best: {progressStats.longestStreak} days</span>
               </div>
             </div>

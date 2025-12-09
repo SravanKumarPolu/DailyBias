@@ -30,8 +30,11 @@ export default function FavoritesPage() {
     console.log("[FavoritesPage] Updating favorite biases")
     console.log("[FavoritesPage] All biases:", allBiases.length)
     console.log("[FavoritesPage] Favorites:", favorites.length)
+    console.log("[FavoritesPage] Favorites array:", favorites.map(f => f.biasId))
 
-    if (allBiases.length > 0 && favorites.length > 0) {
+    // Always recalculate when favorites or allBiases change
+    if (allBiases.length > 0) {
+      if (favorites.length > 0) {
       const favoriteIds = new Set(favorites.map((f) => f.biasId))
       console.log("[FavoritesPage] Favorite IDs:", Array.from(favoriteIds))
 
@@ -48,10 +51,15 @@ export default function FavoritesPage() {
       console.log("[FavoritesPage] Sorted favorite biases:", biases.map(b => b.title))
       setFavoriteBiases(biases)
     } else {
-      console.log("[FavoritesPage] No favorites or biases available")
+        // Explicitly set to empty when favorites array is empty
+        console.log("[FavoritesPage] No favorites available - setting empty list")
+        setFavoriteBiases([])
+      }
+    } else {
+      console.log("[FavoritesPage] No biases available")
       setFavoriteBiases([])
     }
-  }, [allBiases, favorites])
+  }, [allBiases, favorites, favorites.length]) // Include favorites.length to ensure updates when array changes
 
   // Load mastered states for favorite biases
   useEffect(() => {
@@ -108,15 +116,15 @@ export default function FavoritesPage() {
       <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16">
         <div className="space-y-8 sm:space-y-10 md:space-y-12">
           {/* Header */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Favorites</h1>
-            <p className="text-foreground/80 text-base sm:text-lg leading-relaxed">Your saved biases for quick reference</p>
+          <div className="space-y-3">
+            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl">Favorites</h1>
+            <p className="text-foreground/80 text-base sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl leading-relaxed text-pretty">Your saved biases for quick reference</p>
           </div>
 
           {/* Favorites count */}
           {!loading && favoriteBiases.length > 0 && (
-            <div className="text-foreground/70 flex items-center gap-2 text-base sm:text-lg">
-              <Heart className="h-5 w-5 text-destructive" aria-hidden="true" />
+            <div className="text-foreground/80 flex items-center gap-2 text-sm font-medium sm:text-base">
+              <Heart className="h-4 w-4 text-destructive" aria-hidden="true" />
               <span>
                 {favoriteBiases.length} {favoriteBiases.length === 1 ? "favorite" : "favorites"}
               </span>
