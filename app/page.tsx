@@ -13,7 +13,7 @@ import { DailyProgressWidget } from "@/components/daily-progress-widget"
 import { useApp } from "@/contexts/app-context"
 import { useDailyBias } from "@/hooks/use-daily-bias"
 import { getTodayDateString } from "@/lib/daily-selector"
-import { scheduleDailyReminder, isNativeApp } from "@/lib/native-features"
+import { scheduleDailyReminder, cancelDailyReminder } from "@/lib/native-features"
 import { logger } from "@/lib/logger"
 
 export default function HomePage() {
@@ -40,14 +40,22 @@ export default function HomePage() {
   const [isMast, setIsMast] = useState(false)
   const lastProcessedBiasIdRef = useRef<string | null>(null)
 
-  // Initialize native features on app start
+  // Initialize notifications on app start - respect user's dailyReminder setting
+  // Works for both native and web platforms
   useEffect(() => {
-    if (typeof window !== "undefined" && isNativeApp()) {
-      scheduleDailyReminder(9, 0).catch((error) => {
-        logger.error("[HomePage] Error scheduling notification:", error)
-      })
+    if (typeof window !== "undefined") {
+      if (settings.dailyReminder) {
+        scheduleDailyReminder(9, 0).catch((error) => {
+          logger.error("[HomePage] Error scheduling notification:", error)
+        })
+      } else {
+        // Cancel any existing notifications if user has disabled reminders
+        cancelDailyReminder().catch((error) => {
+          logger.error("[HomePage] Error cancelling notification:", error)
+        })
+      }
     }
-  }, [])
+  }, [settings.dailyReminder])
 
   // Check if user needs onboarding
   useEffect(() => {

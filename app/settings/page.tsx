@@ -32,6 +32,13 @@ import { haptics } from "@/lib/haptics"
 import { getCommonTimezones, detectTimezone, isValidTimezone } from "@/lib/timezone-utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { siteConfig } from "@/lib/site-config"
+import {
+  scheduleDailyReminder,
+  cancelDailyReminder,
+  isNativeApp,
+  requestNotificationPermissions as requestNativeNotificationPermissions
+} from "@/lib/native-features"
+import { logger } from "@/lib/logger"
 
 export default function SettingsPage() {
   const { settings, saveSetting, refresh } = useSettings()
@@ -354,6 +361,33 @@ export default function SettingsPage() {
   }
 
   const requestNotificationPermission = async () => {
+    // Handle native app notifications
+    if (isNativeApp()) {
+      try {
+        const granted = await requestNativeNotificationPermissions()
+        if (granted) {
+          await saveSetting("dailyReminder", true)
+          // Schedule the daily reminder at 9 AM
+          await scheduleDailyReminder(9, 0)
+          haptics.success()
+          logger.debug("[Settings] Native notification permission granted and scheduled")
+          return true
+        } else {
+          await saveSetting("dailyReminder", false)
+          alert(
+            "Notifications were denied. Please enable them in your device settings to receive daily reminders."
+          )
+          return false
+        }
+      } catch (error) {
+        logger.error("[Settings] Native notification permission error:", error)
+        await saveSetting("dailyReminder", false)
+        alert("Failed to request notification permission. Please try again.")
+        return false
+      }
+    }
+
+    // Handle web notifications
     if (!("Notification" in window)) {
       alert("This browser does not support notifications")
       return false
@@ -364,6 +398,9 @@ export default function SettingsPage() {
       if (permission === "granted") {
         await saveSetting("dailyReminder", true)
 
+        // Start web notification scheduler
+        await scheduleDailyReminder(9, 0)
+
         // Show test notification
         if (Notification.permission === "granted") {
           new Notification("Bias Daily", {
@@ -373,6 +410,7 @@ export default function SettingsPage() {
         }
 
         haptics.success()
+        logger.debug("[Settings] Web notification permission granted and scheduler started")
         return true
       } else {
         await saveSetting("dailyReminder", false)
@@ -384,7 +422,7 @@ export default function SettingsPage() {
         return false
       }
     } catch (error) {
-      console.error("[DailyBias] Notification permission error:", error)
+      logger.error("[Settings] Notification permission error:", error)
       await saveSetting("dailyReminder", false)
       alert("Failed to request notification permission. Please try again.")
       return false
@@ -396,6 +434,14 @@ export default function SettingsPage() {
       await requestNotificationPermission()
     } else {
       await saveSetting("dailyReminder", false)
+      // Cancel notifications (works for both native and web)
+      try {
+        await cancelDailyReminder()
+        logger.debug("[Settings] Daily reminder cancelled")
+        haptics.success()
+      } catch (error) {
+        logger.error("[Settings] Error cancelling daily reminder:", error)
+      }
     }
   }
 
