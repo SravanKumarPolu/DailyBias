@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { BookOpen, ExternalLink, ChevronDown, ChevronUp, GraduationCap, FileText, Shield, Users, CheckCircle } from "lucide-react"
+import { BookOpen, ExternalLink, ChevronDown, ChevronUp, GraduationCap, FileText, Shield, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -133,43 +133,78 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
                 )}
               </div>
 
-              {/* Author Information */}
-              {(bias.author || bias.reviewer) && (
+              {/* Attribution Information */}
+              {bias.attribution && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:text-base">
                     <Users className="h-4 w-4" />
-                    Author & Review Information
+                    Research Attribution
                   </h4>
                   <div className="space-y-3">
-                    {bias.author && (
-                      <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
+                    {/* Term Coined By */}
+                    {bias.attribution.termCoinedBy && (
+                      <div className="p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
                         <div className="flex items-start gap-3">
-                          <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
-                            <GraduationCap className="h-4 w-4 text-green-600 dark:text-green-400" />
+                          <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
+                            <FileText className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                           </div>
                           <div className="flex-1">
-                            <h5 className="font-medium text-green-900 dark:text-green-100">Author</h5>
-                            <p className="text-sm text-green-800 dark:text-green-200 font-medium">{bias.author.name}</p>
-                            <p className="text-xs text-green-700 dark:text-green-300">{bias.author.credentials}</p>
-                            <p className="text-xs text-green-600 dark:text-green-400">{bias.author.affiliation}</p>
+                            <h5 className="font-medium text-purple-900 dark:text-purple-100 mb-1">Term Introduced</h5>
+                            <p className="text-sm text-purple-800 dark:text-purple-200 font-medium">
+                              {bias.attribution.termCoinedBy.name} ({bias.attribution.termCoinedBy.year})
+                            </p>
                           </div>
                         </div>
                       </div>
                     )}
 
-                    {bias.reviewer && (
+                    {/* Key Contributors */}
+                    {bias.attribution.keyContributors && bias.attribution.keyContributors.length > 0 && (
                       <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
                         <div className="flex items-start gap-3">
                           <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                            <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                            <GraduationCap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                           </div>
                           <div className="flex-1">
-                            <h5 className="font-medium text-blue-900 dark:text-blue-100">Reviewed By</h5>
-                            <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">{bias.reviewer.name}</p>
-                            <p className="text-xs text-blue-700 dark:text-blue-300">{bias.reviewer.credentials}</p>
-                            <p className="text-xs text-blue-600 dark:text-blue-400">{bias.reviewer.affiliation}</p>
+                            <h5 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Key Contributors</h5>
+                            <ul className="space-y-1">
+                              {bias.attribution.keyContributors.map((contributor, idx) => (
+                                <li key={idx} className="text-sm text-blue-800 dark:text-blue-200">
+                                  • {contributor}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Research Confidence */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Research Confidence:</span>
+                      <Badge
+                        className={
+                          bias.attribution.researchConfidence === "high"
+                            ? "bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700"
+                            : bias.attribution.researchConfidence === "medium"
+                            ? "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900 dark:text-yellow-200 dark:border-yellow-700"
+                            : "bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700"
+                        }
+                      >
+                        {bias.attribution.researchConfidence === "high"
+                          ? "High"
+                          : bias.attribution.researchConfidence === "medium"
+                          ? "Medium"
+                          : "Emerging"}
+                      </Badge>
+                    </div>
+
+                    {/* Notes */}
+                    {bias.attribution.notes && (
+                      <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                          {bias.attribution.notes}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -240,11 +275,14 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
               )}
 
               {/* Methodology Note */}
-              <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  <strong>Note:</strong> This bias is based on established psychological research.
+              <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <strong>Scientific Approach:</strong> This bias is based on established psychological research.
                   The explanations and counter-strategies are derived from peer-reviewed studies and
-                  validated through experimental evidence.
+                  validated through experimental evidence. Attribution information is included only when
+                  there is clear, documented origin—this reflects our commitment to scientific accuracy
+                  over false certainty. When attribution is absent, it indicates the research history
+                  is complex or uncertain, not that the bias lacks scientific foundation.
                 </p>
               </div>
             </div>

@@ -12,17 +12,16 @@ export interface Bias {
   source: BiasSource
   references?: BiasReference[]
   researchLevel?: "established" | "emerging" | "contested"
-  author?: BiasAuthor
-  reviewer?: BiasAuthor
+  attribution?: BiasAttribution
   createdAt?: number
   updatedAt?: number
 }
 
-export interface BiasAuthor {
-  name: string
-  credentials: string
-  affiliation: string
-  role: "author" | "reviewer" | "editor"
+export interface BiasAttribution {
+  termCoinedBy: { name: string; year: number } | null
+  keyContributors: string[]
+  researchConfidence: "high" | "medium" | "emerging"
+  notes: string
 }
 
 export interface BiasReference {

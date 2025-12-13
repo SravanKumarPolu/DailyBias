@@ -8,22 +8,6 @@
     "counter": "Before judging someone's actions, pause and ask: 'What circumstances might explain this behavior?' Assume good intent and consider external factors. When evaluating your own behavior, ask if you'd judge others the same way in similar circumstances. Practice perspective-taking by imagining the other person's situation and constraints.",
     "source": "core",
     "researchLevel": "established",
-    "author": {
-      "name": "Dr. Edward E. Jones",
-      "credentials": "Ph.D. Psychology, Harvard University",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "discovery_year": "1971",
-      "note": "Co-discoverer with Richard Nisbett"
-    },
-    "reviewer": {
-      "name": "Dr. Richard E. Nisbett",
-      "credentials": "Ph.D. Psychology, Columbia University",
-      "affiliation": "University of Michigan",
-      "role": "reviewer",
-      "discovery_year": "1971",
-      "note": "Co-discoverer with Edward Jones"
-    },
     "references": [
       {
         "title": "The Actor and the Observer: Divergent Perceptions of the Causes of Behavior",
@@ -39,7 +23,19 @@
         "journal": "Annual Review of Psychology",
         "type": "review"
       }
-    ]
+    ],
+    "attribution": {
+      "termCoinedBy": {
+        "name": "Lee Ross",
+        "year": 1977
+      },
+      "keyContributors": [
+        "Edward E. Jones & Richard E. Nisbett (1971) - Actor-observer asymmetry",
+        "Harold Kelley (1967) - Attribution theory foundations"
+      ],
+      "researchConfidence": "high",
+      "notes": "The term 'fundamental attribution error' was coined by Lee Ross in 1977. The underlying phenomenon was documented by Jones & Nisbett in their 1971 work on actor-observer differences."
+    }
   },
   {
     "id": "self-serving-bias",
@@ -50,22 +46,6 @@
     "counter": "Practice intellectual humility. When you succeed, acknowledge the role of luck, timing, and others' help. When you fail, honestly assess your own contribution before blaming external factors. Keep a 'luck journal' noting when circumstances helped you.",
     "source": "core",
     "researchLevel": "established",
-    "author": {
-      "name": "Dr. Dale T. Miller",
-      "credentials": "Ph.D. Psychology, Stanford University",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "discovery_year": "1975",
-      "note": "Co-discoverer with Michael Ross"
-    },
-    "reviewer": {
-      "name": "Dr. Michael Ross",
-      "credentials": "Ph.D. Psychology, Stanford University",
-      "affiliation": "University of Waterloo",
-      "role": "reviewer",
-      "discovery_year": "1975",
-      "note": "Co-discoverer with Dale Miller"
-    },
     "references": [
       {
         "title": "The Self-Serving Attributional Bias: Beyond Self-Presentation Theory",
@@ -81,7 +61,16 @@
         "journal": "Psychological Bulletin",
         "type": "review"
       }
-    ]
+    ],
+    "attribution": {
+      "termCoinedBy": null,
+      "keyContributors": [
+        "Dale T. Miller & Michael Ross (1975) - Early systematic research",
+        "Miron Zuckerman (1979) - Comprehensive review"
+      ],
+      "researchConfidence": "high",
+      "notes": "Well-documented effect with extensive research. Miller & Ross provided early systematic investigation, though the phenomenon was observed earlier in attribution research."
+    }
   },
   {
     "id": "in-group-favoritism",
@@ -90,22 +79,7 @@
     "summary": "We favor people who are similar to us or belong to our groups. We give them more trust, resources, and benefit of the doubt while being more critical of outsiders.",
     "why": "Evolutionary psychology suggests this helped early humans survive by strengthening tribal bonds. Our brains quickly categorize people as 'us' or 'them,' triggering different emotional and cognitive responses that favor our group.",
     "counter": "Actively seek diverse perspectives and relationships. When making decisions, ask: 'Would I judge this differently if it came from an outsider?' Use blind evaluation processes when possible. Regularly interact with people from different backgrounds.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "bandwagon-effect",
@@ -113,23 +87,8 @@
     "category": "social",
     "summary": "We adopt beliefs and behaviors because many others do, regardless of underlying evidence. The more people believe something, the more we're inclined to believe it too.",
     "why": "Social proof is a powerful heuristic: if many people do something, it's probably safe or correct. This saved cognitive energy for our ancestors and reduced risk. Our brains are wired to conform to avoid social rejection.",
-    "counter": "Before adopting a popular belief, ask: 'What's the actual evidence?' Distinguish between popularity and validity. Seek out contrarian viewpoints. Remember that truth isn't democratic\u2014many people can be wrong together.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "counter": "Before adopting a popular belief, ask: 'What's the actual evidence?' Distinguish between popularity and validity. Seek out contrarian viewpoints. Remember that truth isn't democratic—many people can be wrong together.",
+    "source": "core"
   },
   {
     "id": "groupthink",
@@ -138,22 +97,7 @@
     "summary": "In cohesive groups, the desire for harmony and conformity leads to irrational or dysfunctional decision-making. Dissent is suppressed, and critical evaluation is abandoned.",
     "why": "Groups develop strong norms and identity. Members fear rejection or conflict, so they self-censor doubts. Leaders may inadvertently signal preferred outcomes, and the illusion of unanimity makes dissent seem futile or disloyal.",
     "counter": "Assign a 'devil's advocate' role in group decisions. Encourage anonymous feedback. Leaders should withhold their opinions until others speak. Break into smaller subgroups to generate independent ideas before reconvening.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "halo-effect",
@@ -163,21 +107,17 @@
     "why": "Our brains seek cognitive efficiency by creating coherent narratives. If one trait is positive, assuming others are too creates a simpler, more consistent mental model than tracking each trait independently.",
     "counter": "Evaluate traits independently. Use structured assessment criteria. When impressed by one quality, deliberately ask: 'What evidence do I have for my other assumptions?' Separate appearance from competence, likability from trustworthiness.",
     "source": "core",
-    "author": {
-      "name": "Dr. Edward L. Thorndike",
-      "credentials": "Ph.D. Psychology, Columbia University",
-      "affiliation": "Teachers College, Columbia University",
-      "role": "author",
-      "discovery_year": "1920",
-      "note": "Original discoverer of halo effect"
-    },
-    "reviewer": {
-      "name": "Dr. Solomon E. Asch",
-      "credentials": "Ph.D. Psychology, Columbia University",
-      "affiliation": "Swarthmore College",
-      "role": "reviewer",
-      "discovery_year": "1946",
-      "note": "Extended halo effect research"
+    "attribution": {
+      "termCoinedBy": {
+        "name": "Edward L. Thorndike",
+        "year": 1920
+      },
+      "keyContributors": [
+        "Edward L. Thorndike (1920) - Original observation in military ratings",
+        "Solomon Asch (1946) - Extended research on impression formation"
+      ],
+      "researchConfidence": "high",
+      "notes": "Thorndike first documented the halo effect in 1920 while studying military officer ratings. Asch later extended this work in his research on impression formation."
     }
   },
   {
@@ -187,22 +127,7 @@
     "summary": "We judge actions by their outcomes rather than intentions. A drunk driver who hits someone is judged more harshly than one who makes it home safely, despite identical choices.",
     "why": "Outcomes are vivid and concrete, while intentions are abstract and uncertain. Our emotional responses are triggered by results, not hypotheticals. This bias may have evolutionary value in deterring harmful behaviors.",
     "counter": "Focus on the decision-making process and intentions, not just results. Ask: 'Was this a good decision given what they knew at the time?' Judge actions by their expected value, not their actual outcome. Separate luck from judgment.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "false-consensus",
@@ -211,22 +136,7 @@
     "summary": "We overestimate how many people share our beliefs, values, and behaviors. We assume our views are common sense and that those who disagree are unusual or biased.",
     "why": "We're surrounded by people similar to us (friends, family, colleagues) and consume media that confirms our views. This creates an echo chamber where our perspective seems universal. Our brains also project our own thoughts onto others.",
     "counter": "Actively seek out diverse viewpoints and demographics. Before assuming agreement, ask: 'What percentage of people actually think this way?' Use polls and data rather than intuition. Spend time with people unlike you.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "curse-of-knowledge",
@@ -235,22 +145,7 @@
     "summary": "Once we know something, we can't imagine not knowing it. Experts struggle to teach beginners because they forget what it's like to be ignorant of their field.",
     "why": "Knowledge fundamentally changes how we perceive information. Our brains can't 'unlearn' or easily simulate ignorance. What seems obvious now was once mysterious, but we lose access to that earlier mental state.",
     "counter": "When explaining, start from first principles. Ask: 'What did I find confusing when I first learned this?' Test your explanations on actual beginners. Use analogies to familiar concepts. Avoid jargon and define terms.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "spotlight-effect",
@@ -258,30 +153,15 @@
     "category": "social",
     "summary": "We overestimate how much others notice our appearance, behavior, and mistakes. We feel like we're under a spotlight, but others are mostly focused on themselves.",
     "why": "We're the center of our own experience, so our actions and appearance feel highly salient. We lack access to others' internal focus, which is usually on their own concerns, not us.",
-    "counter": "Remember that others are experiencing their own spotlight effect. Ask: 'Will anyone remember this in a week?' Most people are too worried about themselves to scrutinize you. Take social risks\u2014the downside is smaller than you think.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "counter": "Remember that others are experiencing their own spotlight effect. Ask: 'Will anyone remember this in a week?' Most people are too worried about themselves to scrutinize you. Take social risks—the downside is smaller than you think.",
+    "source": "core"
   },
   {
     "id": "availability-heuristic",
     "title": "Availability Heuristic",
     "category": "decision",
     "summary": "We judge probability by how easily examples come to mind. Plane crashes feel more likely than car accidents because they're more memorable and widely reported.",
-    "why": "Ease of recall is usually a decent proxy for frequency\u2014common things are easier to remember. But vivid, emotional, or recent events are disproportionately memorable, distorting our probability estimates. This heuristic works well in many situations but fails when media coverage, recency, or emotional impact makes rare events more mentally available than common ones.",
+    "why": "Ease of recall is usually a decent proxy for frequency—common things are easier to remember. But vivid, emotional, or recent events are disproportionately memorable, distorting our probability estimates. This heuristic works well in many situations but fails when media coverage, recency, or emotional impact makes rare events more mentally available than common ones.",
     "counter": "Look up actual statistics before judging risk. Ask: 'Am I remembering this because it's common or because it's dramatic?' Consider base rates. Be especially skeptical of fears triggered by recent news or personal anecdotes. Use systematic data rather than anecdotal evidence.",
     "source": "core",
     "researchLevel": "established",
@@ -301,21 +181,17 @@
         "type": "study"
       }
     ],
-    "author": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "author",
-      "discovery_year": "1973",
-      "note": "Co-discoverer with Daniel Kahneman"
-    },
-    "reviewer": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "reviewer",
-      "discovery_year": "1973",
-      "note": "Co-discoverer with Amos Tversky"
+    "attribution": {
+      "termCoinedBy": {
+        "name": "Amos Tversky & Daniel Kahneman",
+        "year": 1973
+      },
+      "keyContributors": [
+        "Amos Tversky & Daniel Kahneman (1973, 1974) - Introduced and systematized",
+        "Multiple replications and extensions since 1970s"
+      ],
+      "researchConfidence": "high",
+      "notes": "Introduced by Tversky & Kahneman as part of their heuristics and biases program. One of the most well-replicated findings in cognitive psychology."
     }
   },
   {
@@ -325,22 +201,7 @@
     "summary": "We blame victims for their misfortune to maintain the belief that bad things won't happen to us. If they made a mistake, we can avoid it; if it was random, we're vulnerable too.",
     "why": "Believing the world is just and controllable reduces anxiety. If victims are responsible for their fate, we can protect ourselves by being smarter or more careful. Randomness is psychologically threatening.",
     "counter": "Recognize that bad things happen to good people through no fault of their own. Practice empathy by imagining yourself in their situation. Acknowledge the role of luck and systemic factors. Support victims instead of judging them.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "just-world-hypothesis",
@@ -349,46 +210,16 @@
     "summary": "We believe the world is fundamentally fair: good things happen to good people, bad things to bad people. This leads us to blame victims and assume success indicates virtue.",
     "why": "A just world is psychologically comforting and gives us a sense of control. If outcomes match moral worth, we can secure good outcomes by being good. Accepting randomness and injustice is anxiety-inducing.",
     "counter": "Acknowledge that life is often unfair and random. Success often involves luck, privilege, and timing. Suffering doesn't imply wrongdoing. Focus on systemic factors and circumstances rather than assuming moral causation.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "naive-realism",
     "title": "Naive Realism",
     "category": "perception",
     "summary": "We believe we see reality objectively and that those who disagree are uninformed, irrational, or biased. We don't recognize our own biases and interpretive frameworks.",
-    "why": "Our perceptions feel direct and unmediated\u2014we don't experience the brain's interpretive processes. This creates the illusion that we're seeing 'the truth' while others are distorting it through their biases.",
+    "why": "Our perceptions feel direct and unmediated—we don't experience the brain's interpretive processes. This creates the illusion that we're seeing 'the truth' while others are distorting it through their biases.",
     "counter": "Assume you have blind spots and biases you can't see. Ask: 'What would make a reasonable person disagree with me?' Seek out steel-man arguments. Recognize that your perspective is one interpretation, not objective reality.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "naive-cynicism",
@@ -397,22 +228,7 @@
     "summary": "We believe others are more biased and self-interested than they actually are, while seeing ourselves as objective. We assume hidden selfish motives behind others' actions.",
     "why": "We have access to our own good intentions but only see others' actions. Cynicism feels sophisticated and protects us from being exploited. Assuming self-interest is often a safe bet, but we overapply it.",
     "counter": "Give people the benefit of the doubt. Ask: 'What innocent explanation could there be?' Remember that most people see themselves as good and well-intentioned. Test your cynical assumptions against evidence.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "forer-barnum-effect",
@@ -421,46 +237,27 @@
     "summary": "We believe vague, general personality descriptions are uniquely accurate for us. This explains why horoscopes, fortune-telling, and personality tests feel so personal.",
     "why": "We seek self-knowledge and confirmation of our uniqueness. Vague statements can apply to almost anyone, but we selectively focus on the parts that fit and interpret ambiguity in self-flattering ways.",
     "counter": "Be skeptical of personality assessments that feel 'eerily accurate.' Ask: 'Could this apply to most people?' Look for specific, falsifiable claims. Test whether the same description resonates with others.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "dunning-kruger-effect",
-    "title": "Dunning\u2013Kruger Effect",
+    "title": "Dunning–Kruger Effect",
     "category": "perception",
     "summary": "Incompetent people overestimate their ability because they lack the knowledge to recognize their incompetence. Experts underestimate their relative ability, assuming tasks easy for them are easy for everyone.",
-    "why": "Skill and self-assessment ability are linked\u2014you need knowledge to recognize what you don't know. Beginners don't know what they don't know. Experts forget that their skills are rare.",
+    "why": "Skill and self-assessment ability are linked—you need knowledge to recognize what you don't know. Beginners don't know what they don't know. Experts forget that their skills are rare.",
     "counter": "Seek feedback from knowledgeable others. Before claiming expertise, ask: 'What would an actual expert know that I don't?' Study the field enough to understand its depth. Embrace intellectual humility.",
     "source": "core",
-    "author": {
-      "name": "Dr. David Dunning",
-      "credentials": "Ph.D. Psychology, Stanford University",
-      "affiliation": "Cornell University",
-      "role": "author",
-      "discovery_year": "1999",
-      "note": "Co-discoverer with Justin Kruger"
-    },
-    "reviewer": {
-      "name": "Dr. Justin Kruger",
-      "credentials": "Ph.D. Psychology, Cornell University",
-      "affiliation": "New York University",
-      "role": "reviewer",
-      "discovery_year": "1999",
-      "note": "Co-discoverer with David Dunning"
+    "attribution": {
+      "termCoinedBy": {
+        "name": "David Dunning & Justin Kruger",
+        "year": 1999
+      },
+      "keyContributors": [
+        "David Dunning & Justin Kruger (1999) - Original research",
+        "Subsequent research has refined understanding of the effect"
+      ],
+      "researchConfidence": "high",
+      "notes": "Dunning & Kruger's 1999 paper introduced this specific formulation. The general phenomenon of metacognitive calibration had been noted earlier, but their work systematized it."
     }
   },
   {
@@ -488,21 +285,17 @@
         "type": "study"
       }
     ],
-    "author": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "author",
-      "discovery_year": "1974",
-      "note": "Co-discoverer with Daniel Kahneman"
-    },
-    "reviewer": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "reviewer",
-      "discovery_year": "1974",
-      "note": "Co-discoverer with Amos Tversky"
+    "attribution": {
+      "termCoinedBy": {
+        "name": "Amos Tversky & Daniel Kahneman",
+        "year": 1974
+      },
+      "keyContributors": [
+        "Amos Tversky & Daniel Kahneman (1974) - Original demonstration",
+        "Nicholas Epley & Thomas Gilovich (2001) - Extended research on adjustment"
+      ],
+      "researchConfidence": "high",
+      "notes": "Introduced by Tversky & Kahneman in their 1974 Science paper. Extensively replicated across many domains including judgment, negotiation, and decision-making."
     }
   },
   {
@@ -512,46 +305,16 @@
     "summary": "We over-trust automated systems and algorithms, even when they're wrong. We defer to computer recommendations and fail to question or override them when we should.",
     "why": "Technology feels objective and infallible. Questioning it requires effort and confidence. We're also trained to trust authority, and algorithms have authority. Overriding automation feels like taking responsibility for potential errors.",
     "counter": "Remember that algorithms are built by humans with biases and limitations. Maintain critical thinking and domain expertise. Ask: 'Does this recommendation make sense?' Be willing to override automation when it conflicts with your judgment.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "google-effect",
     "title": "Google Effect (Digital Amnesia)",
     "category": "memory",
     "summary": "We forget information that's easily accessible online. We remember where to find information rather than the information itself, outsourcing memory to search engines.",
-    "why": "Our brains optimize for efficiency. If information is reliably available externally, there's less need to store it internally. This is a form of transactive memory\u2014using external systems as memory extensions.",
+    "why": "Our brains optimize for efficiency. If information is reliably available externally, there's less need to store it internally. This is a form of transactive memory—using external systems as memory extensions.",
     "counter": "For important information, practice active recall and spaced repetition. Take notes by hand. Engage deeply with material rather than skimming. Recognize that understanding requires internalization, not just access.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "reactance",
@@ -560,29 +323,14 @@
     "summary": "When our freedom is threatened, we react by wanting the forbidden thing even more. Tell someone they can't do something, and they'll want to do it just to assert autonomy.",
     "why": "We value autonomy and resist control. Restrictions trigger a defensive response to preserve our sense of freedom. This is especially strong when the restriction feels arbitrary or when we feel our identity is threatened.",
     "counter": "When you feel reactance, pause and ask: 'Do I actually want this, or am I just resisting being told what to do?' Separate your authentic preferences from your defensive reactions. When persuading others, emphasize choice and autonomy.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "confirmation-bias",
     "title": "Confirmation Bias",
     "category": "decision",
     "summary": "We seek, interpret, and remember information that confirms our existing beliefs while ignoring or dismissing contradictory evidence. We're not truth-seekers; we're confirmation-seekers.",
-    "why": "Confirming beliefs feels good and is cognitively easy. Challenging them is uncomfortable and requires effort. Our brains are motivated reasoners\u2014we use logic to defend conclusions we've already reached emotionally. This bias is particularly strong when beliefs are tied to our identity or when we have invested significant time or resources in a particular viewpoint.",
+    "why": "Confirming beliefs feels good and is cognitively easy. Challenging them is uncomfortable and requires effort. Our brains are motivated reasoners—we use logic to defend conclusions we've already reached emotionally. This bias is particularly strong when beliefs are tied to our identity or when we have invested significant time or resources in a particular viewpoint.",
     "counter": "Actively seek disconfirming evidence. Ask: 'What would prove me wrong?' Engage with the strongest counterarguments (steel-man, not straw-man). Keep a list of beliefs you've changed to normalize updating your views. Practice steelmanning opposing arguments.",
     "source": "core",
     "researchLevel": "established",
@@ -602,21 +350,15 @@
         "type": "study"
       }
     ],
-    "author": {
-      "name": "Dr. Peter C. Wason",
-      "credentials": "Ph.D. Psychology, University College London",
-      "affiliation": "University College London",
-      "role": "author",
-      "discovery_year": "1960s",
-      "note": "Pioneer in cognitive bias research"
-    },
-    "reviewer": {
-      "name": "Dr. Raymond S. Nickerson",
-      "credentials": "Ph.D. Psychology, Tufts University",
-      "affiliation": "Tufts University",
-      "role": "reviewer",
-      "discovery_year": "1998",
-      "note": "Comprehensive review of confirmation bias"
+    "attribution": {
+      "termCoinedBy": null,
+      "keyContributors": [
+        "Peter C. Wason (1960s) - Early experimental demonstrations",
+        "Raymond S. Nickerson (1998) - Comprehensive review",
+        "Joshua Klayman (1995) - Theoretical refinement"
+      ],
+      "researchConfidence": "high",
+      "notes": "Wason's work in the 1960s provided early experimental demonstrations. The term and concept have been developed by many researchers. Nickerson's 1998 review is widely cited."
     }
   },
   {
@@ -626,22 +368,7 @@
     "summary": "When our core beliefs are challenged with evidence, we sometimes believe them even more strongly. Corrections can paradoxically reinforce the misconceptions they're meant to fix.",
     "why": "Core beliefs are tied to identity and worldview. Threats to them trigger defensive reasoning. We counterargue the evidence, and the act of generating defenses strengthens our original belief. Admitting error feels like losing status.",
     "counter": "Separate beliefs from identity. Practice saying 'I was wrong' about small things to normalize it. When presenting corrections, affirm the person's values first. Focus on shared goals rather than proving someone wrong.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "third-person-effect",
@@ -650,22 +377,7 @@
     "summary": "We believe others are more influenced by media, advertising, and propaganda than we are. We see ourselves as uniquely resistant to manipulation while others are susceptible.",
     "why": "We have introspective access to our own reasoning and feel in control of our thoughts. We don't see the subtle influences on our cognition. Believing we're less influenced than others protects our self-image as rational and independent.",
     "counter": "Assume you're as susceptible to influence as anyone else. Ask: 'How might this be affecting me without my awareness?' Study how persuasion and manipulation work. Be humble about your cognitive vulnerabilities.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "belief-bias",
@@ -674,22 +386,7 @@
     "summary": "We judge arguments by whether we agree with the conclusion rather than the quality of the logic. Valid reasoning that leads to disagreeable conclusions feels wrong; flawed reasoning that confirms our beliefs feels right.",
     "why": "Evaluating logic is hard; checking conclusions against our beliefs is easy. Our brains take shortcuts. We're motivated to accept arguments that support our views and reject those that threaten them, regardless of logical validity.",
     "counter": "Evaluate arguments independently of whether you like the conclusion. Ask: 'Is this reasoning sound, even if I disagree?' Practice formal logic. Try to find flaws in arguments you agree with and strengths in those you oppose.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "availability-cascade",
@@ -698,22 +395,7 @@
     "summary": "A self-reinforcing cycle where a belief gains plausibility through repetition in public discourse. The more we hear something, the more true it seems, leading to more repetition.",
     "why": "Repeated exposure increases familiarity, which our brains mistake for truth. Media coverage creates availability, making the issue feel important and common. This triggers more coverage, creating a feedback loop.",
     "counter": "Distinguish between how often you hear something and how true or important it is. Ask: 'Is this actually common, or just commonly discussed?' Look for base rates and statistics. Be skeptical of media-driven panics.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "declinism",
@@ -721,23 +403,8 @@
     "category": "perception",
     "summary": "We believe things are getting worse, that the past was better, and that the future is bleak. Every generation thinks the next one is ruining everything.",
     "why": "We remember the past selectively, filtering out the bad and romanticizing the good. Current problems are vivid and salient. Negative news is more memorable and widely reported. Aging changes our relationship to culture and society.",
-    "counter": "Study history and data\u2014most metrics show improvement over time. Ask: 'What evidence do I have beyond my feelings?' Remember that every generation has felt this way. Distinguish between personal nostalgia and objective decline.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "counter": "Study history and data—most metrics show improvement over time. Ask: 'What evidence do I have beyond my feelings?' Remember that every generation has felt this way. Distinguish between personal nostalgia and objective decline.",
+    "source": "core"
   },
   {
     "id": "status-quo-bias",
@@ -746,22 +413,7 @@
     "summary": "We prefer things to stay the same. Change feels risky and effortful, so we stick with current situations even when better alternatives exist. Inertia is powerful.",
     "why": "Change requires energy and involves uncertainty. The current situation is known and feels safe. We also feel greater regret for bad outcomes resulting from action than from inaction, making change feel riskier.",
     "counter": "Regularly question defaults. Ask: 'If I were starting fresh, would I choose this?' Imagine the status quo as a new option you're actively choosing. Consider the costs of inaction, not just action. Run experiments.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "sunk-cost-fallacy",
@@ -769,23 +421,17 @@
     "category": "decision",
     "summary": "We continue investing in something because we've already invested, even when it's clearly not working. We throw good money after bad to avoid 'wasting' what we've already spent.",
     "why": "Admitting a loss feels like failure. We want to believe our past investments were worthwhile. Quitting feels like waste, even though sunk costs are already gone and shouldn't influence future decisions.",
-    "counter": "Ignore sunk costs\u2014they're gone regardless of what you do next. Ask: 'If I were starting today with no prior investment, would I choose this?' Focus on future costs and benefits only. Practice cutting losses early.",
+    "counter": "Ignore sunk costs—they're gone regardless of what you do next. Ask: 'If I were starting today with no prior investment, would I choose this?' Focus on future costs and benefits only. Practice cutting losses early.",
     "source": "core",
-    "author": {
-      "name": "Dr. Hal R. Arkes",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Ohio State University",
-      "role": "author",
-      "discovery_year": "1985",
-      "note": "Co-discoverer with Catherine Blumer"
-    },
-    "reviewer": {
-      "name": "Dr. Catherine Blumer",
-      "credentials": "Ph.D. Psychology, Ohio State University",
-      "affiliation": "Ohio State University",
-      "role": "reviewer",
-      "discovery_year": "1985",
-      "note": "Co-discoverer with Hal Arkes"
+    "attribution": {
+      "termCoinedBy": null,
+      "keyContributors": [
+        "Hal R. Arkes & Catherine Blumer (1985) - Systematic research",
+        "Richard Thaler (1980) - Economic perspective",
+        "Earlier observations in economics and psychology"
+      ],
+      "researchConfidence": "high",
+      "notes": "Arkes & Blumer's 1985 paper provided systematic experimental demonstration. The concept has roots in economics (sunk costs) and was observed in various contexts earlier."
     }
   },
   {
@@ -795,46 +441,16 @@
     "summary": "We believe that past random events influence future ones. After several coin flips landing heads, we think tails is 'due,' even though each flip is independent with 50/50 odds.",
     "why": "We see patterns in randomness and expect small samples to reflect overall probabilities. Our brains evolved to detect patterns, so we see causation and balance where there's only chance.",
     "counter": "Remember that random events have no memory. Each independent trial has the same odds regardless of history. Study probability and statistics. Be especially careful with this in gambling and investing.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "zero-risk-bias",
     "title": "Zero-Risk Bias",
     "category": "decision",
     "summary": "We prefer eliminating small risks entirely over significantly reducing larger risks. We'll pay more to reduce risk from 1% to 0% than from 10% to 5%, even though the latter saves more lives.",
-    "why": "Zero feels qualitatively different from small probabilities. Complete elimination provides psychological closure and certainty. We're also bad at intuiting small probability differences\u20141% vs 0% feels bigger than 10% vs 5%.",
+    "why": "Zero feels qualitatively different from small probabilities. Complete elimination provides psychological closure and certainty. We're also bad at intuiting small probability differences—1% vs 0% feels bigger than 10% vs 5%.",
     "counter": "Focus on absolute risk reduction, not relative. Ask: 'Which option saves more lives or resources?' Be willing to accept small residual risks if it allows greater risk reduction elsewhere. Think in terms of expected value.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "framing-effect",
@@ -844,21 +460,17 @@
     "why": "Our brains respond to the emotional tone and reference point of information, not just its logical content. Positive frames trigger approach; negative frames trigger avoidance. We're not purely rational calculators.",
     "counter": "Reframe information in multiple ways before deciding. Ask: 'How would I feel if this were presented differently?' Look for the underlying numbers and probabilities. Be aware of how others might be framing information to influence you.",
     "source": "core",
-    "author": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "author",
-      "discovery_year": "1981",
-      "note": "Co-discoverer with Daniel Kahneman"
-    },
-    "reviewer": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "reviewer",
-      "discovery_year": "1981",
-      "note": "Co-discoverer with Amos Tversky"
+    "attribution": {
+      "termCoinedBy": {
+        "name": "Amos Tversky & Daniel Kahneman",
+        "year": 1981
+      },
+      "keyContributors": [
+        "Amos Tversky & Daniel Kahneman (1981) - Prospect theory and framing",
+        "Extensive research on decision framing across domains"
+      ],
+      "researchConfidence": "high",
+      "notes": "Systematically demonstrated in Tversky & Kahneman's prospect theory work. Framing effects are among the most robust findings in behavioral decision research."
     }
   },
   {
@@ -868,22 +480,7 @@
     "summary": "We apply generalized beliefs about groups to individuals, ignoring their unique characteristics. We assume people will behave according to group stereotypes rather than their individual traits.",
     "why": "Stereotypes are cognitive shortcuts that reduce the complexity of social perception. They're often based on some statistical reality but are overgeneralized and applied rigidly, ignoring individual variation.",
     "counter": "Treat people as individuals, not representatives of groups. Ask: 'What evidence do I have about this specific person?' Expose yourself to counter-stereotypical examples. Recognize that within-group variation is usually larger than between-group differences.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "out-group-homogeneity-bias",
@@ -892,22 +489,7 @@
     "summary": "We see members of other groups as more similar to each other than they actually are, while recognizing diversity within our own group. 'They all look/think/act the same.'",
     "why": "We have more exposure to and attention for our own group, so we notice individual differences. We have less contact with out-groups and process them more categorically, focusing on group-defining features.",
     "counter": "Seek meaningful contact with out-group members. Ask: 'What individual differences am I missing?' Remember that every group has as much internal diversity as your own. Focus on individual characteristics, not group membership.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "authority-bias",
@@ -916,22 +498,7 @@
     "summary": "We over-trust and obey authority figures, even when they're wrong or acting unethically. Titles, credentials, and status make us less likely to question or resist.",
     "why": "Respecting authority is socially adaptive and was crucial for survival in hierarchical societies. Authorities often do have expertise. Challenging them risks conflict and social consequences. We're trained from childhood to defer to authority.",
     "counter": "Evaluate ideas on their merits, not the speaker's status. Ask: 'What's the actual evidence?' Remember that experts can be wrong, especially outside their domain. Be willing to respectfully question authority when something seems off.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "placebo-effect",
@@ -940,22 +507,7 @@
     "summary": "We experience real improvements from fake treatments because we believe they'll work. Expectations and beliefs can trigger genuine physiological and psychological changes.",
     "why": "Mind and body are interconnected. Expectations activate neural pathways associated with relief and healing. Attention, ritual, and hope have real effects. Our brains can modulate pain, mood, and even immune function based on beliefs.",
     "counter": "Recognize the power of expectation and context in healing. Use it ethically to enhance legitimate treatments. In research and decision-making, use blinded controls to separate placebo effects from actual efficacy.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "survivorship-bias",
@@ -963,23 +515,8 @@
     "category": "decision",
     "summary": "We focus on successes that survived a selection process while ignoring failures that didn't. We study successful companies and conclude their strategies work, forgetting the many that used the same strategies and failed.",
     "why": "Survivors are visible; failures disappear. Success stories are inspiring and widely shared; failures are forgotten or hidden. This creates a distorted sample that makes success seem more predictable and replicable than it is.",
-    "counter": "Actively seek out failures and near-misses. Ask: 'How many tried this and failed?' Study base rates of success. Be skeptical of advice from successful people\u2014their strategies may not have caused their success. Consider selection effects.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "counter": "Actively seek out failures and near-misses. Ask: 'How many tried this and failed?' Study base rates of success. Be skeptical of advice from successful people—their strategies may not have caused their success. Consider selection effects.",
+    "source": "core"
   },
   {
     "id": "tachypsychia",
@@ -988,22 +525,7 @@
     "summary": "Time seems to slow down during high-stress or dangerous situations. Moments of crisis feel like they unfold in slow motion, though our actual reaction time doesn't improve.",
     "why": "During stress, the amygdala becomes highly active and encodes memories more densely. When we recall the event, the richness of detail makes it seem like more time passed. Attention also narrows and intensifies, altering time perception.",
     "counter": "Recognize that time distortion is a perceptual effect, not reality. In crisis, you're not actually moving faster or thinking more clearly. Train and prepare for high-stress situations so you can respond effectively despite altered perception.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "law-of-triviality",
@@ -1012,22 +534,7 @@
     "summary": "We spend disproportionate time on trivial decisions because they're easy to understand, while glossing over complex, important ones. Committees debate the color of a bike shed for hours but approve a nuclear reactor in minutes.",
     "why": "Complex topics require expertise and effort to evaluate, so we defer to experts or avoid engagement. Trivial topics are accessible to everyone, so everyone has opinions and wants to contribute. Participation feels good.",
     "counter": "Allocate time proportional to importance, not ease of understanding. Ask: 'What's the actual impact of this decision?' Defer to expertise on complex matters. Limit discussion time on trivial issues. Focus energy on high-leverage decisions.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "zeigarnik-effect",
@@ -1036,22 +543,7 @@
     "summary": "We remember incomplete or interrupted tasks better than completed ones. Unfinished business stays in our minds, creating mental tension until we complete it.",
     "why": "Our brains maintain active representations of ongoing goals. Completion provides closure and allows the brain to release the task from active memory. Incompletion creates cognitive tension that keeps the task salient.",
     "counter": "Use this to your advantage: start tasks to create momentum and mental commitment. Break large projects into smaller tasks to get frequent completion satisfaction. When stuck, take breaks and let your unconscious work on it.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "ikea-effect",
@@ -1060,22 +552,7 @@
     "summary": "We value things more when we've put effort into creating them. Self-assembled furniture, home-cooked meals, and our own ideas seem better than they objectively are.",
     "why": "Effort creates a sense of ownership and investment. We want to believe our labor was worthwhile, so we inflate the value of the result. This also signals competence to ourselves and others.",
     "counter": "Seek objective feedback on your creations. Ask: 'Would I value this if someone else made it?' Be willing to abandon or improve your work based on external input. Separate effort from quality.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "ben-franklin-effect",
@@ -1083,23 +560,8 @@
     "category": "social",
     "summary": "We like people more after doing them a favor. Counterintuitively, asking someone for help makes them like you more, not less.",
     "why": "Cognitive dissonance: if we help someone, we rationalize that we must like them (otherwise why would we help?). Helping also creates a sense of investment and connection. We want our actions to align with our attitudes.",
-    "counter": "Use this ethically to build relationships: ask for small favors. When someone helps you, recognize they may now feel more positively toward you. Don't exploit this\u2014reciprocate and show genuine appreciation.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "counter": "Use this ethically to build relationships: ask for small favors. When someone helps you, recognize they may now feel more positively toward you. Don't exploit this—reciprocate and show genuine appreciation.",
+    "source": "core"
   },
   {
     "id": "bystander-effect",
@@ -1108,46 +570,16 @@
     "summary": "We're less likely to help someone in need when others are present. The more bystanders, the less likely any individual is to intervene. Responsibility diffuses across the group.",
     "why": "We look to others for cues about how to behave. If no one else is helping, we assume it's not an emergency or not our responsibility. We also fear embarrassment if we misinterpret the situation. Responsibility feels shared.",
     "counter": "Be aware of this effect and consciously override it. If you need help, single out a specific person rather than appealing to a crowd. If you witness an emergency, assume you're responsible and act. Don't wait for others.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "suggestibility",
     "title": "Suggestibility",
     "category": "memory",
     "summary": "Our memories are malleable and can be influenced by suggestions, leading questions, and external information. We can 'remember' events that never happened or misremember details.",
-    "why": "Memory is reconstructive, not reproductive\u2014we rebuild memories each time we recall them, incorporating new information. We're especially suggestible when uncertain, when the source seems authoritative, or when suggestions align with our expectations.",
+    "why": "Memory is reconstructive, not reproductive—we rebuild memories each time we recall them, incorporating new information. We're especially suggestible when uncertain, when the source seems authoritative, or when suggestions align with our expectations.",
     "counter": "Be skeptical of memories, especially vivid ones. Avoid leading questions when gathering information. Record important events contemporaneously. Recognize that confidence in a memory doesn't guarantee accuracy.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "false-memory",
@@ -1156,22 +588,7 @@
     "summary": "We can remember events that never happened with complete confidence. False memories feel as real as true ones and can be detailed, emotional, and persistent.",
     "why": "Memory is constructive. Our brains fill gaps with plausible details, blend similar events, and incorporate suggestions. Imagination and memory use overlapping neural systems, so vividly imagining something can create a memory of it.",
     "counter": "Corroborate important memories with external evidence. Be humble about memory accuracy, especially for distant or emotional events. Avoid repeatedly imagining or discussing events, as this can distort them. Use contemporaneous records.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "cryptomnesia",
@@ -1180,22 +597,7 @@
     "summary": "We remember information but forget where it came from, leading us to believe we came up with it ourselves. We unconsciously plagiarize, thinking others' ideas are our own original thoughts.",
     "why": "Source memory is weaker than content memory. We remember what we learned but not how or from whom. When we later recall the information, it feels like our own insight because we've forgotten the external source.",
     "counter": "Keep careful records of sources and inspirations. When you have an idea, ask: 'Where might I have encountered this before?' Give credit generously. Recognize that most ideas are built on others' work.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "clustering-illusion",
@@ -1204,46 +606,16 @@
     "summary": "We see patterns in random data. Streaks, clusters, and coincidences feel meaningful and non-random, even when they're exactly what we'd expect from chance.",
     "why": "Our brains are pattern-detection machines. We evolved to spot meaningful patterns (predators, food sources), so we're hypersensitive to them. We underestimate how much clustering occurs in truly random sequences.",
     "counter": "Study probability and randomness. Ask: 'What would random data actually look like?' Remember that streaks and clusters are expected in random sequences. Test your pattern against a null hypothesis. Be skeptical of 'hot hands' and 'cold streaks.'",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "pessimism-bias",
     "title": "Pessimism Bias",
     "category": "perception",
     "summary": "We overestimate the likelihood of negative outcomes and underestimate positive ones. We expect the worst and are surprised when things go well.",
-    "why": "Negativity bias: our brains prioritize threats for survival. Pessimism also provides emotional protection\u2014if we expect the worst, we're prepared and won't be disappointed. Media amplifies negative news, reinforcing pessimistic worldviews.",
-    "counter": "Track your predictions and compare them to outcomes\u2014you'll likely find you're too pessimistic. Ask: 'What's the base rate for this outcome?' Balance attention to risks with attention to opportunities. Practice gratitude and positive reframing.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "why": "Negativity bias: our brains prioritize threats for survival. Pessimism also provides emotional protection—if we expect the worst, we're prepared and won't be disappointed. Media amplifies negative news, reinforcing pessimistic worldviews.",
+    "counter": "Track your predictions and compare them to outcomes—you'll likely find you're too pessimistic. Ask: 'What's the base rate for this outcome?' Balance attention to risks with attention to opportunities. Practice gratitude and positive reframing.",
+    "source": "core"
   },
   {
     "id": "optimism-bias",
@@ -1252,22 +624,7 @@
     "summary": "We overestimate the likelihood of positive outcomes and underestimate negative ones, especially for ourselves. We think we're less likely than others to experience misfortune.",
     "why": "Optimism is motivating and protects mental health. We have more control over our own actions than others', so we feel we can avoid negative outcomes. Optimism also feels good and is socially rewarded.",
     "counter": "Use 'pre-mortems': imagine your project has failed and work backward to identify risks. Ask: 'What could go wrong?' Consult base rates for similar endeavors. Balance optimism with realistic planning and contingencies.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   },
   {
     "id": "blind-spot-bias",
@@ -1276,21 +633,6 @@
     "summary": "We recognize biases in others but fail to see them in ourselves. We believe we're more objective and less biased than average, which is itself a bias.",
     "why": "We have introspective access to our own reasoning and intentions, which feel rational and justified. We only see others' conclusions and behaviors, not their internal logic. Recognizing our own biases threatens our self-image as rational.",
     "counter": "Assume you have biases you can't see. Seek external feedback. Ask: 'If someone else did this, would I call it biased?' Study cognitive biases not to spot them in others, but to catch them in yourself. Practice intellectual humility.",
-    "source": "core",
-    "author": {
-      "name": "Dr. Daniel Kahneman",
-      "credentials": "Ph.D. Psychology, UC Berkeley, Nobel Prize 2002",
-      "affiliation": "Princeton University",
-      "role": "author",
-      "note": "Leading researcher in cognitive biases and behavioral economics"
-    },
-    "reviewer": {
-      "name": "Dr. Amos Tversky",
-      "credentials": "Ph.D. Psychology, University of Michigan",
-      "affiliation": "Stanford University",
-      "role": "reviewer",
-      "note": "Co-founder of behavioral economics with Kahneman"
-    },
-    "note": "Attribution to leading researchers in the field"
+    "source": "core"
   }
 ]
