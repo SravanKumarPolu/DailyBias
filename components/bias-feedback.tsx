@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import { ThumbsUp, ThumbsDown, MessageSquare, Send, X, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -42,7 +41,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
     if (!feedbackType || !rating) return
 
     setIsSubmitting(true)
-    
+
     try {
       const feedback: FeedbackData = {
         biasId: bias.id,
@@ -109,11 +108,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
 
   if (isSubmitted) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4"
-      >
+      <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center gap-3">
           <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
           <div>
@@ -125,7 +120,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
     )
   }
 
@@ -146,9 +141,9 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
               </p>
             </div>
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="text-green-600 hover:text-green-800"
             aria-label={isOpen ? "Close feedback form" : "Open feedback form"}
             aria-expanded={isOpen}
@@ -157,16 +152,10 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
           </Button>
         </div>
       </CardHeader>
-      
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <CardContent className="pt-0">
+
+      {isOpen && (
+        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+          <CardContent className="pt-0">
               <div className="space-y-4">
                 {/* Feedback Type Selection */}
                 <div>
@@ -195,11 +184,7 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
 
                 {/* Rating Selection */}
                 {feedbackType && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-2"
-                  >
+                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
                     <label className="text-sm font-medium text-gray-900 dark:text-gray-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       How would you rate this content?
                     </label>
@@ -227,16 +212,12 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                         Needs Improvement
                       </Button>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
 
                 {/* Comment Section */}
                 {rating && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-2"
-                  >
+                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
                     <label className="text-sm font-medium text-gray-900 dark:text-gray-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       Additional Comments (Optional)
                     </label>
@@ -246,16 +227,12 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                       placeholder="Please provide specific details about what could be improved or what you found helpful..."
                       className="min-h-[80px]"
                     />
-                  </motion.div>
+                  </div>
                 )}
 
                 {/* Submit Button */}
                 {feedbackType && rating && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-2 pt-2"
-                  >
+                  <div className="space-y-2 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
                     <p className="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       This feedback displays only your analytics page and is also forwarded to the developer's email.
                     </p>
@@ -287,13 +264,12 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
                       Cancel
                     </Button>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </CardContent>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </Card>
   )
 }
