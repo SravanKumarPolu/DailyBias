@@ -6,6 +6,8 @@ import { getAllProgress, markBiasAsViewed, toggleBiasMastered, getProgress } fro
 import { toast } from "@/hooks/use-toast"
 import { getLocalDateString, getDaysAgoDateString } from "@/lib/timezone-utils"
 import { logger } from "@/lib/logger"
+import { trackBiasView } from "@/lib/engagement-tracking"
+import { initializeReviewProgress } from "@/lib/spaced-repetition"
 
 function calculateStreak(progressList: BiasProgress[]): { current: number; longest: number } {
   if (progressList.length === 0) return { current: 0, longest: 0 }
@@ -154,21 +156,26 @@ export function useProgress() {
                   : p
               )
             } else {
-              // Add new progress entry
-              return [
-                ...prev,
-                {
-                  biasId,
-                  viewedAt: now,
-                  viewCount: 1,
-                  mastered: false,
-                },
-              ]
+              // Add new progress entry with spaced repetition initialized
+              const newProgress: BiasProgress = {
+                biasId,
+                viewedAt: now,
+                viewCount: 1,
+                mastered: false,
+              }
+              // Initialize spaced repetition fields
+              const initializedProgress = initializeReviewProgress(newProgress)
+              return [...prev, initializedProgress]
             }
           })
         } else {
           // Already viewed recently, skip state update to prevent flickering
           logger.debug("[DailyBias] Bias already viewed recently, skipping state update")
+        }
+
+        // Track engagement
+        if (typeof window !== "undefined") {
+          trackBiasView()
         }
 
         // Save to database (non-blocking)

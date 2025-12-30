@@ -14,6 +14,7 @@ import { BiasExamples, generateExamples, generateTips } from "@/components/bias-
 import { BiasResearchInfo } from "@/components/bias-research-info"
 import { BiasFeedback } from "@/components/bias-feedback"
 import { ExpertReview } from "@/components/expert-review"
+import { ShareableCard } from "@/components/shareable-card"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
 import { useSpeech } from "@/hooks/use-speech"
@@ -73,7 +74,7 @@ function BiasCardComponent({
 
 🔗 Learn more: ${window.location.href}
 
-#CognitiveBias #Psychology #DailyBias`
+#CognitiveBias #Psychology #DebiasDaily #DailyBias`
 
     await navigator.clipboard.writeText(text)
     haptics.success()
@@ -405,106 +406,112 @@ function BiasCardComponent({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:pt-6">
-          <Button
-            onClick={handleSpeak}
-            onTouchEnd={handleSpeak}
-            variant="outline"
-            className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
-              isSpeaking ? "animate-pulse" : ""
-            }`}
-            style={{
-              touchAction: 'manipulation',
-              WebkitTouchCallout: 'none',
-              WebkitTapHighlightColor: 'transparent',
-              pointerEvents: 'auto',
-              userSelect: 'none'
-            }}
-            aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
-            title={
-              !isSupported
-                ? "Speech not supported in this browser"
-                : !isEnabled
-                ? "Enable voice in Settings first"
-                : isSpeaking
-                ? "Stop reading"
-                : "Read this bias aloud"
-            }
-            disabled={!isSupported || !isEnabled}
-          >
-            {isSpeaking ? (
-              <>
-                <VolumeX
-                  className="mr-2 h-4 w-4 transition-transform duration-200"
-                  aria-hidden="true"
-                />
-                <span className="sm:inline hidden">Stop</span>
-                <span className="sm:hidden">Stop</span>
-              </>
-            ) : (
-              <>
-                <Volume2
-                  className={`mr-2 h-4 w-4 transition-transform duration-200 ${
-                    !isEnabled ? "opacity-50" : ""
-                  }`}
-                  aria-hidden="true"
-                />
-                <span className="sm:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
-                <span className="sm:hidden">{!isEnabled ? "Off" : "Listen"}</span>
-              </>
-            )}
-          </Button>
-          <Button
-            onClick={handleShare}
-            onTouchEnd={handleShare}
-            variant="outline"
-            className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
-            style={{
-              touchAction: 'manipulation',
-              WebkitTouchCallout: 'none',
-              WebkitTapHighlightColor: 'transparent',
-              pointerEvents: 'auto',
-              userSelect: 'none'
-            }}
-            aria-label="Share this bias"
-          >
-            <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
-            Share
-          </Button>
-          <Button
-            onClick={handleCopy}
-            onTouchEnd={handleCopy}
-            variant="outline"
-            className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
-              copied ? "animate-scale-in" : ""
-            }`}
-            style={{
-              touchAction: 'manipulation',
-              WebkitTouchCallout: 'none',
-              WebkitTapHighlightColor: 'transparent',
-              pointerEvents: 'auto',
-              userSelect: 'none'
-            }}
-            aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
-          >
-            {copied ? (
-              <>
-                <Check
-                  className="mr-2 h-4 w-4 text-success transition-all duration-200"
-                  aria-hidden="true"
-                />
-                Copied
-              </>
-            ) : (
-              <>
-                <Copy
-                  className="mr-2 h-4 w-4 transition-transform duration-200"
-                  aria-hidden="true"
-                />
-                Copy
-              </>
-            )}
-          </Button>
+        <div className="flex flex-col gap-3 pt-4 sm:pt-6">
+          {/* Primary Actions Row */}
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSpeak}
+              onTouchEnd={handleSpeak}
+              variant="outline"
+              className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
+                isSpeaking ? "animate-pulse" : ""
+              }`}
+              style={{
+                touchAction: 'manipulation',
+                WebkitTouchCallout: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                pointerEvents: 'auto',
+                userSelect: 'none'
+              }}
+              aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
+              title={
+                !isSupported
+                  ? "Speech not supported in this browser"
+                  : !isEnabled
+                  ? "Enable voice in Settings first"
+                  : isSpeaking
+                  ? "Stop reading"
+                  : "Read this bias aloud"
+              }
+              disabled={!isSupported || !isEnabled}
+            >
+              {isSpeaking ? (
+                <>
+                  <VolumeX
+                    className="mr-2 h-4 w-4 transition-transform duration-200"
+                    aria-hidden="true"
+                  />
+                  <span className="sm:inline hidden">Stop</span>
+                  <span className="sm:hidden">Stop</span>
+                </>
+              ) : (
+                <>
+                  <Volume2
+                    className={`mr-2 h-4 w-4 transition-transform duration-200 ${
+                      !isEnabled ? "opacity-50" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <span className="sm:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
+                  <span className="sm:hidden">{!isEnabled ? "Off" : "Listen"}</span>
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleShare}
+              onTouchEnd={handleShare}
+              variant="outline"
+              className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+              style={{
+                touchAction: 'manipulation',
+                WebkitTouchCallout: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                pointerEvents: 'auto',
+                userSelect: 'none'
+              }}
+              aria-label="Share this bias"
+            >
+              <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
+              Share
+            </Button>
+            <Button
+              onClick={handleCopy}
+              onTouchEnd={handleCopy}
+              variant="outline"
+              className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
+                copied ? "animate-scale-in" : ""
+              }`}
+              style={{
+                touchAction: 'manipulation',
+                WebkitTouchCallout: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                pointerEvents: 'auto',
+                userSelect: 'none'
+              }}
+              aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
+            >
+              {copied ? (
+                <>
+                  <Check
+                    className="mr-2 h-4 w-4 text-success transition-all duration-200"
+                    aria-hidden="true"
+                  />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy
+                    className="mr-2 h-4 w-4 transition-transform duration-200"
+                    aria-hidden="true"
+                  />
+                  Copy
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Quick Reference Card Button */}
+          <ShareableCard bias={bias} />
         </div>
 
         {/* Examples and Tips */}

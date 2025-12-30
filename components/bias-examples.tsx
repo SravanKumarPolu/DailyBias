@@ -648,8 +648,28 @@ export function generateTips(bias: Bias): string[] {
 }
 
 export function BiasExamples({ bias }: BiasExamplesProps) {
-  const examples = generateExamples(bias)
+  // Use structured examples from data if available, otherwise fall back to generated examples
+  const hasStructuredExamples = bias.examples && bias.examples.length > 0
+  const fallbackExamples = generateExamples(bias)
   const tips = generateTips(bias)
+
+  // Helper function to get category badge color
+  const getCategoryBadgeColor = (category: string) => {
+    switch (category) {
+      case "business":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+      case "politics":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+      case "personal":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+      case "historical":
+        return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+      case "news":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
+    }
+  }
 
   return (
     <div className="mt-8 space-y-8">
@@ -663,21 +683,64 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
           <Lightbulb className="h-4 w-4 text-primary" />
           Real-World Examples
         </h3>
-        <div className="space-y-3">
-          {examples.map((example, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
-              className="group flex gap-3 rounded-lg border border-accent/50 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent p-4 transition-all duration-200 hover:border-accent hover:shadow-depth-1"
-            >
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 group-hover:scale-110">
-                <Lightbulb className="h-3.5 w-3.5 text-primary" />
-              </div>
-              <p className="text-sm leading-relaxed text-pretty sm:text-base text-foreground">{example}</p>
-            </motion.div>
-          ))}
+        <div className="space-y-4">
+          {hasStructuredExamples ? (
+            // Display structured examples from data
+            bias.examples!.map((example, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
+                className="group rounded-lg border border-accent/50 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent p-5 transition-all duration-200 hover:border-accent hover:shadow-depth-1"
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 group-hover:scale-110 mt-0.5">
+                    <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-foreground mb-1 sm:text-base">
+                      {example.title}
+                    </h4>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getCategoryBadgeColor(example.category)}`}>
+                        {example.category.charAt(0).toUpperCase() + example.category.slice(1)}
+                      </span>
+                      {example.year && (
+                        <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
+                          {example.year}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed text-pretty sm:text-base text-foreground/90 ml-9">
+                  {example.description}
+                </p>
+                {example.source && (
+                  <p className="text-xs text-muted-foreground mt-2 ml-9 italic">
+                    Source: {example.source}
+                  </p>
+                )}
+              </motion.div>
+            ))
+          ) : (
+            // Fall back to generated examples
+            fallbackExamples.map((example, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
+                className="group flex gap-3 rounded-lg border border-accent/50 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent p-4 transition-all duration-200 hover:border-accent hover:shadow-depth-1"
+              >
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 group-hover:scale-110">
+                  <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <p className="text-sm leading-relaxed text-pretty sm:text-base text-foreground">{example}</p>
+              </motion.div>
+            ))
+          )}
         </div>
       </motion.div>
 

@@ -1,11 +1,12 @@
 "use client"
 
-import { createContext, useContext, useMemo, type ReactNode } from "react"
+import { createContext, useContext, useMemo, useEffect, type ReactNode } from "react"
 import type { Bias, FavoriteItem, Settings, BiasProgress, ProgressStats } from "@/lib/types"
 import { useBiases } from "@/hooks/use-biases"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useSettings } from "@/hooks/use-settings"
 import { useProgress } from "@/hooks/use-progress"
+import { initEngagementTracking } from "@/lib/engagement-tracking"
 
 interface AppContextType {
   // Biases
@@ -52,6 +53,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const favoritesHook = useFavorites()
   const settingsHook = useSettings()
   const progressHook = useProgress()
+
+  // Initialize engagement tracking on mount
+  useEffect(() => {
+    const cleanup = initEngagementTracking()
+    return cleanup
+  }, [])
 
   // Create stable comparison key to detect favorites changes
   // Include length to ensure we detect when favorites array becomes empty

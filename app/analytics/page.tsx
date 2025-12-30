@@ -1,18 +1,21 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, BarChart3, TrendingUp, Users, Star, AlertTriangle } from "lucide-react"
+import { ArrowLeft, BarChart3, TrendingUp, Users, Star, AlertTriangle, Trophy } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { ContentQualityDashboard } from "@/components/content-quality-dashboard"
 import { LearningProgressDashboard } from "@/components/learning-progress-dashboard"
+import { AchievementGrid } from "@/components/achievement-badge"
 import { useApp } from "@/contexts/app-context"
+import { useAchievements } from "@/hooks/use-achievements"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import { contentVersionManager, type ContentQualityMetrics } from "@/lib/content-versioning"
+import type { QuizSession } from "@/lib/types"
 import { 
   calculateAnalyticsMetrics, 
   getRecentActivity, 
@@ -20,7 +23,9 @@ import {
   type AnalyticsMetrics,
   type RecentActivity 
 } from "@/lib/analytics-utils"
-import { getAllFeedback } from "@/lib/db"
+import { formatSessionTime } from "@/lib/engagement-tracking"
+import { getAllFeedback, getCompletedQuizSessions } from "@/lib/db"
+import { getAchievementsByCategory } from "@/lib/achievements"
 
 export default function AnalyticsPage() {
   const { 
@@ -28,16 +33,32 @@ export default function AnalyticsPage() {
     biasesLoading, 
     progressList, 
     progressLoading,
-    settings
+    progressStats,
+    settings,
+    favorites,
+    userBiases
   } = useApp()
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<"overview" | "progress" | "quality" | "reviews">("overview")
+  const [activeTab, setActiveTab] = useState<"overview" | "progress" | "quality" | "reviews" | "achievements">("overview")
+  const [quizSessions, setQuizSessions] = useState<QuizSession[]>([])
+  const [feedbackCount, setFeedbackCount] = useState(0)
   const [contentNeedingReview, setContentNeedingReview] = useState<string[]>([])
   const [qualityMetrics, setQualityMetrics] = useState<ContentQualityMetrics[]>([])
   // feedbackList state removed - feedback is used directly in calculations, not stored in state
   const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null)
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Initialize achievements hook
+  const achievements = useAchievements(
+    progressList,
+    allBiases,
+    quizSessions,
+    favorites.length,
+    userBiases.length,
+    feedbackCount,
+    progressStats.currentStreak
+  )
 
   // Load analytics data
   useEffect(() => {
@@ -55,6 +76,11 @@ export default function AnalyticsPage() {
         
         // Load feedback data
         const feedback = await getAllFeedback()
+        setFeedbackCount(feedback.length)
+        
+        // Load quiz sessions
+        const sessions = await getCompletedQuizSessions()
+        setQuizSessions(sessions)
         
         // Calculate analytics metrics
         const calculatedMetrics = await calculateAnalyticsMetrics(
@@ -83,6 +109,7 @@ export default function AnalyticsPage() {
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
     { id: "progress", label: "Learning Progress", icon: TrendingUp },
+    { id: "achievements", label: "Achievements", icon: Trophy },
     { id: "quality", label: "Content Quality", icon: Star },
     { id: "reviews", label: "Reviews", icon: Users }
   ]
@@ -216,6 +243,35 @@ export default function AnalyticsPage() {
                             <div className="text-sm font-medium text-foreground dark:text-accent-foreground mt-1">User Feedback</div>
                           </div>
                         </div>
+                        {/* Engagement Metrics Row */}
+                        {metrics.totalSessions !== undefined && (
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-4">
+                            <div className="text-center p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
+                              <div className="text-xl font-bold text-purple-700 dark:text-purple-300">
+                                {metrics.totalSessions}
+                              </div>
+                              <div className="text-xs font-medium text-foreground/80 mt-1">Total Sessions</div>
+                            </div>
+                            <div className="text-center p-3 bg-blue-100/50 dark:bg-blue-900/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+                              <div className="text-xl font-bold text-blue-700 dark:text-blue-300">
+                                {metrics.totalDaysActive || 0}
+                              </div>
+                              <div className="text-xs font-medium text-foreground/80 mt-1">Days Active</div>
+                            </div>
+                            <div className="text-center p-3 bg-green-100/50 dark:bg-green-900/30 rounded-lg border border-green-200/50 dark:border-green-800/50">
+                              <div className="text-xl font-bold text-green-700 dark:text-green-300">
+                                {metrics.averageSessionTime ? formatSessionTime(metrics.averageSessionTime) : "0m"}
+                              </div>
+                              <div className="text-xs font-medium text-foreground/80 mt-1">Avg Session Time</div>
+                            </div>
+                            <div className="text-center p-3 bg-orange-100/50 dark:bg-orange-900/30 rounded-lg border border-orange-200/50 dark:border-orange-800/50">
+                              <div className="text-xl font-bold text-orange-700 dark:text-orange-300">
+                                {metrics.retentionRate ? metrics.retentionRate.toFixed(0) : 0}%
+                              </div>
+                              <div className="text-xs font-medium text-foreground/80 mt-1">Retention Rate</div>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
 
@@ -289,6 +345,76 @@ export default function AnalyticsPage() {
               hidden={activeTab !== "progress"}
             >
               {activeTab === "progress" && <LearningProgressDashboard />}
+            </div>
+
+            <div 
+              role="tabpanel" 
+              id="tabpanel-achievements" 
+              aria-labelledby="tab-achievements"
+              hidden={activeTab !== "achievements"}
+            >
+              {activeTab === "achievements" && (
+                <div className="space-y-6">
+                  {/* Achievement Stats */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Trophy className="h-5 w-5 text-amber-500" />
+                        Achievement Progress
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="text-center p-4 bg-amber-100/50 dark:bg-amber-900/30 rounded-lg border border-amber-200/50 dark:border-amber-800/50">
+                          <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
+                            {achievements.stats.unlocked}
+                          </div>
+                          <div className="text-sm font-medium text-foreground/80 mt-1">Unlocked</div>
+                        </div>
+                        <div className="text-center p-4 bg-blue-100/50 dark:bg-blue-900/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+                          <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                            {achievements.stats.total}
+                          </div>
+                          <div className="text-sm font-medium text-foreground/80 mt-1">Total</div>
+                        </div>
+                        <div className="text-center p-4 bg-green-100/50 dark:bg-green-900/30 rounded-lg border border-green-200/50 dark:border-green-800/50">
+                          <div className="text-2xl font-bold text-green-700 dark:text-green-300">
+                            {achievements.stats.percentage}%
+                          </div>
+                          <div className="text-sm font-medium text-foreground/80 mt-1">Complete</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Achievement Categories */}
+                  {["streak", "mastery", "quiz", "exploration", "engagement"].map((category) => {
+                    const categoryAchievements = getAchievementsByCategory(category)
+                    const achievementsWithStatus = categoryAchievements.map(achievement => {
+                      const status = achievements.getAchievementWithStatus(achievement.id)
+                      return {
+                        achievement,
+                        unlocked: status.unlocked,
+                        unlockedAt: status.unlockedAt,
+                        progress: status.progress
+                      }
+                    })
+
+                    return (
+                      <div key={category}>
+                        <h3 className="text-lg font-semibold mb-4 capitalize">
+                          {category} Achievements
+                        </h3>
+                        <AchievementGrid
+                          achievements={achievementsWithStatus}
+                          showProgress={true}
+                          size="md"
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
 
             <div 

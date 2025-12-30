@@ -8,6 +8,27 @@
     "counter": "Before judging someone's actions, pause and ask: 'What circumstances might explain this behavior?' Assume good intent and consider external factors. When evaluating your own behavior, ask if you'd judge others the same way in similar circumstances. Practice perspective-taking by imagining the other person's situation and constraints.",
     "source": "core",
     "researchLevel": "established",
+    "examples": [
+      {
+        "title": "Hurricane Katrina Response",
+        "description": "After Hurricane Katrina in 2005, many people attributed looting to the 'criminal nature' of New Orleans residents, rather than recognizing the desperate circumstances of people without food, water, or medical supplies for days. When similar behavior occurred after other disasters in predominantly white communities, it was described as 'finding supplies' rather than looting.",
+        "source": "Hurricane Katrina disaster response",
+        "year": 2005,
+        "category": "news"
+      },
+      {
+        "title": "Performance Review Bias",
+        "description": "A Stanford study found that managers attributed male employees' failures to external factors ('difficult client,' 'unrealistic deadline') but attributed women's failures to personal shortcomings ('needs to work on leadership skills'). Meanwhile, men's successes were seen as skill-based while women's were attributed to luck or team effort.",
+        "source": "Stanford Gender Bias Research",
+        "year": 2014,
+        "category": "business"
+      },
+      {
+        "title": "Customer Service Complaints",
+        "description": "When your food delivery arrives late, you might think the driver is lazy or incompetent. But when you're the one delivering and running late, you know you're dealing with impossible traffic, multiple wrong addresses, and app glitches. The same action, different attributions based on whose perspective you have access to.",
+        "category": "personal"
+      }
+    ],
     "references": [
       {
         "title": "The Actor and the Observer: Divergent Perceptions of the Causes of Behavior",
@@ -46,6 +67,27 @@
     "counter": "Practice intellectual humility. When you succeed, acknowledge the role of luck, timing, and others' help. When you fail, honestly assess your own contribution before blaming external factors. Keep a 'luck journal' noting when circumstances helped you.",
     "source": "core",
     "researchLevel": "established",
+    "examples": [
+      {
+        "title": "Enron Executive Blame",
+        "description": "After Enron's collapse in 2001, executives blamed 'market conditions,' 'accounting rules,' and 'media scrutiny' for the company's failure. Yet during profitable years, these same leaders credited their 'innovative strategies' and 'bold leadership.' The structural problems that caused the collapse existed during both periods, but attributions shifted based on outcomes.",
+        "source": "Enron scandal",
+        "year": 2001,
+        "category": "business"
+      },
+      {
+        "title": "Sports Team Fandom",
+        "description": "Studies of sports fans found they used 'we' when their team won ('We played great today!') but 'they' when their team lost ('They couldn't execute'). Fans psychologically distance themselves from failure while claiming ownership of success, despite having zero impact on the game's outcome.",
+        "source": "Sports psychology research",
+        "year": 1976,
+        "category": "personal"
+      },
+      {
+        "title": "Investment Success Stories",
+        "description": "Investors attribute profitable trades to their 'skill in reading the market' and 'disciplined strategy,' but blame losses on 'unexpected news,' 'market manipulation,' or 'bad luck.' Studies show this bias causes investors to take excessive risks after wins and become overly conservative after losses, both poor strategies.",
+        "category": "business"
+      }
+    ],
     "references": [
       {
         "title": "The Self-Serving Attributional Bias: Beyond Self-Presentation Theory",
@@ -79,7 +121,28 @@
     "summary": "We favor people who are similar to us or belong to our groups. We give them more trust, resources, and benefit of the doubt while being more critical of outsiders.",
     "why": "Evolutionary psychology suggests this helped early humans survive by strengthening tribal bonds. Our brains quickly categorize people as 'us' or 'them,' triggering different emotional and cognitive responses that favor our group.",
     "counter": "Actively seek diverse perspectives and relationships. When making decisions, ask: 'Would I judge this differently if it came from an outsider?' Use blind evaluation processes when possible. Regularly interact with people from different backgrounds.",
-    "source": "core"
+    "source": "core",
+    "examples": [
+      {
+        "title": "Tech Industry Hiring",
+        "description": "A 2017 study found that tech companies hiring through employee referrals (typically from similar backgrounds) resulted in 85% of new hires being the same race and gender as existing employees. When companies implemented blind resume screening, diversity increased by 30% with no decrease in candidate quality.",
+        "source": "Tech diversity research",
+        "year": 2017,
+        "category": "business"
+      },
+      {
+        "title": "Venture Capital Funding Gap",
+        "description": "In 2023, companies founded by alumni of Stanford, Harvard, and MIT received 35% of all VC funding, despite representing less than 1% of startups. VCs were more likely to fund founders who went to their own universities, worked at the same companies, or shared similar backgrounds—even when pitch quality was controlled for.",
+        "source": "PitchBook VC funding analysis",
+        "year": 2023,
+        "category": "business"
+      },
+      {
+        "title": "Jury Decision Patterns",
+        "description": "Research on jury decisions found that jurors rated defendants more credible and sympathetic when they shared the same race, regional accent, or socioeconomic background. In identical mock trials, conviction rates varied by up to 25% based solely on perceived group similarity between jurors and defendants.",
+        "category": "historical"
+      }
+    ]
   },
   {
     "id": "bandwagon-effect",
@@ -88,7 +151,28 @@
     "summary": "We adopt beliefs and behaviors because many others do, regardless of underlying evidence. The more people believe something, the more we're inclined to believe it too.",
     "why": "Social proof is a powerful heuristic: if many people do something, it's probably safe or correct. This saved cognitive energy for our ancestors and reduced risk. Our brains are wired to conform to avoid social rejection.",
     "counter": "Before adopting a popular belief, ask: 'What's the actual evidence?' Distinguish between popularity and validity. Seek out contrarian viewpoints. Remember that truth isn't democratic—many people can be wrong together.",
-    "source": "core"
+    "source": "core",
+    "examples": [
+      {
+        "title": "GameStop Stock Frenzy",
+        "description": "In January 2021, millions of retail investors bought GameStop stock primarily because others were buying it, driving the price from $20 to $483 in two weeks. Most buyers admitted they didn't understand the company's fundamentals but joined because of social media momentum. When the trend reversed, many lost substantial money.",
+        "source": "GameStop short squeeze",
+        "year": 2021,
+        "category": "business"
+      },
+      {
+        "title": "Tulip Mania Bubble",
+        "description": "In 1637 Netherlands, tulip bulb prices reached extraordinarily high levels—some bulbs selling for more than a house—because everyone was buying them as investments. People quit jobs to trade tulips. When confidence evaporated, prices crashed 99% in weeks, bankrupting thousands who bought in late simply because 'everyone was doing it.'",
+        "source": "Dutch Tulip Mania",
+        "year": 1637,
+        "category": "historical"
+      },
+      {
+        "title": "Restaurant Line Psychology",
+        "description": "Studies show that restaurants with visible lines attract more customers, even when equal or better restaurants nearby have no wait. Diners assume 'If others are waiting, it must be good,' creating a self-reinforcing cycle where popularity itself becomes the product's main selling point.",
+        "category": "personal"
+      }
+    ]
   },
   {
     "id": "groupthink",
@@ -97,7 +181,30 @@
     "summary": "In cohesive groups, the desire for harmony and conformity leads to irrational or dysfunctional decision-making. Dissent is suppressed, and critical evaluation is abandoned.",
     "why": "Groups develop strong norms and identity. Members fear rejection or conflict, so they self-censor doubts. Leaders may inadvertently signal preferred outcomes, and the illusion of unanimity makes dissent seem futile or disloyal.",
     "counter": "Assign a 'devil's advocate' role in group decisions. Encourage anonymous feedback. Leaders should withhold their opinions until others speak. Break into smaller subgroups to generate independent ideas before reconvening.",
-    "source": "core"
+    "source": "core",
+    "examples": [
+      {
+        "title": "NASA Challenger Disaster",
+        "description": "In 1986, NASA launched the Challenger despite engineers warning that O-rings would fail in cold weather. The night before launch, engineers presented data showing risk, but managers dismissed concerns to maintain the launch schedule. No one wanted to be 'the person who delayed the shuttle.' Seven astronauts died when the O-rings failed exactly as predicted.",
+        "source": "NASA Challenger investigation",
+        "year": 1986,
+        "category": "historical"
+      },
+      {
+        "title": "Bay of Pigs Invasion",
+        "description": "President Kennedy's advisory group unanimously approved the CIA's plan to invade Cuba in 1961, despite multiple warning signs. Later, participants revealed they all had private doubts but assumed others' silence meant agreement. The invasion failed catastrophically within 3 days. Kennedy later said, 'How could I have been so stupid?'",
+        "source": "Bay of Pigs invasion",
+        "year": 1961,
+        "category": "historical"
+      },
+      {
+        "title": "WeWork's 2019 Valuation Collapse",
+        "description": "WeWork's board and investors maintained a $47 billion valuation despite clear evidence of unsustainable losses and questionable governance. Insiders later admitted they had doubts but feared being labeled 'not a team player' or 'not understanding the vision.' Within months, the valuation collapsed to under $8 billion.",
+        "source": "WeWork IPO failure",
+        "year": 2019,
+        "category": "business"
+      }
+    ]
   },
   {
     "id": "halo-effect",
@@ -107,6 +214,25 @@
     "why": "Our brains seek cognitive efficiency by creating coherent narratives. If one trait is positive, assuming others are too creates a simpler, more consistent mental model than tracking each trait independently.",
     "counter": "Evaluate traits independently. Use structured assessment criteria. When impressed by one quality, deliberately ask: 'What evidence do I have for my other assumptions?' Separate appearance from competence, likability from trustworthiness.",
     "source": "core",
+    "examples": [
+      {
+        "title": "Elizabeth Holmes and Theranos",
+        "description": "Elizabeth Holmes raised $700 million for Theranos based largely on her charisma, Stanford pedigree, and Steve Jobs-like image. Investors overlooked red flags and lack of technical validation because they were impressed by her confidence and vision. When the technology was finally scrutinized, it was revealed to be fraudulent. The 'halo' of her persona prevented critical evaluation.",
+        "source": "Theranos fraud case",
+        "year": 2018,
+        "category": "business"
+      },
+      {
+        "title": "Attractive Defendants Get Lighter Sentences",
+        "description": "A meta-analysis of 100+ studies found that physically attractive defendants receive significantly lighter sentences than unattractive defendants for identical crimes. Jurors unconsciously assume attractive people are less likely to be guilty and more likely to be good people, despite no correlation between appearance and criminal behavior.",
+        "category": "historical"
+      },
+      {
+        "title": "Apple Product Premium",
+        "description": "Studies show consumers rate Apple products as higher quality and more innovative than identical or superior competing products, largely due to Apple's brand halo. In blind tests, people often can't distinguish Apple products from competitors, but when branded, Apple receives significantly higher ratings.",
+        "category": "business"
+      }
+    ],
     "attribution": {
       "termCoinedBy": {
         "name": "Edward L. Thorndike",
@@ -165,6 +291,27 @@
     "counter": "Look up actual statistics before judging risk. Ask: 'Am I remembering this because it's common or because it's dramatic?' Consider base rates. Be especially skeptical of fears triggered by recent news or personal anecdotes. Use systematic data rather than anecdotal evidence.",
     "source": "core",
     "researchLevel": "established",
+    "examples": [
+      {
+        "title": "Post-9/11 Driving Deaths",
+        "description": "After 9/11, many Americans avoided flying due to terrorism fears and drove instead. This led to an estimated 1,600 additional traffic deaths in the year following the attacks—more than died on the planes. The vivid, emotional memory of 9/11 made flying feel more dangerous than driving, despite driving being statistically far more risky.",
+        "source": "Traffic safety research",
+        "year": 2002,
+        "category": "historical"
+      },
+      {
+        "title": "Shark Attack Summer of 2001",
+        "description": "In summer 2001, media extensively covered shark attacks, leading to widespread beach fears and tourism drops. People believed shark attacks were increasing dramatically. In reality, 2001 had fewer shark attacks than average—but the coverage made them more 'available' in memory, distorting risk perception.",
+        "source": "Media coverage analysis",
+        "year": 2001,
+        "category": "news"
+      },
+      {
+        "title": "Lottery Ticket Sales After Big Wins",
+        "description": "Lottery ticket sales spike dramatically after someone wins a large jackpot, especially in the same region. The vivid story of a winner makes winning feel more probable, even though the odds remain astronomically low (often 1 in 300 million). The availability of the winner's story overrides statistical reality.",
+        "category": "personal"
+      }
+    ],
     "references": [
       {
         "title": "Judgment Under Uncertainty: Heuristics and Biases",
@@ -247,6 +394,27 @@
     "why": "Skill and self-assessment ability are linked—you need knowledge to recognize what you don't know. Beginners don't know what they don't know. Experts forget that their skills are rare.",
     "counter": "Seek feedback from knowledgeable others. Before claiming expertise, ask: 'What would an actual expert know that I don't?' Study the field enough to understand its depth. Embrace intellectual humility.",
     "source": "core",
+    "examples": [
+      {
+        "title": "Cryptocurrency 'Experts' in 2021",
+        "description": "During the 2021 crypto boom, thousands of people with minimal financial knowledge confidently gave investment advice on social media, predicting specific price targets and claiming expertise. Many had only been involved for months but spoke with certainty. When the market crashed in 2022, most disappeared. Their lack of knowledge prevented them from recognizing how much they didn't know about markets, regulation, and technology.",
+        "source": "Cryptocurrency market analysis",
+        "year": 2021,
+        "category": "business"
+      },
+      {
+        "title": "American Idol Auditions",
+        "description": "The show's producers noted that the worst singers were often the most confident, genuinely shocked when judges criticized them. They lacked the musical knowledge to assess their own performance. Meanwhile, talented singers often expressed doubt and nervousness because they understood the complexity of singing well.",
+        "category": "personal"
+      },
+      {
+        "title": "COVID-19 Armchair Epidemiologists",
+        "description": "In 2020, millions of people with no epidemiology training confidently disputed expert recommendations, claiming 'I did my own research.' Studies showed inverse correlation between actual knowledge and confidence in contradicting experts. Those with minimal understanding were most certain they knew better than epidemiologists who had studied infectious diseases for decades.",
+        "source": "COVID-19 misinformation studies",
+        "year": 2020,
+        "category": "news"
+      }
+    ],
     "attribution": {
       "termCoinedBy": {
         "name": "David Dunning & Justin Kruger",
@@ -269,6 +437,23 @@
     "counter": "Generate your own estimate before seeing others' numbers. Ask: 'What would I think if the anchor were different?' Consider the range of possibilities independently. Be especially wary of anchors in negotiations. Use multiple reference points to avoid single-anchor bias.",
     "source": "core",
     "researchLevel": "established",
+    "examples": [
+      {
+        "title": "Real Estate Listing Prices",
+        "description": "Studies show that initial listing prices strongly influence final sale prices, even when buyers know the listing is arbitrary. A house listed at $500,000 sells for significantly more than the same house listed at $450,000, even after negotiations. Buyers anchor on the listing price and adjust insufficiently, even when they consciously try to ignore it.",
+        "category": "business"
+      },
+      {
+        "title": "Salary Negotiation Research",
+        "description": "Research shows that whoever makes the first offer in salary negotiations sets an anchor that predicts the final outcome. When employers open with $60,000, final salaries average $65,000. When candidates open with $80,000 for the same role, final salaries average $75,000. The first number disproportionately influences the entire negotiation.",
+        "category": "business"
+      },
+      {
+        "title": "Restaurant Menu Pricing",
+        "description": "Restaurants strategically place an expensive item at the top of the menu (e.g., $95 steak) to make other items seem reasonable by comparison. Studies show diners spend 15-20% more when menus start with high-priced anchors, even though most people don't order the anchor item. The expensive option reframes what 'normal' pricing means.",
+        "category": "personal"
+      }
+    ],
     "references": [
       {
         "title": "Judgment Under Uncertainty: Heuristics and Biases",
@@ -334,6 +519,27 @@
     "counter": "Actively seek disconfirming evidence. Ask: 'What would prove me wrong?' Engage with the strongest counterarguments (steel-man, not straw-man). Keep a list of beliefs you've changed to normalize updating your views. Practice steelmanning opposing arguments.",
     "source": "core",
     "researchLevel": "established",
+    "examples": [
+      {
+        "title": "Iraq WMD Intelligence Failure",
+        "description": "U.S. intelligence agencies were convinced Iraq had weapons of mass destruction before the 2003 invasion. Analysts selectively focused on evidence supporting WMDs while dismissing contradictory intelligence. Post-war investigations found that disconfirming evidence was systematically ignored or reinterpreted to fit the WMD narrative. No WMDs were ever found.",
+        "source": "Senate Intelligence Committee Report",
+        "year": 2004,
+        "category": "politics"
+      },
+      {
+        "title": "Medical Misdiagnosis Patterns",
+        "description": "Studies show doctors who form an initial diagnosis often seek confirming evidence while ignoring contradictory symptoms. In one study, doctors shown the same patient data reached different diagnoses based on initial hunches, then interpreted identical test results as supporting their respective theories. This contributes to an estimated 10-15% misdiagnosis rate.",
+        "category": "business"
+      },
+      {
+        "title": "Social Media Echo Chambers",
+        "description": "A 2023 study found that 87% of political content people engage with on social media confirms their existing views. Algorithms amplify this by showing more confirming content. Users actively avoid, unfriend, or dismiss sources that challenge their beliefs, creating self-reinforcing information bubbles that make belief change nearly impossible.",
+        "source": "Social media research",
+        "year": 2023,
+        "category": "news"
+      }
+    ],
     "references": [
       {
         "title": "Confirmation Bias: A Ubiquitous Phenomenon in Many Guises",
@@ -423,6 +629,27 @@
     "why": "Admitting a loss feels like failure. We want to believe our past investments were worthwhile. Quitting feels like waste, even though sunk costs are already gone and shouldn't influence future decisions.",
     "counter": "Ignore sunk costs—they're gone regardless of what you do next. Ask: 'If I were starting today with no prior investment, would I choose this?' Focus on future costs and benefits only. Practice cutting losses early.",
     "source": "core",
+    "examples": [
+      {
+        "title": "Concorde Supersonic Jet",
+        "description": "The British and French governments continued funding the Concorde project for decades despite clear evidence it would never be profitable. They had already invested billions and couldn't admit the project was a failure. The term 'Concorde Fallacy' became synonymous with sunk cost thinking. The plane operated at a loss for its entire commercial life.",
+        "source": "Concorde project history",
+        "year": 1976,
+        "category": "historical"
+      },
+      {
+        "title": "Movie Walkouts and Bad Relationships",
+        "description": "Studies show people are more likely to sit through a terrible movie if they paid full price versus getting a free ticket, even though the money is gone either way. Similarly, people stay in unfulfilling relationships longer when they've invested more time, even when future happiness would be greater by leaving. The past investment shouldn't matter, but it does.",
+        "category": "personal"
+      },
+      {
+        "title": "Blockbuster vs. Netflix",
+        "description": "Blockbuster invested billions in physical stores and late fees revenue. When Netflix offered to sell for $50 million in 2000, Blockbuster refused because it would mean admitting their store model was obsolete. They continued investing in stores even as streaming became dominant. Blockbuster declared bankruptcy in 2010; Netflix is worth over $150 billion today.",
+        "source": "Business case study",
+        "year": 2010,
+        "category": "business"
+      }
+    ],
     "attribution": {
       "termCoinedBy": null,
       "keyContributors": [
@@ -624,7 +851,26 @@
     "summary": "We overestimate the likelihood of positive outcomes and underestimate negative ones, especially for ourselves. We think we're less likely than others to experience misfortune.",
     "why": "Optimism is motivating and protects mental health. We have more control over our own actions than others', so we feel we can avoid negative outcomes. Optimism also feels good and is socially rewarded.",
     "counter": "Use 'pre-mortems': imagine your project has failed and work backward to identify risks. Ask: 'What could go wrong?' Consult base rates for similar endeavors. Balance optimism with realistic planning and contingencies.",
-    "source": "core"
+    "source": "core",
+    "examples": [
+      {
+        "title": "Sydney Opera House Construction",
+        "description": "The Sydney Opera House was projected to cost $7 million and be completed in 4 years (1963). It actually cost $102 million and took 14 years to complete (1973). Planners were wildly optimistic about both timeline and budget, despite similar projects historically running over. This pattern of underestimating time and cost is so common in major projects it's called the 'planning fallacy.'",
+        "source": "Sydney Opera House history",
+        "year": 1973,
+        "category": "historical"
+      },
+      {
+        "title": "Startup Failure Rates",
+        "description": "90% of startups fail, yet surveys show 80% of entrepreneurs believe their startup will succeed. When asked about others' chances, they accurately cite the 90% failure rate, but believe they're different. This optimism bias contributes to both entrepreneurial courage and poor risk assessment.",
+        "category": "business"
+      },
+      {
+        "title": "Wedding Budget Overruns",
+        "description": "Studies show 80% of couples exceed their wedding budget by an average of 50%, despite knowing that most weddings go over budget. Couples consistently believe 'we'll be different' and underestimate costs, even when warned by recently married friends. Optimism bias makes them think they'll avoid the problems others faced.",
+        "category": "personal"
+      }
+    ]
   },
   {
     "id": "blind-spot-bias",

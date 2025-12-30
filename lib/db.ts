@@ -1,5 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
-import type { Bias, UserSettings, FavoriteItem, BiasProgress, StreakData } from "./types"
+import type { Bias, UserSettings, FavoriteItem, BiasProgress, StreakData, QuizSession, UserAchievement } from "./types"
 import type { ContentVersion, ContentQualityMetrics } from "./content-versioning"
 import { getYesterdayDateString } from "./timezone-utils"
 import { logger } from "./logger"
@@ -54,6 +54,16 @@ interface BiasDB extends DBSchema {
     value: FeedbackData
     indexes: { "by-biasId": string; "by-timestamp": number }
   }
+  quizSessions: {
+    key: string
+    value: QuizSession
+    indexes: { "by-completedAt": number }
+  }
+  achievements: {
+    key: string
+    value: UserAchievement
+    indexes: { "by-unlockedAt": number; "by-seen": number }
+  }
 }
 
 let dbInstance: IDBPDatabase<BiasDB> | null = null
@@ -71,7 +81,7 @@ export async function getDB() {
   if (dbInstance) return dbInstance
 
   try {
-    dbInstance = await openDB<BiasDB>("bias-daily-db", 4, {
+    dbInstance = await openDB<BiasDB>("bias-daily-db", 6, {
       upgrade(db, oldVersion) {
         if (oldVersion < 1) {
           const userBiasStore = db.createObjectStore("userBiases", { keyPath: "id" })
@@ -112,6 +122,23 @@ export async function getDB() {
             const feedbackStore = db.createObjectStore("feedback", { autoIncrement: true })
             feedbackStore.createIndex("by-biasId", "biasId")
             feedbackStore.createIndex("by-timestamp", "timestamp")
+          }
+        }
+
+        if (oldVersion < 5) {
+          // Create quiz sessions store for tracking quiz history
+          if (!db.objectStoreNames.contains("quizSessions")) {
+            const quizStore = db.createObjectStore("quizSessions", { keyPath: "id" })
+            quizStore.createIndex("by-completedAt", "completedAt")
+          }
+        }
+
+        if (oldVersion < 6) {
+          // Create achievements store for tracking unlocked achievements
+          if (!db.objectStoreNames.contains("achievements")) {
+            const achievementStore = db.createObjectStore("achievements", { keyPath: "achievementId" })
+            achievementStore.createIndex("by-unlockedAt", "unlockedAt")
+            achievementStore.createIndex("by-seen", "seen")
           }
         }
       },
@@ -262,19 +289,28 @@ export async function markBiasAsViewed(biasId: string): Promise<void> {
   return withErrorHandling(async () => {
     const db = await getDB()
     const existing = await db.get("progress", biasId)
+    const now = Date.now()
+    const MS_PER_DAY = 24 * 60 * 60 * 1000
 
     if (existing) {
       await db.put("progress", {
         ...existing,
-        viewedAt: Date.now(),
+        viewedAt: now,
         viewCount: existing.viewCount + 1,
       })
     } else {
+      // Initialize with spaced repetition fields
       await db.put("progress", {
         biasId,
-        viewedAt: Date.now(),
+        viewedAt: now,
         viewCount: 1,
         mastered: false,
+        // Spaced repetition initialization
+        nextReviewAt: now + MS_PER_DAY, // Due in 1 day
+        interval: 1,
+        easeFactor: 2.5,
+        reviewCount: 0,
+        consecutiveCorrect: 0,
       })
     }
   }, "Failed to mark bias as viewed")
@@ -303,6 +339,36 @@ export async function toggleBiasMastered(biasId: string): Promise<boolean> {
 
     return newMasteredState
   }, "Failed to toggle mastered status")
+}
+
+/**
+ * Update progress with spaced repetition data after a review
+ */
+export async function updateProgressWithReview(progress: BiasProgress): Promise<void> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    await db.put("progress", progress)
+  }, "Failed to update progress with review")
+}
+
+/**
+ * Get all biases that are due for review
+ */
+export async function getBiasesDueForReviewFromDB(): Promise<BiasProgress[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const allProgress = await db.getAll("progress")
+    const now = Date.now()
+    
+    return allProgress.filter((p) => {
+      // Must have been viewed at least once
+      if (p.viewedAt <= 0) return false
+      
+      // Check if due for review
+      const nextReview = p.nextReviewAt || p.viewedAt + (24 * 60 * 60 * 1000) // Default: 1 day after viewing
+      return nextReview <= now
+    })
+  }, "Failed to get biases due for review")
 }
 
 export async function getStreak(): Promise<StreakData> {
@@ -450,4 +516,140 @@ export async function importAllData(data: {
       }
     }
   }, "Failed to import data")
+}
+
+// Quiz Session Functions
+
+/**
+ * Save a quiz session
+ */
+export async function saveQuizSession(session: QuizSession): Promise<void> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    await db.put("quizSessions", session)
+  }, "Failed to save quiz session")
+}
+
+/**
+ * Get all quiz sessions
+ */
+export async function getAllQuizSessions(): Promise<QuizSession[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    return db.getAll("quizSessions")
+  }, "Failed to load quiz sessions")
+}
+
+/**
+ * Get completed quiz sessions only
+ */
+export async function getCompletedQuizSessions(): Promise<QuizSession[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const all = await db.getAll("quizSessions")
+    return all.filter(s => s.completedAt !== null)
+  }, "Failed to load completed quiz sessions")
+}
+
+/**
+ * Get a single quiz session by ID
+ */
+export async function getQuizSession(sessionId: string): Promise<QuizSession | null> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const session = await db.get("quizSessions", sessionId)
+    return session || null
+  }, "Failed to load quiz session")
+}
+
+/**
+ * Delete a quiz session
+ */
+export async function deleteQuizSession(sessionId: string): Promise<void> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    await db.delete("quizSessions", sessionId)
+  }, "Failed to delete quiz session")
+}
+
+// ==================== Achievement Functions ====================
+
+/**
+ * Get all unlocked achievements
+ */
+export async function getUnlockedAchievements(): Promise<UserAchievement[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    return db.getAll("achievements")
+  }, "Failed to load achievements")
+}
+
+/**
+ * Get a specific achievement
+ */
+export async function getAchievement(achievementId: string): Promise<UserAchievement | null> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const achievement = await db.get("achievements", achievementId)
+    return achievement || null
+  }, "Failed to load achievement")
+}
+
+/**
+ * Unlock an achievement
+ */
+export async function unlockAchievement(achievementId: string, progress: number): Promise<void> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const existing = await db.get("achievements", achievementId)
+    
+    // Only unlock if not already unlocked
+    if (!existing) {
+      await db.put("achievements", {
+        achievementId: achievementId as UserAchievement["achievementId"],
+        unlockedAt: Date.now(),
+        progress,
+        seen: false
+      })
+    }
+  }, "Failed to unlock achievement")
+}
+
+/**
+ * Mark achievement as seen
+ */
+export async function markAchievementAsSeen(achievementId: string): Promise<void> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const achievement = await db.get("achievements", achievementId)
+    
+    if (achievement) {
+      await db.put("achievements", {
+        ...achievement,
+        seen: true
+      })
+    }
+  }, "Failed to mark achievement as seen")
+}
+
+/**
+ * Get unseen achievements
+ */
+export async function getUnseenAchievements(): Promise<UserAchievement[]> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const all = await db.getAll("achievements")
+    return all.filter(a => !a.seen)
+  }, "Failed to load unseen achievements")
+}
+
+/**
+ * Check if achievement is unlocked
+ */
+export async function isAchievementUnlocked(achievementId: string): Promise<boolean> {
+  return withErrorHandling(async () => {
+    const db = await getDB()
+    const achievement = await db.get("achievements", achievementId)
+    return !!achievement
+  }, "Failed to check achievement status")
 }

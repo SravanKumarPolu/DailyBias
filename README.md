@@ -1,6 +1,23 @@
-# Bias Daily
+# DebiasDaily
 
-Learn one cognitive bias every day from Elon Musk's list of 50 biases. A modern web application built with Next.js, React, and TypeScript.
+Learn one cognitive bias every day from a curated list of 50 research-backed cognitive biases. A modern web application built with Next.js, React, and TypeScript.
+
+## ✨ Key Features
+
+- 📅 **Daily Bias** - Discover a new cognitive bias every day
+- 🔖 **Favorites** - Save biases for later reference
+- 🎯 **Categories** - Browse by Social, Memory, Decision-Making, etc.
+- 📊 **Progress Tracking** - Track your learning journey
+- 🖼️ **Quick Reference Cards** - Generate beautiful shareable image cards (NEW!)
+- 🌓 **Dark Mode** - Comfortable viewing in any lighting
+- 📱 **Mobile Apps** - Native iOS and Android apps
+- 🔔 **Notifications** - Daily reminders to learn
+- 🔊 **Text-to-Speech** - Listen to biases on the go
+- 📤 **Share** - Share biases with friends
+- 🔍 **Search** - Find specific biases quickly
+- ♿ **Accessible** - WCAG AA compliant
+- 🚀 **Fast** - Optimized for performance
+- 🔒 **Private** - All data stored locally
 
 ## 🚀 Quick Start
 
@@ -71,7 +88,8 @@ Create a `.env.local` file for local development:
 ```env
 # Site Configuration
 NEXT_PUBLIC_SITE_URL=https://debiasdaily.com
-NEXT_PUBLIC_SITE_NAME=Bias Daily
+NEXT_PUBLIC_PRODUCT_NAME=DebiasDaily
+NEXT_PUBLIC_IN_APP_NAME=DebiasDaily
 NEXT_PUBLIC_TWITTER_HANDLE=@debiasdaily
 
 # EmailJS (optional - for feedback emails)
@@ -157,6 +175,7 @@ For detailed help, see:
 - [UI/UX Review](./COMPREHENSIVE_UI_UX_REVIEW_2025.md) - Complete design system review
 - [Email Setup](./EMAIL_SETUP.md) - Email feedback configuration
 - [Analytics Setup](./ANALYTICS_SETUP.md) - Analytics configuration
+- [Quick Reference Cards](./QUICK_REFERENCE_CARDS_FEATURE.md) - Shareable image cards feature
 
 ## 🤝 Contributing
 

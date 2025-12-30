@@ -9,19 +9,37 @@ const mockAppContext: {
   biasesLoading: boolean
   progressList: BiasProgress[]
   progressLoading: boolean
+  progressStats: {
+    totalBiasesRead: number
+    currentStreak: number
+    longestStreak: number
+    lastViewedDate: string | null
+    masteredCount: number
+  }
   settings: {
     theme: 'light' | 'dark' | 'system'
     backgroundStyle: 'gradient' | 'glass' | 'minimal'
   }
+  favorites: Array<{ biasId: string; addedAt: number }>
+  userBiases: Bias[]
 } = {
   allBiases: [],
   biasesLoading: false,
   progressList: [],
   progressLoading: false,
+  progressStats: {
+    totalBiasesRead: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    lastViewedDate: null,
+    masteredCount: 0,
+  },
   settings: {
     theme: 'light',
     backgroundStyle: 'gradient',
   },
+  favorites: [],
+  userBiases: [],
 }
 
 vi.mock('@/contexts/app-context', () => ({
@@ -48,6 +66,45 @@ vi.mock('@/components/dynamic-navigation', () => ({
 
 vi.mock('@/components/content-quality-dashboard', () => ({
   ContentQualityDashboard: () => <div data-testid="quality-dashboard">Quality Dashboard</div>,
+}))
+
+vi.mock('@/hooks/use-achievements', () => ({
+  useAchievements: () => ({
+    unlockedAchievements: [],
+    achievementProgress: [],
+    loading: false,
+    error: null,
+    stats: {
+      total: 18,
+      unlocked: 0,
+      percentage: 0
+    },
+    isUnlocked: () => false,
+    getAchievementWithStatus: () => ({
+      id: 'first-bias',
+      title: 'First Step',
+      description: 'View your first cognitive bias',
+      category: 'exploration',
+      icon: '👀',
+      rarity: 'common',
+      requirement: 1,
+      unlocked: false,
+      progress: { achievementId: 'first-bias', current: 0, target: 1, percentage: 0 }
+    }),
+    getAllWithStatus: () => [],
+    markAsSeen: vi.fn(),
+    getUnseen: vi.fn(),
+    refresh: vi.fn()
+  })
+}))
+
+vi.mock('@/lib/db', () => ({
+  getAllFeedback: vi.fn().mockResolvedValue([]),
+  getCompletedQuizSessions: vi.fn().mockResolvedValue([])
+}))
+
+vi.mock('@/lib/achievements', () => ({
+  getAchievementsByCategory: vi.fn().mockReturnValue([])
 }))
 
 vi.mock('@/components/learning-progress-dashboard', () => ({

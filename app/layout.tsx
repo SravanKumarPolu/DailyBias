@@ -16,10 +16,10 @@ import { siteConfig } from "@/lib/site-config"
 export const metadata: Metadata = {
   // Basic Metadata
   metadataBase: new URL(siteConfig.url),
-  title: "Bias Daily - Learn One Cognitive Bias Every Day",
+  title: "DebiasDaily - Learn One Cognitive Bias Every Day",
   description: siteConfig.description,
-  applicationName: siteConfig.name,
-  generator: siteConfig.name,
+  applicationName: siteConfig.productName,
+  generator: siteConfig.productName,
   keywords: [
     "cognitive biases",
     "daily learning",
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     "critical thinking",
     "mental models",
   ],
-  authors: [{ name: siteConfig.name }],
-  creator: siteConfig.name,
-  publisher: siteConfig.name,
+  authors: [{ name: siteConfig.productName }],
+  creator: siteConfig.productName,
+  publisher: siteConfig.productName,
   category: "education",
 
   // App Manifest (for PWA)
@@ -49,22 +49,22 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: siteConfig.name,
+    title: siteConfig.productName,
   },
 
   // Open Graph (Facebook, LinkedIn, etc.)
   openGraph: {
-    title: "Bias Daily - Learn One Cognitive Bias Every Day",
+    title: "DebiasDaily - Learn One Cognitive Bias Every Day",
     description:
-      "Discover a new cognitive bias each day from Elon Musk's list of 50 biases.",
+      "Discover a new cognitive bias each day from a curated list of 50 research-backed cognitive biases.",
     url: siteConfig.url,
-    siteName: siteConfig.name,
+    siteName: siteConfig.productName,
     images: [
       {
         url: "/icon-512.jpg",
         width: 512,
         height: 512,
-        alt: "Bias Daily Logo",
+        alt: "DebiasDaily Logo",
         type: "image/jpeg",
       },
     ],
@@ -75,8 +75,8 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary",
-    title: "Bias Daily - Learn One Cognitive Bias Every Day",
-    description: "Discover a new cognitive bias each day from Elon Musk's list of 50 biases.",
+    title: "DebiasDaily - Learn One Cognitive Bias Every Day",
+    description: "Discover a new cognitive bias each day from a curated list of 50 research-backed cognitive biases.",
     images: ["/icon-512.jpg"],
     creator: siteConfig.twitterHandle,
   },

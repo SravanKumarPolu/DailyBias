@@ -28,10 +28,17 @@ function getTwitterHandle(): string {
 }
 
 /**
- * Get the site name from environment variable or fallback to default
+ * Get the product name (for branding, app store, etc.)
  */
-function getSiteName(): string {
-  return process.env.NEXT_PUBLIC_SITE_NAME || "Bias Daily"
+function getProductName(): string {
+  return process.env.NEXT_PUBLIC_PRODUCT_NAME || "DebiasDaily"
+}
+
+/**
+ * Get the in-app display name (for headings and UI)
+ */
+function getInAppName(): string {
+  return process.env.NEXT_PUBLIC_IN_APP_NAME || "DebiasDaily"
 }
 
 /**
@@ -45,14 +52,17 @@ export const siteConfig = {
   /** Twitter handle (e.g., @debiasdaily) */
   twitterHandle: getTwitterHandle(),
   
-  /** Site name (configurable via NEXT_PUBLIC_SITE_NAME) */
-  name: getSiteName(),
+  /** Product name for branding (DebiasDaily) */
+  productName: getProductName(),
   
-  /** Short site name (same as name, but can be customized separately if needed) */
-  shortName: getSiteName(),
+  /** In-app display name for headings and UI (DebiasDaily) */
+  name: getInAppName(),
+  
+  /** Short site name (same as in-app name) */
+  shortName: getInAppName(),
   
   /** Site description */
-  description: "Learn one cognitive bias every day from Elon Musk's list of 50 biases.",
+  description: "Learn one cognitive bias every day from a curated list of 50 research-backed cognitive biases.",
 } as const
 
 /**

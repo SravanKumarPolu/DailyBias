@@ -1,8 +1,8 @@
 {
-  "name": "Bias Daily",
-  "short_name": "Bias Daily",
+  "name": "DebiasDaily",
+  "short_name": "DebiasDaily",
   "version": "1.0.2",
-  "description": "Learn one cognitive bias every day from Elon Musk's list of 50 biases",
+  "description": "Learn one cognitive bias every day from a curated list of 50 research-backed cognitive biases",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

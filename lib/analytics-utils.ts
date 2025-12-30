@@ -6,6 +6,7 @@
 import type { Bias, BiasProgress } from "./types"
 import type { ContentQualityMetrics } from "./content-versioning"
 import type { FeedbackData } from "./db"
+import { getEngagementMetrics, calculateRetentionMetrics } from "./engagement-tracking"
 
 export interface AnalyticsMetrics {
   totalBiases: number
@@ -21,6 +22,14 @@ export interface AnalyticsMetrics {
   averageAccuracy: number
   averageClarity: number
   averageCompleteness: number
+  // Engagement metrics
+  totalSessions?: number
+  averageSessionTime?: number
+  totalDaysActive?: number
+  sessionsThisWeek?: number
+  sessionsThisMonth?: number
+  retentionRate?: number
+  biasesViewedPerSession?: number
 }
 
 export interface RecentActivity {
@@ -101,6 +110,10 @@ export async function calculateAnalyticsMetrics(
 
   const pendingCount = qualityMetrics.length - approvedCount - needsRevisionCount
 
+  // Add engagement metrics
+  const engagementMetrics = getEngagementMetrics()
+  const retentionMetrics = calculateRetentionMetrics(engagementMetrics)
+
   return {
     totalBiases,
     knownBiases,
@@ -115,6 +128,14 @@ export async function calculateAnalyticsMetrics(
     averageAccuracy,
     averageClarity,
     averageCompleteness,
+    // Engagement metrics
+    totalSessions: engagementMetrics.totalSessions,
+    averageSessionTime: engagementMetrics.averageSessionTime,
+    totalDaysActive: engagementMetrics.totalDaysActive,
+    sessionsThisWeek: engagementMetrics.sessionsThisWeek,
+    sessionsThisMonth: engagementMetrics.sessionsThisMonth,
+    retentionRate: retentionMetrics.retentionRate,
+    biasesViewedPerSession: engagementMetrics.biasesViewedPerSession,
   }
 }
 

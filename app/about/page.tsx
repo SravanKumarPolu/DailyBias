@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, CheckCircle, GraduationCap } from "lucide-react"
+import { ArrowLeft, Shield, Zap, Heart, Download, BookOpen, Users, GraduationCap } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
@@ -36,6 +36,9 @@ export default function AboutPage() {
             <p className="text-foreground/80 text-base sm:text-lg leading-relaxed text-pretty">
               Learn one cognitive bias every day and improve your decision-making
             </p>
+            <p className="text-foreground/60 text-sm sm:text-base mt-4 italic">
+              An indie project built to make behavioral science practical for everyday decisions
+            </p>
           </div>
 
           {/* Features */}
@@ -67,8 +70,7 @@ export default function AboutPage() {
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Privacy First</h3>
                   <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
-                    All your data stays on your device. No tracking, no analytics, no servers.
-                    Complete privacy guaranteed.
+                    All your personal data stays on your device. Your biases, favorites, and progress are never sent to any server. We use privacy-focused analytics that doesn't collect personal information.
                   </p>
                 </div>
               </div>
@@ -106,9 +108,9 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Content Methodology */}
+          {/* Content Sources */}
           <div className="glass shadow-glass animate-fade-in-up space-y-5 rounded-xl p-5 sm:space-y-6 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.15s" }}>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Content Quality & Sources</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Content Sources</h2>
 
             <div className="space-y-4 sm:space-y-5">
               <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
@@ -120,21 +122,7 @@ export default function AboutPage() {
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Research-Based Content</h3>
                   <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
-                    All bias explanations are backed by peer-reviewed psychological research. Each bias includes references to original studies and academic sources.
-                  </p>
-                </div>
-              </div>
-
-              <div className="hover-lift flex gap-3 rounded-lg p-3 transition-all duration-200 sm:gap-4 sm:p-0">
-                <div className="shrink-0">
-                  <div className="bg-green-100 flex h-10 w-10 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 hover:scale-110 sm:h-12 sm:w-12">
-                    <CheckCircle className="text-green-600 h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Expert Review</h3>
-                  <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
-                    Content is reviewed by psychology professionals and cognitive science experts to ensure accuracy and educational value.
+                    Content is distilled from standard cognitive science references (e.g., Kahneman & Tversky) and curated by the DebiasDaily team. Many biases include references to original studies and academic sources.
                   </p>
                 </div>
               </div>
@@ -148,7 +136,7 @@ export default function AboutPage() {
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-1 font-semibold text-sm sm:text-base">Transparent Sources</h3>
                   <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
-                    Every bias includes academic references, research level indicators, and links to original studies when available.
+                    When available, biases include academic references and research level indicators to help you learn more.
                   </p>
                 </div>
               </div>
@@ -160,151 +148,24 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Community Contributions</h3>
+                  <h3 className="mb-1 font-semibold text-sm sm:text-base">Custom Biases</h3>
                   <p className="text-foreground/80 text-sm leading-relaxed text-pretty sm:text-base">
-                    Users can add custom biases, but all content is reviewed for accuracy and educational value before publication.
+                    You can add your own custom biases to personalize your learning collection. These are stored locally on your device.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Editorial Board & Authors */}
-          <div className="glass shadow-glass animate-fade-in-up space-y-5 rounded-xl p-5 sm:space-y-6 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.175s" }}>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Editorial Board & Authors</h2>
-
-            {/* Editorial Board */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Editorial Board</h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                      <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-blue-900 dark:text-blue-100">Dr. Sarah Chen</h4>
-                      <p className="text-sm text-blue-700 dark:text-blue-300">Editor-in-Chief</p>
-                      <p className="text-xs text-blue-600 dark:text-blue-400">Ph.D. Cognitive Psychology, Stanford University</p>
-                      <p className="text-xs text-blue-600 dark:text-blue-400">Former Research Director, Center for Decision Sciences</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
-                      <GraduationCap className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-green-900 dark:text-green-100">Prof. Michael Rodriguez</h4>
-                      <p className="text-sm text-green-700 dark:text-green-300">Senior Editor</p>
-                      <p className="text-xs text-green-600 dark:text-green-400">Ph.D. Behavioral Economics, MIT</p>
-                      <p className="text-xs text-green-600 dark:text-green-400">Professor of Psychology, Harvard University</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
-                      <CheckCircle className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-purple-900 dark:text-purple-100">Dr. Emily Watson</h4>
-                      <p className="text-sm text-purple-700 dark:text-purple-300">Fact-Checker</p>
-                      <p className="text-xs text-purple-600 dark:text-purple-400">Ph.D. Social Psychology, University of Chicago</p>
-                      <p className="text-xs text-purple-600 dark:text-purple-400">Research Scientist, Max Planck Institute</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded-lg">
-                      <BookOpen className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-orange-900 dark:text-orange-100">Dr. James Park</h4>
-                      <p className="text-sm text-orange-700 dark:text-orange-300">Content Reviewer</p>
-                      <p className="text-xs text-orange-600 dark:text-orange-400">Ph.D. Cognitive Science, UC Berkeley</p>
-                      <p className="text-xs text-orange-600 dark:text-orange-400">Senior Research Fellow, Institute for Advanced Study</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Content Authors */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Content Authors</h3>
-              <div className="grid gap-3">
-                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-teal-100 dark:bg-teal-900 p-2 rounded-lg">
-                      <GraduationCap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100">Dr. Lisa Thompson</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Lead Content Writer</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">Ph.D. Psychology, Columbia University • 8 years experience in cognitive bias research</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-indigo-100 dark:bg-indigo-900 p-2 rounded-lg">
-                      <BookOpen className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100">Dr. Robert Kim</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Senior Content Writer</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">Ph.D. Behavioral Science, Wharton School • Former McKinsey consultant specializing in decision-making</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-rose-100 dark:bg-rose-900 p-2 rounded-lg">
-                      <Users className="h-4 w-4 text-rose-600 dark:text-rose-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100">Dr. Maria Garcia</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Content Writer</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">Ph.D. Social Psychology, NYU • Research focus on group decision-making and bias</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quality Assurance Process */}
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Quality Assurance Process</h3>
-              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <p>• Each bias entry is written by a qualified psychology professional</p>
-                <p>• Content is fact-checked against peer-reviewed research</p>
-                <p>• Editorial board reviews all content for accuracy and clarity</p>
-                <p>• External experts validate complex psychological concepts</p>
-                <p>• Regular updates ensure information remains current</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Content Transparency */}
+          {/* Content Coverage */}
           <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Content Coverage & Transparency</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Content Coverage</h2>
             <div className="text-foreground/80 space-y-3 text-sm leading-relaxed sm:space-y-4 sm:text-base">
               <p className="text-balance">
-                This app currently features <strong>50 carefully curated cognitive biases</strong> out of approximately 180 known biases in the field. Each bias includes detailed explanations, psychological mechanisms, and practical counter-strategies.
+                This app features <strong>50 cognitive biases</strong>, each with explanations, psychological mechanisms, and practical counter-strategies.
               </p>
               <p className="text-balance">
                 <strong>Daily Rotation:</strong> With 50 biases, you'll see each bias approximately every 2 months, ensuring variety while allowing for deep learning and retention.
-              </p>
-              <p className="text-balance">
-                <strong>Continuous Growth:</strong> We're actively expanding our collection through expert curation and community contributions, with a goal of reaching 100+ biases.
               </p>
             </div>
           </div>
@@ -371,6 +232,28 @@ export default function AboutPage() {
                 View Code Splitting Demo
               </a>
             </Button>
+          </div>
+
+          {/* Public Stats */}
+          <div className="glass shadow-glass animate-fade-in-up space-y-4 rounded-xl p-5 sm:space-y-5 sm:rounded-2xl sm:p-6" style={{ animationDelay: "0.35s" }}>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Public Stats</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="text-2xl font-bold text-primary">50</div>
+                <div className="text-sm text-foreground/80 mt-1">Cognitive Biases</div>
+              </div>
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="text-2xl font-bold text-primary">100%</div>
+                <div className="text-sm text-foreground/80 mt-1">Free & Open</div>
+              </div>
+              <div className="text-center p-4 bg-primary/10 rounded-lg col-span-2 sm:col-span-1">
+                <div className="text-2xl font-bold text-primary">Privacy</div>
+                <div className="text-sm text-foreground/80 mt-1">First</div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              All data stays on your device. No tracking, no servers, no ads.
+            </p>
           </div>
 
           {/* Footer */}

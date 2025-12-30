@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.debiasdaily.app',
-  appName: 'Bias Daily',
+  appName: 'DebiasDaily',
   webDir: 'out',
   server: {
     // For development, you can point to a local server
@@ -34,7 +34,7 @@ const config: CapacitorConfig = {
     },
   },
   ios: {
-    scheme: 'Bias Daily',
+    scheme: 'DebiasDaily',
     contentInset: 'automatic',
   },
 };

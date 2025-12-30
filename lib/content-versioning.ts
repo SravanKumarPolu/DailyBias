@@ -65,7 +65,7 @@ export class ContentVersionManager {
       return
     }
 
-    this.db = await openDB<ContentVersioningDB>("bias-daily-db", 4, {
+    this.db = await openDB<ContentVersioningDB>("bias-daily-db", 6, {
       upgrade(db, oldVersion) {
         // Create content versions store (version 3 migration)
         if (oldVersion < 3) {
@@ -83,6 +83,8 @@ export class ContentVersionManager {
         }
         
         // Version 4 migration - feedback store is handled by main db.ts
+        // Version 5 migration - quiz sessions store is handled by main db.ts
+        // Version 6 migration - achievements store is handled by main db.ts
         // No action needed here as both use the same database instance
       }
     })

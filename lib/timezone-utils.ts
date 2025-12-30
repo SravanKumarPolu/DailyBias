@@ -120,21 +120,23 @@ export function getFormattedDateString(date?: Date, options?: Intl.DateTimeForma
 
 /**
  * Get timezone-aware date string for display
+ * Uses local timezone (same as bias selection) to ensure consistency
  */
 export function getTimezoneAwareDateString(date?: Date): string {
   const targetDate = date || new Date()
-  const timezoneInfo = detectTimezone()
   
+  // Use local date formatting (same as getLocalDateString) to ensure consistency with bias selection
+  // This ensures the displayed date matches the date used for daily bias selection
   try {
     return targetDate.toLocaleDateString(undefined, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      timeZone: timezoneInfo.timezone
     })
   } catch (error) {
     console.warn('[DailyBias] Failed to get timezone-aware date:', error)
+    // Fallback to formatted date string
     return getFormattedDateString(targetDate)
   }
 }

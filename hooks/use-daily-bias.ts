@@ -32,25 +32,6 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
   const [isLoading, setIsLoading] = useState(availableBiasesOnMount.length === 0)
   const lastDateRef = useRef<string | null>(null)
   const calculatedBiasIdRef = useRef<string | null>(null)
-  const initialBiasSetRef = useRef(false)
-  
-  // CRITICAL: Set initial bias immediately on mount if available (prevents loading state)
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    if (initialBiasSetRef.current) return
-    
-    const availableBiases = allBiases.length > 0 ? allBiases : getCoreBiases()
-    if (availableBiases.length > 0) {
-      const today = getTodayDateString()
-      const initialBias = availableBiases[0]
-      logger.debug("[useDailyBias] Setting initial bias immediately:", initialBias.title)
-      setDailyBias(initialBias)
-      setIsLoading(false)
-      lastDateRef.current = today
-      calculatedBiasIdRef.current = initialBias.id
-      initialBiasSetRef.current = true
-    }
-  }, [allBiases.length]) // Run when biases become available
 
   // Calculate daily bias for current date (async to check IndexedDB)
   const calculateDailyBias = useCallback(async (date: string): Promise<Bias | null> => {
@@ -109,29 +90,19 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
     if (typeof window === "undefined") return
     
     // Ensure we have biases available (use core biases as fallback)
+    // IMPORTANT: Use current allBiases from the hook parameter, not from closure
     const availableBiases = allBiases.length > 0 ? allBiases : getCoreBiases()
+    
     if (availableBiases.length === 0) {
       logger.warn("[useDailyBias] No biases available, cannot calculate daily bias")
       setIsLoading(false)
       return
     }
     
-    // CRITICAL FIX: If we have biases but no dailyBias, set one immediately
-    // This prevents the page from staying in loading state
-    if (!dailyBias && availableBiases.length > 0) {
-      const tempBias = availableBiases[0]
-      logger.debug("[useDailyBias] CRITICAL: No bias but biases available, setting immediate fallback:", tempBias.title)
-      setDailyBias(tempBias)
-      setIsLoading(false)
-      lastDateRef.current = getTodayDateString()
-      calculatedBiasIdRef.current = tempBias.id
-      // Continue to calculate proper bias below, but page won't be stuck loading
-    }
-    
     const today = getTodayDateString()
     logger.debug("[useDailyBias] Effect running - date:", today, "allBiases:", allBiases.length, "availableBiases:", availableBiases.length, "dailyBias:", dailyBias?.title || "null")
     
-    // Skip if already calculated for today AND we have a bias
+    // Skip if already calculated for today AND we have a bias AND date hasn't changed
     if (lastDateRef.current === today && calculatedBiasIdRef.current && dailyBias) {
       logger.debug("[useDailyBias] Already calculated for today, skipping")
       setIsLoading(false)
@@ -139,30 +110,28 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
     }
 
     // Date changed or first load or no bias
-    // IMPORTANT: Only proceed if we don't have a bias OR date changed
+    // IMPORTANT: Calculate bias if date changed OR we don't have a bias for today
     if (lastDateRef.current !== today || !dailyBias) {
       logger.debug("[useDailyBias] Date changed or first load or no bias, calculating bias")
-      setIsLoading(true)
       
-      // IMMEDIATE FALLBACK: If we have biases, use first one immediately as a fallback
+      // IMMEDIATE FALLBACK: Set first bias immediately to prevent loading state
       // This ensures the page never stays in loading state indefinitely
-      let immediateFallbackSet = false
-      if (availableBiases.length > 0 && !dailyBias) {
-        // Set a temporary bias immediately to prevent infinite loading
+      if (!dailyBias && availableBiases.length > 0) {
         const tempBias = availableBiases[0]
         logger.debug("[useDailyBias] Setting immediate fallback bias:", tempBias.title)
-        // Set both bias and loading state in the same update
         setDailyBias(tempBias)
-        setIsLoading(false) // CRITICAL: Set loading to false immediately
+        setIsLoading(false)
         lastDateRef.current = today
         calculatedBiasIdRef.current = tempBias.id
-        immediateFallbackSet = true
       }
+      
+      // Now calculate the proper bias asynchronously
+      setIsLoading(true)
       
       // Try to load from storage first for faster initial render
       const stored = getStoredDailyBias()
       
-      if (stored && stored.date === today && availableBiases.length > 0) {
+      if (stored && stored.date === today) {
         const cached = availableBiases.find((b) => b.id === stored.biasId)
         if (cached) {
           logger.debug("[useDailyBias] Loaded from storage:", cached.title)
@@ -176,7 +145,7 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
       
       // Fallback to cached or calculate new
       const cachedBiasId = getCachedDailyBias(today)
-      if (cachedBiasId && availableBiases.length > 0) {
+      if (cachedBiasId) {
         const cached = availableBiases.find((b) => b.id === cachedBiasId)
         if (cached) {
           logger.debug("[useDailyBias] Loaded from cache:", cached.title)
@@ -188,7 +157,7 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
         }
       }
       
-      // Calculate new bias with timeout fallback (now with timeout in calculateDailyBias itself)
+      // Calculate new bias with timeout fallback
       const calculationStartTime = Date.now()
       const calculationPromise = calculateDailyBias(today)
       const timeoutPromise = new Promise<Bias | null>((resolve) => {
@@ -196,18 +165,17 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
           const elapsed = Date.now() - calculationStartTime
           logger.warn(`[useDailyBias] Calculation timeout after ${elapsed}ms, using first bias`)
           resolve(availableBiases[0] || null)
-        }, 2000) // 2 second timeout (reduced since calculateDailyBias has its own timeout)
+        }, 2000)
       })
       
       Promise.race([calculationPromise, timeoutPromise]).then((newBias) => {
         logger.debug("[useDailyBias] Got bias:", newBias?.title || "null")
-        if (newBias && (!immediateFallbackSet || newBias.id !== availableBiases[0]?.id)) {
-          // Only update if we got a different bias than the immediate fallback
+        if (newBias) {
           setDailyBias(newBias)
           lastDateRef.current = today
           calculatedBiasIdRef.current = newBias.id
-        } else if (availableBiases.length > 0 && !immediateFallbackSet) {
-          // Ultimate fallback (only if immediate fallback wasn't set)
+        } else if (availableBiases.length > 0) {
+          // Ultimate fallback: use first bias
           logger.warn("[useDailyBias] No bias from calculation, using first bias")
           setDailyBias(availableBiases[0])
           lastDateRef.current = today
@@ -216,8 +184,8 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
         setIsLoading(false)
       }).catch((error) => {
         logger.error("[useDailyBias] Error in effect:", error)
-        // Fallback to first bias if calculation fails (only if not already set)
-        if (availableBiases.length > 0 && !immediateFallbackSet) {
+        // Fallback to first bias if calculation fails
+        if (availableBiases.length > 0) {
           logger.warn("[useDailyBias] Using fallback bias due to error:", availableBiases[0].title)
           setDailyBias(availableBiases[0])
           lastDateRef.current = today
@@ -227,11 +195,9 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
       })
     } else {
       // Date hasn't changed and we have a bias, ensure loading is false
-      if (isLoading) {
         setIsLoading(false)
-      }
     }
-  }, [calculateDailyBias, allBiases.length, dailyBias])
+  }, [calculateDailyBias, allBiases, dailyBias, progressList])
 
   // Ensure we always have a bias if biases are available
   // Only run on client to prevent hydration mismatches
@@ -286,7 +252,7 @@ export function useDailyBias({ allBiases, progressList }: UseDailyBiasOptions): 
     }
     // Explicitly return undefined if condition is not met
     return undefined;
-  }, [dailyBias, allBiases.length, calculateDailyBias])
+  }, [dailyBias, allBiases, calculateDailyBias])
 
   const refresh = useCallback(() => {
     const today = getTodayDateString()

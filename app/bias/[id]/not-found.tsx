@@ -4,7 +4,7 @@ import { FileQuestion } from "lucide-react"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Bias Not Found | Bias Daily",
+  title: "Bias Not Found | DebiasDaily",
   description: "The bias you're looking for doesn't exist.",
   robots: {
     index: false,

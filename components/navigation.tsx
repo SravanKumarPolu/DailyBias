@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Grid3x3, Heart, Plus, BarChart3, Settings } from "lucide-react"
+import { Home, Grid3x3, Heart, RotateCcw, BarChart3, Settings } from "lucide-react"
 // Removed motion imports - using static CSS transitions instead to prevent flickering on Android
 
 const navItems = [
   { href: "/", icon: Home, label: "Daily" },
   { href: "/all", icon: Grid3x3, label: "All" },
   { href: "/favorites", icon: Heart, label: "Favorites" },
-  { href: "/add", icon: Plus, label: "Add" },
+  { href: "/review", icon: RotateCcw, label: "Review" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/settings", icon: Settings, label: "Settings" },
 ]

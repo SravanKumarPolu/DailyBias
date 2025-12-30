@@ -332,7 +332,7 @@ export default function SettingsPage() {
       const hasValidKeys = expectedKeys.some(key => key in data)
 
       if (!hasValidKeys) {
-        throw new Error('This does not appear to be a valid Bias Daily backup file.')
+        throw new Error('This does not appear to be a valid DebiasDaily backup file.')
       }
 
       await importAllData(data)
@@ -792,17 +792,17 @@ export default function SettingsPage() {
                   </Popover>
 
                   {/* Current Voice Status Display */}
-                  <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                  <div className="rounded-lg bg-accent/50 p-3 border border-border">
                     <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                      <span className="text-sm font-medium text-blue-900 dark:text-blue-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                      <span className="text-sm font-semibold text-foreground sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                         Currently Active Voice:
                       </span>
                           </div>
-                    <div className="mt-1 text-sm text-blue-800 dark:text-blue-200 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                    <div className="mt-1 text-sm font-semibold text-foreground sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       {settings.voiceName || "None selected"}
                     </div>
-                    <div className="mt-1 text-sm text-blue-600 dark:text-blue-300 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                    <div className="mt-1 text-sm text-foreground/70 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       Device: {typeof window !== "undefined" && (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768 || ('ontouchstart' in window)) ? "Mobile" : "Desktop"}
                     </div>
                     <Button
@@ -1109,7 +1109,7 @@ export default function SettingsPage() {
             <div className="text-foreground/80 space-y-2 text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               <p>
                 <strong className="text-foreground">Bias Daily</strong> helps you learn one
-                cognitive bias every day from Elon Musk's curated list of 50 biases.
+                cognitive bias every day from a curated list of 50 research-backed cognitive biases.
               </p>
               <p>
                 All your data is stored locally on your device. Nothing is sent to any server. The

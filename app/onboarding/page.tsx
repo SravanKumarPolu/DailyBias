@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react"
 import { Brain, Star, Zap, Check, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
@@ -12,7 +11,7 @@ const onboardingSteps = [
   {
     icon: Brain,
     title: `Welcome to ${siteConfig.name}`,
-    description: "Learn one cognitive bias every day from Elon Musk's curated list of 50 biases.",
+    description: "Learn one cognitive bias every day from a curated list of 50 research-backed cognitive biases.",
     features: [
       "New bias daily, personalized to your progress",
       "Beautiful, distraction-free interface",
@@ -46,7 +45,15 @@ const onboardingSteps = [
 
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(0)
+  const [isVisible, setIsVisible] = useState(false)
   const router = useRouter()
+
+  // Trigger animation on mount and step change
+  useEffect(() => {
+    setIsVisible(false)
+    const timer = setTimeout(() => setIsVisible(true), 50)
+    return () => clearTimeout(timer)
+  }, [currentStep])
 
   const handleNext = () => {
     if (currentStep < onboardingSteps.length - 1) {
@@ -94,77 +101,79 @@ export default function OnboardingPage() {
         {/* Main content */}
         <div className="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6">
           <div className="w-full max-w-lg">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-8"
+            <div
+              key={currentStep}
+              className={cn(
+                "space-y-8 transition-all duration-300",
+                isVisible
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 translate-x-4"
+              )}
+            >
+              {/* Icon */}
+              <div
+                className={cn(
+                  "flex justify-center transition-all duration-500 delay-75",
+                  isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+                )}
               >
-                {/* Icon */}
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.4, type: "spring" }}
-                  className="flex justify-center"
-                >
-                  <div className="relative">
-                    <div className={cn(
-                      "absolute inset-0 rounded-full blur-xl opacity-40 bg-gradient-to-br",
-                      step.gradient
-                    )} />
-                    <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 backdrop-blur-xl border border-primary/20 sm:h-24 sm:w-24">
-                      <Icon className="h-10 w-10 text-primary sm:h-12 sm:w-12" />
-                    </div>
+                <div className="relative">
+                  <div className={cn(
+                    "absolute inset-0 rounded-full blur-xl opacity-40 bg-gradient-to-br transition-opacity duration-300",
+                    step.gradient
+                  )} />
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 backdrop-blur-xl border border-primary/20 sm:h-24 sm:w-24">
+                    <Icon className="h-10 w-10 text-primary sm:h-12 sm:w-12" />
                   </div>
-                </motion.div>
-
-                {/* Title */}
-                <div className="space-y-4 text-center">
-                  <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.4 }}
-                    className="text-3xl font-bold tracking-tight sm:text-4xl"
-                  >
-                    {step.title}
-                  </motion.h1>
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.4 }}
-                    className="text-lg text-muted-foreground sm:text-xl"
-                  >
-                    {step.description}
-                  </motion.p>
                 </div>
+              </div>
 
-                {/* Features */}
-                <motion.ul
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.4 }}
-                  className="space-y-4"
+              {/* Title */}
+              <div className="space-y-4 text-center">
+                <h1
+                  className={cn(
+                    "text-3xl font-bold tracking-tight sm:text-4xl transition-all duration-500 delay-150",
+                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                  )}
                 >
-                  {step.features.map((feature, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
-                      className="flex items-start gap-3 rounded-lg bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all hover:border-primary/30 hover:shadow-depth-2"
-                    >
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                        <Check className="h-4 w-4 text-primary" />
-                      </div>
-                      <span className="text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{feature}</span>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </motion.div>
-            </AnimatePresence>
+                  {step.title}
+                </h1>
+                <p
+                  className={cn(
+                    "text-lg text-muted-foreground sm:text-xl transition-all duration-500 delay-200",
+                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                  )}
+                >
+                  {step.description}
+                </p>
+              </div>
+
+              {/* Features */}
+              <ul className={cn(
+                "space-y-4 transition-opacity duration-500 delay-300",
+                isVisible ? "opacity-100" : "opacity-0"
+              )}>
+                {step.features.map((feature, index) => (
+                  <li
+                    key={index}
+                    className={cn(
+                      "flex items-start gap-3 rounded-lg bg-card/50 backdrop-blur-sm border border-border/50 p-4 transition-all hover:border-primary/30 hover:shadow-depth-2",
+                      isVisible
+                        ? "opacity-100 translate-x-0"
+                        : "opacity-0 -translate-x-4"
+                    )}
+                    style={{
+                      transitionDelay: `${300 + index * 50}ms`,
+                    }}
+                  >
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                      <Check className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -174,17 +183,15 @@ export default function OnboardingPage() {
             {/* Progress dots */}
             <div className="flex items-center justify-center gap-2">
               {onboardingSteps.map((_, index) => (
-                <motion.button
+                <button
                   key={index}
                   onClick={() => setCurrentStep(index)}
                   className={cn(
-                    "h-2 rounded-full transition-all duration-300",
+                    "h-2 rounded-full transition-all duration-300 hover:scale-110 active:scale-95",
                     index === currentStep
                       ? "w-8 bg-primary"
                       : "w-2 bg-muted hover:bg-muted-foreground/50"
                   )}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
                   aria-label={`Go to step ${index + 1}`}
                 />
               ))}

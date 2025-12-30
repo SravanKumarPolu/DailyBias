@@ -4,7 +4,7 @@ import { FileQuestion } from "lucide-react"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "404 - Page Not Found | Bias Daily",
+  title: "404 - Page Not Found | DebiasDaily",
   description: "The page you're looking for doesn't exist.",
   robots: {
     index: false,
