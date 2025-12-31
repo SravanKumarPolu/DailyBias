@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getCategoryColor, getCategoryLabel } from '@/lib/category-utils'
+import { getCategoryColor, getCategoryColorHex, getCategoryLabel } from '@/lib/category-utils'
 import type { BiasCategory } from '@/lib/types'
 
 describe('category-utils', () => {
@@ -19,6 +19,31 @@ describe('category-utils', () => {
       const colors = categories.map((cat) => getCategoryColor(cat))
       const uniqueColors = new Set(colors)
       expect(uniqueColors.size).toBe(categories.length)
+    })
+  })
+
+  describe('getCategoryColorHex', () => {
+    it('should return hex color values for all categories', () => {
+      categories.forEach((category) => {
+        const color = getCategoryColorHex(category)
+        expect(color).toBeTruthy()
+        expect(typeof color).toBe('string')
+        expect(color).toMatch(/^#[0-9a-f]{6}$/i)
+      })
+    })
+
+    it('should return different hex colors for different categories', () => {
+      const colors = categories.map((cat) => getCategoryColorHex(cat))
+      const uniqueColors = new Set(colors)
+      expect(uniqueColors.size).toBe(categories.length)
+    })
+
+    it('should return valid hex colors', () => {
+      expect(getCategoryColorHex('decision')).toBe('#3b82f6')
+      expect(getCategoryColorHex('memory')).toBe('#8b5cf6')
+      expect(getCategoryColorHex('social')).toBe('#ec4899')
+      expect(getCategoryColorHex('perception')).toBe('#f59e0b')
+      expect(getCategoryColorHex('misc')).toBe('#6b7280')
     })
   })
 

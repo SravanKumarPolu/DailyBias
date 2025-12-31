@@ -138,17 +138,17 @@ export function ShareableCard({ bias, trigger }: ShareableCardProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
+      <DialogContent className="max-w-lg max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Quick Reference Card</DialogTitle>
           <DialogDescription>
             Download or share a visual reference card for this bias
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden -mx-6 px-6 space-y-4">
           {/* Preview */}
-          <div className="relative aspect-[9/16] w-full overflow-hidden rounded-lg bg-muted">
+          <div className="relative aspect-[9/16] w-full overflow-hidden rounded-lg bg-muted border border-border/50">
             {isGenerating ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center space-y-3">
@@ -215,7 +215,7 @@ export function ShareableCard({ bias, trigger }: ShareableCardProps) {
           </div>
 
           {/* Info */}
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center pb-2">
             High-resolution image (1080×1920px) perfect for social media
           </p>
         </div>

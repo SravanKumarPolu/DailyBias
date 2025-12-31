@@ -8,6 +8,12 @@
     "counter": "Before judging someone's actions, pause and ask: 'What circumstances might explain this behavior?' Assume good intent and consider external factors. When evaluating your own behavior, ask if you'd judge others the same way in similar circumstances. Practice perspective-taking by imagining the other person's situation and constraints.",
     "source": "core",
     "researchLevel": "established",
+    "tips": [
+      "Ask 'What circumstances might explain this behavior?' before judging",
+      "Assume good intent and consider external factors first",
+      "Apply the same standards to yourself as you do to others",
+      "Remember: everyone is fighting a battle you know nothing about"
+    ],
     "examples": [
       {
         "title": "Hurricane Katrina Response",
@@ -67,6 +73,12 @@
     "counter": "Practice intellectual humility. When you succeed, acknowledge the role of luck, timing, and others' help. When you fail, honestly assess your own contribution before blaming external factors. Keep a 'luck journal' noting when circumstances helped you.",
     "source": "core",
     "researchLevel": "established",
+    "tips": [
+      "When you succeed, acknowledge the role of luck and others' help",
+      "When you fail, honestly assess your own contribution first",
+      "Keep a 'luck journal' noting when circumstances helped you",
+      "Practice saying 'I was wrong' or 'I made a mistake' regularly"
+    ],
     "examples": [
       {
         "title": "Enron Executive Blame",
@@ -122,6 +134,12 @@
     "why": "Evolutionary psychology suggests this helped early humans survive by strengthening tribal bonds. Our brains quickly categorize people as 'us' or 'them,' triggering different emotional and cognitive responses that favor our group.",
     "counter": "Actively seek diverse perspectives and relationships. When making decisions, ask: 'Would I judge this differently if it came from an outsider?' Use blind evaluation processes when possible. Regularly interact with people from different backgrounds.",
     "source": "core",
+    "tips": [
+      "Actively seek relationships with people from different backgrounds",
+      "Ask: 'Would I judge this differently if it came from an outsider?'",
+      "Use blind evaluation processes when making decisions",
+      "Challenge yourself to find common ground with 'outsiders'"
+    ],
     "examples": [
       {
         "title": "Tech Industry Hiring",
@@ -152,6 +170,12 @@
     "why": "Social proof is a powerful heuristic: if many people do something, it's probably safe or correct. This saved cognitive energy for our ancestors and reduced risk. Our brains are wired to conform to avoid social rejection.",
     "counter": "Before adopting a popular belief, ask: 'What's the actual evidence?' Distinguish between popularity and validity. Seek out contrarian viewpoints. Remember that truth isn't democratic—many people can be wrong together.",
     "source": "core",
+    "tips": [
+      "Before adopting popular beliefs, ask 'What's the actual evidence?'",
+      "Distinguish between popularity and validity",
+      "Seek out contrarian viewpoints intentionally",
+      "Remember: truth isn't democratic—many can be wrong together"
+    ],
     "examples": [
       {
         "title": "GameStop Stock Frenzy",
@@ -182,6 +206,12 @@
     "why": "Groups develop strong norms and identity. Members fear rejection or conflict, so they self-censor doubts. Leaders may inadvertently signal preferred outcomes, and the illusion of unanimity makes dissent seem futile or disloyal.",
     "counter": "Assign a 'devil's advocate' role in group decisions. Encourage anonymous feedback. Leaders should withhold their opinions until others speak. Break into smaller subgroups to generate independent ideas before reconvening.",
     "source": "core",
+    "tips": [
+      "Assign a 'devil's advocate' role in group decisions",
+      "Encourage anonymous feedback and criticism",
+      "Leaders: withhold opinions until others have spoken",
+      "Break into smaller subgroups before making final decisions"
+    ],
     "examples": [
       {
         "title": "NASA Challenger Disaster",
@@ -214,6 +244,12 @@
     "why": "Our brains seek cognitive efficiency by creating coherent narratives. If one trait is positive, assuming others are too creates a simpler, more consistent mental model than tracking each trait independently.",
     "counter": "Evaluate traits independently. Use structured assessment criteria. When impressed by one quality, deliberately ask: 'What evidence do I have for my other assumptions?' Separate appearance from competence, likability from trustworthiness.",
     "source": "core",
+    "tips": [
+      "Evaluate different traits independently, not as a package",
+      "Use structured evaluation criteria for important judgments",
+      "Ask: 'What evidence do I have for this specific quality?'",
+      "Be aware that attractiveness influences your perception"
+    ],
     "examples": [
       {
         "title": "Elizabeth Holmes and Theranos",
@@ -253,7 +289,13 @@
     "summary": "We judge actions by their outcomes rather than intentions. A drunk driver who hits someone is judged more harshly than one who makes it home safely, despite identical choices.",
     "why": "Outcomes are vivid and concrete, while intentions are abstract and uncertain. Our emotional responses are triggered by results, not hypotheticals. This bias may have evolutionary value in deterring harmful behaviors.",
     "counter": "Focus on the decision-making process and intentions, not just results. Ask: 'Was this a good decision given what they knew at the time?' Judge actions by their expected value, not their actual outcome. Separate luck from judgment.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Judge actions by intentions and available information, not outcomes",
+      "Ask: 'Would I judge this differently if the outcome was different?'",
+      "Consider counterfactuals: what could have happened but didn't",
+      "Focus on decision quality, not just results"
+    ]
   },
   {
     "id": "false-consensus",
@@ -262,7 +304,13 @@
     "summary": "We overestimate how many people share our beliefs, values, and behaviors. We assume our views are common sense and that those who disagree are unusual or biased.",
     "why": "We're surrounded by people similar to us (friends, family, colleagues) and consume media that confirms our views. This creates an echo chamber where our perspective seems universal. Our brains also project our own thoughts onto others.",
     "counter": "Actively seek out diverse viewpoints and demographics. Before assuming agreement, ask: 'What percentage of people actually think this way?' Use polls and data rather than intuition. Spend time with people unlike you.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Actively survey others before assuming agreement",
+      "Seek out data on actual population beliefs and behaviors",
+      "Challenge your assumption: 'Do I really know what others think?'",
+      "Remember that your bubble isn't representative"
+    ]
   },
   {
     "id": "curse-of-knowledge",
@@ -271,7 +319,13 @@
     "summary": "Once we know something, we can't imagine not knowing it. Experts struggle to teach beginners because they forget what it's like to be ignorant of their field.",
     "why": "Knowledge fundamentally changes how we perceive information. Our brains can't 'unlearn' or easily simulate ignorance. What seems obvious now was once mysterious, but we lose access to that earlier mental state.",
     "counter": "When explaining, start from first principles. Ask: 'What did I find confusing when I first learned this?' Test your explanations on actual beginners. Use analogies to familiar concepts. Avoid jargon and define terms.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Explain concepts to someone unfamiliar to test your clarity",
+      "Ask others what they understand, not just if they understand",
+      "Use the 'five-year-old test': can you explain it simply?",
+      "Remember what it was like before you learned this"
+    ]
   },
   {
     "id": "spotlight-effect",
@@ -280,7 +334,13 @@
     "summary": "We overestimate how much others notice our appearance, behavior, and mistakes. We feel like we're under a spotlight, but others are mostly focused on themselves.",
     "why": "We're the center of our own experience, so our actions and appearance feel highly salient. We lack access to others' internal focus, which is usually on their own concerns, not us.",
     "counter": "Remember that others are experiencing their own spotlight effect. Ask: 'Will anyone remember this in a week?' Most people are too worried about themselves to scrutinize you. Take social risks—the downside is smaller than you think.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Remind yourself: people are too busy thinking about themselves",
+      "Ask friends what they noticed about you—usually it's less than you think",
+      "Focus outward on others rather than inward on yourself",
+      "Test your assumptions: did anyone actually notice that mistake?"
+    ]
   },
   {
     "id": "availability-heuristic",
@@ -291,6 +351,12 @@
     "counter": "Look up actual statistics before judging risk. Ask: 'Am I remembering this because it's common or because it's dramatic?' Consider base rates. Be especially skeptical of fears triggered by recent news or personal anecdotes. Use systematic data rather than anecdotal evidence.",
     "source": "core",
     "researchLevel": "established",
+    "tips": [
+      "Seek out base rates and statistics, not just memorable examples",
+      "Ask: 'Is this easy to recall because it's common or just vivid?'",
+      "Counter dramatic news with boring statistical reality",
+      "Keep a log of actual frequencies vs. your gut feelings"
+    ],
     "examples": [
       {
         "title": "Post-9/11 Driving Deaths",
@@ -348,7 +414,13 @@
     "summary": "We blame victims for their misfortune to maintain the belief that bad things won't happen to us. If they made a mistake, we can avoid it; if it was random, we're vulnerable too.",
     "why": "Believing the world is just and controllable reduces anxiety. If victims are responsible for their fate, we can protect ourselves by being smarter or more careful. Randomness is psychologically threatening.",
     "counter": "Recognize that bad things happen to good people through no fault of their own. Practice empathy by imagining yourself in their situation. Acknowledge the role of luck and systemic factors. Support victims instead of judging them.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Acknowledge that bad things can happen to anyone, including you, regardless of precautions",
+      "Show compassion for victims without searching for ways they 'caused' their misfortune",
+      "Ask yourself: 'Am I blaming them to feel safer or more in control?'",
+      "Recognize when you're victim-blaming to protect your sense of security"
+    ]
   },
   {
     "id": "just-world-hypothesis",
@@ -357,7 +429,13 @@
     "summary": "We believe the world is fundamentally fair: good things happen to good people, bad things to bad people. This leads us to blame victims and assume success indicates virtue.",
     "why": "A just world is psychologically comforting and gives us a sense of control. If outcomes match moral worth, we can secure good outcomes by being good. Accepting randomness and injustice is anxiety-inducing.",
     "counter": "Acknowledge that life is often unfair and random. Success often involves luck, privilege, and timing. Suffering doesn't imply wrongdoing. Focus on systemic factors and circumstances rather than assuming moral causation.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Recognize that life isn't fair—outcomes don't always match merit",
+      "Support systemic solutions, not just individual responsibility",
+      "Show compassion without needing victims to 'deserve' it",
+      "Ask: 'Am I assuming fairness to feel better about inequality?'"
+    ]
   },
   {
     "id": "naive-realism",
@@ -366,7 +444,13 @@
     "summary": "We believe we see reality objectively and that those who disagree are uninformed, irrational, or biased. We don't recognize our own biases and interpretive frameworks.",
     "why": "Our perceptions feel direct and unmediated—we don't experience the brain's interpretive processes. This creates the illusion that we're seeing 'the truth' while others are distorting it through their biases.",
     "counter": "Assume you have blind spots and biases you can't see. Ask: 'What would make a reasonable person disagree with me?' Seek out steel-man arguments. Recognize that your perspective is one interpretation, not objective reality.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Remind yourself: 'My perception is an interpretation, not reality'",
+      "Actively seek out how others see the same situation differently",
+      "Ask: 'What might I be missing due to my perspective?'",
+      "Practice intellectual humility: you could be wrong"
+    ]
   },
   {
     "id": "naive-cynicism",
@@ -375,7 +459,13 @@
     "summary": "We believe others are more biased and self-interested than they actually are, while seeing ourselves as objective. We assume hidden selfish motives behind others' actions.",
     "why": "We have access to our own good intentions but only see others' actions. Cynicism feels sophisticated and protects us from being exploited. Assuming self-interest is often a safe bet, but we overapply it.",
     "counter": "Give people the benefit of the doubt. Ask: 'What innocent explanation could there be?' Remember that most people see themselves as good and well-intentioned. Test your cynical assumptions against evidence.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Ask: 'What evidence do I have for their bad motives?'",
+      "Consider benign explanations before assuming malice",
+      "Test your cynicism by asking people directly about their motives",
+      "Remember: not everyone who disagrees is corrupt or biased"
+    ]
   },
   {
     "id": "forer-barnum-effect",
@@ -384,7 +474,13 @@
     "summary": "We believe vague, general personality descriptions are uniquely accurate for us. This explains why horoscopes, fortune-telling, and personality tests feel so personal.",
     "why": "We seek self-knowledge and confirmation of our uniqueness. Vague statements can apply to almost anyone, but we selectively focus on the parts that fit and interpret ambiguity in self-flattering ways.",
     "counter": "Be skeptical of personality assessments that feel 'eerily accurate.' Ask: 'Could this apply to most people?' Look for specific, falsifiable claims. Test whether the same description resonates with others.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Ask: 'Is this specific to me, or could it apply to anyone?'",
+      "Seek falsifiable, specific claims rather than vague generalities",
+      "Test personality assessments with friends—do they fit too?",
+      "Be skeptical of cold reading techniques and vague predictions"
+    ]
   },
   {
     "id": "dunning-kruger-effect",
@@ -394,6 +490,12 @@
     "why": "Skill and self-assessment ability are linked—you need knowledge to recognize what you don't know. Beginners don't know what they don't know. Experts forget that their skills are rare.",
     "counter": "Seek feedback from knowledgeable others. Before claiming expertise, ask: 'What would an actual expert know that I don't?' Study the field enough to understand its depth. Embrace intellectual humility.",
     "source": "core",
+    "tips": [
+      "Assume you know less than you think, especially when starting",
+      "Seek honest feedback from experts in the field",
+      "Track your confidence vs. actual performance over time",
+      "Embrace 'learned ignorance': the more you know, the more you see what you don't"
+    ],
     "examples": [
       {
         "title": "Cryptocurrency 'Experts' in 2021",
@@ -437,6 +539,12 @@
     "counter": "Generate your own estimate before seeing others' numbers. Ask: 'What would I think if the anchor were different?' Consider the range of possibilities independently. Be especially wary of anchors in negotiations. Use multiple reference points to avoid single-anchor bias.",
     "source": "core",
     "researchLevel": "established",
+    "tips": [
+      "Ignore the first number you see—it's often arbitrary or strategic",
+      "Generate your own estimate before seeing others' numbers",
+      "Ask: 'What evidence supports this number beyond the anchor?'",
+      "In negotiations, be the first to anchor with an aggressive number"
+    ],
     "examples": [
       {
         "title": "Real Estate Listing Prices",
@@ -490,7 +598,13 @@
     "summary": "We over-trust automated systems and algorithms, even when they're wrong. We defer to computer recommendations and fail to question or override them when we should.",
     "why": "Technology feels objective and infallible. Questioning it requires effort and confidence. We're also trained to trust authority, and algorithms have authority. Overriding automation feels like taking responsibility for potential errors.",
     "counter": "Remember that algorithms are built by humans with biases and limitations. Maintain critical thinking and domain expertise. Ask: 'Does this recommendation make sense?' Be willing to override automation when it conflicts with your judgment.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Question algorithmic recommendations, especially in critical decisions",
+      "Maintain expertise so you can override automation when needed",
+      "Ask: 'What could the algorithm miss or get wrong?'",
+      "Use automation as input, not as decision-maker"
+    ]
   },
   {
     "id": "google-effect",
@@ -499,7 +613,13 @@
     "summary": "We forget information that's easily accessible online. We remember where to find information rather than the information itself, outsourcing memory to search engines.",
     "why": "Our brains optimize for efficiency. If information is reliably available externally, there's less need to store it internally. This is a form of transactive memory—using external systems as memory extensions.",
     "counter": "For important information, practice active recall and spaced repetition. Take notes by hand. Engage deeply with material rather than skimming. Recognize that understanding requires internalization, not just access.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Practice active recall before Googling answers",
+      "Take notes by hand to deepen memory encoding",
+      "Ask yourself: 'Can I explain this without looking it up?'",
+      "Build genuine understanding, not just bookmark navigation skills"
+    ]
   },
   {
     "id": "reactance",
@@ -508,7 +628,13 @@
     "summary": "When our freedom is threatened, we react by wanting the forbidden thing even more. Tell someone they can't do something, and they'll want to do it just to assert autonomy.",
     "why": "We value autonomy and resist control. Restrictions trigger a defensive response to preserve our sense of freedom. This is especially strong when the restriction feels arbitrary or when we feel our identity is threatened.",
     "counter": "When you feel reactance, pause and ask: 'Do I actually want this, or am I just resisting being told what to do?' Separate your authentic preferences from your defensive reactions. When persuading others, emphasize choice and autonomy.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Notice when you resist simply because you feel pressured",
+      "Reframe restrictions as choices: 'I'm choosing to...'",
+      "Ask: 'Would I want this if it wasn't forbidden or mandated?'",
+      "Give others autonomy instead of direct orders when possible"
+    ]
   },
   {
     "id": "confirmation-bias",
@@ -519,6 +645,12 @@
     "counter": "Actively seek disconfirming evidence. Ask: 'What would prove me wrong?' Engage with the strongest counterarguments (steel-man, not straw-man). Keep a list of beliefs you've changed to normalize updating your views. Practice steelmanning opposing arguments.",
     "source": "core",
     "researchLevel": "established",
+    "tips": [
+      "Actively seek out information that challenges your beliefs",
+      "Ask: 'What would prove me wrong?' then look for that evidence",
+      "Follow people with different viewpoints on social media",
+      "Play devil's advocate with your own opinions"
+    ],
     "examples": [
       {
         "title": "Iraq WMD Intelligence Failure",
@@ -574,7 +706,13 @@
     "summary": "When our core beliefs are challenged with evidence, we sometimes believe them even more strongly. Corrections can paradoxically reinforce the misconceptions they're meant to fix.",
     "why": "Core beliefs are tied to identity and worldview. Threats to them trigger defensive reasoning. We counterargue the evidence, and the act of generating defenses strengthens our original belief. Admitting error feels like losing status.",
     "counter": "Separate beliefs from identity. Practice saying 'I was wrong' about small things to normalize it. When presenting corrections, affirm the person's values first. Focus on shared goals rather than proving someone wrong.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "When corrected, pause and breathe before defending yourself",
+      "Separate your identity from your beliefs—you can change your mind",
+      "Ask: 'What would I need to see to change my view?'",
+      "Practice saying: 'I didn't know that, thank you'"
+    ]
   },
   {
     "id": "third-person-effect",
@@ -583,7 +721,13 @@
     "summary": "We believe others are more influenced by media, advertising, and propaganda than we are. We see ourselves as uniquely resistant to manipulation while others are susceptible.",
     "why": "We have introspective access to our own reasoning and feel in control of our thoughts. We don't see the subtle influences on our cognition. Believing we're less influenced than others protects our self-image as rational and independent.",
     "counter": "Assume you're as susceptible to influence as anyone else. Ask: 'How might this be affecting me without my awareness?' Study how persuasion and manipulation work. Be humble about your cognitive vulnerabilities.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Assume you're as susceptible to influence as others",
+      "Ask: 'How has advertising/media affected my choices?'",
+      "Track your purchases and beliefs to spot external influences",
+      "Remember: thinking you're immune often makes you more vulnerable"
+    ]
   },
   {
     "id": "belief-bias",
@@ -592,7 +736,13 @@
     "summary": "We judge arguments by whether we agree with the conclusion rather than the quality of the logic. Valid reasoning that leads to disagreeable conclusions feels wrong; flawed reasoning that confirms our beliefs feels right.",
     "why": "Evaluating logic is hard; checking conclusions against our beliefs is easy. Our brains take shortcuts. We're motivated to accept arguments that support our views and reject those that threaten them, regardless of logical validity.",
     "counter": "Evaluate arguments independently of whether you like the conclusion. Ask: 'Is this reasoning sound, even if I disagree?' Practice formal logic. Try to find flaws in arguments you agree with and strengths in those you oppose.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Evaluate arguments by their logical structure, not conclusions",
+      "Practice analyzing arguments you agree with for flaws",
+      "Ask: 'Is this logically valid, or do I just like the conclusion?'",
+      "Study formal logic to separate validity from believability"
+    ]
   },
   {
     "id": "availability-cascade",
@@ -601,7 +751,13 @@
     "summary": "A self-reinforcing cycle where a belief gains plausibility through repetition in public discourse. The more we hear something, the more true it seems, leading to more repetition.",
     "why": "Repeated exposure increases familiarity, which our brains mistake for truth. Media coverage creates availability, making the issue feel important and common. This triggers more coverage, creating a feedback loop.",
     "counter": "Distinguish between how often you hear something and how true or important it is. Ask: 'Is this actually common, or just commonly discussed?' Look for base rates and statistics. Be skeptical of media-driven panics.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Question claims that 'everyone is talking about' something",
+      "Seek primary sources and original data, not just repeated stories",
+      "Ask: 'Is this widespread because it's true or just repeated?'",
+      "Wait for dust to settle before forming opinions on viral topics"
+    ]
   },
   {
     "id": "declinism",
@@ -610,7 +766,13 @@
     "summary": "We believe things are getting worse, that the past was better, and that the future is bleak. Every generation thinks the next one is ruining everything.",
     "why": "We remember the past selectively, filtering out the bad and romanticizing the good. Current problems are vivid and salient. Negative news is more memorable and widely reported. Aging changes our relationship to culture and society.",
     "counter": "Study history and data—most metrics show improvement over time. Ask: 'What evidence do I have beyond my feelings?' Remember that every generation has felt this way. Distinguish between personal nostalgia and objective decline.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Seek out historical data to counter nostalgia and pessimism",
+      "Read books like 'Factfulness' or 'Enlightenment Now' for perspective",
+      "Ask: 'What has actually gotten better over time?'",
+      "Remember: nostalgia edits out the bad parts of the past"
+    ]
   },
   {
     "id": "status-quo-bias",
@@ -619,7 +781,13 @@
     "summary": "We prefer things to stay the same. Change feels risky and effortful, so we stick with current situations even when better alternatives exist. Inertia is powerful.",
     "why": "Change requires energy and involves uncertainty. The current situation is known and feels safe. We also feel greater regret for bad outcomes resulting from action than from inaction, making change feel riskier.",
     "counter": "Regularly question defaults. Ask: 'If I were starting fresh, would I choose this?' Imagine the status quo as a new option you're actively choosing. Consider the costs of inaction, not just action. Run experiments.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Regularly reassess defaults and current arrangements",
+      "Ask: 'Would I choose this if starting from scratch today?'",
+      "Experiment with small changes to test alternatives",
+      "Remember: the current state isn't necessarily optimal"
+    ]
   },
   {
     "id": "sunk-cost-fallacy",
@@ -629,6 +797,12 @@
     "why": "Admitting a loss feels like failure. We want to believe our past investments were worthwhile. Quitting feels like waste, even though sunk costs are already gone and shouldn't influence future decisions.",
     "counter": "Ignore sunk costs—they're gone regardless of what you do next. Ask: 'If I were starting today with no prior investment, would I choose this?' Focus on future costs and benefits only. Practice cutting losses early.",
     "source": "core",
+    "tips": [
+      "Focus on future costs and benefits, not past investments",
+      "Ask: 'If I hadn't already invested, would I start now?'",
+      "Practice cutting losses early in low-stakes situations",
+      "Remember: you can't recover sunk costs by doubling down"
+    ],
     "examples": [
       {
         "title": "Concorde Supersonic Jet",
@@ -668,7 +842,13 @@
     "summary": "We believe that past random events influence future ones. After several coin flips landing heads, we think tails is 'due,' even though each flip is independent with 50/50 odds.",
     "why": "We see patterns in randomness and expect small samples to reflect overall probabilities. Our brains evolved to detect patterns, so we see causation and balance where there's only chance.",
     "counter": "Remember that random events have no memory. Each independent trial has the same odds regardless of history. Study probability and statistics. Be especially careful with this in gambling and investing.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Remember: past random events don't influence future ones",
+      "Ask: 'Does this process have memory?' (Usually no)",
+      "Study probability to understand independence of events",
+      "In truly random processes, 'due for a win' doesn't exist"
+    ]
   },
   {
     "id": "zero-risk-bias",
@@ -677,7 +857,13 @@
     "summary": "We prefer eliminating small risks entirely over significantly reducing larger risks. We'll pay more to reduce risk from 1% to 0% than from 10% to 5%, even though the latter saves more lives.",
     "why": "Zero feels qualitatively different from small probabilities. Complete elimination provides psychological closure and certainty. We're also bad at intuiting small probability differences—1% vs 0% feels bigger than 10% vs 5%.",
     "counter": "Focus on absolute risk reduction, not relative. Ask: 'Which option saves more lives or resources?' Be willing to accept small residual risks if it allows greater risk reduction elsewhere. Think in terms of expected value.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Compare actual risk reduction, not just 'zero vs. some risk'",
+      "Ask: 'What's the cost-benefit of eliminating this small risk?'",
+      "Focus resources on reducing large risks, not eliminating small ones",
+      "Remember: you can't eliminate all risk, so prioritize wisely"
+    ]
   },
   {
     "id": "framing-effect",
@@ -687,6 +873,12 @@
     "why": "Our brains respond to the emotional tone and reference point of information, not just its logical content. Positive frames trigger approach; negative frames trigger avoidance. We're not purely rational calculators.",
     "counter": "Reframe information in multiple ways before deciding. Ask: 'How would I feel if this were presented differently?' Look for the underlying numbers and probabilities. Be aware of how others might be framing information to influence you.",
     "source": "core",
+    "tips": [
+      "Reframe information in multiple ways before deciding",
+      "Ask: 'How would this sound if described differently?'",
+      "Convert percentages to frequencies and vice versa",
+      "Be aware of 'loss framing' vs. 'gain framing' in persuasion"
+    ],
     "attribution": {
       "termCoinedBy": {
         "name": "Amos Tversky & Daniel Kahneman",
@@ -707,7 +899,13 @@
     "summary": "We apply generalized beliefs about groups to individuals, ignoring their unique characteristics. We assume people will behave according to group stereotypes rather than their individual traits.",
     "why": "Stereotypes are cognitive shortcuts that reduce the complexity of social perception. They're often based on some statistical reality but are overgeneralized and applied rigidly, ignoring individual variation.",
     "counter": "Treat people as individuals, not representatives of groups. Ask: 'What evidence do I have about this specific person?' Expose yourself to counter-stereotypical examples. Recognize that within-group variation is usually larger than between-group differences.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Treat people as individuals, not representatives of groups",
+      "Ask: 'What evidence do I have about this specific person?'",
+      "Actively counter stereotypes with counter-examples",
+      "Build genuine relationships with people from stereotyped groups"
+    ]
   },
   {
     "id": "out-group-homogeneity-bias",
@@ -716,7 +914,13 @@
     "summary": "We see members of other groups as more similar to each other than they actually are, while recognizing diversity within our own group. 'They all look/think/act the same.'",
     "why": "We have more exposure to and attention for our own group, so we notice individual differences. We have less contact with out-groups and process them more categorically, focusing on group-defining features.",
     "counter": "Seek meaningful contact with out-group members. Ask: 'What individual differences am I missing?' Remember that every group has as much internal diversity as your own. Focus on individual characteristics, not group membership.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Remember: 'they' are just as diverse as 'we' are",
+      "Seek out individual stories from out-group members",
+      "Ask: 'Am I seeing real similarity or just unfamiliarity?'",
+      "Spend meaningful time with out-group members"
+    ]
   },
   {
     "id": "authority-bias",
@@ -725,7 +929,13 @@
     "summary": "We over-trust and obey authority figures, even when they're wrong or acting unethically. Titles, credentials, and status make us less likely to question or resist.",
     "why": "Respecting authority is socially adaptive and was crucial for survival in hierarchical societies. Authorities often do have expertise. Challenging them risks conflict and social consequences. We're trained from childhood to defer to authority.",
     "counter": "Evaluate ideas on their merits, not the speaker's status. Ask: 'What's the actual evidence?' Remember that experts can be wrong, especially outside their domain. Be willing to respectfully question authority when something seems off.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Question expert claims, especially outside their expertise",
+      "Ask: 'What evidence supports this, beyond their credentials?'",
+      "Remember: experts can be wrong, especially on new issues",
+      "Evaluate arguments on merit, not just the speaker's status"
+    ]
   },
   {
     "id": "placebo-effect",
@@ -734,7 +944,13 @@
     "summary": "We experience real improvements from fake treatments because we believe they'll work. Expectations and beliefs can trigger genuine physiological and psychological changes.",
     "why": "Mind and body are interconnected. Expectations activate neural pathways associated with relief and healing. Attention, ritual, and hope have real effects. Our brains can modulate pain, mood, and even immune function based on beliefs.",
     "counter": "Recognize the power of expectation and context in healing. Use it ethically to enhance legitimate treatments. In research and decision-making, use blinded controls to separate placebo effects from actual efficacy.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Be aware that your expectations can create real physiological changes",
+      "Recognize that feeling better doesn't always mean the treatment caused it",
+      "In research or testing, use control groups and blinding to account for placebo effects",
+      "Remember: subjective improvement may be due to expectations, not the treatment itself"
+    ]
   },
   {
     "id": "survivorship-bias",
@@ -743,7 +959,13 @@
     "summary": "We focus on successes that survived a selection process while ignoring failures that didn't. We study successful companies and conclude their strategies work, forgetting the many that used the same strategies and failed.",
     "why": "Survivors are visible; failures disappear. Success stories are inspiring and widely shared; failures are forgotten or hidden. This creates a distorted sample that makes success seem more predictable and replicable than it is.",
     "counter": "Actively seek out failures and near-misses. Ask: 'How many tried this and failed?' Study base rates of success. Be skeptical of advice from successful people—their strategies may not have caused their success. Consider selection effects.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Actively seek out stories of failure, not just success",
+      "Ask: 'What about those who tried the same thing and failed?'",
+      "Look at base rates, not just visible successes",
+      "Remember: the graveyard of failed attempts is usually invisible"
+    ]
   },
   {
     "id": "tachypsychia",
@@ -752,7 +974,13 @@
     "summary": "Time seems to slow down during high-stress or dangerous situations. Moments of crisis feel like they unfold in slow motion, though our actual reaction time doesn't improve.",
     "why": "During stress, the amygdala becomes highly active and encodes memories more densely. When we recall the event, the richness of detail makes it seem like more time passed. Attention also narrows and intensifies, altering time perception.",
     "counter": "Recognize that time distortion is a perceptual effect, not reality. In crisis, you're not actually moving faster or thinking more clearly. Train and prepare for high-stress situations so you can respond effectively despite altered perception.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "In high-stress moments, remember time perception is distorted",
+      "Practice emergency scenarios to improve actual reaction time",
+      "Don't rely on subjective time estimates during crises",
+      "Use video replay to calibrate time perception after events"
+    ]
   },
   {
     "id": "law-of-triviality",
@@ -761,7 +989,13 @@
     "summary": "We spend disproportionate time on trivial decisions because they're easy to understand, while glossing over complex, important ones. Committees debate the color of a bike shed for hours but approve a nuclear reactor in minutes.",
     "why": "Complex topics require expertise and effort to evaluate, so we defer to experts or avoid engagement. Trivial topics are accessible to everyone, so everyone has opinions and wants to contribute. Participation feels good.",
     "counter": "Allocate time proportional to importance, not ease of understanding. Ask: 'What's the actual impact of this decision?' Defer to expertise on complex matters. Limit discussion time on trivial issues. Focus energy on high-leverage decisions.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Allocate meeting time based on importance, not accessibility",
+      "Ask: 'Are we debating this because it's important or easy?'",
+      "Set time limits on trivial discussions",
+      "Focus on high-impact decisions even if they're complex"
+    ]
   },
   {
     "id": "zeigarnik-effect",
@@ -770,7 +1004,13 @@
     "summary": "We remember incomplete or interrupted tasks better than completed ones. Unfinished business stays in our minds, creating mental tension until we complete it.",
     "why": "Our brains maintain active representations of ongoing goals. Completion provides closure and allows the brain to release the task from active memory. Incompletion creates cognitive tension that keeps the task salient.",
     "counter": "Use this to your advantage: start tasks to create momentum and mental commitment. Break large projects into smaller tasks to get frequent completion satisfaction. When stuck, take breaks and let your unconscious work on it.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Use this positively: start tasks to create completion motivation",
+      "Write down unfinished tasks before breaks to reduce mental clutter",
+      "Break large projects into completable chunks for satisfaction",
+      "Create closure rituals for work you must pause"
+    ]
   },
   {
     "id": "ikea-effect",
@@ -779,7 +1019,13 @@
     "summary": "We value things more when we've put effort into creating them. Self-assembled furniture, home-cooked meals, and our own ideas seem better than they objectively are.",
     "why": "Effort creates a sense of ownership and investment. We want to believe our labor was worthwhile, so we inflate the value of the result. This also signals competence to ourselves and others.",
     "counter": "Seek objective feedback on your creations. Ask: 'Would I value this if someone else made it?' Be willing to abandon or improve your work based on external input. Separate effort from quality.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Get external feedback on things you've created or assembled",
+      "Ask: 'Would I value this if someone else made it?'",
+      "Be aware you're attached due to effort, not just quality",
+      "When selling, emphasize DIY/customization to leverage this bias"
+    ]
   },
   {
     "id": "ben-franklin-effect",
@@ -788,7 +1034,13 @@
     "summary": "We like people more after doing them a favor. Counterintuitively, asking someone for help makes them like you more, not less.",
     "why": "Cognitive dissonance: if we help someone, we rationalize that we must like them (otherwise why would we help?). Helping also creates a sense of investment and connection. We want our actions to align with our attitudes.",
     "counter": "Use this ethically to build relationships: ask for small favors. When someone helps you, recognize they may now feel more positively toward you. Don't exploit this—reciprocate and show genuine appreciation.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Ask small favors to build relationships and liking",
+      "When someone helps you, follow up to strengthen the bond",
+      "Don't just do favors—also request them to build connection",
+      "Remember: people justify their helpful actions by liking you more"
+    ]
   },
   {
     "id": "bystander-effect",
@@ -797,7 +1049,13 @@
     "summary": "We're less likely to help someone in need when others are present. The more bystanders, the less likely any individual is to intervene. Responsibility diffuses across the group.",
     "why": "We look to others for cues about how to behave. If no one else is helping, we assume it's not an emergency or not our responsibility. We also fear embarrassment if we misinterpret the situation. Responsibility feels shared.",
     "counter": "Be aware of this effect and consciously override it. If you need help, single out a specific person rather than appealing to a crowd. If you witness an emergency, assume you're responsible and act. Don't wait for others.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "In emergencies, assign specific people specific tasks",
+      "Don't assume someone else will help—you do it",
+      "If you need help, ask specific individuals, not the crowd",
+      "Practice taking initiative in low-stakes situations"
+    ]
   },
   {
     "id": "suggestibility",
@@ -806,7 +1064,13 @@
     "summary": "Our memories are malleable and can be influenced by suggestions, leading questions, and external information. We can 'remember' events that never happened or misremember details.",
     "why": "Memory is reconstructive, not reproductive—we rebuild memories each time we recall them, incorporating new information. We're especially suggestible when uncertain, when the source seems authoritative, or when suggestions align with our expectations.",
     "counter": "Be skeptical of memories, especially vivid ones. Avoid leading questions when gathering information. Record important events contemporaneously. Recognize that confidence in a memory doesn't guarantee accuracy.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Be aware that how questions are asked influences answers",
+      "Avoid leading questions when gathering information",
+      "Notice when you're being primed by suggestions",
+      "Use open-ended questions to reduce suggestion effects"
+    ]
   },
   {
     "id": "false-memory",
@@ -815,7 +1079,13 @@
     "summary": "We can remember events that never happened with complete confidence. False memories feel as real as true ones and can be detailed, emotional, and persistent.",
     "why": "Memory is constructive. Our brains fill gaps with plausible details, blend similar events, and incorporate suggestions. Imagination and memory use overlapping neural systems, so vividly imagining something can create a memory of it.",
     "counter": "Corroborate important memories with external evidence. Be humble about memory accuracy, especially for distant or emotional events. Avoid repeatedly imagining or discussing events, as this can distort them. Use contemporaneous records.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Be humble about memory certainty—memory is reconstructive",
+      "Corroborate important memories with evidence when possible",
+      "Don't reinforce false memories through repeated telling",
+      "Be aware that vivid ≠ accurate in memory"
+    ]
   },
   {
     "id": "cryptomnesia",
@@ -824,7 +1094,13 @@
     "summary": "We remember information but forget where it came from, leading us to believe we came up with it ourselves. We unconsciously plagiarize, thinking others' ideas are our own original thoughts.",
     "why": "Source memory is weaker than content memory. We remember what we learned but not how or from whom. When we later recall the information, it feels like our own insight because we've forgotten the external source.",
     "counter": "Keep careful records of sources and inspirations. When you have an idea, ask: 'Where might I have encountered this before?' Give credit generously. Recognize that most ideas are built on others' work.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Keep detailed notes about sources of your ideas",
+      "Give credit generously, especially when uncertain about origin",
+      "Ask: 'Where did I first encounter this idea?'",
+      "Remember: your brain naturally integrates others' ideas as your own"
+    ]
   },
   {
     "id": "clustering-illusion",
@@ -833,7 +1109,13 @@
     "summary": "We see patterns in random data. Streaks, clusters, and coincidences feel meaningful and non-random, even when they're exactly what we'd expect from chance.",
     "why": "Our brains are pattern-detection machines. We evolved to spot meaningful patterns (predators, food sources), so we're hypersensitive to them. We underestimate how much clustering occurs in truly random sequences.",
     "counter": "Study probability and randomness. Ask: 'What would random data actually look like?' Remember that streaks and clusters are expected in random sequences. Test your pattern against a null hypothesis. Be skeptical of 'hot hands' and 'cold streaks.'",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Learn about randomness—true random often includes apparent patterns",
+      "Ask: 'Could this pattern occur by chance?'",
+      "Use statistical tests before inferring meaning from patterns",
+      "Remember: your brain is a pattern-seeking machine, sometimes too eager"
+    ]
   },
   {
     "id": "pessimism-bias",
@@ -842,7 +1124,13 @@
     "summary": "We overestimate the likelihood of negative outcomes and underestimate positive ones. We expect the worst and are surprised when things go well.",
     "why": "Negativity bias: our brains prioritize threats for survival. Pessimism also provides emotional protection—if we expect the worst, we're prepared and won't be disappointed. Media amplifies negative news, reinforcing pessimistic worldviews.",
     "counter": "Track your predictions and compare them to outcomes—you'll likely find you're too pessimistic. Ask: 'What's the base rate for this outcome?' Balance attention to risks with attention to opportunities. Practice gratitude and positive reframing.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Track predictions to see how often you overestimate bad outcomes",
+      "Ask: 'What's the actual base rate of this bad outcome?'",
+      "Practice gratitude to counter negativity bias",
+      "Remember: our brains evolved to overweight threats"
+    ]
   },
   {
     "id": "optimism-bias",
@@ -852,6 +1140,12 @@
     "why": "Optimism is motivating and protects mental health. We have more control over our own actions than others', so we feel we can avoid negative outcomes. Optimism also feels good and is socially rewarded.",
     "counter": "Use 'pre-mortems': imagine your project has failed and work backward to identify risks. Ask: 'What could go wrong?' Consult base rates for similar endeavors. Balance optimism with realistic planning and contingencies.",
     "source": "core",
+    "tips": [
+      "Use 'pre-mortem' analysis: imagine failure and work backward",
+      "Ask: 'What could go wrong? What's my backup plan?'",
+      "Track predictions to calibrate your optimism",
+      "Remember: 'it won't happen to me' is a dangerous thought"
+    ],
     "examples": [
       {
         "title": "Sydney Opera House Construction",
@@ -879,6 +1173,12 @@
     "summary": "We recognize biases in others but fail to see them in ourselves. We believe we're more objective and less biased than average, which is itself a bias.",
     "why": "We have introspective access to our own reasoning and intentions, which feel rational and justified. We only see others' conclusions and behaviors, not their internal logic. Recognizing our own biases threatens our self-image as rational.",
     "counter": "Assume you have biases you can't see. Seek external feedback. Ask: 'If someone else did this, would I call it biased?' Study cognitive biases not to spot them in others, but to catch them in yourself. Practice intellectual humility.",
-    "source": "core"
+    "source": "core",
+    "tips": [
+      "Assume you're biased, even when you can't see how",
+      "Ask others: 'What biases do you see in my thinking?'",
+      "Study cognitive biases to recognize them in yourself",
+      "Remember: thinking you're less biased is itself a bias"
+    ]
   }
 ]

@@ -19,6 +19,7 @@ export interface Bias {
   counter: string
   source: BiasSource
   examples?: BiasExample[]  // Real-world examples showing bias in action
+  tips?: string[]           // Quick actionable tips to counter the bias
   references?: BiasReference[]
   researchLevel?: "established" | "emerging" | "contested"
   attribution?: BiasAttribution

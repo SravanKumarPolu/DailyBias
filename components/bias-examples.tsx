@@ -302,6 +302,12 @@ export function generateExamples(bias: Bias): string[] {
 
 // Generate contextual tips based on specific bias
 export function generateTips(bias: Bias): string[] {
+  // PRIORITY 1: Try to get tips from the bias data (new data-driven approach)
+  if (bias.tips && bias.tips.length > 0) {
+    return bias.tips
+  }
+  
+  // PRIORITY 2: Fall back to hardcoded tips (for backward compatibility)
   const tips: { [key: string]: string[] } = {
     "fundamental-attribution-error": [
       "Ask 'What circumstances might explain this behavior?' before judging",
@@ -605,12 +611,12 @@ export function generateTips(bias: Bias): string[] {
     ],
   }
 
-  // Return specific tips if available
+  // PRIORITY 3: Return specific tips if available in hardcoded fallback
   if (tips[bias.id]) {
     return tips[bias.id]
   }
 
-  // Generate generic tips based on category as fallback
+  // PRIORITY 4: Generate generic tips based on category as final fallback
   const categoryTips: { [key: string]: string[] } = {
     decision: [
       "Slow down and analyze decisions systematically rather than relying on gut feelings",

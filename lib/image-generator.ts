@@ -4,7 +4,7 @@
  */
 
 import type { Bias } from './types'
-import { getCategoryColor, getCategoryLabel } from './category-utils'
+import { getCategoryColorHex, getCategoryLabel } from './category-utils'
 import { logger } from './logger'
 
 export interface CardImageOptions {
@@ -48,11 +48,11 @@ export async function generateBiasCard(
   try {
     // Draw background with gradient
     const gradient = ctx.createLinearGradient(0, 0, 0, opts.height)
-    
-    // Get category color for gradient
-    const categoryColor = getCategoryColor(bias.category)
+
+    // Get category color for gradient (hex value for Canvas)
+    const categoryColor = getCategoryColorHex(bias.category)
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    
+
     if (isDark) {
       gradient.addColorStop(0, '#0a0a0a')
       gradient.addColorStop(0.5, '#1a1a1a')
@@ -62,7 +62,7 @@ export async function generateBiasCard(
       gradient.addColorStop(0.5, '#f5f5f5')
       gradient.addColorStop(1, '#ffffff')
     }
-    
+
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, opts.width, opts.height)
 
@@ -92,12 +92,12 @@ export async function generateBiasCard(
     ctx.fillStyle = categoryColor
     ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     const categoryWidth = ctx.measureText(categoryLabel.toUpperCase()).width
-    
+
     // Badge background
     ctx.fillStyle = categoryColor + '20' // 20% opacity
     roundRect(ctx, padding, yPosition, categoryWidth + 48, 60, 30)
     ctx.fill()
-    
+
     // Badge text
     ctx.fillStyle = categoryColor
     ctx.fillText(categoryLabel.toUpperCase(), padding + 24, yPosition + 14)
@@ -105,49 +105,63 @@ export async function generateBiasCard(
 
     // Draw bias title
     ctx.fillStyle = isDark ? '#ffffff' : '#000000'
-    ctx.font = 'bold 72px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    
+    ctx.font = 'bold 64px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+
     const titleLines = wrapText(ctx, bias.title, contentWidth - 24)
-    for (const line of titleLines) {
+    for (const line of titleLines.slice(0, 3)) { // Max 3 lines for title
       ctx.fillText(line, padding + 24, yPosition)
-      yPosition += 90
+      yPosition += 80
     }
-    yPosition += 60
+    yPosition += 50
+
+    // Calculate available space for content
+    const footerHeight = opts.includeWatermark ? 120 : 60
+    const sectionSpacing = 70
 
     // Draw summary section
     ctx.fillStyle = isDark ? '#a0a0a0' : '#666666'
-    ctx.font = '36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    ctx.font = '32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     ctx.fillText('📝 What it is', padding + 24, yPosition)
-    yPosition += 60
+    yPosition += 50
 
     ctx.fillStyle = isDark ? '#e0e0e0' : '#1a1a1a'
-    ctx.font = '44px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    ctx.font = '38px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     const summaryLines = wrapText(ctx, bias.summary, contentWidth - 24)
-    for (const line of summaryLines.slice(0, 4)) { // Limit to 4 lines
-      ctx.fillText(line, padding + 24, yPosition)
-      yPosition += 62
+    const maxSummaryLines = Math.min(summaryLines.length, 5) // Max 5 lines
+    for (let i = 0; i < maxSummaryLines; i++) {
+      ctx.fillText(summaryLines[i], padding + 24, yPosition)
+      yPosition += 54
     }
-    yPosition += 80
+    yPosition += sectionSpacing
 
-    // Draw counter-strategy section
-    ctx.fillStyle = isDark ? '#a0a0a0' : '#666666'
-    ctx.font = '36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    ctx.fillText('✅ How to counter it', padding + 24, yPosition)
-    yPosition += 60
+    // Draw counter-strategy section (if space available)
+    const minCounterSpace = 200 // Minimum space needed for counter section
+    if (yPosition + minCounterSpace < opts.height - footerHeight) {
+      ctx.fillStyle = isDark ? '#a0a0a0' : '#666666'
+      ctx.font = '32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      ctx.fillText('✅ How to counter it', padding + 24, yPosition)
+      yPosition += 50
 
-    ctx.fillStyle = isDark ? '#e0e0e0' : '#1a1a1a'
-    ctx.font = '44px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    const counterLines = wrapText(ctx, bias.counter, contentWidth - 24)
-    for (const line of counterLines.slice(0, 4)) { // Limit to 4 lines
-      ctx.fillText(line, padding + 24, yPosition)
-      yPosition += 62
+      ctx.fillStyle = isDark ? '#e0e0e0' : '#1a1a1a'
+      ctx.font = '38px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      const counterLines = wrapText(ctx, bias.counter, contentWidth - 24)
+      const remainingSpace = opts.height - footerHeight - yPosition
+      const maxCounterLines = Math.min(
+        counterLines.length,
+        Math.floor(remainingSpace / 54),
+        5 // Max 5 lines
+      )
+      for (let i = 0; i < maxCounterLines; i++) {
+        ctx.fillText(counterLines[i], padding + 24, yPosition)
+        yPosition += 54
+      }
     }
 
     // Draw footer with watermark
     if (opts.includeWatermark) {
-      const footerY = opts.height - 100
+      const footerY = opts.height - 80
       ctx.fillStyle = isDark ? '#666666' : '#999999'
-      ctx.font = '32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       ctx.fillText('Learn more at debiasdaily.com', padding + 24, footerY)
     }
 
@@ -197,17 +211,17 @@ export async function downloadBiasCard(
   try {
     const blob = await generateBiasCard(bias, options)
     const url = URL.createObjectURL(blob)
-    
+
     const link = document.createElement('a')
     link.href = url
     link.download = `${bias.id}-reference-card.${options.format || 'png'}`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-    
+
     // Clean up
     setTimeout(() => URL.revokeObjectURL(url), 100)
-    
+
     logger.debug('[ImageGenerator] Downloaded bias card:', bias.id)
   } catch (error) {
     logger.error('[ImageGenerator] Error downloading bias card:', error)
@@ -318,15 +332,15 @@ function adjustColorBrightness(color: string, amount: number): string {
   // Simple hex color adjustment
   const hex = color.replace('#', '')
   const num = parseInt(hex, 16)
-  
+
   let r = (num >> 16) + amount
   let g = ((num >> 8) & 0x00ff) + amount
   let b = (num & 0x0000ff) + amount
-  
+
   r = Math.max(0, Math.min(255, r))
   g = Math.max(0, Math.min(255, g))
   b = Math.max(0, Math.min(255, b))
-  
+
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
 }
 
