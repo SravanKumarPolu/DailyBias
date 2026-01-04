@@ -49,6 +49,7 @@ export interface UserSettings {
   dailyReminder: boolean
   mixUserBiasesInDaily: boolean
   voiceEnabled: boolean
+  readBiasAloud?: boolean // Whether to automatically read bias content aloud
   voiceRate: number
   voicePitch: number
   voiceName?: string

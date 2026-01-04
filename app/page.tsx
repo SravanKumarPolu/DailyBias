@@ -10,6 +10,7 @@ import { TiltCard } from "@/components/tilt-card"
 import { PullToRefresh } from "@/components/pull-to-refresh"
 import { BiasProgressIndicator } from "@/components/bias-progress-indicator"
 import { DailyProgressWidget } from "@/components/daily-progress-widget"
+import { NotificationCTABanner } from "@/components/notification-cta-banner"
 import { useApp } from "@/contexts/app-context"
 import { useDailyBias } from "@/hooks/use-daily-bias"
 import { getTodayDateString } from "@/lib/daily-selector"
@@ -168,6 +169,9 @@ export default function HomePage() {
         className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:py-16 xl:max-w-3xl 2xl:max-w-3xl"
         aria-label="Daily cognitive bias"
       >
+        {/* Notification CTA Banner - shows once if permission is default */}
+        <NotificationCTABanner />
+
         {/* ARIA live region for dynamic content updates */}
         <div
           role="status"

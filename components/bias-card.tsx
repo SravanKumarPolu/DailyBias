@@ -5,7 +5,7 @@ import { memo } from "react"
 
 // Removed framer-motion import - using static divs to prevent flickering
 import { Heart, Share2, Copy, Check, Star, Volume2, VolumeX } from "lucide-react"
-import { useState, useRef, useCallback } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 // Removed unused useEffect import
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
@@ -45,6 +45,7 @@ function BiasCardComponent({
   const masteredRef = useRef<HTMLButtonElement>(null)
   const { speak, stop, isSpeaking, isEnabled, isSupported } = useSpeech()
   const { toast } = useToast()
+  const hasAutoReadRef = useRef(false)
 
   // Removed all animation state - using static rendering to prevent flickering
 
@@ -212,6 +213,60 @@ function BiasCardComponent({
       }
     }
   }
+
+  // Auto-read functionality when voice is enabled
+  useEffect(() => {
+    // Reset auto-read flag when bias changes
+    hasAutoReadRef.current = false
+  }, [bias?.id])
+
+  useEffect(() => {
+    // Only auto-read if:
+    // 1. Voice is enabled (which now includes auto-read by default)
+    // 2. Speech is supported
+    // 3. We haven't already auto-read this bias
+    // 4. We're not already speaking
+    // 5. Bias exists
+    if (
+      isEnabled &&
+      isSupported &&
+      !hasAutoReadRef.current &&
+      !isSpeaking &&
+      bias
+    ) {
+      hasAutoReadRef.current = true
+      
+      // Small delay to ensure component is fully rendered
+      const timer = setTimeout(async () => {
+        try {
+          // Generate examples and tips
+          const examples = generateExamples(bias)
+          const tips = generateTips(bias)
+
+          // Build comprehensive text including examples and tips
+          let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
+
+          // Add real-world examples
+          if (examples.length > 0) {
+            text += ` Real world examples: ${examples.join('. ')}.`
+          }
+
+          // Add quick tips
+          if (tips.length > 0) {
+            text += ` Quick tips: ${tips.join('. ')}.`
+          }
+
+          await speak(text)
+        } catch (error) {
+          console.error('[BiasCard] Auto-read error:', error)
+          // Don't show toast for auto-read failures - silent fail
+        }
+      }, 500) // Small delay to allow UI to settle
+
+      return () => clearTimeout(timer)
+    }
+    return undefined
+  }, [isEnabled, isSupported, bias?.id, isSpeaking, speak, bias])
 
   if (variant === "compact") {
     return (

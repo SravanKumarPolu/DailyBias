@@ -1,6 +1,6 @@
 "use client"
 
-import { Moon, Sun, Bell, Monitor } from "lucide-react"
+import { Moon, Sun, Bell, BellRing, Monitor } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSettings } from "@/hooks/use-settings"
 import { useEffect, useState } from "react"
@@ -11,6 +11,10 @@ import { siteConfig } from "@/lib/site-config"
 
 export function DailyHeader() {
   const { settings, saveSetting } = useSettings()
+  const [notificationState, setNotificationState] = useState<{
+    enabled: boolean
+    permission: "default" | "granted" | "denied" | "unsupported"
+  }>({ enabled: false, permission: "default" })
   // FIX: Prevent hydration mismatch by using suppressHydrationWarning
   // Date formatting can legitimately differ between server and client due to locale
   const [today, setToday] = useState<string>(() => {
@@ -36,6 +40,30 @@ export function DailyHeader() {
 
     return () => clearInterval(interval)
   }, [])
+
+  // Check notification state for visual indicator
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const checkNotificationState = () => {
+      let permission: "default" | "granted" | "denied" | "unsupported" = "unsupported"
+      
+      if ("Notification" in window) {
+        permission = Notification.permission as "default" | "granted" | "denied"
+      }
+
+      setNotificationState({
+        enabled: settings.dailyReminder && permission === "granted",
+        permission,
+      })
+    }
+
+    checkNotificationState()
+
+    // Poll for changes (browsers don't always fire events)
+    const interval = setInterval(checkNotificationState, 2000)
+    return () => clearInterval(interval)
+  }, [settings.dailyReminder])
 
   // Apply theme changes with requestAnimationFrame to prevent flicker
   useEffect(() => {
@@ -148,17 +176,38 @@ export function DailyHeader() {
                     {themeDisplay.icon}
                   </span>
                 </Button>
-                <Link href="/settings">
+                <Link href="/settings#notifications">
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="Open settings"
+                    aria-label={
+                      notificationState.enabled
+                        ? "Notification settings - Daily reminders enabled"
+                        : "Notification settings - Configure daily reminders"
+                    }
+                    title={
+                      notificationState.enabled
+                        ? "Daily reminders enabled - Click to manage"
+                        : "Configure notification settings"
+                    }
                     className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
                   >
-                    <Bell
-                      className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10"
-                      aria-hidden="true"
-                    />
+                    <span className="relative flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300">
+                      {notificationState.enabled ? (
+                        <BellRing
+                          className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10 text-primary"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <Bell
+                          className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10"
+                          aria-hidden="true"
+                        />
+                      )}
+                      {notificationState.enabled && (
+                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-primary border-2 border-background z-20 animate-pulse" aria-hidden="true" />
+                      )}
+                    </span>
                   </Button>
                 </Link>
               </div>

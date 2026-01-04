@@ -2,13 +2,10 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import {
-  Download,
-  Upload,
   Palette,
   Bell,
-  Database,
   Info,
   Mic,
   RotateCcw,
@@ -25,8 +22,6 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { exportAllData, importAllData } from "@/lib/db"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { haptics } from "@/lib/haptics"
 import { getCommonTimezones, detectTimezone, isValidTimezone } from "@/lib/timezone-utils"
@@ -41,12 +36,8 @@ import {
 import { logger } from "@/lib/logger"
 
 export default function SettingsPage() {
-  const { settings, saveSetting, refresh } = useSettings()
+  const { settings, saveSetting } = useSettings()
   const { ensureVoicesLoaded, isSupported: speechSupported, speak, stop } = useSpeech()
-  const router = useRouter()
-  const [importing, setImporting] = useState(false)
-  const [exportSuccess, setExportSuccess] = useState(false)
-  const [importSuccess, setImportSuccess] = useState(false)
   const [localVoiceRate, setLocalVoiceRate] = useState(settings.voiceRate || 0.9)
   const [localVoicePitch, setLocalVoicePitch] = useState(settings.voicePitch || 1.0)
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
@@ -57,6 +48,16 @@ export default function SettingsPage() {
   const [voiceSearch, setVoiceSearch] = useState("")
   const [timezoneSwitching, setTimezoneSwitching] = useState(false)
   const [mounted, setMounted] = useState(false)
+  type NotifyState = "unknown" | "unsupported" | "denied" | "default" | "granted"
+  const [notifyState, setNotifyState] = useState<NotifyState>("unknown")
+  const [showHelp, setShowHelp] = useState(false)
+
+  // Safe notification state detection (no hydration mismatch)
+  const getNotifyState = useCallback((): NotifyState => {
+    if (typeof window === "undefined") return "unknown"
+    if (!("Notification" in window)) return "unsupported"
+    return Notification.permission as NotifyState
+  }, [])
 
 
 
@@ -194,9 +195,10 @@ export default function SettingsPage() {
         console.log("[Settings] Using first available voice:", bestVoice.name)
       }
 
-      // Set the best voice if it's different from current
-      if (bestVoice && settings.voiceName !== bestVoice.name) {
-        console.log("[Settings] Auto-selecting voice:", bestVoice.name)
+      // Only auto-select if user hasn't explicitly selected a voice yet
+      // This prevents overriding user's explicit choice
+      if (bestVoice && !settings.voiceName) {
+        console.log("[Settings] Auto-selecting voice for first-time setup:", bestVoice.name)
         saveSetting("voiceName", bestVoice.name)
       }
     }
@@ -249,6 +251,40 @@ export default function SettingsPage() {
     setCurrentTimezoneInfo(detectTimezone())
   }, [])
 
+  // Handle scroll to notifications section when hash is present
+  useEffect(() => {
+    if (!mounted || typeof window === "undefined" || window.location.hash !== "#notifications") {
+      return
+    }
+
+    const scrollToSection = () => {
+      const section = document.getElementById("notifications")
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" })
+        // Clean URL after scroll completes
+        window.history.replaceState(null, "", window.location.pathname)
+      }
+    }
+
+    // Use requestAnimationFrame for better performance
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToSection)
+    })
+  }, [mounted])
+
+  // Check notification support and permission state
+  const updateNotificationState = useCallback(() => {
+    if (typeof window === "undefined") return
+    setNotifyState(getNotifyState())
+  }, [getNotifyState])
+
+  // Initialize notification state on mount
+  useEffect(() => {
+    if (mounted) {
+      updateNotificationState()
+    }
+  }, [mounted, updateNotificationState])
+
   // Sync local state with settings
   useEffect(() => {
     setLocalVoiceRate(settings.voiceRate || 0.9)
@@ -261,180 +297,10 @@ export default function SettingsPage() {
     }
   }, [settings.voiceRate, settings.voicePitch, settings.timezone, mounted])
 
-  const handleExport = async () => {
-    try {
-      console.log('[Settings] Exporting user data...')
-      const data = await exportAllData()
-      if (!data || Object.keys(data).length === 0) {
-        alert("No data to export. Make sure you have some biases or settings to backup.")
-        return
-      }
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `bias-daily-backup-${new Date().toISOString().slice(0, 10)}.json`
-      a.style.display = "none"
-
-      // Safely append to body with null check
-      if (document.body) {
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-      } else {
-        // Fallback: try to trigger download without appending
-        a.click()
-      }
-      URL.revokeObjectURL(url)
-
-      console.log('[Settings] Data exported successfully')
-      setExportSuccess(true)
-      setTimeout(() => setExportSuccess(false), 3000)
-      haptics.success()
-    } catch (error) {
-      console.error("[Settings] Export failed:", error)
-      alert("Failed to export data. Please check your browser permissions and try again.")
-    }
-  }
-
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    // Validate file type
-    if (!file.name.toLowerCase().endsWith('.json')) {
-      alert('Please select a valid JSON backup file.')
-      event.target.value = ""
-      return
-    }
-
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      alert('File is too large. Please select a backup file smaller than 10MB.')
-      event.target.value = ""
-      return
-    }
-
-    setImporting(true)
-    try {
-      console.log('[Settings] Importing data from file:', file.name)
-      const text = await file.text()
-      const data = JSON.parse(text)
-
-      // Validate data structure
-      if (!data || typeof data !== 'object') {
-        throw new Error('Invalid data format')
-      }
-
-      // Check if it looks like a valid backup file
-      const expectedKeys = ['settings', 'userBiases', 'favorites', 'progress', 'streak']
-      const hasValidKeys = expectedKeys.some(key => key in data)
-
-      if (!hasValidKeys) {
-        throw new Error('This does not appear to be a valid DebiasDaily backup file.')
-      }
-
-      await importAllData(data)
-      await refresh()
-      console.log('[Settings] Data imported successfully')
-      setImportSuccess(true)
-      haptics.success()
-
-      setTimeout(() => {
-        setImportSuccess(false)
-        router.refresh()
-      }, 2000)
-    } catch (error) {
-      console.error("[Settings] Import failed:", error)
-      if (error instanceof SyntaxError) {
-        alert("Invalid JSON file. Please check the file format and try again.")
-      } else if (error instanceof Error && error.message.includes('backup file')) {
-        alert(error.message)
-      } else {
-        alert("Failed to import data. Please check the file format and try again.")
-      }
-    } finally {
-      setImporting(false)
-      event.target.value = ""
-    }
-  }
-
-  const requestNotificationPermission = async () => {
-    // Handle native app notifications
-    if (isNativeApp()) {
-      try {
-        const granted = await requestNativeNotificationPermissions()
-        if (granted) {
-          await saveSetting("dailyReminder", true)
-          // Schedule the daily reminder at 9 AM
-          await scheduleDailyReminder(9, 0)
-          haptics.success()
-          logger.debug("[Settings] Native notification permission granted and scheduled")
-          return true
-        } else {
-          await saveSetting("dailyReminder", false)
-          alert(
-            "Notifications were denied. Please enable them in your device settings to receive daily reminders."
-          )
-          return false
-        }
-      } catch (error) {
-        logger.error("[Settings] Native notification permission error:", error)
-        await saveSetting("dailyReminder", false)
-        alert("Failed to request notification permission. Please try again.")
-        return false
-      }
-    }
-
-    // Handle web notifications
-    if (!("Notification" in window)) {
-      alert("This browser does not support notifications")
-      return false
-    }
-
-    try {
-      const permission = await Notification.requestPermission()
-      if (permission === "granted") {
-        await saveSetting("dailyReminder", true)
-
-        // Start web notification scheduler
-        await scheduleDailyReminder(9, 0)
-
-        // Show test notification
-        if (Notification.permission === "granted") {
-          new Notification("Bias Daily", {
-            body: "Daily reminders enabled! You'll be notified when a new bias is available.",
-            icon: "/icon-192.jpg",
-          })
-        }
-
-        haptics.success()
-        logger.debug("[Settings] Web notification permission granted and scheduler started")
-        return true
-      } else {
-        await saveSetting("dailyReminder", false)
-        if (permission === "denied") {
-          alert(
-            "Notifications were denied. Please enable them in your browser settings to receive daily reminders."
-          )
-        }
-        return false
-      }
-    } catch (error) {
-      logger.error("[Settings] Notification permission error:", error)
-      await saveSetting("dailyReminder", false)
-      alert("Failed to request notification permission. Please try again.")
-      return false
-    }
-  }
-
   const handleReminderToggle = async (checked: boolean) => {
-    if (checked) {
-      await requestNotificationPermission()
-    } else {
+    // Turning OFF - always allow
+    if (!checked) {
       await saveSetting("dailyReminder", false)
-      // Cancel notifications (works for both native and web)
       try {
         await cancelDailyReminder()
         logger.debug("[Settings] Daily reminder cancelled")
@@ -442,6 +308,67 @@ export default function SettingsPage() {
       } catch (error) {
         logger.error("[Settings] Error cancelling daily reminder:", error)
       }
+      return
+    }
+
+    // Turning ON - check if action is allowed
+    if (notifyState === "denied" || notifyState === "unsupported" || notifyState === "unknown") {
+      return // Toggle is disabled, but handle gracefully
+    }
+
+    try {
+      // Handle native app notifications
+      if (isNativeApp()) {
+        const granted = await requestNativeNotificationPermissions()
+        if (granted) {
+          await saveSetting("dailyReminder", true)
+          await scheduleDailyReminder(9, 0)
+          haptics.success()
+          logger.debug("[Settings] Native notification permission granted and scheduled")
+        } else {
+          await saveSetting("dailyReminder", false)
+        }
+        updateNotificationState()
+        return
+      }
+
+      // Handle web notifications
+      if (notifyState === "default") {
+        const permission = await Notification.requestPermission()
+        updateNotificationState()
+        
+        if (permission === "granted") {
+          await saveSetting("dailyReminder", true)
+          await scheduleDailyReminder(9, 0)
+          
+          // Show confirmation notification
+          try {
+            new Notification("Bias Daily", {
+              body: "Daily reminders enabled! You'll be notified when a new bias is available.",
+              icon: "/icon-192.jpg",
+            })
+          } catch (err) {
+            // Silently fail if notification creation fails
+          }
+
+          haptics.success()
+          logger.debug("[Settings] Web notification permission granted and scheduled")
+        } else {
+          await saveSetting("dailyReminder", false)
+        }
+        return
+      }
+
+      // Permission already granted - just enable
+      if (notifyState === "granted") {
+        await saveSetting("dailyReminder", true)
+        await scheduleDailyReminder(9, 0)
+        haptics.success()
+      }
+    } catch (error) {
+      logger.error("[Settings] Notification error:", error)
+      await saveSetting("dailyReminder", false)
+      updateNotificationState()
     }
   }
 
@@ -641,7 +568,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Notifications Section */}
-          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
+          <div id="notifications" className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8 scroll-mt-20">
             <div className="space-y-1">
               <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
                 <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -652,22 +579,75 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="daily-reminder" className="cursor-pointer">
-                  Daily Reminder
-                </Label>
-                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
-                  Receive a notification when a new bias is available
-                </p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="daily-reminder" className="cursor-pointer">
+                    Daily Reminder
+                  </Label>
+                  <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
+                    Receive a notification when a new bias is available
+                  </p>
+                </div>
+                <Switch
+                  id="daily-reminder"
+                  checked={settings.dailyReminder}
+                  onCheckedChange={handleReminderToggle}
+                  disabled={notifyState === "denied" || notifyState === "unsupported" || notifyState === "unknown"}
+                  className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  data-testid="setting-daily-reminder"
+                  aria-disabled={notifyState === "denied" || notifyState === "unsupported" || notifyState === "unknown"}
+                />
               </div>
-              <Switch
-                id="daily-reminder"
-                checked={settings.dailyReminder}
-                onCheckedChange={handleReminderToggle}
-                className="cursor-pointer"
-                data-testid="setting-daily-reminder"
-              />
+              
+              {/* Helper messages */}
+              {notifyState === "denied" && (
+                <div className="text-foreground/60 text-xs sm:text-sm leading-relaxed space-y-2">
+                  <p>
+                    Blocked by your browser. Enable from site settings.
+                  </p>
+                  {!showHelp ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowHelp(true)}
+                      className="text-primary hover:text-primary/80 underline transition-colors text-xs sm:text-sm"
+                    >
+                      How to enable
+                    </button>
+                  ) : (
+                    <div className="mt-2 p-3 rounded-lg bg-muted/50 space-y-2 text-xs">
+                      <p className="font-semibold">How to enable notifications:</p>
+                      <ul className="list-disc list-inside space-y-1 ml-2">
+                        <li>
+                          <strong>Chrome/Edge (Desktop):</strong> Click the lock icon in address bar → Site settings → Notifications → Allow
+                        </li>
+                        <li>
+                          <strong>Chrome (Android):</strong> Menu (⋮) → Settings → Site settings → Notifications → Allow for this site
+                        </li>
+                        <li>
+                          <strong>Safari (iOS):</strong> Add to Home Screen for best experience, or Settings → Safari → Notifications
+                        </li>
+                        <li>
+                          <strong>Firefox:</strong> Click the lock icon → Permissions → Notifications → Allow
+                        </li>
+                      </ul>
+                      <button
+                        type="button"
+                        onClick={() => setShowHelp(false)}
+                        className="text-primary hover:text-primary/80 underline mt-2"
+                      >
+                        Hide instructions
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {notifyState === "unsupported" && (
+                <p className="text-foreground/60 text-xs sm:text-sm leading-relaxed">
+                  Not supported on this browser.
+                </p>
+              )}
             </div>
           </div>
 
@@ -683,31 +663,30 @@ export default function SettingsPage() {
                   Text-to-speech preferences
                 </p>
               </div>
-              {settings.voiceEnabled && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleResetVoiceSettings}
-                  className="cursor-pointer bg-transparent"
-                  aria-label="Reset voice settings to default"
-                >
-                  <RotateCcw className="mr-2 h-4 w-4" />
-                  Reset
-                </Button>
-              )}
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="voice-enabled" className="cursor-pointer">
-                  Enable Voice
+                  Read bias content aloud
                 </Label>
-                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">Read bias content aloud</p>
+                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
+                  Automatically read bias content when viewing
+                </p>
               </div>
               <Switch
                 id="voice-enabled"
                 checked={settings.voiceEnabled}
-                onCheckedChange={(checked) => saveSetting("voiceEnabled", checked)}
+                onCheckedChange={(checked) => {
+                  saveSetting("voiceEnabled", checked)
+                  // When enabling voice, also enable auto-read for better UX
+                  // When disabling, auto-read is automatically disabled too
+                  if (checked) {
+                    saveSetting("readBiasAloud", true)
+                  } else {
+                    saveSetting("readBiasAloud", false)
+                  }
+                }}
                 className="cursor-pointer"
                 data-testid="setting-voice-enabled"
               />
@@ -791,63 +770,27 @@ export default function SettingsPage() {
                     </PopoverContent>
                   </Popover>
 
-                  {/* Current Voice Status Display */}
-                  <div className="rounded-lg bg-accent/50 p-3 border border-border">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-primary"></div>
-                      <span className="text-sm font-semibold text-foreground sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                        Currently Active Voice:
-                      </span>
-                          </div>
-                    <div className="mt-1 text-sm font-semibold text-foreground sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                      {settings.voiceName || "None selected"}
-                    </div>
-                    <div className="mt-1 text-sm text-foreground/70 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                      Device: {typeof window !== "undefined" && (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768 || ('ontouchstart' in window)) ? "Mobile" : "Desktop"}
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="mt-2 h-8 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl"
-                      onClick={() => {
-                        if (window.speechSynthesis) {
-                          const utterance = new SpeechSynthesisUtterance("Hello, this is the current voice speaking.")
-                          utterance.rate = 0.9
-                          utterance.pitch = 1.0
-                          utterance.volume = 1.0
-                          const voices = window.speechSynthesis.getVoices()
-                          const selectedVoice = voices.find(v => v.name === settings.voiceName)
-                          if (selectedVoice) {
-                            utterance.voice = selectedVoice
-                            utterance.lang = selectedVoice.lang
-                          }
-                          window.speechSynthesis.speak(utterance)
-                        }
-                      }}
-                    >
-                      🔊 Test Current Voice
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                      ⭐ indicates high-quality local voices
+                  {/* Test Voice Button - Modern inline design */}
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <p className="text-foreground/60 text-xs">
+                      ⭐ Local voices offer better quality
                     </p>
                     <Button
                       size="sm"
-                      variant="ghost"
-                      className="cursor-pointer"
-                      onClick={handleRefreshVoices}
-                    >
-                      Refresh voices
-                    </Button>
-                    <Button
-                      size="sm"
+                      variant="outline"
                       className="cursor-pointer"
                       onClick={handleTestVoice}
-                      disabled={testingVoice}
+                      disabled={testingVoice || !settings.voiceName}
                     >
-                      {testingVoice ? "Testing..." : "Test voice"}
+                      {testingVoice ? (
+                        <>
+                          <span className="mr-2">Testing...</span>
+                        </>
+                      ) : (
+                        <>
+                          🔊 <span className="ml-2">Test Voice</span>
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -888,6 +831,20 @@ export default function SettingsPage() {
                     onTouchEnd={handleVoicePitchCommit}
                     className="bg-secondary accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg"
                   />
+                </div>
+
+                {/* Reset Button - Modern placement at bottom */}
+                <div className="pt-3 border-t">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleResetVoiceSettings}
+                    className="cursor-pointer text-muted-foreground hover:text-foreground"
+                    aria-label="Reset voice settings to default"
+                  >
+                    <RotateCcw className="mr-2 h-3 w-3" />
+                    Reset to defaults
+                  </Button>
                 </div>
               </>
             )}
@@ -1033,67 +990,6 @@ export default function SettingsPage() {
               )}
                 </>
               )}
-            </div>
-          </div>
-
-          {/* Data Management Section */}
-          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
-            <div className="space-y-1">
-              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
-                <Database className="h-4 w-4 sm:h-5 sm:w-5" />
-                Data Management
-              </h2>
-              <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">Export or import your data</p>
-            </div>
-
-            <div className="space-y-3">
-              <Button
-                onClick={handleExport}
-                variant="outline"
-                className="w-full justify-start bg-transparent"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export All Data
-              </Button>
-              {exportSuccess && (
-                <p className="text-sm text-green-600 dark:text-green-400 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                  Data exported successfully!
-                </p>
-              )}
-
-              <div>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleImport}
-                  className="hidden"
-                  id="import-file"
-                  disabled={importing}
-                />
-                <Label htmlFor="import-file">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start bg-transparent"
-                    disabled={importing}
-                    asChild
-                  >
-                    <span>
-                      <Upload className="mr-2 h-4 w-4" />
-                      {importing ? "Importing..." : "Import Data"}
-                    </span>
-                  </Button>
-                </Label>
-              </div>
-              {importSuccess && (
-                <p className="text-sm text-green-600 dark:text-green-400 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                  Data imported successfully!
-                </p>
-              )}
-
-              <p className="text-foreground/80 text-sm leading-relaxed sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                Export includes your custom biases, favorites, and settings. Import will merge with
-                existing data.
-              </p>
             </div>
           </div>
 

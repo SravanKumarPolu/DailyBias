@@ -184,41 +184,62 @@ export function useSpeech() {
       
       let selectedVoice: SpeechSynthesisVoice | undefined
 
-      // 1. Try to find the exact voice name from override or settings
+      // 1. Try to find the exact voice name from override or settings (case-insensitive)
       const targetVoiceName = overrideVoiceName || settings.voiceName
       if (targetVoiceName) {
+        // First try exact match (case-sensitive)
         selectedVoice = voices.find((voice) => voice.name === targetVoiceName)
+        
+        // If exact match fails, try case-insensitive match
+        if (!selectedVoice) {
+          selectedVoice = voices.find((voice) => 
+            voice.name.toLowerCase() === targetVoiceName.toLowerCase()
+          )
+        }
+        
+        // If still not found, try partial match (for voice names that might have extra info)
+        if (!selectedVoice) {
+          const targetLower = targetVoiceName.toLowerCase()
+          selectedVoice = voices.find((voice) => 
+            voice.name.toLowerCase().includes(targetLower) ||
+            targetLower.includes(voice.name.toLowerCase())
+          )
+        }
+        
         if (selectedVoice) {
           console.log("[Speech] Using selected voice:", selectedVoice.name)
           return selectedVoice
         } else {
-          console.log("[Speech] Target voice not found:", targetVoiceName)
+          console.warn("[Speech] Target voice not found:", targetVoiceName, "- Available voices:", voices.map(v => v.name))
         }
       }
 
-      // 2. Use same priority logic as settings for consistency (focus on high-quality voices)
-      const voicePriority = [
-        "Google US English",  // Best desktop voice
-        "Samantha",          // High-quality, natural sounding
-        "Alex",              // High-quality iOS voice
-        "Victoria",          // Good iOS voice
-        "Karen",             // Decent Android voice
-        "Daniel",            // Common but lower quality Android voice
-        "Tessa",             // Good iOS voice
-        "Tom"                // Alternative Android voice
-      ]
-      
-      for (const priorityVoice of voicePriority) {
-        selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes(priorityVoice.toLowerCase()))
-        if (selectedVoice) {
-          console.log("[Speech] Using priority voice as fallback:", selectedVoice.name)
-          return selectedVoice
+      // 2. Only use priority list if no user selection exists (fallback for first-time setup)
+      // This prevents overriding user's explicit voice selection
+      if (!settings.voiceName) {
+        const voicePriority = [
+          "Google US English",  // Best desktop voice
+          "Samantha",          // High-quality, natural sounding
+          "Alex",              // High-quality iOS voice
+          "Victoria",          // Good iOS voice
+          "Karen",             // Decent Android voice
+          "Daniel",            // Common but lower quality Android voice
+          "Tessa",             // Good iOS voice
+          "Tom"                // Alternative Android voice
+        ]
+        
+        for (const priorityVoice of voicePriority) {
+          selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes(priorityVoice.toLowerCase()))
+          if (selectedVoice) {
+            console.log("[Speech] Using priority voice as fallback:", selectedVoice.name)
+            return selectedVoice
+          }
         }
       }
       
-      console.log("[Speech] No priority voices found, will use first available voice")
+      console.log("[Speech] No priority voices found, trying fallback options")
 
-      // 4. Try to find a high-quality LOCAL English voice (avoid network voices)
+      // 3. Try to find a high-quality LOCAL English voice (avoid network voices)
       selectedVoice = voices.find(
         (voice) =>
           voice.lang.startsWith("en") &&
@@ -231,7 +252,7 @@ export function useSpeech() {
         return selectedVoice
       }
 
-      // 5. Final fallback - use any English voice
+      // 4. Final fallback - use any English voice
       selectedVoice = voices.find((voice) => voice.lang.startsWith("en"))
 
       if (selectedVoice) {

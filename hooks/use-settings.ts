@@ -13,6 +13,7 @@ export function useSettings() {
     dailyReminder: false,
     mixUserBiasesInDaily: true,
     voiceEnabled: true,
+    readBiasAloud: false, // Default to false - user must manually trigger reading
     voiceRate: 0.9,
     voicePitch: 1.0,
     voiceName: "Google US English", // Default to Google US English voice

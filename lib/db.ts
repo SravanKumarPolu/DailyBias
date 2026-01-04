@@ -220,6 +220,7 @@ export async function getSettings(): Promise<UserSettings> {
       dailyReminder: false,
       mixUserBiasesInDaily: true,
       voiceEnabled: true,
+      readBiasAloud: false, // Default to false - user must manually trigger reading
       voiceRate: 0.9, // Default to 0.9x for better comprehension
       voicePitch: 1.0,
       voiceName: "Google US English", // Default to Google US English voice
