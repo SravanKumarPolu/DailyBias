@@ -6,6 +6,12 @@ import { useSettings } from "./use-settings"
 // Maximum character length per utterance (speech synthesis can fail on very long text)
 const MAX_CHUNK_LENGTH = 300
 
+// Safe development mode check (works in both server and client contexts)
+const isDevelopment =
+  typeof process !== "undefined"
+    ? process.env.NODE_ENV === "development"
+    : typeof window !== "undefined" && window.location.hostname === "localhost"
+
 // Module-level singleton state for global TTS controller
 type TTSStatus = "idle" | "playing" | "paused"
 type TTSState = {
@@ -430,7 +436,7 @@ export function useTTSController() {
   // Helper to restart from current chunk (used by resume fallback)
   const restartFromChunk = useCallback(async () => {
     if (!lastSpokenText || !lastSpokenSectionId || storedChunks.length === 0 || currentChunkIndex >= storedChunks.length) {
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopment) {
         console.warn('[TTS Resume] Cannot resume - no saved state', {
           hasText: !!lastSpokenText,
           hasSectionId: !!lastSpokenSectionId,
@@ -442,7 +448,7 @@ export function useTTSController() {
       return
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.log('[TTS Resume] Restarting from chunk', currentChunkIndex, 'of', storedChunks.length)
     }
 
@@ -461,7 +467,7 @@ export function useTTSController() {
     const synth = window.speechSynthesis
     
     // Debug logging (dev only)
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.log('[TTS Resume] State:', {
         status: globalState.status,
         activeSectionId: globalState.activeSectionId,
@@ -484,14 +490,14 @@ export function useTTSController() {
         synth.resume()
         setGlobalState({ status: "playing" })
         
-        if (process.env.NODE_ENV === 'development') {
+        if (isDevelopment) {
           console.log('[TTS Resume] Native resume successful - continuing from exact position')
         }
         
         // Verify resume actually worked (mobile browsers sometimes fail silently)
         setTimeout(() => {
           if (!synth.speaking && !synth.pending && globalState.status === "playing") {
-            if (process.env.NODE_ENV === 'development') {
+            if (isDevelopment) {
               console.warn('[TTS Resume] Native resume appeared to fail, falling back to chunk restart')
             }
             restartFromChunk().catch((err) => {
