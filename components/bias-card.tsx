@@ -198,8 +198,8 @@ function BiasCardComponent({
       // Pause if playing this bias
       ttsController.pause()
     } else if (isActiveBias && isPaused) {
-      // Resume if paused
-      ttsController.resume()
+      // Resume if paused - await since resume is async (may need to restart from chunk)
+      await ttsController.resume()
     } else {
       // Start playing this bias (will stop any other bias)
       const fullText = buildFullBiasText()
@@ -261,8 +261,8 @@ function BiasCardComponent({
         // Pause if playing this section
         ttsController.pause()
       } else if (isActiveSection && isPaused) {
-        // Resume if paused
-        ttsController.resume()
+        // Resume if paused - await since resume is async (may need to restart from chunk)
+        await ttsController.resume()
       } else {
         // Start playing this section (will stop any other section)
         await ttsController.speakSection(text, sectionId)
