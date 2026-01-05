@@ -158,24 +158,24 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
           <CardContent className="pt-0">
               <div className="space-y-4">
                 {/* Feedback Type Selection */}
-                <div>
-                  <label className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2 block sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+                <div className="w-full overflow-hidden">
+                  <label className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3 block sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                     What would you like to provide feedback on?
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full">
                     {feedbackTypes.map((type) => (
                       <Button
                         key={type.id}
                         variant={feedbackType === type.id ? "default" : "outline"}
                         size="sm"
                         onClick={() => setFeedbackType(type.id as FeedbackData["type"])}
-                        className="justify-start text-left h-auto p-3"
+                        className="justify-start text-left h-auto p-4 sm:p-5 min-h-[80px] flex flex-col items-start gap-1.5 hover:shadow-md transition-all whitespace-normal overflow-hidden"
                         aria-label={`Select ${type.label} feedback type: ${type.description}`}
                         aria-pressed={feedbackType === type.id}
                       >
-                        <div>
-                          <div className="font-medium">{type.label}</div>
-                          <div className="text-xs opacity-75">{type.description}</div>
+                        <div className="font-semibold text-base sm:text-lg break-words w-full">{type.label}</div>
+                        <div className="text-xs sm:text-sm text-muted-foreground leading-snug text-left break-words w-full line-clamp-2">
+                          {type.description}
                         </div>
                       </Button>
                     ))}
@@ -184,32 +184,32 @@ export function BiasFeedback({ bias }: BiasFeedbackProps) {
 
                 {/* Rating Selection */}
                 {feedbackType && (
-                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200 w-full overflow-hidden">
                     <label className="text-sm font-medium text-gray-900 dark:text-gray-100 sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
                       How would you rate this content?
                     </label>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 w-full">
                       <Button
                         variant={rating === "positive" ? "default" : "outline"}
                         size="sm"
                         onClick={() => setRating("positive")}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden whitespace-nowrap"
                         aria-label="Rate content as good"
                         aria-pressed={rating === "positive"}
                       >
-                        <ThumbsUp className="h-4 w-4" aria-hidden="true" />
-                        Good
+                        <ThumbsUp className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                        <span className="truncate">Good</span>
                       </Button>
                       <Button
                         variant={rating === "negative" ? "default" : "outline"}
                         size="sm"
                         onClick={() => setRating("negative")}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden whitespace-nowrap"
                         aria-label="Rate content as needing improvement"
                         aria-pressed={rating === "negative"}
                       >
-                        <ThumbsDown className="h-4 w-4" aria-hidden="true" />
-                        Needs Improvement
+                        <ThumbsDown className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                        <span className="truncate">Needs Improvement</span>
                       </Button>
                     </div>
                   </div>

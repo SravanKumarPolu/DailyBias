@@ -726,9 +726,9 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
       >
         <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/50 pb-2">
           <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
-            <Lightbulb className="h-4 w-4 text-primary" />
-            Real-World Examples
-          </h3>
+          <Lightbulb className="h-4 w-4 text-primary" />
+          Real-World Examples
+        </h3>
           {ttsController.isSupported && ttsController.isEnabled && (
             <Button
               variant="ghost"
@@ -822,9 +822,9 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
       >
         <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/50 pb-2">
           <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
-            <CheckCircle2 className="h-4 w-4 text-success" />
-            Quick Tips
-          </h3>
+          <CheckCircle2 className="h-4 w-4 text-success" />
+          Quick Tips
+        </h3>
           {ttsController.isSupported && ttsController.isEnabled && (
             <Button
               variant="ghost"

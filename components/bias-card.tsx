@@ -215,13 +215,13 @@ function BiasCardComponent({
           userAgent.includes('linkedinapp')
 
         if (isInAppBrowser) {
-          toast({
+      toast({
             title: "Open in Browser",
             description: "Voice reading works better in Chrome or Safari.",
             duration: 5000,
-          })
-        } else {
-          toast({
+      })
+    } else {
+      toast({
             title: "Not Supported",
             description: "Your browser doesn't support text-to-speech functionality.",
             variant: "destructive",
@@ -464,9 +464,9 @@ function BiasCardComponent({
         {/* Summary - Enhanced as key definition section */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-              Definition
-            </h2>
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            Definition
+          </h2>
             {ttsController.isSupported && ttsController.isEnabled && (
               <Button
                 variant="ghost"
@@ -499,9 +499,9 @@ function BiasCardComponent({
         {/* Why it happens */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-              Why it happens
-            </h2>
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            Why it happens
+          </h2>
             {ttsController.isSupported && ttsController.isEnabled && (
               <Button
                 variant="ghost"
@@ -532,9 +532,9 @@ function BiasCardComponent({
         {/* How to counter */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-              How to counter it
-            </h2>
+          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            How to counter it
+          </h2>
             {ttsController.isSupported && ttsController.isEnabled && (
               <Button
                 variant="ghost"
@@ -564,8 +564,9 @@ function BiasCardComponent({
 
         {/* Actions */}
         <div className="flex flex-col gap-3 pt-4 sm:pt-6">
-          {/* Primary Actions Row */}
-          <div className="flex gap-3">
+          {/* Mobile: Stacked layout (3 rows) | Desktop: Single row */}
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+            {/* Row 1 (Mobile) / Column 1 (Desktop): Primary listening control */}
             {(() => {
               const isActiveBias = ttsController.activeBiasId === bias.id
               const isPlaying = isActiveBias && ttsController.status === "playing"
@@ -573,56 +574,34 @@ function BiasCardComponent({
               const canShowControls = ttsController.isSupported && ttsController.isEnabled
 
               if (canShowControls && (isPlaying || isPaused)) {
-                // Show Pause/Resume + Reset when playing or paused
+                // Show Pause/Resume when playing or paused
                 return (
-                  <>
-                    <Button
-                      onClick={handleBiasListen}
-                      onTouchEnd={handleBiasListen}
-                      variant="outline"
-                      className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
-                      style={{
-                        touchAction: 'manipulation',
-                        WebkitTouchCallout: 'none',
-                        WebkitTapHighlightColor: 'transparent',
-                        pointerEvents: 'auto',
-                        userSelect: 'none'
-                      }}
-                      aria-label={isPlaying ? "Pause reading" : "Resume reading"}
-                    >
-                      {isPlaying ? (
-                        <>
-                          <Pause className="mr-2 h-4 w-4" aria-hidden="true" />
-                          <span className="sm:inline hidden">Pause</span>
-                          <span className="sm:hidden">Pause</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="mr-2 h-4 w-4" aria-hidden="true" />
-                          <span className="sm:inline hidden">Resume</span>
-                          <span className="sm:hidden">Resume</span>
-                        </>
-                      )}
-                    </Button>
-                    <Button
-                      onClick={handleBiasReset}
-                      onTouchEnd={handleBiasReset}
-                      variant="outline"
-                      className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
-                      style={{
-                        touchAction: 'manipulation',
-                        WebkitTouchCallout: 'none',
-                        WebkitTapHighlightColor: 'transparent',
-                        pointerEvents: 'auto',
-                        userSelect: 'none'
-                      }}
-                      aria-label="Reset and start from beginning"
-                    >
-                      <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
-                      <span className="sm:inline hidden">Reset</span>
-                      <span className="sm:hidden">Reset</span>
-                    </Button>
-                  </>
+                  <Button
+                    onClick={handleBiasListen}
+                    onTouchEnd={handleBiasListen}
+                    variant="outline"
+                    className="w-full sm:flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                    style={{
+                      touchAction: 'manipulation',
+                      WebkitTouchCallout: 'none',
+                      WebkitTapHighlightColor: 'transparent',
+                      pointerEvents: 'auto',
+                      userSelect: 'none'
+                    }}
+                    aria-label={isPlaying ? "Pause reading" : "Resume reading"}
+                  >
+                    {isPlaying ? (
+                      <>
+                        <Pause className="mr-2 h-4 w-4" aria-hidden="true" />
+                        Pause
+                      </>
+                    ) : (
+                      <>
+                        <Play className="mr-2 h-4 w-4" aria-hidden="true" />
+                        Resume
+                      </>
+                    )}
+                  </Button>
                 )
               }
 
@@ -632,7 +611,7 @@ function BiasCardComponent({
                   onClick={handleBiasListen}
                   onTouchEnd={handleBiasListen}
                   variant="outline"
-                  className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                  className="w-full sm:flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
                   style={{
                     touchAction: 'manipulation',
                     WebkitTouchCallout: 'none',
@@ -656,62 +635,96 @@ function BiasCardComponent({
                     }`}
                     aria-hidden="true"
                   />
-                  <span className="sm:inline hidden">{!ttsController.isEnabled ? "Voice Off" : "Listen"}</span>
-                  <span className="sm:hidden">{!ttsController.isEnabled ? "Off" : "Listen"}</span>
+                  {!ttsController.isEnabled ? "Voice Off" : "Listen"}
                 </Button>
               )
             })()}
-            <Button
-              onClick={handleShare}
-              onTouchEnd={handleShare}
-              variant="outline"
-              className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
-              style={{
-                touchAction: 'manipulation',
-                WebkitTouchCallout: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                pointerEvents: 'auto',
-                userSelect: 'none'
-              }}
-              aria-label="Share this bias"
-            >
-              <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
-              Share
-            </Button>
-            <Button
-              onClick={handleCopy}
-              onTouchEnd={handleCopy}
-              variant="outline"
-              className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
-                copied ? "animate-scale-in" : ""
-              }`}
-              style={{
-                touchAction: 'manipulation',
-                WebkitTouchCallout: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                pointerEvents: 'auto',
-                userSelect: 'none'
-              }}
-              aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
-            >
-              {copied ? (
-                <>
-                  <Check
-                    className="mr-2 h-4 w-4 text-success transition-all duration-200"
-                    aria-hidden="true"
-                  />
-                  Copied
-                </>
-              ) : (
-                <>
-                  <Copy
-                    className="mr-2 h-4 w-4 transition-transform duration-200"
-                    aria-hidden="true"
-                  />
-                  Copy
-                </>
-              )}
-            </Button>
+
+            {/* Row 2 (Mobile) / Column 2 (Desktop): Reset button (only shown when playing/paused) */}
+            {(() => {
+              const isActiveBias = ttsController.activeBiasId === bias.id
+              const isPlaying = isActiveBias && ttsController.status === "playing"
+              const isPaused = isActiveBias && ttsController.status === "paused"
+              const canShowControls = ttsController.isSupported && ttsController.isEnabled
+
+              if (canShowControls && (isPlaying || isPaused)) {
+                return (
+                  <Button
+                    onClick={handleBiasReset}
+                    onTouchEnd={handleBiasReset}
+                    variant="outline"
+                    className="w-full sm:flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                    style={{
+                      touchAction: 'manipulation',
+                      WebkitTouchCallout: 'none',
+                      WebkitTapHighlightColor: 'transparent',
+                      pointerEvents: 'auto',
+                      userSelect: 'none'
+                    }}
+                    aria-label="Reset and start from beginning"
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Reset
+                  </Button>
+                )
+              }
+              return null
+            })()}
+
+            {/* Row 3 (Mobile) / Columns 3-4 (Desktop): Share + Copy buttons */}
+            <div className="flex gap-2 w-full sm:contents">
+              <Button
+                onClick={handleShare}
+                onTouchEnd={handleShare}
+                variant="outline"
+                className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                style={{
+                  touchAction: 'manipulation',
+                  WebkitTouchCallout: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  pointerEvents: 'auto',
+                  userSelect: 'none'
+                }}
+                aria-label="Share this bias"
+              >
+                <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
+                Share
+              </Button>
+              <Button
+                onClick={handleCopy}
+                onTouchEnd={handleCopy}
+                variant="outline"
+                className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
+                  copied ? "animate-scale-in" : ""
+                }`}
+                style={{
+                  touchAction: 'manipulation',
+                  WebkitTouchCallout: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  pointerEvents: 'auto',
+                  userSelect: 'none'
+                }}
+                aria-label={copied ? "Copied to clipboard" : "Copy bias to clipboard"}
+              >
+                {copied ? (
+                  <>
+                    <Check
+                      className="mr-2 h-4 w-4 text-success transition-all duration-200"
+                      aria-hidden="true"
+                    />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy
+                      className="mr-2 h-4 w-4 transition-transform duration-200"
+                      aria-hidden="true"
+                    />
+                    Copy
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
 
           {/* Quick Reference Card Button */}

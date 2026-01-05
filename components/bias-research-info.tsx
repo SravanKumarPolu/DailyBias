@@ -115,19 +115,19 @@ export function BiasResearchInfo({ bias }: BiasResearchInfoProps) {
           <CardContent className="pt-0">
             <div className="space-y-4">
               {/* Source and Research Level */}
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Source:</span>
-                  <Badge className={getSourceColor(bias.source)}>
-                    <Shield className="h-3 w-3 mr-1" />
-                    {getSourceLabel(bias.source)}
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-3 w-full overflow-hidden">
+                <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap flex-shrink-0">Source:</span>
+                  <Badge className={`${getSourceColor(bias.source)} flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 flex-1 sm:flex-initial min-w-0 overflow-hidden`}>
+                    <Shield className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span className="truncate whitespace-nowrap">{getSourceLabel(bias.source)}</span>
                   </Badge>
                 </div>
                 {bias.researchLevel && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Research Status:</span>
-                    <Badge className={getResearchLevelColor(bias.researchLevel)}>
-                      {getResearchLevelLabel(bias.researchLevel)}
+                  <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap flex-shrink-0">Research Status:</span>
+                    <Badge className={`${getResearchLevelColor(bias.researchLevel)} flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 flex-1 sm:flex-initial min-w-0 overflow-hidden`}>
+                      <span className="truncate whitespace-nowrap">{getResearchLevelLabel(bias.researchLevel)}</span>
                     </Badge>
                   </div>
                 )}
