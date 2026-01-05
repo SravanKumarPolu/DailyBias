@@ -4,7 +4,7 @@ import type React from "react"
 import { memo } from "react"
 
 // Removed framer-motion import - using static divs to prevent flickering
-import { Heart, Share2, Copy, Check, Star, Volume2, VolumeX } from "lucide-react"
+import { Heart, Share2, Copy, Check, Star, Volume2, Pause, Play, RotateCcw } from "lucide-react"
 import { useState, useRef, useCallback, useEffect } from "react"
 // Removed unused useEffect import
 import type { Bias } from "@/lib/types"
@@ -17,7 +17,7 @@ import { ExpertReview } from "@/components/expert-review"
 import { ShareableCard } from "@/components/shareable-card"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
-import { useSpeech } from "@/hooks/use-speech"
+import { useTTSController } from "@/hooks/use-tts-controller"
 import { useToast } from "@/hooks/use-toast"
 import { shareBias } from "@/lib/native-features"
 
@@ -43,9 +43,23 @@ function BiasCardComponent({
   const [masteredAnimating, setMasteredAnimating] = useState(false)
   const favoriteRef = useRef<HTMLButtonElement>(null)
   const masteredRef = useRef<HTMLButtonElement>(null)
-  const { speak, stop, isSpeaking, isEnabled, isSupported } = useSpeech()
+  const ttsController = useTTSController()
   const { toast } = useToast()
   const hasAutoReadRef = useRef(false)
+
+  // Build full bias text content for TTS
+  const buildFullBiasText = useCallback(() => {
+    const examples = generateExamples(bias)
+    const tips = generateTips(bias)
+    let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
+    if (examples.length > 0) {
+      text += ` Real world examples: ${examples.join('. ')}.`
+    }
+    if (tips.length > 0) {
+      text += ` Quick tips: ${tips.join('. ')}.`
+    }
+    return text
+  }, [bias])
 
   // Removed all animation state - using static rendering to prevent flickering
 
@@ -123,9 +137,9 @@ function BiasCardComponent({
     }
   }, [onToggleMastered])
 
-  const handleSpeak = async () => {
-    if (!isSupported) {
-      // Check if we're in an in-app browser
+  // Handle full bias TTS
+  const handleBiasListen = useCallback(async () => {
+    if (!ttsController.isSupported) {
       const userAgent = navigator.userAgent.toLowerCase()
       const isInAppBrowser =
         userAgent.includes('telegram') ||
@@ -140,7 +154,7 @@ function BiasCardComponent({
       if (isInAppBrowser) {
         toast({
           title: "Open in Browser",
-          description: "Voice reading works better in Chrome or Safari. Tap the banner above to open in your browser.",
+          description: "Voice reading works better in Chrome or Safari.",
           duration: 5000,
         })
       } else {
@@ -153,7 +167,7 @@ function BiasCardComponent({
       return
     }
 
-    if (!isEnabled) {
+    if (!ttsController.isEnabled) {
       toast({
         title: "Voice Disabled",
         description: "Enable voice in Settings to use this feature.",
@@ -161,58 +175,88 @@ function BiasCardComponent({
       return
     }
 
-    // MOBILE FIX: Add haptic feedback immediately on user interaction
-    // This ensures the user knows their touch was registered
     haptics.light()
 
-    if (isSpeaking) {
-      stop()
-      toast({
-        title: "Stopped",
-        description: "Speech has been stopped.",
-      })
+    const isActiveBias = ttsController.activeBiasId === bias.id
+    const isPlaying = ttsController.status === "playing"
+    const isPaused = ttsController.status === "paused"
+
+    if (isActiveBias && isPlaying) {
+      // Pause if playing this bias
+      ttsController.pause()
+    } else if (isActiveBias && isPaused) {
+      // Resume if paused
+      ttsController.resume()
     } else {
-      // Show immediate feedback to user
-      toast({
-        title: "Loading...",
-        description: "Preparing to read the bias aloud.",
-        duration: 2000,
-      })
-
-      // MOBILE FIX: Small delay to ensure toast appears before speech starts
-      // This gives user feedback that something is happening
-      await new Promise(resolve => setTimeout(resolve, 100))
-
-      // Generate examples and tips
-      const examples = generateExamples(bias)
-      const tips = generateTips(bias)
-
-      // Build comprehensive text including examples and tips
-      let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
-
-      // Add real-world examples
-      if (examples.length > 0) {
-        text += ` Real world examples: ${examples.join('. ')}.`
-      }
-
-      // Add quick tips
-      if (tips.length > 0) {
-        text += ` Quick tips: ${tips.join('. ')}.`
-      }
-
-      // MOBILE FIX: Speak is now awaited to catch any errors
-      try {
-        await speak(text)
-      } catch (error) {
-        console.error('[BiasCard] Speech error:', error)
-        toast({
-          title: "Speech Error",
-          description: "Could not start speech. Try again or check Settings.",
-          variant: "destructive",
-        })
-      }
+      // Start playing this bias (will stop any other bias)
+      const fullText = buildFullBiasText()
+      await ttsController.speakBias(fullText, bias.id)
     }
-  }
+  }, [ttsController, bias.id, buildFullBiasText, toast])
+
+  const handleBiasReset = useCallback(() => {
+    haptics.light()
+    ttsController.reset()
+  }, [ttsController])
+
+  // Helper function to handle section TTS
+  const handleSectionSpeak = useCallback(
+    async (text: string, sectionId: string) => {
+      if (!ttsController.isSupported) {
+        const userAgent = navigator.userAgent.toLowerCase()
+        const isInAppBrowser =
+          userAgent.includes('telegram') ||
+          userAgent.includes('whatsapp') ||
+          userAgent.includes('fbav') ||
+          userAgent.includes('fban') ||
+          userAgent.includes('instagram') ||
+          userAgent.includes('twitterandroid') ||
+          userAgent.includes('twitterios') ||
+          userAgent.includes('linkedinapp')
+
+        if (isInAppBrowser) {
+          toast({
+            title: "Open in Browser",
+            description: "Voice reading works better in Chrome or Safari.",
+            duration: 5000,
+          })
+        } else {
+          toast({
+            title: "Not Supported",
+            description: "Your browser doesn't support text-to-speech functionality.",
+            variant: "destructive",
+          })
+        }
+        return
+      }
+
+      if (!ttsController.isEnabled) {
+        toast({
+          title: "Voice Disabled",
+          description: "Enable voice in Settings to use this feature.",
+        })
+        return
+      }
+
+      haptics.light()
+
+      const isActiveSection = ttsController.activeSectionId === sectionId
+      const isPlaying = ttsController.status === "playing"
+      const isPaused = ttsController.status === "paused"
+
+      if (isActiveSection && isPlaying) {
+        // Pause if playing this section
+        ttsController.pause()
+      } else if (isActiveSection && isPaused) {
+        // Resume if paused
+        ttsController.resume()
+      } else {
+        // Start playing this section (will stop any other section)
+        await ttsController.speakSection(text, sectionId)
+      }
+    },
+    [ttsController, toast]
+  )
 
   // Auto-read functionality when voice is enabled
   useEffect(() => {
@@ -228,10 +272,10 @@ function BiasCardComponent({
     // 4. We're not already speaking
     // 5. Bias exists
     if (
-      isEnabled &&
-      isSupported &&
+      ttsController.isEnabled &&
+      ttsController.isSupported &&
       !hasAutoReadRef.current &&
-      !isSpeaking &&
+      ttsController.status === "idle" &&
       bias
     ) {
       hasAutoReadRef.current = true
@@ -239,24 +283,7 @@ function BiasCardComponent({
       // Small delay to ensure component is fully rendered
       const timer = setTimeout(async () => {
         try {
-          // Generate examples and tips
-          const examples = generateExamples(bias)
-          const tips = generateTips(bias)
-
-          // Build comprehensive text including examples and tips
-          let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
-
-          // Add real-world examples
-          if (examples.length > 0) {
-            text += ` Real world examples: ${examples.join('. ')}.`
-          }
-
-          // Add quick tips
-          if (tips.length > 0) {
-            text += ` Quick tips: ${tips.join('. ')}.`
-          }
-
-          await speak(text)
+          await ttsController.speakBias(buildFullBiasText(), bias.id)
         } catch (error) {
           console.error('[BiasCard] Auto-read error:', error)
           // Don't show toast for auto-read failures - silent fail
@@ -266,7 +293,7 @@ function BiasCardComponent({
       return () => clearTimeout(timer)
     }
     return undefined
-  }, [isEnabled, isSupported, bias?.id, isSpeaking, speak, bias])
+  }, [ttsController.isEnabled, ttsController.isSupported, bias?.id, ttsController.status, ttsController.speakBias, buildFullBiasText, bias])
 
   if (variant === "compact") {
     return (
@@ -436,9 +463,34 @@ function BiasCardComponent({
 
         {/* Summary - Enhanced as key definition section */}
         <div className="space-y-3 pt-2">
-          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-            Definition
-          </h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+              Definition
+            </h2>
+            {ttsController.isSupported && ttsController.isEnabled && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleSectionSpeak(bias.summary, `definition-${bias.id}`)}
+                className="h-8 w-8 shrink-0"
+                aria-label={
+                  ttsController.activeSectionId === `definition-${bias.id}` && ttsController.status === "playing"
+                    ? "Pause definition"
+                    : ttsController.activeSectionId === `definition-${bias.id}` && ttsController.status === "paused"
+                    ? "Resume definition"
+                    : "Listen to definition"
+                }
+              >
+                {ttsController.activeSectionId === `definition-${bias.id}` && ttsController.status === "playing" ? (
+                  <Pause className="h-4 w-4" />
+                ) : ttsController.activeSectionId === `definition-${bias.id}` && ttsController.status === "paused" ? (
+                  <Play className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+          </div>
           <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">
             {bias.summary}
           </p>
@@ -446,17 +498,67 @@ function BiasCardComponent({
 
         {/* Why it happens */}
         <div className="space-y-3 pt-2">
-          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-            Why it happens
-          </h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+              Why it happens
+            </h2>
+            {ttsController.isSupported && ttsController.isEnabled && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleSectionSpeak(bias.why, `why-${bias.id}`)}
+                className="h-8 w-8 shrink-0"
+                aria-label={
+                  ttsController.activeSectionId === `why-${bias.id}` && ttsController.status === "playing"
+                    ? "Pause why it happens"
+                    : ttsController.activeSectionId === `why-${bias.id}` && ttsController.status === "paused"
+                    ? "Resume why it happens"
+                    : "Listen to why it happens"
+                }
+              >
+                {ttsController.activeSectionId === `why-${bias.id}` && ttsController.status === "playing" ? (
+                  <Pause className="h-4 w-4" />
+                ) : ttsController.activeSectionId === `why-${bias.id}` && ttsController.status === "paused" ? (
+                  <Play className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+          </div>
           <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">{bias.why}</p>
         </div>
 
         {/* How to counter */}
         <div className="space-y-3 pt-2">
-          <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-            How to counter it
-          </h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+              How to counter it
+            </h2>
+            {ttsController.isSupported && ttsController.isEnabled && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleSectionSpeak(bias.counter, `counter-${bias.id}`)}
+                className="h-8 w-8 shrink-0"
+                aria-label={
+                  ttsController.activeSectionId === `counter-${bias.id}` && ttsController.status === "playing"
+                    ? "Pause how to counter it"
+                    : ttsController.activeSectionId === `counter-${bias.id}` && ttsController.status === "paused"
+                    ? "Resume how to counter it"
+                    : "Listen to how to counter it"
+                }
+              >
+                {ttsController.activeSectionId === `counter-${bias.id}` && ttsController.status === "playing" ? (
+                  <Pause className="h-4 w-4" />
+                ) : ttsController.activeSectionId === `counter-${bias.id}` && ttsController.status === "paused" ? (
+                  <Play className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+          </div>
           <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">{bias.counter}</p>
         </div>
 
@@ -464,54 +566,101 @@ function BiasCardComponent({
         <div className="flex flex-col gap-3 pt-4 sm:pt-6">
           {/* Primary Actions Row */}
           <div className="flex gap-3">
-            <Button
-              onClick={handleSpeak}
-              onTouchEnd={handleSpeak}
-              variant="outline"
-              className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
-                isSpeaking ? "animate-pulse" : ""
-              }`}
-              style={{
-                touchAction: 'manipulation',
-                WebkitTouchCallout: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                pointerEvents: 'auto',
-                userSelect: 'none'
-              }}
-              aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
-              title={
-                !isSupported
-                  ? "Speech not supported in this browser"
-                  : !isEnabled
-                  ? "Enable voice in Settings first"
-                  : isSpeaking
-                  ? "Stop reading"
-                  : "Read this bias aloud"
+            {(() => {
+              const isActiveBias = ttsController.activeBiasId === bias.id
+              const isPlaying = isActiveBias && ttsController.status === "playing"
+              const isPaused = isActiveBias && ttsController.status === "paused"
+              const canShowControls = ttsController.isSupported && ttsController.isEnabled
+
+              if (canShowControls && (isPlaying || isPaused)) {
+                // Show Pause/Resume + Reset when playing or paused
+                return (
+                  <>
+                    <Button
+                      onClick={handleBiasListen}
+                      onTouchEnd={handleBiasListen}
+                      variant="outline"
+                      className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                      style={{
+                        touchAction: 'manipulation',
+                        WebkitTouchCallout: 'none',
+                        WebkitTapHighlightColor: 'transparent',
+                        pointerEvents: 'auto',
+                        userSelect: 'none'
+                      }}
+                      aria-label={isPlaying ? "Pause reading" : "Resume reading"}
+                    >
+                      {isPlaying ? (
+                        <>
+                          <Pause className="mr-2 h-4 w-4" aria-hidden="true" />
+                          <span className="sm:inline hidden">Pause</span>
+                          <span className="sm:hidden">Pause</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="mr-2 h-4 w-4" aria-hidden="true" />
+                          <span className="sm:inline hidden">Resume</span>
+                          <span className="sm:hidden">Resume</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={handleBiasReset}
+                      onTouchEnd={handleBiasReset}
+                      variant="outline"
+                      className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                      style={{
+                        touchAction: 'manipulation',
+                        WebkitTouchCallout: 'none',
+                        WebkitTapHighlightColor: 'transparent',
+                        pointerEvents: 'auto',
+                        userSelect: 'none'
+                      }}
+                      aria-label="Reset and start from beginning"
+                    >
+                      <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
+                      <span className="sm:inline hidden">Reset</span>
+                      <span className="sm:hidden">Reset</span>
+                    </Button>
+                  </>
+                )
               }
-              disabled={!isSupported || !isEnabled}
-            >
-              {isSpeaking ? (
-                <>
-                  <VolumeX
-                    className="mr-2 h-4 w-4 transition-transform duration-200"
-                    aria-hidden="true"
-                  />
-                  <span className="sm:inline hidden">Stop</span>
-                  <span className="sm:hidden">Stop</span>
-                </>
-              ) : (
-                <>
+
+              // Show Listen button when idle
+              return (
+                <Button
+                  onClick={handleBiasListen}
+                  onTouchEnd={handleBiasListen}
+                  variant="outline"
+                  className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
+                  style={{
+                    touchAction: 'manipulation',
+                    WebkitTouchCallout: 'none',
+                    WebkitTapHighlightColor: 'transparent',
+                    pointerEvents: 'auto',
+                    userSelect: 'none'
+                  }}
+                  aria-label="Listen to bias"
+                  title={
+                    !ttsController.isSupported
+                      ? "Speech not supported in this browser"
+                      : !ttsController.isEnabled
+                      ? "Enable voice in Settings first"
+                      : "Listen to this bias"
+                  }
+                  disabled={!ttsController.isSupported || !ttsController.isEnabled}
+                >
                   <Volume2
                     className={`mr-2 h-4 w-4 transition-transform duration-200 ${
-                      !isEnabled ? "opacity-50" : ""
+                      !ttsController.isEnabled ? "opacity-50" : ""
                     }`}
                     aria-hidden="true"
                   />
-                  <span className="sm:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
-                  <span className="sm:hidden">{!isEnabled ? "Off" : "Listen"}</span>
-                </>
-              )}
-            </Button>
+                  <span className="sm:inline hidden">{!ttsController.isEnabled ? "Voice Off" : "Listen"}</span>
+                  <span className="sm:hidden">{!ttsController.isEnabled ? "Off" : "Listen"}</span>
+                </Button>
+              )
+            })()}
             <Button
               onClick={handleShare}
               onTouchEnd={handleShare}

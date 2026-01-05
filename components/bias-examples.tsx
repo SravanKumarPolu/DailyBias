@@ -1,8 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Lightbulb, CheckCircle2 } from "lucide-react"
+import { Lightbulb, CheckCircle2, Volume2, Pause, Play } from "lucide-react"
+import { useCallback } from "react"
 import type { Bias } from "@/lib/types"
+import { useTTSController } from "@/hooks/use-tts-controller"
+import { Button } from "@/components/ui/button"
+import { haptics } from "@/lib/haptics"
 
 interface BiasExamplesProps {
   bias: Bias
@@ -658,6 +662,41 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
   const hasStructuredExamples = bias.examples && bias.examples.length > 0
   const fallbackExamples = generateExamples(bias)
   const tips = generateTips(bias)
+  const ttsController = useTTSController()
+
+  // Helper function to handle section TTS
+  const handleSectionSpeak = useCallback(
+    async (text: string, sectionId: string) => {
+      if (!ttsController.isSupported || !ttsController.isEnabled) {
+        return
+      }
+
+      haptics.light()
+
+      const isActiveSection = ttsController.activeSectionId === sectionId
+      const isPlaying = ttsController.status === "playing"
+      const isPaused = ttsController.status === "paused"
+
+      if (isActiveSection && isPlaying) {
+        ttsController.pause()
+      } else if (isActiveSection && isPaused) {
+        ttsController.resume()
+      } else {
+        await ttsController.speakSection(text, sectionId)
+      }
+    },
+    [ttsController]
+  )
+
+  // Build examples text for TTS
+  const examplesText = hasStructuredExamples
+    ? bias.examples!
+        .map((ex) => `${ex.title}. ${ex.description}`)
+        .join(". ")
+    : fallbackExamples.join(". ")
+
+  // Build tips text for TTS
+  const tipsText = tips.join(". ")
 
   // Helper function to get category badge color
   const getCategoryBadgeColor = (category: string) => {
@@ -685,10 +724,35 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h3 className="text-foreground/80 mb-4 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base border-b border-border/50 pb-2">
-          <Lightbulb className="h-4 w-4 text-primary" />
-          Real-World Examples
-        </h3>
+        <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/50 pb-2">
+          <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
+            <Lightbulb className="h-4 w-4 text-primary" />
+            Real-World Examples
+          </h3>
+          {ttsController.isSupported && ttsController.isEnabled && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleSectionSpeak(examplesText, `examples-${bias.id}`)}
+              className="h-8 w-8 shrink-0"
+              aria-label={
+                ttsController.activeSectionId === `examples-${bias.id}` && ttsController.status === "playing"
+                  ? "Pause examples"
+                  : ttsController.activeSectionId === `examples-${bias.id}` && ttsController.status === "paused"
+                  ? "Resume examples"
+                  : "Listen to examples"
+              }
+            >
+              {ttsController.activeSectionId === `examples-${bias.id}` && ttsController.status === "playing" ? (
+                <Pause className="h-4 w-4" />
+              ) : ttsController.activeSectionId === `examples-${bias.id}` && ttsController.status === "paused" ? (
+                <Play className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+        </div>
         <div className="space-y-4">
           {hasStructuredExamples ? (
             // Display structured examples from data
@@ -756,10 +820,35 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <h3 className="text-foreground/80 mb-4 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base border-b border-border/50 pb-2">
-          <CheckCircle2 className="h-4 w-4 text-success" />
-          Quick Tips
-        </h3>
+        <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/50 pb-2">
+          <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
+            <CheckCircle2 className="h-4 w-4 text-success" />
+            Quick Tips
+          </h3>
+          {ttsController.isSupported && ttsController.isEnabled && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleSectionSpeak(tipsText, `tips-${bias.id}`)}
+              className="h-8 w-8 shrink-0"
+              aria-label={
+                ttsController.activeSectionId === `tips-${bias.id}` && ttsController.status === "playing"
+                  ? "Pause tips"
+                  : ttsController.activeSectionId === `tips-${bias.id}` && ttsController.status === "paused"
+                  ? "Resume tips"
+                  : "Listen to tips"
+              }
+            >
+              {ttsController.activeSectionId === `tips-${bias.id}` && ttsController.status === "playing" ? (
+                <Pause className="h-4 w-4" />
+              ) : ttsController.activeSectionId === `tips-${bias.id}` && ttsController.status === "paused" ? (
+                <Play className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+        </div>
         <ul className="space-y-2">
           {tips.map((tip, i) => (
             <motion.li
