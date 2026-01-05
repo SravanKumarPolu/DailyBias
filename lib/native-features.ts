@@ -14,6 +14,9 @@ const isNative = Capacitor.isNativePlatform()
 let webNotificationInterval: NodeJS.Timeout | null = null
 const WEB_NOTIFICATION_STORAGE_KEY = 'daily-bias-last-notification-date'
 
+// Share operation state to prevent concurrent calls
+let isSharingInProgress = false
+
 /**
  * Check if running in native app
  */
@@ -246,41 +249,56 @@ export async function shareBias(bias: {
   why?: string
   counter?: string
 }): Promise<void> {
-  if (!isNative) {
-    // Fallback to Web Share API if available
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Daily Bias: ${bias.title}`,
-          text: `${bias.title}\n\n${bias.summary}`,
-        })
-        return
-      } catch (error) {
-        if ((error as Error).name !== 'AbortError') {
-          logger.error('[NativeFeatures] Web share error:', error)
-        }
-        return
-      }
-    }
-    // Fallback: copy to clipboard
-    const text = `${bias.title}\n\n${bias.summary}`
-    await navigator.clipboard.writeText(text)
-    logger.debug('[NativeFeatures] Copied to clipboard (web fallback)')
+  // Prevent concurrent share calls
+  if (isSharingInProgress) {
+    logger.debug('[NativeFeatures] Share already in progress, ignoring duplicate call')
     return
   }
 
+  isSharingInProgress = true
+
   try {
-    await Share.share({
-      title: `Daily Bias: ${bias.title}`,
-      text: `${bias.title}\n\n${bias.summary}${bias.why ? `\n\nWhy it happens: ${bias.why}` : ''}${bias.counter ? `\n\nHow to counter: ${bias.counter}` : ''}`,
-      dialogTitle: 'Share Daily Bias',
-    })
-    logger.debug('[NativeFeatures] Shared bias via native share')
-  } catch (error) {
-    // User cancelled or error occurred
-    if ((error as Error).message !== 'User cancelled') {
-      logger.error('[NativeFeatures] Error sharing bias:', error)
+    if (!isNative) {
+      // Fallback to Web Share API if available
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: `Daily Bias: ${bias.title}`,
+            text: `${bias.title}\n\n${bias.summary}`,
+          })
+          return
+        } catch (error) {
+          if ((error as Error).name !== 'AbortError') {
+            logger.error('[NativeFeatures] Web share error:', error)
+          }
+          return
+        }
+      }
+      // Fallback: copy to clipboard
+      const text = `${bias.title}\n\n${bias.summary}`
+      await navigator.clipboard.writeText(text)
+      logger.debug('[NativeFeatures] Copied to clipboard (web fallback)')
+      return
     }
+
+    try {
+      await Share.share({
+        title: `Daily Bias: ${bias.title}`,
+        text: `${bias.title}\n\n${bias.summary}${bias.why ? `\n\nWhy it happens: ${bias.why}` : ''}${bias.counter ? `\n\nHow to counter: ${bias.counter}` : ''}`,
+        dialogTitle: 'Share Daily Bias',
+      })
+      logger.debug('[NativeFeatures] Shared bias via native share')
+    } catch (error) {
+      // User cancelled or error occurred
+      if ((error as Error).message !== 'User cancelled') {
+        logger.error('[NativeFeatures] Error sharing bias:', error)
+      }
+    }
+  } finally {
+    // Reset sharing flag after a short delay to prevent rapid re-clicks
+    setTimeout(() => {
+      isSharingInProgress = false
+    }, 500)
   }
 }
 

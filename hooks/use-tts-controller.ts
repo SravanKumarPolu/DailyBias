@@ -40,6 +40,7 @@ let currentChunkIndex = 0
 let isIntentionallyStopping = false
 let lastSpokenText: string | null = null
 let lastSpokenSectionId: string | null = null
+let storedChunks: string[] = []
 
 export function useTTSController() {
   const { settings } = useSettings()
@@ -213,15 +214,21 @@ export function useTTSController() {
       chunks: string[],
       voices: SpeechSynthesisVoice[],
       sectionId: string,
-      overrideVoiceName?: string
+      overrideVoiceName?: string,
+      resumeFromIndex?: number
     ) => {
       if (chunks.length === 0) {
         setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
         return
       }
 
+      // Store chunks for potential resume
+      storedChunks = chunks
+
       // Only reset chunk index if starting fresh (not resuming)
-      if (globalState.status === "idle" || globalState.activeSectionId !== sectionId) {
+      if (resumeFromIndex !== undefined) {
+        currentChunkIndex = resumeFromIndex
+      } else if (globalState.status === "idle" || globalState.activeSectionId !== sectionId) {
         currentChunkIndex = 0
       }
       utteranceQueue = []
@@ -245,6 +252,10 @@ export function useTTSController() {
         if (currentChunkIndex >= chunks.length) {
           setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
           utteranceQueue = []
+          storedChunks = []
+          lastSpokenText = null
+          lastSpokenSectionId = null
+          currentChunkIndex = 0
           return
         }
 
@@ -327,7 +338,7 @@ export function useTTSController() {
   )
 
   const speakSection = useCallback(
-    async (text: string, sectionId: string, overrideVoiceName?: string) => {
+    async (text: string, sectionId: string, overrideVoiceName?: string, resumeFromIndex?: number) => {
       if (!isSupported) {
         console.error("[TTS Controller] Speech synthesis not supported")
         return
@@ -339,16 +350,21 @@ export function useTTSController() {
       }
 
       try {
-        // Always cancel any ongoing speech first (global single-player)
-        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-          window.speechSynthesis.cancel()
-          await new Promise((resolve) => setTimeout(resolve, 100))
+        // Only cancel if not resuming from pause
+        if (resumeFromIndex === undefined) {
+          // Always cancel any ongoing speech first (global single-player)
+          if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+            window.speechSynthesis.cancel()
+            await new Promise((resolve) => setTimeout(resolve, 100))
+          }
         }
 
-        // Reset state
-        utteranceQueue = []
-        currentChunkIndex = 0
-        isIntentionallyStopping = false
+        // Reset state only if starting fresh
+        if (resumeFromIndex === undefined) {
+          utteranceQueue = []
+          currentChunkIndex = 0
+          isIntentionallyStopping = false
+        }
 
         const voices = await getVoices()
 
@@ -361,7 +377,7 @@ export function useTTSController() {
         lastSpokenText = text
         lastSpokenSectionId = sectionId
         setGlobalState({ status: "playing", activeSectionId: sectionId })
-        speakChunks(chunks, voices, sectionId, overrideVoiceName)
+        speakChunks(chunks, voices, sectionId, overrideVoiceName, resumeFromIndex)
       } catch (error) {
         console.error("[TTS Controller] Failed to speak:", error)
         setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
@@ -377,6 +393,7 @@ export function useTTSController() {
     try {
       window.speechSynthesis.pause()
       setGlobalState({ status: "paused" })
+      // Preserve current chunk index for resume
     } catch (error) {
       console.error("[TTS Controller] Error pausing:", error)
     }
@@ -387,12 +404,18 @@ export function useTTSController() {
     if (globalState.status !== "paused") return
 
     try {
+      // Use native resume which continues from exact position
       window.speechSynthesis.resume()
       setGlobalState({ status: "playing" })
     } catch (error) {
       console.error("[TTS Controller] Error resuming:", error)
+      // Fallback: if resume fails, restart from current chunk
+      if (lastSpokenText && lastSpokenSectionId && storedChunks.length > 0) {
+        const resumeIndex = currentChunkIndex
+        speakSection(lastSpokenText, lastSpokenSectionId, undefined, resumeIndex)
+      }
     }
-  }, [isSupported])
+  }, [isSupported, speakSection])
 
   const speakBias = useCallback(
     async (text: string, biasId: string, overrideVoiceName?: string) => {
@@ -412,15 +435,30 @@ export function useTTSController() {
         return
       }
 
-      // Stop any ongoing speech
-      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      // If switching to a different bias, stop previous and reset
+      if (globalState.activeBiasId && globalState.activeBiasId !== biasId) {
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel()
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        }
+        // Clear previous bias state
+        storedChunks = []
+        currentChunkIndex = 0
+        lastSpokenText = null
+        lastSpokenSectionId = null
+      }
+
+      // Stop any ongoing speech if starting fresh
+      if (globalState.activeBiasId !== biasId && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
         window.speechSynthesis.cancel()
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
 
+      // Store bias ID in global state
+      setGlobalState({ activeBiasId: biasId })
+
       // Use section-based speak but with biasId
       await speakSection(text, biasId, overrideVoiceName)
-      setGlobalState({ activeBiasId: biasId })
     },
     [isSupported, settings.voiceEnabled, speakSection, resume]
   )
@@ -440,6 +478,7 @@ export function useTTSController() {
       setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
       lastSpokenText = null
       lastSpokenSectionId = null
+      storedChunks = []
 
       setTimeout(() => {
         isIntentionallyStopping = false
@@ -454,19 +493,37 @@ export function useTTSController() {
   const reset = useCallback(async () => {
     if (!isSupported) return
     const currentBiasId = globalState.activeBiasId || globalState.activeSectionId
-    if (!currentBiasId || !lastSpokenText || lastSpokenSectionId !== currentBiasId) return
+    if (!currentBiasId) return
 
-    // Stop current playback
-    stop()
+    try {
+      isIntentionallyStopping = true
 
-    // Wait a bit for stop to complete
-    await new Promise((resolve) => setTimeout(resolve, 150))
+      // Cancel current playback
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+        window.speechSynthesis.cancel()
+      }
 
-    // Clear state so next Listen starts fresh
-    lastSpokenText = null
-    lastSpokenSectionId = null
-    currentChunkIndex = 0
-  }, [isSupported, stop])
+      // Wait for cancel to complete
+      await new Promise((resolve) => setTimeout(resolve, 150))
+
+      // Clear all state so next Listen starts fresh
+      utteranceQueue = []
+      currentChunkIndex = 0
+      storedChunks = []
+      lastSpokenText = null
+      lastSpokenSectionId = null
+
+      setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
+
+      setTimeout(() => {
+        isIntentionallyStopping = false
+      }, 100)
+    } catch (error) {
+      console.error("[TTS Controller] Error resetting:", error)
+      setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
+      isIntentionallyStopping = false
+    }
+  }, [isSupported])
 
   const togglePause = useCallback(() => {
     if (globalState.status === "playing") {

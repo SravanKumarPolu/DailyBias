@@ -39,6 +39,7 @@ function BiasCardComponent({
   onToggleMastered,
 }: BiasCardProps) {
   const [copied, setCopied] = useState(false)
+  const [isSharing, setIsSharing] = useState(false)
   const [favoriteAnimating, setFavoriteAnimating] = useState(false)
   const [masteredAnimating, setMasteredAnimating] = useState(false)
   const favoriteRef = useRef<HTMLButtonElement>(null)
@@ -64,7 +65,14 @@ function BiasCardComponent({
   // Removed all animation state - using static rendering to prevent flickering
 
   const handleShare = async () => {
+    // Prevent concurrent share calls
+    if (isSharing) {
+      return
+    }
+
     haptics.light()
+    setIsSharing(true)
+    
     try {
       await shareBias({
         title: bias.title,
@@ -72,9 +80,14 @@ function BiasCardComponent({
         why: bias.why,
         counter: bias.counter,
       })
-    } catch {
+    } catch (error) {
       // Fallback to copy if share fails
       handleCopy()
+    } finally {
+      // Reset sharing state after a short delay to prevent rapid re-clicks
+      setTimeout(() => {
+        setIsSharing(false)
+      }, 500)
     }
   }
 
@@ -677,18 +690,19 @@ function BiasCardComponent({
                 onClick={handleShare}
                 onTouchEnd={handleShare}
                 variant="outline"
+                disabled={isSharing}
                 className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
                 style={{
                   touchAction: 'manipulation',
                   WebkitTouchCallout: 'none',
                   WebkitTapHighlightColor: 'transparent',
-                  pointerEvents: 'auto',
+                  pointerEvents: isSharing ? 'none' : 'auto',
                   userSelect: 'none'
                 }}
-                aria-label="Share this bias"
+                aria-label={isSharing ? "Sharing..." : "Share this bias"}
               >
-                <Share2 className="mr-2 h-4 w-4 transition-transform duration-200" aria-hidden="true" />
-                Share
+                <Share2 className={`mr-2 h-4 w-4 transition-transform duration-200 ${isSharing ? 'opacity-50' : ''}`} aria-hidden="true" />
+                {isSharing ? 'Sharing...' : 'Share'}
               </Button>
               <Button
                 onClick={handleCopy}
