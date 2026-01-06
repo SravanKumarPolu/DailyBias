@@ -538,7 +538,7 @@ function BiasCardComponent({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col gap-3 pt-4 sm:pt-6">
+        <div className="hidden sm:flex flex-col gap-3 pt-4 sm:pt-6">
           {/* Mobile: Stacked layout (3 rows) | Desktop: Single row */}
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             {/* Row 1 (Mobile) / Column 1 (Desktop): Primary listening control */}
