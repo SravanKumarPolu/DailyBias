@@ -123,7 +123,28 @@ function BiasCardComponent({
     }
   }, [onToggleMastered])
 
-  const handleSpeak = async () => {
+  // MOBILE FIX: Use ref to prevent double-firing on mobile (both onClick and onTouchEnd can fire)
+  const isHandlingSpeakRef = useRef(false)
+
+  const handleSpeak = useCallback(async (e?: React.MouseEvent | React.TouchEvent) => {
+    // MOBILE FIX: Prevent double-firing from both onClick and onTouchEnd
+    if (isHandlingSpeakRef.current) {
+      return
+    }
+    isHandlingSpeakRef.current = true
+
+    // Reset flag after a short delay
+    const resetFlag = () => {
+      setTimeout(() => {
+        isHandlingSpeakRef.current = false
+      }, 300)
+    }
+
+    // Only prevent default for mouse events, not touch events (Android needs touch events)
+    if (e && e.type === 'click' && 'button' in e && e.button !== 0) {
+      e.preventDefault()
+    }
+
     if (!isSupported) {
       // Check if we're in an in-app browser
       const userAgent = navigator.userAgent.toLowerCase()
@@ -150,6 +171,7 @@ function BiasCardComponent({
           variant: "destructive",
         })
       }
+      resetFlag()
       return
     }
 
@@ -158,6 +180,7 @@ function BiasCardComponent({
         title: "Voice Disabled",
         description: "Enable voice in Settings to use this feature.",
       })
+      resetFlag()
       return
     }
 
@@ -171,6 +194,8 @@ function BiasCardComponent({
         title: "Stopped",
         description: "Speech has been stopped.",
       })
+      resetFlag()
+      return
     } else {
       // Show immediate feedback to user
       toast({
@@ -210,9 +235,11 @@ function BiasCardComponent({
           description: "Could not start speech. Try again or check Settings.",
           variant: "destructive",
         })
+      } finally {
+        resetFlag()
       }
     }
-  }
+  }, [isSupported, isEnabled, isSpeaking, stop, speak, bias, toast])
 
   // Auto-read functionality when voice is enabled
   useEffect(() => {
@@ -466,7 +493,19 @@ function BiasCardComponent({
           <div className="flex gap-3">
             <Button
               onClick={handleSpeak}
-              onTouchEnd={handleSpeak}
+              onTouchStart={(e) => {
+                // MOBILE FIX: Use onTouchStart for immediate response on mobile
+                // Prevent default to avoid double-firing with onClick
+                e.preventDefault()
+                handleSpeak(e)
+              }}
+              onTouchEnd={(e) => {
+                // MOBILE FIX: Also handle onTouchEnd as fallback
+                // Only fire if onTouchStart didn't already handle it
+                if (!isHandlingSpeakRef.current) {
+                  handleSpeak(e)
+                }
+              }}
               variant="outline"
               className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
                 isSpeaking ? "animate-pulse" : ""
