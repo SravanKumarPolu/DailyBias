@@ -113,7 +113,3 @@ The fix adds better logging:
 ## Status
 
 ✅ **FIXED** - All voices should now work correctly when selected by the user.
-
-
-
-
