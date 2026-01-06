@@ -257,10 +257,16 @@ export function useTTSController() {
       const selectedVoice = selectBestVoice(voices, overrideVoiceName)
 
       const speakNextChunk = () => {
-        // Check if section changed or stopped
-        if (globalState.activeSectionId !== sectionId || globalState.status === "idle") {
+        // Check if section changed - this is the main guard
+        // Allow "idle" status when starting (we set it to idle initially, waiting for onstart)
+        // Only prevent if section changed (switching to different section)
+        if (globalState.activeSectionId !== sectionId) {
           return
         }
+        
+        // If status is "idle" and we're starting (activeSectionId matches), allow it to proceed
+        // The onstart handler will set status to "playing" when speech actually starts
+        // If status is "idle" after finishing, the onend handler would have already handled cleanup
 
         if (currentChunkIndex >= chunks.length) {
           setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
@@ -285,7 +291,27 @@ export function useTTSController() {
         }
 
         utterance.onstart = () => {
-          setGlobalState({ status: "playing", activeSectionId: sectionId })
+          // CRITICAL FIX: Only set status to "playing" when speech actually starts
+          // This ensures button state matches actual speech state, especially on mobile
+          if (globalState.activeSectionId === sectionId) {
+            // Clear the start timeout since onstart fired
+            const startTimeout = (utterance as any)._startTimeout
+            if (startTimeout) {
+              clearTimeout(startTimeout)
+              delete (utterance as any)._startTimeout
+            }
+            
+            setGlobalState({ status: "playing", activeSectionId: sectionId })
+            if (isDevelopment) {
+              console.log('[TTS] Speech started', {
+                sectionId,
+                chunkIndex: currentChunkIndex,
+                totalChunks: chunks.length,
+                synthSpeaking: window.speechSynthesis.speaking,
+                synthPending: window.speechSynthesis.pending
+              })
+            }
+          }
         }
 
         utterance.onend = () => {
@@ -303,6 +329,18 @@ export function useTTSController() {
 
         utterance.onerror = (event: SpeechSynthesisErrorEvent) => {
           const errorType = event.error || "unknown"
+          
+          if (isDevelopment) {
+            console.warn('[TTS] Utterance error', {
+              errorType,
+              sectionId,
+              chunkIndex: currentChunkIndex,
+              synthSpeaking: window.speechSynthesis.speaking,
+              synthPending: window.speechSynthesis.pending,
+              isIntentionallyStopping
+            })
+          }
+          
           if (
             errorType === "interrupted" ||
             errorType === "canceled" ||
@@ -339,13 +377,57 @@ export function useTTSController() {
         utteranceQueue.push(utterance)
 
         try {
-          // Don't cancel when continuing to next chunk in same section
-          // The browser's speechSynthesis will queue utterances naturally
-          // Only cancel if we detect we're switching sections (shouldn't happen here)
+          // CRITICAL FIX: Always cancel any pending speech before starting new utterance
+          // This prevents mobile browsers from queuing multiple utterances incorrectly
           const synth = window.speechSynthesis
-          // If there's pending speech from a different section, it should have been
-          // canceled in speakSection before calling speakChunks
-          synth.speak(utterance)
+          if (synth.speaking || synth.pending) {
+            synth.cancel()
+            // Use setTimeout for delay since this is not an async function
+            setTimeout(() => {
+              // Now speak the utterance - onstart will set status to "playing"
+              synth.speak(utterance)
+              
+              // MOBILE FIX: Add timeout to detect if onstart never fires (mobile browser issue)
+              // If onstart doesn't fire within 1 second, assume it failed and reset state
+              const startTimeout = setTimeout(() => {
+                if (globalState.activeSectionId === sectionId && globalState.status === "idle") {
+                  if (isDevelopment) {
+                    console.warn('[TTS] onstart never fired - speech may have failed to start', {
+                      sectionId,
+                      chunkIndex: currentChunkIndex,
+                      synthSpeaking: synth.speaking,
+                      synthPending: synth.pending
+                    })
+                  }
+                  // Reset to idle if speech never started
+                  setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
+                }
+              }, 1000)
+              
+              // Store timeout ID in utterance for cleanup in onstart
+              ;(utterance as any)._startTimeout = startTimeout
+            }, 50)
+          } else {
+            // No need to cancel - speak immediately
+            synth.speak(utterance)
+            
+            // MOBILE FIX: Add timeout to detect if onstart never fires (mobile browser issue)
+            const startTimeout = setTimeout(() => {
+              if (globalState.activeSectionId === sectionId && globalState.status === "idle") {
+                if (isDevelopment) {
+                  console.warn('[TTS] onstart never fired - speech may have failed to start', {
+                    sectionId,
+                    chunkIndex: currentChunkIndex,
+                    synthSpeaking: synth.speaking,
+                    synthPending: synth.pending
+                  })
+                }
+                setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
+              }
+            }, 1000)
+            
+            ;(utterance as any)._startTimeout = startTimeout
+          }
         } catch (error) {
           console.error("[TTS Controller] Exception while speaking:", error)
           setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
@@ -397,7 +479,10 @@ export function useTTSController() {
         const chunks = splitTextIntoChunks(text)
         lastSpokenText = text
         lastSpokenSectionId = sectionId
-        setGlobalState({ status: "playing", activeSectionId: sectionId })
+        // CRITICAL FIX: Don't set status to "playing" here - wait for utterance.onstart
+        // On mobile, speechSynthesis.speak() may not start immediately, causing state drift
+        // Set activeSectionId but keep status as "idle" until onstart confirms speech started
+        setGlobalState({ status: "idle", activeSectionId: sectionId })
         speakChunks(chunks, voices, sectionId, overrideVoiceName, resumeFromIndex)
       } catch (error) {
         console.error("[TTS Controller] Failed to speak:", error)
@@ -409,7 +494,16 @@ export function useTTSController() {
 
   const pause = useCallback(() => {
     if (!isSupported) return
-    if (globalState.status !== "playing") return
+    if (globalState.status !== "playing") {
+      if (isDevelopment) {
+        console.warn('[TTS Pause] Cannot pause - status is not "playing"', {
+          currentStatus: globalState.status,
+          activeSectionId: globalState.activeSectionId,
+          activeBiasId: globalState.activeBiasId
+        })
+      }
+      return
+    }
 
     try {
       const synth = window.speechSynthesis
@@ -420,10 +514,28 @@ export function useTTSController() {
         // Update state to paused - this preserves activeSectionId and activeBiasId
         setGlobalState({ status: "paused" })
         
+        if (isDevelopment) {
+          console.log('[TTS] Paused', {
+            activeSectionId: globalState.activeSectionId,
+            activeBiasId: globalState.activeBiasId,
+            chunkIndex: currentChunkIndex,
+            synthSpeaking: synth.speaking,
+            synthPending: synth.pending,
+            synthPaused: synth.paused
+          })
+        }
+        
         // Preserve current chunk index and stored chunks for resume
         // These are already stored in module-level variables, so they persist
       } else {
         // Not actually speaking - set to idle instead
+        if (isDevelopment) {
+          console.warn('[TTS Pause] No active speech to pause', {
+            synthSpeaking: synth.speaking,
+            synthPending: synth.pending,
+            synthPaused: synth.paused
+          })
+        }
         setGlobalState({ status: "idle", activeSectionId: null, activeBiasId: null })
       }
     } catch (error) {

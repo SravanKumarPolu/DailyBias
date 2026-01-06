@@ -5,8 +5,7 @@ import { memo } from "react"
 
 // Removed framer-motion import - using static divs to prevent flickering
 import { Heart, Share2, Copy, Check, Star, Volume2, Pause, Play, RotateCcw } from "lucide-react"
-import { useState, useRef, useCallback, useEffect } from "react"
-// Removed unused useEffect import
+import { useState, useRef, useCallback } from "react"
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -46,7 +45,6 @@ function BiasCardComponent({
   const masteredRef = useRef<HTMLButtonElement>(null)
   const ttsController = useTTSController()
   const { toast } = useToast()
-  const hasAutoReadRef = useRef(false)
 
   // Build full bias text content for TTS
   const buildFullBiasText = useCallback(() => {
@@ -271,42 +269,6 @@ function BiasCardComponent({
     [ttsController, toast]
   )
 
-  // Auto-read functionality when voice is enabled
-  useEffect(() => {
-    // Reset auto-read flag when bias changes
-    hasAutoReadRef.current = false
-  }, [bias?.id])
-
-  useEffect(() => {
-    // Only auto-read if:
-    // 1. Voice is enabled (which now includes auto-read by default)
-    // 2. Speech is supported
-    // 3. We haven't already auto-read this bias
-    // 4. We're not already speaking
-    // 5. Bias exists
-    if (
-      ttsController.isEnabled &&
-      ttsController.isSupported &&
-      !hasAutoReadRef.current &&
-      ttsController.status === "idle" &&
-      bias
-    ) {
-      hasAutoReadRef.current = true
-      
-      // Small delay to ensure component is fully rendered
-      const timer = setTimeout(async () => {
-        try {
-          await ttsController.speakBias(buildFullBiasText(), bias.id)
-        } catch (error) {
-          console.error('[BiasCard] Auto-read error:', error)
-          // Don't show toast for auto-read failures - silent fail
-        }
-      }, 500) // Small delay to allow UI to settle
-
-      return () => clearTimeout(timer)
-    }
-    return undefined
-  }, [ttsController.isEnabled, ttsController.isSupported, bias?.id, ttsController.status, ttsController.speakBias, buildFullBiasText, bias])
 
   if (variant === "compact") {
     return (
