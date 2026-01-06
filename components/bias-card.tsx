@@ -191,8 +191,8 @@ function BiasCardComponent({
     if (isSpeaking) {
       stop()
       toast({
-        title: "Stopped",
-        description: "Speech has been stopped.",
+        title: "Paused",
+        description: "Speech has been paused.",
       })
       resetFlag()
       return
@@ -495,8 +495,8 @@ function BiasCardComponent({
               onClick={handleSpeak}
               onTouchStart={(e) => {
                 // MOBILE FIX: Use onTouchStart for immediate response on mobile
-                // Prevent default to avoid double-firing with onClick
-                e.preventDefault()
+                // Note: preventDefault() removed - passive listeners can't prevent default
+                // Double-firing is prevented by isHandlingSpeakRef guard in handleSpeak
                 handleSpeak(e)
               }}
               onTouchEnd={(e) => {
@@ -517,14 +517,14 @@ function BiasCardComponent({
                 pointerEvents: 'auto',
                 userSelect: 'none'
               }}
-              aria-label={isSpeaking ? "Stop speaking" : "Read bias aloud"}
+              aria-label={isSpeaking ? "Pause speaking" : "Read bias aloud"}
               title={
                 !isSupported
                   ? "Speech not supported in this browser"
                   : !isEnabled
                   ? "Enable voice in Settings first"
                   : isSpeaking
-                  ? "Stop reading"
+                  ? "Pause reading"
                   : "Read this bias aloud"
               }
               disabled={!isSupported || !isEnabled}
@@ -535,8 +535,8 @@ function BiasCardComponent({
                     className="mr-2 h-4 w-4 transition-transform duration-200"
                     aria-hidden="true"
                   />
-                  <span className="sm:inline hidden">Stop</span>
-                  <span className="sm:hidden">Stop</span>
+                  <span className="sm:inline hidden">Pause</span>
+                  <span className="sm:hidden">Pause</span>
                 </>
               ) : (
                 <>

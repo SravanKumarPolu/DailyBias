@@ -19,10 +19,10 @@ export function useSpeech() {
     // Check if speech synthesis is supported
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       setIsSupported(true)
-      
+
       // Check if we're in an in-app browser
       const userAgent = navigator.userAgent.toLowerCase()
-      const isInAppBrowser = 
+      const isInAppBrowser =
         userAgent.includes('telegram') ||
         userAgent.includes('whatsapp') ||
         userAgent.includes('fbav') ||
@@ -33,11 +33,11 @@ export function useSpeech() {
         userAgent.includes('linkedinapp') ||
         (userAgent.includes('wv') && !userAgent.includes('chrome')) ||
         (userAgent.includes('webkit') && !userAgent.includes('safari') && !userAgent.includes('chrome'))
-      
+
       if (isInAppBrowser) {
         console.log('[Speech] Detected in-app browser - speech may not work properly')
       }
-      
+
       // MOBILE FIX: Initialize speech synthesis on page load
       // This helps with iOS Safari and mobile browsers
       // Some browsers need the API to be "touched" early to work properly
@@ -57,17 +57,17 @@ export function useSpeech() {
           console.warn('[Speech] Failed to initialize:', error)
         }
       }
-      
+
       // Initialize immediately
       initSpeech()
-      
+
       // Also try on first user interaction (important for mobile)
       const initOnInteraction = () => {
         initSpeech()
         document.removeEventListener('touchstart', initOnInteraction)
         document.removeEventListener('click', initOnInteraction)
       }
-      
+
       document.addEventListener('touchstart', initOnInteraction, { once: true, passive: true })
       document.addEventListener('click', initOnInteraction, { once: true })
     }
@@ -130,7 +130,7 @@ export function useSpeech() {
       const tryResolve = () => {
         voices = synth.getVoices()
         console.log("[Speech] Voice check:", voices.length, "voices found")
-        
+
         if (voices.length > 0 || Date.now() - start >= maxWaitMs) {
           clearInterval(poller)
           if (voices.length > 0) {
@@ -166,8 +166,8 @@ export function useSpeech() {
         synth.speak(warmup)
         // Cancel shortly after to keep it silent and quick
         setTimeout(() => {
-          try { 
-            synth.cancel() 
+          try {
+            synth.cancel()
             console.log("[Speech] Voice warmup completed")
           } catch {}
         }, 50)
@@ -181,7 +181,7 @@ export function useSpeech() {
     (voices: SpeechSynthesisVoice[], overrideVoiceName?: string) => {
       console.log("[Speech] Available voices:", voices.map(v => `${v.name} (${v.lang}, local: ${v.localService})`))
       console.log("[Speech] Target voice from settings:", overrideVoiceName || settings.voiceName)
-      
+
       let selectedVoice: SpeechSynthesisVoice | undefined
 
       // 1. Try to find the exact voice name from override or settings (case-insensitive)
@@ -189,23 +189,23 @@ export function useSpeech() {
       if (targetVoiceName) {
         // First try exact match (case-sensitive)
         selectedVoice = voices.find((voice) => voice.name === targetVoiceName)
-        
+
         // If exact match fails, try case-insensitive match
         if (!selectedVoice) {
-          selectedVoice = voices.find((voice) => 
+          selectedVoice = voices.find((voice) =>
             voice.name.toLowerCase() === targetVoiceName.toLowerCase()
           )
         }
-        
+
         // If still not found, try partial match (for voice names that might have extra info)
         if (!selectedVoice) {
           const targetLower = targetVoiceName.toLowerCase()
-          selectedVoice = voices.find((voice) => 
+          selectedVoice = voices.find((voice) =>
             voice.name.toLowerCase().includes(targetLower) ||
             targetLower.includes(voice.name.toLowerCase())
           )
         }
-        
+
         if (selectedVoice) {
           console.log("[Speech] Using selected voice:", selectedVoice.name)
           return selectedVoice
@@ -227,7 +227,7 @@ export function useSpeech() {
           "Tessa",             // Good iOS voice
           "Tom"                // Alternative Android voice
         ]
-        
+
         for (const priorityVoice of voicePriority) {
           selectedVoice = voices.find((voice) => voice.name.toLowerCase().includes(priorityVoice.toLowerCase()))
           if (selectedVoice) {
@@ -236,7 +236,7 @@ export function useSpeech() {
           }
         }
       }
-      
+
       console.log("[Speech] No priority voices found, trying fallback options")
 
       // 3. Try to find a high-quality LOCAL English voice (avoid network voices)
@@ -464,7 +464,7 @@ export function useSpeech() {
           // Add a small delay to ensure cancellation completes on mobile
           await new Promise(resolve => setTimeout(resolve, 100))
         }
-        
+
         utteranceQueueRef.current = []
         currentChunkIndexRef.current = 0
 
