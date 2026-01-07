@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion"
 import { Lightbulb, CheckCircle2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useTTSController } from "@/hooks/use-tts-controller"
 import type { Bias } from "@/lib/types"
 
 interface BiasExamplesProps {
@@ -654,6 +656,11 @@ export function generateTips(bias: Bias): string[] {
 }
 
 export function BiasExamples({ bias }: BiasExamplesProps) {
+  const { speak, pause, resume, state, isEnabled, isSupported, activeBiasId, activeSectionId } = useTTSController()
+  const biasId = `${bias.id}-${bias.title}`
+  const sectionId = (key: string) => `${biasId}::${key}`
+  const isCurrentBias = activeBiasId === biasId
+
   // Use structured examples from data if available, otherwise fall back to generated examples
   const hasStructuredExamples = bias.examples && bias.examples.length > 0
   const fallbackExamples = generateExamples(bias)
@@ -685,10 +692,42 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h3 className="text-foreground/80 mb-4 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base border-b border-border/50 pb-2">
-          <Lightbulb className="h-4 w-4 text-primary" />
-          Real-World Examples
-        </h3>
+        <div className="mb-4 flex items-center justify-between border-b border-border/50 pb-2">
+          <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
+            <Lightbulb className="h-4 w-4 text-primary" />
+            Real-World Examples
+          </h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2"
+            onClick={async () => {
+              if (!isSupported || !isEnabled) return
+              const id = sectionId("examples")
+              const isActive = isCurrentBias && activeSectionId === id
+              const text = hasStructuredExamples
+                ? bias.examples!.map(ex => `${ex.title ? ex.title + ". " : ""}${ex.description}`).join(". ")
+                : fallbackExamples.join(". ")
+              if (isActive) {
+                if (state === "playing") return pause()
+                if (state === "paused") return resume()
+              }
+              await speak(text, biasId, id)
+            }}
+            aria-label={
+              isCurrentBias && activeSectionId === sectionId("examples")
+                ? state === "playing" ? "Pause Real-World Examples" : "Resume Real-World Examples"
+                : "Listen to Real-World Examples"
+            }
+            disabled={!isSupported || !isEnabled}
+          >
+            {isCurrentBias && activeSectionId === sectionId("examples") && state === "playing" ? (
+              <span className="text-xs">Pause</span>
+            ) : (
+              <span className="text-xs">Listen</span>
+            )}
+          </Button>
+        </div>
         <div className="space-y-4">
           {hasStructuredExamples ? (
             // Display structured examples from data
@@ -756,10 +795,40 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <h3 className="text-foreground/80 mb-4 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base border-b border-border/50 pb-2">
-          <CheckCircle2 className="h-4 w-4 text-success" />
-          Quick Tips
-        </h3>
+        <div className="mb-4 flex items-center justify-between border-b border-border/50 pb-2">
+          <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
+            <CheckCircle2 className="h-4 w-4 text-success" />
+            Quick Tips
+          </h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2"
+            onClick={async () => {
+              if (!isSupported || !isEnabled) return
+              const id = sectionId("tips")
+              const isActive = isCurrentBias && activeSectionId === id
+              const text = tips.join(". ")
+              if (isActive) {
+                if (state === "playing") return pause()
+                if (state === "paused") return resume()
+              }
+              await speak(text, biasId, id)
+            }}
+            aria-label={
+              isCurrentBias && activeSectionId === sectionId("tips")
+                ? state === "playing" ? "Pause Quick Tips" : "Resume Quick Tips"
+                : "Listen to Quick Tips"
+            }
+            disabled={!isSupported || !isEnabled}
+          >
+            {isCurrentBias && activeSectionId === sectionId("tips") && state === "playing" ? (
+              <span className="text-xs">Pause</span>
+            ) : (
+              <span className="text-xs">Listen</span>
+            )}
+          </Button>
+        </div>
         <ul className="space-y-2">
           {tips.map((tip, i) => (
             <motion.li
