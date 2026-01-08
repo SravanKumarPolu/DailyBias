@@ -99,19 +99,19 @@ export function DailyHeader() {
   const getThemeDisplay = () => {
     if (settings.theme === "dark") {
       return {
-        icon: <Moon className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />,
+        icon: <Moon className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />,
         label: "Dark mode (click to cycle)",
         nextMode: "system",
       }
     } else if (settings.theme === "system") {
       return {
-        icon: <Monitor className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />,
+        icon: <Monitor className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />,
         label: "System mode (click to cycle)",
         nextMode: "light",
       }
     } else {
       return {
-        icon: <Sun className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />,
+        icon: <Sun className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />,
         label: "Light mode (click to cycle)",
         nextMode: "dark",
       }
@@ -153,13 +153,13 @@ export function DailyHeader() {
                   onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
                   aria-label="Visit Boostlly - Tiny words. Big impact."
                   title="Visit Boostlly - Tiny words. Big impact."
-                  className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
+                  className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2 sm:p-2.5 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
                 >
                   <Image
                     src="/boostlly-logo.png"
                     alt="Boostlly"
-                    width={28}
-                    height={28}
+                    width={32}
+                    height={32}
                     className="transition-all duration-300 relative z-10 object-contain"
                     aria-hidden="true"
                   />
@@ -170,9 +170,9 @@ export function DailyHeader() {
                   onClick={toggleTheme}
                   aria-label={themeDisplay.label}
                   title={themeDisplay.label}
-                  className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
+                  className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2 sm:p-2.5 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
                 >
-                  <span className="flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10">
+                  <span className="flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 transition-all duration-300 relative z-10">
                     {themeDisplay.icon}
                   </span>
                 </Button>
@@ -190,17 +190,17 @@ export function DailyHeader() {
                         ? "Daily reminders enabled - Click to manage"
                         : "Configure notification settings"
                     }
-                    className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2.5 sm:p-3 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
+                    className="touch-target h-12 w-12 sm:h-14 sm:w-14 min-h-[48px] min-w-[48px] p-2 sm:p-2.5 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
                   >
-                    <span className="relative flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300">
+                    <span className="relative flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 transition-all duration-300">
                       {notificationState.enabled ? (
                         <BellRing
-                          className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10 text-primary"
+                          className="h-7 w-7 sm:h-8 sm:w-8 transition-all duration-300 relative z-10 text-primary"
                           aria-hidden="true"
                         />
                       ) : (
                         <Bell
-                          className="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 relative z-10"
+                          className="h-7 w-7 sm:h-8 sm:w-8 transition-all duration-300 relative z-10"
                           aria-hidden="true"
                         />
                       )}
