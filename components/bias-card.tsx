@@ -54,6 +54,9 @@ function BiasCardComponent({
   const isPlaying = isCurrentBias && ttsState === "playing"
   const isPaused = isCurrentBias && ttsState === "paused"
 
+  // Reset button should be enabled if there's active speech (playing or paused) for this bias
+  const canReset = isCurrentBias && (isPlaying || isPaused)
+
   // Removed all animation state - using static rendering to prevent flickering
 
   // Section helpers for section-based listening
@@ -270,7 +273,7 @@ function BiasCardComponent({
     try {
       // If paused for this bias, resume
       if (isPaused) {
-        resume()
+        await resume()
         resetFlag()
         return
       }
@@ -282,7 +285,8 @@ function BiasCardComponent({
         return
       }
 
-      // Otherwise, start speaking (or resume if paused state exists for this bias)
+      // Otherwise, start speaking from the beginning
+      // (This ensures that if we're in idle state, we start fresh)
       const text = generateBiasText()
       await speak(text, biasId)
     } catch (error) {
@@ -667,7 +671,7 @@ function BiasCardComponent({
               }}
               aria-label="Reset playback"
               title="Reset playback to beginning"
-              disabled={!isSupported || !isEnabled || (!isPlaying && !isPaused)}
+              disabled={!isSupported || !isEnabled || !canReset}
             >
               <span>Reset</span>
             </Button>
