@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Lightbulb, CheckCircle2 } from "lucide-react"
+import { Lightbulb, CheckCircle2, Volume2, VolumeX } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTTSController } from "@/hooks/use-tts-controller"
 import type { Bias } from "@/lib/types"
@@ -693,10 +693,10 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <div className="mb-4 flex items-center justify-between border-b border-border/50 pb-2">
-          <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
+          <h4 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
             <Lightbulb className="h-4 w-4 text-primary" />
             Real-World Examples
-          </h3>
+          </h4>
           <Button
             variant="ghost"
             size="sm"
@@ -722,9 +722,9 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
             disabled={!isSupported || !isEnabled}
           >
             {isCurrentBias && activeSectionId === sectionId("examples") && state === "playing" ? (
-              <span className="text-xs">Pause</span>
+              <VolumeX className="h-4 w-4" />
             ) : (
-              <span className="text-xs">Listen</span>
+              <Volume2 className="h-4 w-4" />
             )}
           </Button>
         </div>
@@ -796,10 +796,10 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
         transition={{ duration: 0.5, delay: 0.6 }}
       >
         <div className="mb-4 flex items-center justify-between border-b border-border/50 pb-2">
-          <h3 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
+          <h4 className="text-foreground/80 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase sm:text-base">
             <CheckCircle2 className="h-4 w-4 text-success" />
             Quick Tips
-          </h3>
+          </h4>
           <Button
             variant="ghost"
             size="sm"
@@ -823,9 +823,9 @@ export function BiasExamples({ bias }: BiasExamplesProps) {
             disabled={!isSupported || !isEnabled}
           >
             {isCurrentBias && activeSectionId === sectionId("tips") && state === "playing" ? (
-              <span className="text-xs">Pause</span>
+              <VolumeX className="h-4 w-4" />
             ) : (
-              <span className="text-xs">Listen</span>
+              <Volume2 className="h-4 w-4" />
             )}
           </Button>
         </div>

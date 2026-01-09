@@ -479,20 +479,21 @@ function BiasCardComponent({
           </div>
 
           {/* Row 2: Title spans full width - padding-right prevents overlap with buttons */}
-          <h1
+          <h2
             id="bias-title"
-            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-6xl"
+            className="w-full font-bold tracking-tight text-balance break-normal hyphens-auto leading-tight
+             text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-6xl"
           >
             {bias.title}
-          </h1>
+          </h2>
         </div>
 
         {/* Summary - Enhanced as key definition section */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               Definition
-            </h2>
+            </h3>
             <Button
               variant="ghost"
               size="sm"
@@ -516,9 +517,9 @@ function BiasCardComponent({
         {/* Why it happens */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               Why it happens
-            </h2>
+            </h3>
             <Button
               variant="ghost"
               size="sm"
@@ -540,9 +541,9 @@ function BiasCardComponent({
         {/* How to counter */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
               How to counter it
-            </h2>
+            </h3>
             <Button
               variant="ghost"
               size="sm"
@@ -623,8 +624,7 @@ function BiasCardComponent({
                     className="mr-2 h-4 w-4 transition-transform duration-200"
                     aria-hidden="true"
                   />
-                  <span className="sm:inline hidden">Pause</span>
-                  <span className="sm:hidden">Pause</span>
+                  <span>Pause</span>
                 </>
               ) : isPaused ? (
                 <>
@@ -632,19 +632,23 @@ function BiasCardComponent({
                     className="mr-2 h-4 w-4 transition-transform duration-200"
                     aria-hidden="true"
                   />
-                  <span className="sm:inline hidden">Resume</span>
-                  <span className="sm:hidden">Resume</span>
+                  <span>Resume</span>
+                </>
+              ) : !isEnabled ? (
+                <>
+                  <VolumeX
+                    className="mr-2 h-4 w-4 transition-transform duration-200 opacity-50"
+                    aria-hidden="true"
+                  />
+                  <span>Voice Off</span>
                 </>
               ) : (
                 <>
                   <Volume2
-                    className={`mr-2 h-4 w-4 transition-transform duration-200 ${
-                      !isEnabled ? "opacity-50" : ""
-                    }`}
+                    className="mr-2 h-4 w-4 transition-transform duration-200"
                     aria-hidden="true"
                   />
-                  <span className="sm:inline hidden">{!isEnabled ? "Voice Off" : "Listen"}</span>
-                  <span className="sm:hidden">{!isEnabled ? "Off" : "Listen"}</span>
+                  <span>Listen</span>
                 </>
               )}
             </Button>
@@ -665,8 +669,7 @@ function BiasCardComponent({
               title="Reset playback to beginning"
               disabled={!isSupported || !isEnabled || (!isPlaying && !isPaused)}
             >
-              <span className="sm:inline hidden">Reset</span>
-              <span className="sm:hidden">Reset</span>
+              <span>Reset</span>
             </Button>
           </div>
           {/* Primary Actions Row 2: Share + Copy */}

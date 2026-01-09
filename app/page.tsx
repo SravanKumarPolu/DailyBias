@@ -203,8 +203,8 @@ export default function HomePage() {
             </div>
           </div>
         ) : biasToShow ? (
-          <div className="space-y-8 sm:space-y-10 md:space-y-12" suppressHydrationWarning>
-            <TiltCard className="mb-0" tiltStrength={8} glareEnabled>
+          <div className="space-y-10 sm:space-y-12 md:space-y-16" suppressHydrationWarning>
+            <TiltCard tiltStrength={8} glareEnabled>
               <DynamicBiasCard
                 bias={biasToShow}
                 variant="detailed"
