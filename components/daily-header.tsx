@@ -1,7 +1,7 @@
 "use client"
 
 import { Moon, Sun, Bell, BellRing, Monitor } from "lucide-react"
-import { Button } from "@/components/ui/button"
+
 import { useSettings } from "@/hooks/use-settings"
 import { useEffect, useState } from "react"
 import Link from "next/link"
@@ -99,19 +99,19 @@ export function DailyHeader() {
   const getThemeDisplay = () => {
     if (settings.theme === "dark") {
       return {
-        icon: <Moon className="h-full w-full scale-110" aria-hidden="true" strokeWidth={3} />,
+        icon: <Moon className="h-full w-full scale-125" aria-hidden="true" strokeWidth={2} />,
         label: "Dark mode (click to cycle)",
         nextMode: "system",
       }
     } else if (settings.theme === "system") {
       return {
-        icon: <Monitor className="h-full w-full scale-110" aria-hidden="true" strokeWidth={3} />,
+        icon: <Monitor className="h-full w-full scale-125" aria-hidden="true" strokeWidth={2} />,
         label: "System mode (click to cycle)",
         nextMode: "light",
       }
     } else {
       return {
-        icon: <Sun className="h-full w-full scale-110" aria-hidden="true" strokeWidth={3} />,
+        icon: <Sun className="h-full w-full scale-125" aria-hidden="true" strokeWidth={2} />,
         label: "Light mode (click to cycle)",
         nextMode: "dark",
       }
@@ -147,13 +147,12 @@ export function DailyHeader() {
               </div>
               <div className="flex shrink-0 items-center justify-center gap-3 sm:gap-3.5">
                 {/* FIX: Increased touch target to minimum 44px (iOS) / 48px (Android) for accessibility */}
-                <Button
-                  variant="ghost"
-                  size="icon"
+                <button
+                  type="button"
                   onClick={() => window.open("https://boostlly.netlify.app/", "_blank")}
                   aria-label="Visit Boostlly - Tiny words. Big impact."
                   title="Visit Boostlly - Tiny words. Big impact."
-                  className="touch-target h-16 w-16 sm:h-16 sm:w-16 min-h-[56px] min-w-[56px] p-0 sm:p-0 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
+                  className="touch-target h-16 w-16 sm:h-16 sm:w-16 min-h-[56px] min-w-[56px] p-0 sm:p-0 gap-0 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none active:scale-95"
                 >
                   <Image
                     src="/boostlly-logo.png"
@@ -163,23 +162,21 @@ export function DailyHeader() {
                     className="h-3/4 w-3/4 object-contain transition-all duration-300 relative z-10"
                     aria-hidden="true"
                   />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
+                </button>
+                <button
+                  type="button"
                   onClick={toggleTheme}
                   aria-label={themeDisplay.label}
                   title={themeDisplay.label}
-                  className="touch-target h-16 w-16 sm:h-16 sm:w-16 min-h-[56px] min-w-[56px] p-0 sm:p-0 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
+                  className="touch-target h-16 w-16 sm:h-16 sm:w-16 min-h-[56px] min-w-[56px] p-0 sm:p-0 gap-0 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none active:scale-95"
                 >
-                  <span className="flex items-center justify-center h-full w-full">
+                  <span className="flex items-center justify-center ">
                     {themeDisplay.icon}
                   </span>
-                </Button>
+                </button>
                 <Link href="/settings#notifications">
-                  <Button
-                    variant="ghost"
-                    size="icon"
+                  <button
+                    type="button"
                     aria-label={
                       notificationState.enabled
                         ? "Notification settings - Daily reminders enabled"
@@ -190,17 +187,17 @@ export function DailyHeader() {
                         ? "Daily reminders enabled - Click to manage"
                         : "Configure notification settings"
                     }
-                    className="touch-target h-16 w-16 sm:h-16 sm:w-16 min-h-[56px] min-w-[56px] p-0 sm:p-0 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center"
+                    className="touch-target h-16 w-16 sm:h-16 sm:w-16 min-h-[56px] min-w-[56px] p-0 sm:p-0 gap-0 relative rounded-xl bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 dark:border-white/10 transition-all duration-300 ease-out hover:scale-110 hover:bg-white/10 dark:hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 flex items-center justify-center focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none active:scale-95"
                   >
                     <span className="relative flex items-center justify-center h-full w-full">
                       {notificationState.enabled ? (
-<BellRing
-   className="h-full w-full scale-110" strokeWidth={3}
+                        <BellRing
+                          className=" scale-125" strokeWidth={2}
                           aria-hidden="true"
                         />
                       ) : (
-<Bell
-   className="h-full w-full scale-110" strokeWidth={3}
+                        <Bell
+                          className=" scale-125" strokeWidth={2}
                           aria-hidden="true"
                         />
                       )}
@@ -208,7 +205,7 @@ export function DailyHeader() {
                         <span className="absolute -top-0.5 -right-0.5 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-primary border-2 border-background z-20 animate-pulse" aria-hidden="true" />
                       )}
                     </span>
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>
