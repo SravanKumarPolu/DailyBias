@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { BiasExamples } from "@/components/bias-examples"
 import { BiasResearchInfo } from "@/components/bias-research-info"
-import { BiasFeedback } from "@/components/bias-feedback"
 import { ExpertReview } from "@/components/expert-review"
 import { ShareableCard } from "@/components/shareable-card"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
@@ -373,9 +372,6 @@ function BiasCardComponent({
 
         {/* Research & Sources */}
         <BiasResearchInfo bias={bias} />
-
-        {/* User Feedback */}
-        <BiasFeedback bias={bias} />
 
         {/* Expert Review */}
         <ExpertReview bias={bias} />
