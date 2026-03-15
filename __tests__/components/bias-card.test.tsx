@@ -4,22 +4,6 @@ import { BiasCard } from '@/components/bias-card'
 import type { Bias } from '@/lib/types'
 
 // Mock hooks
-vi.mock('@/hooks/use-speech', () => ({
-  useSpeech: () => ({
-    speak: vi.fn(),
-    stop: vi.fn(),
-    isSpeaking: false,
-    isEnabled: true,
-    isSupported: true,
-  }),
-}))
-
-vi.mock('@/hooks/use-toast', () => ({
-  useToast: () => ({
-    toast: vi.fn(),
-  }),
-}))
-
 vi.mock('@/lib/haptics', () => ({
   haptics: {
     light: vi.fn(),

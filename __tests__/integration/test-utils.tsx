@@ -105,9 +105,6 @@ async function seedStorage(seed: RenderWithProvidersOptions['storageSeed'] = {})
       backgroundStyle: 'gradient',
       dailyReminder: false,
       mixUserBiasesInDaily: false,
-      voiceEnabled: false,
-      voiceRate: 0.9,
-      voicePitch: 1.0,
       timezoneAutoDetect: true,
     }
     const mergedSettings = { ...defaultSettings, ...(seed.settings || {}) }
@@ -143,9 +140,6 @@ async function seedStorage(seed: RenderWithProvidersOptions['storageSeed'] = {})
         backgroundStyle: 'gradient',
         dailyReminder: false,
         mixUserBiasesInDaily: false,
-        voiceEnabled: false,
-        voiceRate: 0.9,
-        voicePitch: 1.0,
         timezoneAutoDetect: true,
       }
       const mergedSettings = { ...defaultSettings, ...seed.settings }
@@ -405,9 +399,6 @@ export async function waitForSettingsPageToLoad(maxWait = 12000) {
       
       const dailyReminder = screen.queryByTestId('setting-daily-reminder')
       if (dailyReminder) return true
-      
-      const voiceEnabled = screen.queryByTestId('setting-voice-enabled')
-      if (voiceEnabled) return true
       
       // Strategy 2: Look for heading
       const heading = screen.queryByRole('heading', { name: /settings/i })

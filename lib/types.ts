@@ -48,11 +48,6 @@ export interface UserSettings {
   backgroundStyle: "gradient" | "glass" | "minimal"
   dailyReminder: boolean
   mixUserBiasesInDaily: boolean
-  voiceEnabled: boolean
-  readBiasAloud?: boolean // Whether to automatically read bias content aloud
-  voiceRate: number
-  voicePitch: number
-  voiceName?: string
   timezone?: string // User's preferred timezone (auto-detected if not set)
   timezoneAutoDetect?: boolean // Whether to auto-detect timezone on app load
 }

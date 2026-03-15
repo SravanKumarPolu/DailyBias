@@ -33,8 +33,8 @@ export function TelegramRedirectBanner() {
 
     setIsInAppBrowser(isInAppBrowser)
 
-    // Show banner if in in-app browser and speech is not supported
-    if (isInAppBrowser && !('speechSynthesis' in window)) {
+    // Show banner when in in-app browser for best experience
+    if (isInAppBrowser) {
       setShowBanner(true)
     }
   }, [])
@@ -73,7 +73,7 @@ export function TelegramRedirectBanner() {
               <span className="font-semibold text-sm">Open in Browser</span>
             </div>
             <p className="text-xs opacity-90 mt-1">
-              For full features including voice reading, open this link in Chrome or Safari
+              For the best experience, open this link in Chrome or Safari
             </p>
           </div>
           <div className="flex gap-2">

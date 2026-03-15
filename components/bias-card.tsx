@@ -4,21 +4,19 @@ import type React from "react"
 import { memo } from "react"
 
 // Removed framer-motion import - using static divs to prevent flickering
-import { Heart, Share2, Copy, Check, Star, Volume2, VolumeX } from "lucide-react"
-import { useState, useRef, useCallback, useEffect } from "react"
+import { Heart, Share2, Copy, Check, Star } from "lucide-react"
+import { useState, useRef, useCallback } from "react"
 // Removed unused useEffect import
 import type { Bias } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { BiasExamples, generateExamples, generateTips } from "@/components/bias-examples"
+import { BiasExamples } from "@/components/bias-examples"
 import { BiasResearchInfo } from "@/components/bias-research-info"
 import { BiasFeedback } from "@/components/bias-feedback"
 import { ExpertReview } from "@/components/expert-review"
 import { ShareableCard } from "@/components/shareable-card"
 import { getCategoryColor, getCategoryLabel } from "@/lib/category-utils"
 import { haptics } from "@/lib/haptics"
-import { useTTSController } from "@/hooks/use-tts-controller"
-import { useToast } from "@/hooks/use-toast"
 import { shareBias } from "@/lib/native-features"
 
 interface BiasCardProps {
@@ -43,73 +41,6 @@ function BiasCardComponent({
   const [masteredAnimating, setMasteredAnimating] = useState(false)
   const favoriteRef = useRef<HTMLButtonElement>(null)
   const masteredRef = useRef<HTMLButtonElement>(null)
-  const { speak, pause, resume, reset, state: ttsState, isEnabled, isSupported, activeBiasId, activeSectionId } = useTTSController()
-  const { toast } = useToast()
-
-  // Generate unique bias ID for TTS tracking
-  const biasId = `${bias.id}-${bias.title}`
-  const isCurrentBias = activeBiasId === biasId
-  // Only show playing/paused states if this is the current bias AND state matches
-  // This prevents "Resume" from appearing incorrectly on other bias cards
-  const isPlaying = isCurrentBias && ttsState === "playing"
-  const isPaused = isCurrentBias && ttsState === "paused"
-
-  // Reset button should be enabled if there's active speech (playing or paused) for this bias
-  const canReset = isCurrentBias && (isPlaying || isPaused)
-
-  // Removed all animation state - using static rendering to prevent flickering
-
-  // Section helpers for section-based listening
-  const sectionId = useCallback((key: string) => `${biasId}::${key}`, [biasId])
-  const playingSectionKey = isCurrentBias ? (activeSectionId?.split("::")[1] ?? null) : null
-  const getSectionLabel = (key: string) => {
-    switch (key) {
-      case "definition":
-        return "Definition"
-      case "why":
-        return "Why it happens"
-      case "counter":
-        return "How to counter it"
-      case "examples":
-        return "Real-World Examples"
-      case "tips":
-        return "Quick Tips"
-      case "full":
-        return "Full Bias"
-      default:
-        return key
-    }
-  }
-
-  const handleSectionListen = useCallback(async (key: "definition" | "why" | "counter") => {
-    if (!isSupported || !isEnabled) return
-
-    const id = sectionId(key)
-    const isThisSectionActive = isCurrentBias && activeSectionId === id
-    const text =
-      key === "definition"
-        ? bias.summary
-        : key === "why"
-        ? bias.why
-        : bias.counter
-
-    try {
-      if (isThisSectionActive) {
-        if (ttsState === "playing") {
-          pause()
-          return
-        }
-        if (ttsState === "paused") {
-          resume()
-          return
-        }
-      }
-      await speak(text, biasId, id)
-    } catch (e) {
-      console.error("[BiasCard] Section speech error:", e)
-    }
-  }, [isSupported, isEnabled, isCurrentBias, activeSectionId, ttsState, pause, resume, speak, biasId, bias.summary, bias.why, bias.counter, sectionId])
-
   const handleShare = async () => {
     haptics.light()
     try {
@@ -183,147 +114,6 @@ function BiasCardComponent({
       onToggleMastered()
     }
   }, [onToggleMastered])
-
-  // MOBILE FIX: Use ref to prevent double-firing on mobile (both onClick and onTouchEnd can fire)
-  const isHandlingSpeakRef = useRef(false)
-
-  // Generate full bias card content text
-  const generateBiasText = useCallback(() => {
-    const examples = generateExamples(bias)
-    const tips = generateTips(bias)
-
-    // Build comprehensive text in order: title, summary, why, counter, examples, tips
-    let text = `${bias.title}. ${bias.summary}. Why it happens: ${bias.why}. How to counter it: ${bias.counter}.`
-
-    // Add real-world examples
-    if (examples.length > 0) {
-      text += ` Real world examples: ${examples.join('. ')}.`
-    }
-
-    // Add quick tips
-    if (tips.length > 0) {
-      text += ` Quick tips: ${tips.join('. ')}.`
-    }
-
-    return text
-  }, [bias])
-
-  // Handle Listen/Pause/Resume button
-  const handleListen = useCallback(async (e?: React.MouseEvent | React.TouchEvent) => {
-    // MOBILE FIX: Prevent double-firing from both onClick and onTouchEnd
-    if (isHandlingSpeakRef.current) {
-      return
-    }
-    isHandlingSpeakRef.current = true
-
-    // Reset flag after a short delay
-    const resetFlag = () => {
-      setTimeout(() => {
-        isHandlingSpeakRef.current = false
-      }, 300)
-    }
-
-    // Only prevent default for mouse events, not touch events (Android needs touch events)
-    if (e && e.type === 'click' && 'button' in e && e.button !== 0) {
-      e.preventDefault()
-    }
-
-    if (!isSupported) {
-      // Check if we're in an in-app browser
-      const userAgent = navigator.userAgent.toLowerCase()
-      const isInAppBrowser =
-        userAgent.includes('telegram') ||
-        userAgent.includes('whatsapp') ||
-        userAgent.includes('fbav') ||
-        userAgent.includes('fban') ||
-        userAgent.includes('instagram') ||
-        userAgent.includes('twitterandroid') ||
-        userAgent.includes('twitterios') ||
-        userAgent.includes('linkedinapp')
-
-      if (isInAppBrowser) {
-        toast({
-          title: "Open in Browser",
-          description: "Voice reading works better in Chrome or Safari. Tap the banner above to open in your browser.",
-          duration: 5000,
-        })
-      } else {
-        toast({
-          title: "Not Supported",
-          description: "Your browser doesn't support text-to-speech functionality.",
-          variant: "destructive",
-        })
-      }
-      resetFlag()
-      return
-    }
-
-    if (!isEnabled) {
-      toast({
-        title: "Voice Disabled",
-        description: "Enable voice in Settings to use this feature.",
-      })
-      resetFlag()
-      return
-    }
-
-    // MOBILE FIX: Add haptic feedback immediately on user interaction
-    haptics.light()
-
-    try {
-      // If paused for this bias, resume
-      if (isPaused) {
-        await resume()
-        resetFlag()
-        return
-      }
-
-      // If playing this bias, pause
-      if (isPlaying) {
-        pause()
-        resetFlag()
-        return
-      }
-
-      // Otherwise, start speaking from the beginning
-      // (This ensures that if we're in idle state, we start fresh)
-      const text = generateBiasText()
-      await speak(text, biasId)
-    } catch (error) {
-      console.error('[BiasCard] Speech error:', error)
-      toast({
-        title: "Speech Error",
-        description: "Could not start speech. Try again or check Settings.",
-        variant: "destructive",
-      })
-    } finally {
-      resetFlag()
-    }
-  }, [isSupported, isEnabled, isPlaying, isPaused, pause, resume, speak, biasId, generateBiasText, toast])
-
-  // Handle Reset button
-  const handleReset = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
-    if (e && e.type === 'click' && 'button' in e && e.button !== 0) {
-      e.preventDefault()
-    }
-
-    haptics.light()
-    reset()
-
-    toast({
-      title: "Reset",
-      description: "Playback has been reset.",
-      duration: 2000,
-    })
-  }, [reset, toast])
-
-  // Stop speech when switching to a different bias
-  useEffect(() => {
-    if (activeBiasId !== null && activeBiasId !== biasId && (isPlaying || isPaused)) {
-      // Another bias is playing, but this component is still mounted
-      // The TTS controller will handle stopping when speak() is called with a different biasId
-    }
-  }, [activeBiasId, biasId, isPlaying, isPaused])
 
   if (variant === "compact") {
     return (
@@ -456,9 +246,8 @@ function BiasCardComponent({
       </div>
 
       <div className="relative space-y-8 sm:space-y-10 md:space-y-12">
-        {/* Header - Using CSS Grid for better mobile layout */}
-        {/* pr-28 (112px) reserves space for absolutely positioned buttons: 44px button + 8px gap + 44px button + 16px right margin */}
-        <div className="space-y-4 pr-28">
+        {/* Header */}
+        <div className="space-y-4">
           {/* Row 1: Category badges */}
           <div className="flex flex-wrap items-center gap-2">
             <Badge className={`text-xs ${getCategoryColor(bias.category)}`}>
@@ -492,27 +281,11 @@ function BiasCardComponent({
           </h2>
         </div>
 
-        {/* Summary - Enhanced as key definition section */}
+        {/* Summary - Definition section */}
         <div className="space-y-3 pt-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-              Definition
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleSectionListen("definition")}
-              aria-label={
-                isCurrentBias && activeSectionId === sectionId("definition")
-                  ? ttsState === "playing" ? "Pause Definition" : "Resume Definition"
-                  : "Listen to Definition"
-              }
-              className="h-8 px-2"
-              disabled={!isSupported || !isEnabled}
-            >
-              {isCurrentBias && activeSectionId === sectionId("definition") && ttsState === "playing" ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </Button>
-          </div>
+          <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            Definition
+          </h3>
           <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">
             {bias.summary}
           </p>
@@ -520,163 +293,23 @@ function BiasCardComponent({
 
         {/* Why it happens */}
         <div className="space-y-3 pt-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-              Why it happens
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleSectionListen("why")}
-              aria-label={
-                isCurrentBias && activeSectionId === sectionId("why")
-                  ? ttsState === "playing" ? "Pause Why it happens" : "Resume Why it happens"
-                  : "Listen to Why it happens"
-              }
-              className="h-8 px-2"
-              disabled={!isSupported || !isEnabled}
-            >
-              {isCurrentBias && activeSectionId === sectionId("why") && ttsState === "playing" ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </Button>
-          </div>
+          <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            Why it happens
+          </h3>
           <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">{bias.why}</p>
         </div>
 
         {/* How to counter */}
         <div className="space-y-3 pt-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-              How to counter it
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleSectionListen("counter")}
-              aria-label={
-                isCurrentBias && activeSectionId === sectionId("counter")
-                  ? ttsState === "playing" ? "Pause How to counter it" : "Resume How to counter it"
-                  : "Listen to How to counter it"
-              }
-              className="h-8 px-2"
-              disabled={!isSupported || !isEnabled}
-            >
-              {isCurrentBias && activeSectionId === sectionId("counter") && ttsState === "playing" ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </Button>
-          </div>
+          <h3 className="text-foreground/80 text-sm font-semibold tracking-wide uppercase sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
+            How to counter it
+          </h3>
           <p className="text-base leading-relaxed text-pretty sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl text-foreground">{bias.counter}</p>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col gap-3 pt-4 sm:pt-6">
-          {/* Currently Playing Label */}
-          {isCurrentBias && (isPlaying || isPaused) && playingSectionKey && (
-            <div className="text-xs text-muted-foreground -mb-1">
-              Playing: {getSectionLabel(playingSectionKey as string)} {isPaused ? "(paused)" : ""}
-            </div>
-          )}
-          {/* Primary Actions Row 1: Listen + Reset */}
-          <div className="flex gap-3">
-            <Button
-              onClick={handleListen}
-              onTouchStart={(e) => {
-                // MOBILE FIX: Use onTouchStart for immediate response on mobile
-                // Note: preventDefault() removed - passive listeners can't prevent default
-                // Double-firing is prevented by isHandlingSpeakRef guard in handleListen
-                handleListen(e)
-              }}
-              onTouchEnd={(e) => {
-                // MOBILE FIX: Also handle onTouchEnd as fallback
-                // Only fire if onTouchStart didn't already handle it
-                if (!isHandlingSpeakRef.current) {
-                  handleListen(e)
-                }
-              }}
-              variant="outline"
-              className={`flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target ${
-                isPlaying ? "animate-pulse" : ""
-              }`}
-              style={{
-                touchAction: 'manipulation',
-                WebkitTouchCallout: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                pointerEvents: 'auto',
-                userSelect: 'none'
-              }}
-              aria-label={
-                isPlaying
-                  ? "Pause speaking"
-                  : isPaused
-                  ? "Resume speaking"
-                  : "Read bias aloud"
-              }
-              title={
-                !isSupported
-                  ? "Speech not supported in this browser"
-                  : !isEnabled
-                  ? "Enable voice in Settings first"
-                  : isPlaying
-                  ? "Pause reading"
-                  : isPaused
-                  ? "Resume reading"
-                  : "Read this bias aloud"
-              }
-              disabled={!isSupported || !isEnabled}
-            >
-              {isPlaying ? (
-                <>
-                  <VolumeX
-                    className="mr-2 h-4 w-4 transition-transform duration-200"
-                    aria-hidden="true"
-                  />
-                  <span>Pause</span>
-                </>
-              ) : isPaused ? (
-                <>
-                  <Volume2
-                    className="mr-2 h-4 w-4 transition-transform duration-200"
-                    aria-hidden="true"
-                  />
-                  <span>Resume</span>
-                </>
-              ) : !isEnabled ? (
-                <>
-                  <VolumeX
-                    className="mr-2 h-4 w-4 transition-transform duration-200 opacity-50"
-                    aria-hidden="true"
-                  />
-                  <span>Voice Off</span>
-                </>
-              ) : (
-                <>
-                  <Volume2
-                    className="mr-2 h-4 w-4 transition-transform duration-200"
-                    aria-hidden="true"
-                  />
-                  <span>Listen</span>
-                </>
-              )}
-            </Button>
-            {/* Reset button - always available when TTS is supported and enabled */}
-            <Button
-              onClick={handleReset}
-              onTouchEnd={handleReset}
-              variant="outline"
-              className="flex-1 text-base transition-all duration-200 sm:text-lg min-h-[44px] touch-target"
-              style={{
-                touchAction: 'manipulation',
-                WebkitTouchCallout: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                pointerEvents: 'auto',
-                userSelect: 'none'
-              }}
-              aria-label="Reset playback"
-              title="Reset playback to beginning"
-              disabled={!isSupported || !isEnabled || !canReset}
-            >
-              <span>Reset</span>
-            </Button>
-          </div>
-          {/* Primary Actions Row 2: Share + Copy */}
+          {/* Share + Copy */}
           <div className="flex gap-3">
             <Button
               onClick={handleShare}

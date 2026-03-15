@@ -176,22 +176,6 @@ global.ResizeObserver = class ResizeObserver {
   unobserve() {}
 } as any
 
-// Mock SpeechSynthesis with addEventListener
-global.speechSynthesis = {
-  speak: vi.fn(),
-  cancel: vi.fn(),
-  pause: vi.fn(),
-  resume: vi.fn(),
-  getVoices: vi.fn(() => []),
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-} as any
-
-// Mock SpeechSynthesisUtterance
-global.SpeechSynthesisUtterance = class SpeechSynthesisUtterance {
-  constructor(public text?: string) {}
-} as any
-
 // Note: window.location is read-only in vmThreads, so we skip mocking it
 // Tests should work fine without location.reload mock
 

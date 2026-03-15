@@ -219,14 +219,8 @@ export async function getSettings(): Promise<UserSettings> {
       backgroundStyle: "gradient",
       dailyReminder: false,
       mixUserBiasesInDaily: true,
-      voiceEnabled: true,
-      readBiasAloud: false, // Default to false - user must manually trigger reading
-      voiceRate: 0.9, // Default to 0.9x for better comprehension
-      voicePitch: 1.0,
-      voiceName: "Google US English", // Default to Google US English voice
-    // Ensure timezone-related fields always exist in production too
-    timezoneAutoDetect: true, // Auto-detect timezone enabled by default
-    timezone: "UTC",
+      timezoneAutoDetect: true, // Auto-detect timezone enabled by default
+      timezone: "UTC",
     }
 
     // Merge with defaults to handle migration of new fields

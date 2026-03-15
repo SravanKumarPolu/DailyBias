@@ -84,7 +84,6 @@ vi.mock('@/hooks/use-settings', () => ({
       backgroundStyle: 'gradient',
       dailyReminder: false,
       mixUserBiasesInDaily: true,
-      voiceEnabled: false,
       timezoneAutoDetect: true,
       timezone: 'America/New_York',
     },
@@ -231,15 +230,6 @@ vi.mock('@/hooks/use-voice-commands', () => ({
     isListening: false,
     isSupported: false,
     toggleListening: vi.fn(),
-  }),
-}))
-
-vi.mock('@/hooks/use-speech', () => ({
-  useSpeech: () => ({
-    speak: vi.fn(),
-    stop: vi.fn(),
-    ensureVoicesLoaded: vi.fn().mockResolvedValue(undefined),
-    isSupported: false,
   }),
 }))
 

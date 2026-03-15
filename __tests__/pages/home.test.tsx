@@ -98,13 +98,6 @@ vi.mock('@/hooks/use-voice-commands', () => ({
   }),
 }))
 
-vi.mock('@/hooks/use-speech', () => ({
-  useSpeech: () => ({
-    speak: vi.fn(),
-    stop: vi.fn(),
-  }),
-}))
-
 vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
     toast: vi.fn(),

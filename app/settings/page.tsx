@@ -7,17 +7,13 @@ import {
   Palette,
   Bell,
   Info,
-  Mic,
-  RotateCcw,
   Globe,
   Check,
-  Search,
 } from "lucide-react"
 import { DailyHeader } from "@/components/daily-header"
 import { DynamicBackgroundCanvas } from "@/components/dynamic-background-canvas"
 import { DynamicNavigation } from "@/components/dynamic-navigation"
 import { useSettings } from "@/hooks/use-settings"
-import { useSpeech } from "@/hooks/use-speech"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -25,7 +21,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import Link from "next/link"
 import { haptics } from "@/lib/haptics"
 import { getCommonTimezones, detectTimezone, isValidTimezone } from "@/lib/timezone-utils"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { siteConfig } from "@/lib/site-config"
 import {
   scheduleDailyReminder,
@@ -37,15 +32,8 @@ import { logger } from "@/lib/logger"
 
 export default function SettingsPage() {
   const { settings, saveSetting } = useSettings()
-  const { ensureVoicesLoaded, isSupported: speechSupported, speak, stop } = useSpeech()
-  const [localVoiceRate, setLocalVoiceRate] = useState(settings.voiceRate || 0.9)
-  const [localVoicePitch, setLocalVoicePitch] = useState(settings.voicePitch || 1.0)
-  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
-  const [testingVoice, setTestingVoice] = useState(false)
   const [availableTimezones] = useState(getCommonTimezones())
   const [currentTimezoneInfo, setCurrentTimezoneInfo] = useState(detectTimezone())
-  const [voicePopoverOpen, setVoicePopoverOpen] = useState(false)
-  const [voiceSearch, setVoiceSearch] = useState("")
   const [timezoneSwitching, setTimezoneSwitching] = useState(false)
   const [mounted, setMounted] = useState(false)
   type NotifyState = "unknown" | "unsupported" | "denied" | "default" | "granted"
@@ -60,189 +48,6 @@ export default function SettingsPage() {
   }, [])
 
 
-
-  // Helper to fetch and filter voices consistently
-  const fetchAndFilterVoices = async () => {
-    // Ensure voices are loaded before fetching (fixes iOS/Safari loading issue)
-    if (speechSupported) {
-      await ensureVoicesLoaded()
-    }
-    const voices = window.speechSynthesis.getVoices()
-    console.log("[Settings] Loading voices:", voices.length, "available")
-
-    // Blacklist of known poor quality/novelty voices
-    const blacklistedVoices = [
-      "albert",
-      "bad news",
-      "bahh",
-      "bells",
-      "boing",
-      "bubbles",
-      "cellos",
-      "deranged",
-      "good news",
-      "jester",
-      "organ",
-      "superstar",
-      "trinoids",
-      "whisper",
-      "wobble",
-      "zarvox",
-      "junior",
-      "ralph",
-      "fred",
-      "kathy",
-      "princess",
-      "bruce",
-      "flo",
-      "grandma",
-      "grandpa",
-    ]
-
-    // Filter for high-quality English voices only
-    const englishVoices = voices
-      .filter((voice) => {
-        // Must be English
-        if (!voice.lang.startsWith("en")) return false
-
-        // Remove blacklisted voices
-        const voiceLower = voice.name.toLowerCase()
-        if (blacklistedVoices.some((bad) => voiceLower.includes(bad))) return false
-
-        // Keep premium/enhanced voices
-        const qualityTerms = [
-          "premium",
-          "enhanced",
-          "neural",
-          "natural",
-          "hd",
-          "google",
-          "microsoft",
-        ]
-        const hasQuality = qualityTerms.some((term) => voiceLower.includes(term))
-
-        // Keep standard voices with common names (Samantha, Alex, Victoria, Daniel, Karen, Moira, etc.)
-        const goodStandardVoices = [
-          "samantha",
-          "alex",
-          "victoria",
-          "daniel",
-          "karen",
-          "moira",
-          "tessa",
-          "serena",
-          "allison",
-          "ava",
-          "susan",
-          "vicki",
-          "tom",
-          "aaron",
-          "nicky",
-          "diego",
-          "jorge",
-          "paulina",
-        ]
-        const isGoodStandard = goodStandardVoices.some((good) => voiceLower.includes(good))
-
-        return hasQuality || isGoodStandard
-      })
-      .sort((a, b) => {
-        // Prioritize voices with quality indicators
-        const qualityTerms = ["premium", "enhanced", "neural", "natural", "hd"]
-        const aHasQuality = qualityTerms.some((term) => a.name.toLowerCase().includes(term))
-        const bHasQuality = qualityTerms.some((term) => b.name.toLowerCase().includes(term))
-
-        if (aHasQuality && !bHasQuality) return -1
-        if (!aHasQuality && bHasQuality) return 1
-
-        // Prefer local voices over network
-        if (a.localService && !b.localService) return -1
-        if (!a.localService && b.localService) return 1
-
-        return a.name.localeCompare(b.name)
-      })
-
-    console.log("[Settings] Filtered voices:", englishVoices.length, "high-quality English voices")
-    setAvailableVoices(englishVoices)
-
-    // Smart voice selection: prioritize same voice across all platforms
-    if (englishVoices.length > 0) {
-      // Priority order for voice selection (focus on high-quality voices)
-      const voicePriority = [
-        "Google US English",  // Best desktop voice
-        "Samantha",          // High-quality, natural sounding
-        "Alex",              // High-quality iOS voice
-        "Victoria",          // Good iOS voice
-        "Karen",             // Decent Android voice
-        "Daniel",            // Common but lower quality Android voice
-        "Tessa",             // Good iOS voice
-        "Tom"                // Alternative Android voice
-      ]
-
-      // Find the best available voice based on priority
-      let bestVoice = null
-      for (const priorityVoice of voicePriority) {
-        bestVoice = englishVoices.find((v) => v.name.toLowerCase().includes(priorityVoice.toLowerCase()))
-        if (bestVoice) {
-          console.log("[Settings] Selected priority voice:", bestVoice.name)
-          break
-        }
-      }
-
-      // If no priority voice found, use the first English voice
-      if (!bestVoice && englishVoices.length > 0) {
-        bestVoice = englishVoices[0]
-        console.log("[Settings] Using first available voice:", bestVoice.name)
-      }
-
-      // Only auto-select if user hasn't explicitly selected a voice yet
-      // This prevents overriding user's explicit choice
-      if (bestVoice && !settings.voiceName) {
-        console.log("[Settings] Auto-selecting voice for first-time setup:", bestVoice.name)
-        saveSetting("voiceName", bestVoice.name)
-      }
-    }
-  }
-
-  // Load available voices
-  useEffect(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      fetchAndFilterVoices().catch((error) => {
-        console.error("[Settings] Error loading voices:", error)
-      })
-      window.speechSynthesis.onvoiceschanged = () => {
-        fetchAndFilterVoices().catch((error) => {
-          console.error("[Settings] Error loading voices on change:", error)
-        })
-      }
-    }
-    // saveSetting is stable from context, settings.voiceName triggers re-fetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.voiceName, saveSetting, speechSupported, ensureVoicesLoaded])
-
-  const handleRefreshVoices = async () => {
-    try {
-      // Ensure voices are populated (especially on iOS/PWA) after a user gesture
-      if (speechSupported) {
-        await ensureVoicesLoaded()
-      }
-
-      await fetchAndFilterVoices()
-      haptics.selection()
-    } catch (error) {
-      console.error("[Settings] Error refreshing voices:", error)
-      // Still attempt to refresh list even if ensureVoicesLoaded fails
-      try {
-        await fetchAndFilterVoices()
-      } catch {
-        // Final fallback - just try to get voices directly
-        const voices = window.speechSynthesis.getVoices()
-        if (voices.length > 0) {
-          setAvailableVoices(voices.filter(v => v.lang.startsWith("en")))
-        }
-      }
-    }
-  }
 
   // Handle hydration and timezone detection
   useEffect(() => {
@@ -285,17 +90,13 @@ export default function SettingsPage() {
     }
   }, [mounted, updateNotificationState])
 
-  // Sync local state with settings
+  // Sync timezone info when settings change
   useEffect(() => {
-    setLocalVoiceRate(settings.voiceRate || 0.9)
-    setLocalVoicePitch(settings.voicePitch || 1.0)
-
-    // Update timezone info when settings change (only after mounted)
     if (mounted && settings.timezone) {
       const timezoneInfo = detectTimezone()
       setCurrentTimezoneInfo(timezoneInfo)
     }
-  }, [settings.voiceRate, settings.voicePitch, settings.timezone, mounted])
+  }, [settings.timezone, mounted])
 
   const handleReminderToggle = async (checked: boolean) => {
     // Turning OFF - always allow
@@ -347,7 +148,7 @@ export default function SettingsPage() {
               body: "Daily reminders enabled! You'll be notified when a new bias is available.",
               icon: "/icon-192.jpg",
             })
-          } catch (err) {
+          } catch {
             // Silently fail if notification creation fails
           }
 
@@ -370,40 +171,6 @@ export default function SettingsPage() {
       await saveSetting("dailyReminder", false)
       updateNotificationState()
     }
-  }
-
-  const handleResetVoiceSettings = async () => {
-    // Reset to defaults
-    const defaultRate = 0.9
-    const defaultPitch = 1.0
-
-    // Update local state immediately for instant UI feedback
-    setLocalVoiceRate(defaultRate)
-    setLocalVoicePitch(defaultPitch)
-
-    // Save to database (don't wait to avoid blocking UI update)
-    saveSetting("voiceRate", defaultRate)
-    saveSetting("voicePitch", defaultPitch)
-
-    // Provide haptic feedback
-    haptics.success()
-
-  }
-
-  const handleVoiceRateChange = (value: number) => {
-    setLocalVoiceRate(value)
-  }
-
-  const handleVoiceRateCommit = () => {
-    saveSetting("voiceRate", localVoiceRate)
-  }
-
-  const handleVoicePitchChange = (value: number) => {
-    setLocalVoicePitch(value)
-  }
-
-  const handleVoicePitchCommit = () => {
-    saveSetting("voicePitch", localVoicePitch)
   }
 
   const handleTimezoneChange = (timezone: string) => {
@@ -437,75 +204,6 @@ export default function SettingsPage() {
       setTimezoneSwitching(false)
     }
   }
-
-  const handleTestVoice = async () => {
-    try {
-      setTestingVoice(true)
-      if (!speechSupported) {
-        alert('Speech synthesis is not supported in this browser.')
-        return
-      }
-
-      await ensureVoicesLoaded()
-
-      // Use the saved settings value for the most up-to-date selection
-      const selectedVoiceName = settings.voiceName || ""
-
-      if (!selectedVoiceName) {
-        alert('Please select a voice first.')
-        return
-      }
-
-      // Short sample that announces the voice name
-      const voiceLabel = selectedVoiceName || "Voice"
-      const sample = `Hello. This is ${voiceLabel}. Testing voice quality and pronunciation.`
-
-      console.log('[Settings] Testing voice:', selectedVoiceName)
-
-      // Pass the selected voice name explicitly to bypass settings cache
-      speak(sample, selectedVoiceName || undefined)
-
-      // Stop after ~3 seconds to allow full sample
-      setTimeout(() => {
-        stop()
-        setTestingVoice(false)
-      }, 3000)
-
-      haptics.selection()
-    } catch (error) {
-      console.error('[Settings] Voice test failed:', error)
-      alert('Failed to test voice. Please try again.')
-    } finally {
-      setTestingVoice(false)
-    }
-  }
-
-  const openVoicePicker = async () => {
-    try {
-      setVoicePopoverOpen(true)
-      if (speechSupported) {
-        await ensureVoicesLoaded()
-      }
-      await fetchAndFilterVoices()
-      setVoiceSearch("")
-    } catch (error) {
-      console.error("[Settings] Error opening voice picker:", error)
-      // Still try to fetch voices directly as fallback
-      const voices = window.speechSynthesis.getVoices()
-      if (voices.length > 0) {
-        setAvailableVoices(voices.filter(v => v.lang.startsWith("en")))
-      }
-    }
-  }
-
-  const filteredVoices = availableVoices.filter((v) => {
-    const q = voiceSearch.trim().toLowerCase()
-    if (!q) return true
-    return (
-      v.name.toLowerCase().includes(q) ||
-      (v.lang?.toLowerCase().includes(q) ?? false)
-    )
-  })
 
   return (
     <div className="min-h-screen pb-20 sm:pb-24">
@@ -649,205 +347,6 @@ export default function SettingsPage() {
                 </p>
               )}
             </div>
-          </div>
-
-          {/* Voice Settings Section */}
-          <div className="glass space-y-4 rounded-xl p-6 sm:rounded-2xl sm:p-8">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1">
-                <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
-                  <Mic className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Voice Settings
-                </h2>
-                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                  Text-to-speech preferences
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="voice-enabled" className="cursor-pointer">
-                  Read bias content aloud
-                </Label>
-                <p className="text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl leading-relaxed">
-                  Automatically read bias content when viewing
-                </p>
-              </div>
-              <Switch
-                id="voice-enabled"
-                checked={settings.voiceEnabled}
-                onCheckedChange={(checked) => {
-                  saveSetting("voiceEnabled", checked)
-                  // When enabling voice, also enable auto-read for better UX
-                  // When disabling, auto-read is automatically disabled too
-                  if (checked) {
-                    saveSetting("readBiasAloud", true)
-                  } else {
-                    saveSetting("readBiasAloud", false)
-                  }
-                }}
-                className="cursor-pointer"
-                data-testid="setting-voice-enabled"
-              />
-            </div>
-
-            {settings.voiceEnabled && (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="voice-select">Voice</Label>
-                  {/* Voice picker popover */}
-                  <Popover open={voicePopoverOpen} onOpenChange={setVoicePopoverOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id="voice-select"
-                        variant="outline"
-                        className="w-full justify-between bg-transparent"
-                        onClick={openVoicePicker}
-                      >
-                        <span className="truncate">{settings.voiceName || "Select voice"}</span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80 p-0" align="start">
-                      <div className="border-b p-4">
-                        <h4 className="font-medium">Select a voice</h4>
-                        <div className="relative mt-3">
-                          <label htmlFor="voice-search" className="sr-only">Search voices</label>
-                          <input
-                            id="voice-search"
-                            type="text"
-                            inputMode="search"
-                            placeholder="Search voices by name or language"
-                            value={voiceSearch}
-                            onChange={(e) => setVoiceSearch(e.target.value)}
-                            className="bg-secondary text-foreground placeholder:text-muted-foreground w-full rounded-md border px-9 py-2"
-                            aria-label="Search voices by name or language"
-                          />
-                          <Search className="text-muted-foreground pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2" aria-hidden="true" />
-                        </div>
-                      </div>
-                      <div className="max-h-64 overflow-auto">
-                        {filteredVoices.map((voice, index) => {
-                          const selected = settings.voiceName === voice.name
-                          return (
-                            <button
-                              key={`${voice.name}-${voice.voiceURI || index}`}
-                              className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-ring ${selected ? 'bg-accent/60' : ''}`}
-                              onClick={() => {
-                                saveSetting('voiceName', voice.name)
-                                setVoicePopoverOpen(false)
-                                haptics.selection()
-                              }}
-                              aria-label={`Select voice ${voice.name}${selected ? ' (currently selected)' : ''}`}
-                              aria-pressed={selected}
-                            >
-                              <div className="min-w-0 grow">
-                                <div className="truncate font-medium">{voice.name}</div>
-                                <div className="text-foreground/80 mt-0.5 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                                  {voice.lang || 'en'}
-                                </div>
-                              </div>
-                              <div className="flex shrink-0 items-center gap-2">
-                                {voice.localService && (
-                                  <span className="text-xs">⭐</span>
-                                )}
-                                {selected && <Check className="h-4 w-4" />}
-                              </div>
-                            </button>
-                          )
-                        })}
-                        {filteredVoices.length === 0 && (
-                          <div className="p-4 text-center text-foreground/80 text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl">
-                            No voices found
-                          </div>
-                        )}
-                        <div className="border-t p-3">
-                          <Button size="sm" variant="ghost" className="w-full" onClick={handleRefreshVoices} aria-label="Refresh available voices list">
-                            Refresh voices
-                          </Button>
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-
-                  {/* Test Voice Button - Modern inline design */}
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <p className="text-foreground/60 text-xs">
-                      ⭐ Local voices offer better quality
-                    </p>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="cursor-pointer"
-                      onClick={handleTestVoice}
-                      disabled={testingVoice || !settings.voiceName}
-                    >
-                      {testingVoice ? (
-                        <>
-                          <span className="mr-2">Testing...</span>
-                        </>
-                      ) : (
-                        <>
-                          🔊 <span className="ml-2">Test Voice</span>
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="voice-rate">Speech Rate: {localVoiceRate.toFixed(1)}x</Label>
-                  </div>
-                  <input
-                    type="range"
-                    id="voice-rate"
-                    min="0.5"
-                    max="2"
-                    step="0.1"
-                    value={localVoiceRate}
-                    onInput={(e) => handleVoiceRateChange(parseFloat(e.currentTarget.value))}
-                    onChange={(e) => handleVoiceRateChange(parseFloat(e.currentTarget.value))}
-                    onMouseUp={handleVoiceRateCommit}
-                    onTouchEnd={handleVoiceRateCommit}
-                    className="bg-secondary accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="voice-pitch">Pitch: {localVoicePitch.toFixed(1)}x</Label>
-                  </div>
-                  <input
-                    type="range"
-                    id="voice-pitch"
-                    min="0.5"
-                    max="2"
-                    step="0.1"
-                    value={localVoicePitch}
-                    onInput={(e) => handleVoicePitchChange(parseFloat(e.currentTarget.value))}
-                    onChange={(e) => handleVoicePitchChange(parseFloat(e.currentTarget.value))}
-                    onMouseUp={handleVoicePitchCommit}
-                    onTouchEnd={handleVoicePitchCommit}
-                    className="bg-secondary accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg"
-                  />
-                </div>
-
-                {/* Reset Button - Modern placement at bottom */}
-                <div className="pt-3 border-t">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleResetVoiceSettings}
-                    className="cursor-pointer text-muted-foreground hover:text-foreground"
-                    aria-label="Reset voice settings to default"
-                  >
-                    <RotateCcw className="mr-2 h-3 w-3" />
-                    Reset to defaults
-                  </Button>
-                </div>
-              </>
-            )}
           </div>
 
           {/* Daily Bias Section */}
