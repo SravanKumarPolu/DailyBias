@@ -142,7 +142,7 @@ export function DailyHeader() {
                   </h1>
                 </Link>
                 <p className="text-sm sm:text-base lg:text-lg xl:text-lg 2xl:text-xl text-foreground/80 font-normal tracking-wide leading-relaxed">
-                  One bias daily • 50 total • ~2 months rotation
+                  Small insights. Big mental upgrades.
                 </p>
               </div>
               <div className="flex shrink-0 items-center justify-center gap-3 sm:gap-3.5">
