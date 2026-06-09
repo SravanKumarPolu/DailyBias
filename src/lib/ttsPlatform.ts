@@ -3,7 +3,20 @@
 export function isIOSSafari(): boolean {
   if (typeof navigator === "undefined") return false;
   const ua = navigator.userAgent;
-  return /iPad|iPhone|iPod/.test(ua) || (ua.includes("Mac") && "ontouchend" in document);
+  
+  // Direct iOS device detection
+  if (/iPad|iPhone|iPod/.test(ua)) return true;
+  
+  // iPadOS 13+ detection: reports as Macintosh but has touch support
+  if (ua.includes("Mac")) {
+    // Check for touch support using maxTouchPoints (iPadOS has > 0)
+    // Also check for ontouchend as a fallback, but verify it's actually present
+    const hasTouchPoints = (navigator.maxTouchPoints ?? 0) > 0;
+    const hasTouchEnd = typeof document.ontouchend === "function" || document.ontouchend !== undefined;
+    return hasTouchPoints || hasTouchEnd;
+  }
+  
+  return false;
 }
 
 export function shouldUseKeepAlive(): boolean {
@@ -16,7 +29,7 @@ export function shouldUseKeepAlive(): boolean {
 }
 
 /** Wait for voices (mobile often returns [] until voiceschanged). */
-export function waitForVoices(timeoutMs = 1500): Promise<SpeechSynthesisVoice[]> {
+export function waitForVoices(timeoutMs = 3000): Promise<SpeechSynthesisVoice[]> {
   return new Promise((resolve) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
       resolve([]);

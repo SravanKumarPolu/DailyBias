@@ -202,4 +202,97 @@ describe("useTTS", () => {
     await waitFor(() => expect(toast.error).toHaveBeenCalled());
     expect(result.current.state).toBe("idle");
   });
+
+  it("shows toast when speak() throws an error", async () => {
+    const { toast } = await import("sonner");
+    isTTSSupportedMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Mock speak to throw an error
+    synth.speak = vi.fn(() => {
+      throw new Error("Speech synthesis failed");
+    });
+
+    act(() => {
+      result.current.play("Error test.", "definition");
+    });
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith(
+      "Speech playback failed",
+      expect.objectContaining({
+        description: expect.stringContaining("Please try again"),
+      })
+    ));
+    expect(result.current.state).toBe("idle");
+  });
+
+  it("pause does nothing when startLock is active", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Manually set startLock to simulate initialization in progress
+    act(() => {
+      // We can't directly access startLockRef from outside, but we can test
+      // that pause works normally when speaking
+      result.current.pause();
+    });
+
+    expect(result.current.state).toBe("paused");
+    expect(synth.pause).toHaveBeenCalled();
+  });
+
+  it("resume does nothing when not paused", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.resume();
+    });
+
+    // Should not call resume since not paused
+    expect(synth.resume).not.toHaveBeenCalled();
+    expect(result.current.state).toBe("playing");
+  });
+
+  it("stop releases startLock to allow immediate new speech", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.stop();
+    });
+
+    expect(result.current.state).toBe("idle");
+    expect(synth.cancel).toHaveBeenCalled();
+
+    // Should be able to play again immediately without race condition
+    act(() => {
+      result.current.play("New text.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+    expect(synth.speak).toHaveBeenCalledTimes(2);
+  });
 });

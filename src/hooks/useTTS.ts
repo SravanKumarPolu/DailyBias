@@ -81,9 +81,21 @@ export function useTTS(): TTSControls {
 
   // Eagerly trigger voice enumeration so the first click already has the
   // best voice picked instead of falling back to a robotic default.
+  // Also listen for voiceschanged to handle cases where voices load asynchronously.
   useEffect(() => {
     if (!isTTSSupported()) return;
-    window.speechSynthesis.getVoices();
+    
+    const synth = window.speechSynthesis;
+    const loadVoices = () => {
+      synth.getVoices();
+    };
+    
+    loadVoices();
+    synth.addEventListener("voiceschanged", loadVoices);
+    
+    return () => {
+      synth.removeEventListener("voiceschanged", loadVoices);
+    };
   }, []);
 
   const speakText = useCallback(async (
@@ -183,10 +195,14 @@ export function useTTS(): TTSControls {
     // Speak synchronously — setTimeout breaks iOS user-gesture requirement.
     try {
       synth.speak(utterance);
-    } catch {
+    } catch (error) {
       cleanup();
       setState("idle");
       setActiveSection(null);
+      toast.error("Speech playback failed", {
+        description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
+      });
+      console.error("TTS speak() error:", error);
     } finally {
       releaseLock();
     }
@@ -246,14 +262,16 @@ export function useTTS(): TTSControls {
 
   const pause = useCallback(() => {
     const synth = window.speechSynthesis;
-    if (!synth.speaking) return;
+    // Don't pause if not speaking or if initialization is in progress
+    if (!synth.speaking || startLockRef.current) return;
     synth.pause();
     setState("paused");
   }, []);
 
   const resume = useCallback(() => {
     const synth = window.speechSynthesis;
-    if (!synth.paused) return;
+    // Don't resume if not paused or if initialization is in progress
+    if (!synth.paused || !synth.speaking || startLockRef.current) return;
     synth.resume();
     setState("playing");
   }, []);
@@ -262,6 +280,7 @@ export function useTTS(): TTSControls {
     stopKeepAlive();
     window.speechSynthesis.cancel();
     utteranceRef.current = null;
+    // Release the start lock to allow new speech to start immediately
     startLockRef.current = false;
     queueRef.current = [];
     queueIndexRef.current = 0;
