@@ -153,13 +153,14 @@ export function useTTS(): TTSControls {
 
     const total = text.length;
     utterance.onboundary = (e: SpeechSynthesisEvent) => {
-      // Validate charIndex to prevent invalid/negative/out-of-range values
+      // Validate charIndex to prevent invalid/negative values
+      // Allow values up to total length (SpeechSynthesis may send index at end)
       if (!Number.isFinite(e.charIndex) || e.charIndex < 0) {
         return;
       }
       const adjusted = Math.max(0, e.charIndex - charIndexOffset);
-      // Ensure adjusted index is within valid range
-      if (adjusted < 0 || adjusted > total) {
+      // Only check lower bound - upper bound can be at or beyond text length
+      if (adjusted < 0) {
         return;
       }
       setActiveCharIndex(adjusted);

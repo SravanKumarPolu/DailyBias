@@ -348,10 +348,10 @@ describe("useTTS", () => {
       expect(result.current.activeCharIndex).toBe(0);
 
       act(() => {
-        utterance.onboundary({ charIndex: 1000 } as SpeechSynthesisEvent); // Out of range
+        utterance.onboundary({ charIndex: 1000 } as SpeechSynthesisEvent); // Now allowed (upper bound removed)
       });
-      // Should not update charIndex with out-of-range value
-      expect(result.current.activeCharIndex).toBe(0);
+      // Should update charIndex since upper bound check was removed
+      expect(result.current.activeCharIndex).toBe(1000);
     }
   });
 
@@ -373,5 +373,121 @@ describe("useTTS", () => {
     expect(result.current.state).toBe("idle");
     expect(result.current.activeSection).toBeNull();
     expect(result.current.activeCharIndex).toBe(0);
+  });
+
+  it("Listen All starts playback", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.playAll([
+        { id: "definition", text: "First section." },
+        { id: "tips", text: "Second section." },
+      ]);
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+    expect(result.current.activeSection).toBe("definition");
+    expect(result.current.isQueue).toBe(true);
+  });
+
+  it("Pause works during playback", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.pause();
+    });
+
+    expect(result.current.state).toBe("paused");
+    expect(synth.pause).toHaveBeenCalled();
+  });
+
+  it("Resume works after pause", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.pause();
+    });
+
+    expect(result.current.state).toBe("paused");
+
+    act(() => {
+      result.current.resume();
+    });
+
+    expect(result.current.state).toBe("playing");
+    expect(synth.resume).toHaveBeenCalled();
+  });
+
+  it("Stop works during playback", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.stop();
+    });
+
+    expect(result.current.state).toBe("idle");
+    expect(synth.cancel).toHaveBeenCalled();
+  });
+
+  it("Section speaker starts only that section", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Section text.", "tips");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+    expect(result.current.activeSection).toBe("tips");
+    expect(result.current.isQueue).toBe(false);
+  });
+
+  it("Starting section stops current speech", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("First section.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+    expect(result.current.activeSection).toBe("definition");
+
+    act(() => {
+      result.current.play("Second section.", "tips");
+    });
+
+    await waitFor(() => expect(result.current.activeSection).toBe("tips"));
+    expect(synth.cancel).toHaveBeenCalled();
+  });
+
+  it("Unsupported speech fallback shows error", async () => {
+    const { toast } = await import("sonner");
+    isTTSSupportedMock.mockReturnValue(false);
+
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalled());
+    expect(result.current.state).toBe("idle");
   });
 });

@@ -108,6 +108,8 @@ const HighlightedParagraph = ({
   charIndex: number;
   className?: string;
 }) => {
+  // Simplified highlighting: only section-level, no sentence-level
+  // This prevents bugs from sentence-level boundary events
   const spans = splitSentences(text);
 
   // Not playing this section → plain paragraph, dimmed siblings handled elsewhere.
@@ -115,44 +117,18 @@ const HighlightedParagraph = ({
     return <p className={cn("text-sm text-foreground/80 leading-relaxed", className)}>{text}</p>;
   }
 
-  // Active section but only one (or zero) sentence → highlight the whole paragraph
-  // and mark it so auto-scroll picks it up, matching list-item behavior.
-  if (spans.length <= 1) {
-    return (
-      <p
-        data-tts-active="true"
-        className={cn(
-          "text-sm leading-relaxed transition-all duration-500 rounded-md",
-          "bg-primary/10 text-foreground px-1 -mx-0.5 shadow-[0_0_18px_hsl(258_60%_60%_/_0.10)]",
-          className,
-        )}
-      >
-        {text}
-      </p>
-    );
-  }
-
-  const activeIdx = sentenceIndexAt(spans, charIndex);
+  // Active section → highlight the whole paragraph
+  // Mark it so auto-scroll picks it up, matching list-item behavior.
   return (
-    <p className={cn("text-sm text-foreground/80 leading-relaxed", className)}>
-      {spans.map((s, i) => {
-        const active = i === activeIdx;
-        return (
-          <span
-            key={i}
-            data-tts-active={active ? "true" : undefined}
-            className={cn(
-              "transition-all duration-500 rounded-md",
-              active
-                ? "bg-primary/10 text-foreground px-1 -mx-0.5 shadow-[0_0_18px_hsl(258_60%_60%_/_0.10)]"
-                : "text-foreground/45",
-            )}
-          >
-            {s.text}
-            {i < spans.length - 1 ? " " : ""}
-          </span>
-        );
-      })}
+    <p
+      data-tts-active="true"
+      className={cn(
+        "text-sm leading-relaxed transition-all duration-500 rounded-md",
+        "bg-primary/10 text-foreground px-1 -mx-0.5 shadow-[0_0_18px_hsl(258_60%_60%_/_0.10)]",
+        className,
+      )}
+    >
+      {text}
     </p>
   );
 };
@@ -161,14 +137,8 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
   const tts = useTTS();
 
   const handlePlaySection = (sectionId: string) => {
-    if (tts.activeSection === sectionId && tts.state === "playing") {
-      tts.pause();
-      return;
-    }
-    if (tts.activeSection === sectionId && tts.state === "paused") {
-      tts.resume();
-      return;
-    }
+    // Simplified: always stop current speech and play the section
+    // Use top/global controls for pause/resume/stop
     tts.stop();
     tts.play(getSectionText(bias, sectionId), sectionId);
   };
