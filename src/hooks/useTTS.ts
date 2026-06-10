@@ -49,6 +49,7 @@ export function useTTS(): TTSControls {
   const keepAliveRef = useRef<number | null>(null);
   const startLockRef = useRef(false);
   const lastErrorToastRef = useRef<number>(0);
+  const intentionalCancelRef = useRef(false);
 
   // Chrome on desktop silently pauses speech after ~15 seconds. Periodically
   // nudging pause/resume keeps long sections playing smoothly.
@@ -137,6 +138,7 @@ export function useTTS(): TTSControls {
     startLockRef.current = true;
 
     const synth = window.speechSynthesis;
+    intentionalCancelRef.current = true;
     synth.cancel();
     utteranceRef.current = null;
 
@@ -190,9 +192,28 @@ export function useTTS(): TTSControls {
     };
     utterance.onerror = (e: SpeechSynthesisErrorEvent) => {
       cleanup();
-      if (e.error && e.error !== "interrupted" && e.error !== "canceled") {
-        console.warn("TTS error:", e.error);
+      const errorType = e.error;
+
+      // Expected lifecycle events - ignore and don't show toast
+      if (errorType === "interrupted" || errorType === "canceled") {
+        // If this was an intentional cancel (stop, section switch), ignore silently
+        // If it was unexpected, log but don't show toast
+        if (!intentionalCancelRef.current) {
+          console.warn("TTS interrupted unexpectedly:", errorType);
+        }
+        setState("idle");
+        setActiveSection(null);
+        setActiveCharIndex(0);
+        setIsQueue(false);
+        setQueueProgress(0);
+        queueRef.current = [];
+        queueIndexRef.current = 0;
+        onError?.();
+        return;
       }
+
+      // Real errors - log and show toast
+      console.warn("TTS error:", errorType);
       setState("idle");
       setActiveSection(null);
       setActiveCharIndex(0);
@@ -200,12 +221,19 @@ export function useTTS(): TTSControls {
       setQueueProgress(0);
       queueRef.current = [];
       queueIndexRef.current = 0;
-      // Show mobile-specific error message, prevent duplicate toasts
+
+      // Show toast only for real errors, prevent duplicate toasts
       const now = Date.now();
-      if (isMobileBrowser() && now - lastErrorToastRef.current > 2000) {
-        toast.error("Playback interrupted", {
-          description: "Mobile browser interrupted playback. Try a shorter section.",
-        });
+      if (now - lastErrorToastRef.current > 2000) {
+        if (isMobileBrowser()) {
+          toast.error("Playback interrupted", {
+            description: "Mobile browser interrupted playback. Try a shorter section.",
+          });
+        } else {
+          toast.error("Speech playback failed", {
+            description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
+          });
+        }
         lastErrorToastRef.current = now;
       }
       onError?.();
@@ -216,6 +244,9 @@ export function useTTS(): TTSControls {
     setActiveCharIndex(0);
     setState("playing");
 
+    // Reset intentional cancel flag after starting new speech
+    intentionalCancelRef.current = false;
+
     // Speak synchronously — setTimeout breaks iOS user-gesture requirement.
     try {
       synth.speak(utterance);
@@ -223,20 +254,21 @@ export function useTTS(): TTSControls {
       cleanup();
       setState("idle");
       setActiveSection(null);
-      // Show mobile-specific error message, prevent duplicate toasts
+      console.error("TTS speak() error:", error);
+      // Show toast for real errors, prevent duplicate toasts
       const now = Date.now();
-      if (isMobileBrowser() && now - lastErrorToastRef.current > 2000) {
-        toast.error("Playback interrupted", {
-          description: "Mobile browser interrupted playback. Try a shorter section.",
-        });
-        lastErrorToastRef.current = now;
-      } else if (!isMobileBrowser() && now - lastErrorToastRef.current > 2000) {
-        toast.error("Speech playback failed", {
-          description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
-        });
+      if (now - lastErrorToastRef.current > 2000) {
+        if (isMobileBrowser()) {
+          toast.error("Playback interrupted", {
+            description: "Mobile browser interrupted playback. Try a shorter section.",
+          });
+        } else {
+          toast.error("Speech playback failed", {
+            description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
+          });
+        }
         lastErrorToastRef.current = now;
       }
-      console.error("TTS speak() error:", error);
     } finally {
       releaseLock();
     }
@@ -325,6 +357,7 @@ export function useTTS(): TTSControls {
 
   const stop = useCallback(() => {
     stopKeepAlive();
+    intentionalCancelRef.current = true;
     window.speechSynthesis.cancel();
     utteranceRef.current = null;
     // Release the start lock to allow new speech to start immediately
@@ -336,6 +369,10 @@ export function useTTS(): TTSControls {
     setActiveCharIndex(0);
     setIsQueue(false);
     setQueueProgress(0);
+    // Reset intentional cancel flag after a brief delay
+    setTimeout(() => {
+      intentionalCancelRef.current = false;
+    }, 100);
   }, [stopKeepAlive]);
 
   return { state, activeSection, activeCharIndex, queueProgress, isQueue, play, playAll, pause, resume, stop };

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Brain, Bookmark, Sparkles, Settings, Info, Check, Sun, CalendarDays } from "lucide-react";
+import { Brain, Bookmark, Sparkles, Settings, Info, Check, Sun, CheckCircle } from "lucide-react";
 import { useQuizCompletion } from "@/hooks/useQuizCompletion";
 import { getTodaysBias } from "@/data/biases";
 import { useMemo } from "react";
@@ -12,8 +12,8 @@ const Header = () => {
   const navItems = [
     { label: "Today", path: "/", icon: Sun },
     { label: "Saved", path: "/saved", icon: Bookmark },
-    { label: "Quiz", path: "/quiz", icon: Sparkles },
-    { label: "Review", path: "/weekly-review", icon: CalendarDays },
+    { label: "Quiz", path: "/quiz", icon: Brain },
+    { label: "Review", path: "/weekly-review", icon: CheckCircle },
     { label: "Settings", path: "/settings", icon: Settings },
     { label: "About", path: "/about", icon: Info },
   ];

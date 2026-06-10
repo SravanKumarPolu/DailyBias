@@ -597,4 +597,45 @@ describe("useTTS", () => {
 
     expect(result.current.state).toBe("playing");
   });
+
+  it("intentional stop does not show toast", async () => {
+    const { toast } = await import("sonner");
+    isMobileBrowserMock.mockReturnValue(true);
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.stop();
+    });
+
+    expect(result.current.state).toBe("idle");
+    // Should not show toast for intentional stop
+    expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it("switching sections does not show toast", async () => {
+    const { toast } = await import("sonner");
+    isMobileBrowserMock.mockReturnValue(true);
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Switch to another section (calls stop then play)
+    act(() => {
+      result.current.play("New text.", "examples");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+    // Should not show toast for section switch
+    expect(toast.error).not.toHaveBeenCalled();
+  });
 });
