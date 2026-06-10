@@ -198,22 +198,42 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
   // Auto-scroll the active sentence/list-item into view as TTS progresses.
   const cardRef = useRef<HTMLDivElement>(null);
   const lastScrolledRef = useRef<Element | null>(null);
+  const scrollRafRef = useRef<number | null>(null);
   useEffect(() => {
     if (tts.state === "idle" || !tts.activeSection) {
       lastScrolledRef.current = null;
+      if (scrollRafRef.current !== null) {
+        cancelAnimationFrame(scrollRafRef.current);
+        scrollRafRef.current = null;
+      }
       return;
     }
-    const root = cardRef.current;
-    if (!root) return;
-    const el = root.querySelector('[data-tts-active="true"]');
-    if (!el || el === lastScrolledRef.current) return;
-    lastScrolledRef.current = el;
-    const rect = el.getBoundingClientRect();
-    const vh = window.innerHeight;
-    // Only scroll when the active element is outside the comfortable middle band.
-    if (rect.top < vh * 0.2 || rect.bottom > vh * 0.8) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    
+    // Throttle scroll using requestAnimationFrame to prevent performance issues
+    if (scrollRafRef.current !== null) {
+      cancelAnimationFrame(scrollRafRef.current);
     }
+    
+    scrollRafRef.current = requestAnimationFrame(() => {
+      const root = cardRef.current;
+      if (!root) return;
+      const el = root.querySelector('[data-tts-active="true"]');
+      if (!el || el === lastScrolledRef.current) return;
+      lastScrolledRef.current = el;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Only scroll when the active element is outside the comfortable middle band.
+      if (rect.top < vh * 0.2 || rect.bottom > vh * 0.8) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      scrollRafRef.current = null;
+    });
+    
+    return () => {
+      if (scrollRafRef.current !== null) {
+        cancelAnimationFrame(scrollRafRef.current);
+      }
+    };
   }, [tts.state, tts.activeSection, tts.activeCharIndex,
       activeExampleIdx, activeCounterIdx, activeTipIdx]);
 

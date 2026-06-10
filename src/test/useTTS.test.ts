@@ -295,4 +295,83 @@ describe("useTTS", () => {
     await waitFor(() => expect(result.current.state).toBe("playing"));
     expect(synth.speak).toHaveBeenCalledTimes(2);
   });
+
+  it("handles queue item error gracefully", async () => {
+    const { toast } = await import("sonner");
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.playAll([
+        { id: "definition", text: "First section." },
+        { id: "tips", text: "Second section." },
+      ]);
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Simulate an error during playback by ending the current utterance
+    // which would trigger the next item, then make speak throw
+    act(() => {
+      synth._end(); // End first section
+      synth.speak = vi.fn(() => {
+        throw new Error("Queue error");
+      });
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("idle"));
+    // Should show error toast from speak() failure
+    expect(toast.error).toHaveBeenCalled();
+  });
+
+  it("ignores invalid charIndex values", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Simulate boundary event with invalid charIndex
+    const utterance = (synth as any)._currentUtterance;
+    if (utterance && utterance.onboundary) {
+      act(() => {
+        utterance.onboundary({ charIndex: -1 } as SpeechSynthesisEvent);
+      });
+      // Should not update charIndex with negative value
+      expect(result.current.activeCharIndex).toBe(0);
+
+      act(() => {
+        utterance.onboundary({ charIndex: NaN } as SpeechSynthesisEvent);
+      });
+      // Should not update charIndex with NaN
+      expect(result.current.activeCharIndex).toBe(0);
+
+      act(() => {
+        utterance.onboundary({ charIndex: 1000 } as SpeechSynthesisEvent); // Out of range
+      });
+      // Should not update charIndex with out-of-range value
+      expect(result.current.activeCharIndex).toBe(0);
+    }
+  });
+
+  it("stop clears highlight state", async () => {
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello world.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+    expect(result.current.activeSection).toBe("definition");
+    expect(result.current.activeCharIndex).toBe(0);
+
+    act(() => {
+      result.current.stop();
+    });
+
+    expect(result.current.state).toBe("idle");
+    expect(result.current.activeSection).toBeNull();
+    expect(result.current.activeCharIndex).toBe(0);
+  });
 });

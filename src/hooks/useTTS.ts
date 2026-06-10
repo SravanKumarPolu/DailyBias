@@ -103,13 +103,14 @@ export function useTTS(): TTSControls {
     sectionId: string,
     options: {
       onEnd?: () => void;
+      onError?: () => void;
       onProgress?: (ratio: number) => void;
       /** Number of leading characters in `text` to ignore when reporting
        *  charIndex back to consumers (e.g. spoken section label prefix). */
       charIndexOffset?: number;
     } = {},
   ) => {
-    const { onEnd, onProgress, charIndexOffset = 0 } = options;
+    const { onEnd, onError, onProgress, charIndexOffset = 0 } = options;
     if (!isTTSSupported()) {
       toast.error("Text-to-speech not supported", {
         description:
@@ -152,7 +153,15 @@ export function useTTS(): TTSControls {
 
     const total = text.length;
     utterance.onboundary = (e: SpeechSynthesisEvent) => {
+      // Validate charIndex to prevent invalid/negative/out-of-range values
+      if (!Number.isFinite(e.charIndex) || e.charIndex < 0) {
+        return;
+      }
       const adjusted = Math.max(0, e.charIndex - charIndexOffset);
+      // Ensure adjusted index is within valid range
+      if (adjusted < 0 || adjusted > total) {
+        return;
+      }
       setActiveCharIndex(adjusted);
       if (onProgress && total > 0) {
         onProgress(Math.min(1, e.charIndex / total));
@@ -185,6 +194,7 @@ export function useTTS(): TTSControls {
       setState("idle");
       setActiveSection(null);
       setActiveCharIndex(0);
+      onError?.();
     };
 
     utteranceRef.current = utterance;
@@ -230,6 +240,19 @@ export function useTTS(): TTSControls {
       onEnd: () => {
         setQueueProgress(base + slice);
         playNextInQueue();
+      },
+      onError: () => {
+        // If an utterance fails in the queue, stop cleanly and show error
+        setState("idle");
+        setActiveSection(null);
+        setActiveCharIndex(0);
+        setIsQueue(false);
+        setQueueProgress(0);
+        queueRef.current = [];
+        queueIndexRef.current = 0;
+        toast.error("Playback interrupted", {
+          description: "An error occurred while playing. Tap Listen All to try again.",
+        });
       },
       onProgress: (ratio) => {
         setQueueProgress(base + slice * ratio);
