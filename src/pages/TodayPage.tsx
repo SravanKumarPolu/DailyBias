@@ -6,6 +6,8 @@ import BiasProgress from "@/components/BiasProgress";
 import ReflectionPrompt from "@/components/ReflectionPrompt";
 import BiasFeedback from "@/components/BiasFeedback";
 import CycleCompletionModal from "@/components/CycleCompletionModal";
+import SEO from "@/components/SEO";
+import StructuredData from "@/components/StructuredData";
 import { resolveTodaysBias } from "@/data/biases";
 import { useBiasProgress } from "@/hooks/useBiasProgress";
 import { useBookmarks } from "@/hooks/useBookmarks";
@@ -45,6 +47,19 @@ const TodayPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="Today's Cognitive Bias"
+        description={`Learn about ${bias.title} today. ${bias.definition}`}
+      />
+      <StructuredData type="website" />
+      <StructuredData type="organization" />
+      <StructuredData
+        type="article"
+        data={{
+          title: bias.title,
+          description: bias.definition,
+        }}
+      />
       <Header />
 
       <div className="pointer-events-none absolute inset-0">

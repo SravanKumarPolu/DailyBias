@@ -1,10 +1,15 @@
 import Header from "@/components/Header";
+import SEO from "@/components/SEO";
 import VoiceSpeedSelector from "@/components/VoiceSpeedSelector";
 import { Settings as SettingsIcon } from "lucide-react";
 
 const SettingsPage = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="Settings"
+        description="Personalize your DebiasDaily experience. Configure voice settings for text-to-speech and customize your learning preferences."
+      />
       <Header />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-accent/8 blur-[100px]" />

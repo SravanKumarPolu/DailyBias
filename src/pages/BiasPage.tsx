@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import BiasCard from "@/components/BiasCard";
 import BiasActions from "@/components/BiasActions";
+import SEO from "@/components/SEO";
+import StructuredData from "@/components/StructuredData";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -26,6 +28,21 @@ const BiasPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {bias && (
+        <>
+          <SEO
+            title={`${bias.title} Explained`}
+            description={`Learn ${bias.title}, why it happens, real-world examples, and how to counter it. ${bias.definition}`}
+          />
+          <StructuredData
+            type="article"
+            data={{
+              title: bias.title,
+              description: bias.definition,
+            }}
+          />
+        </>
+      )}
       <Header />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-20 right-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[100px]" />

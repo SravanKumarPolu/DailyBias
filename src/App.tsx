@@ -12,6 +12,7 @@ import SettingsPage from "./pages/SettingsPage";
 import QuizPage from "./pages/QuizPage";
 import WeeklyReviewPage from "./pages/WeeklyReviewPage";
 import BiasPage from "./pages/BiasPage";
+import BiasesArchive from "./pages/BiasesArchive";
 import NotFound from "./pages/NotFound";
 import AnalyticsRouteTracker from "./components/AnalyticsRouteTracker";
 
@@ -28,6 +29,7 @@ const AnimatedRoutes = () => {
         <Route path="/welcome" element={<Index />} />
         <Route path="/saved" element={<SavedPage />} />
         <Route path="/bias/:id" element={<BiasPage />} />
+        <Route path="/biases" element={<BiasesArchive />} />
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/weekly-review" element={<WeeklyReviewPage />} />
         <Route path="/settings" element={<SettingsPage />} />

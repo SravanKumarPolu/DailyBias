@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useWeeklyReview } from "@/hooks/useWeeklyReview";
@@ -68,6 +69,10 @@ const WeeklyReviewPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="Weekly Bias Review"
+        description="Review your weekly cognitive bias learning progress. See your streak, saved biases, and reflection insights."
+      />
       <Header />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/4 right-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[100px]" />

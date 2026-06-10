@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { trackQuizCompleted } from "@/lib/analytics";
 import Header from "@/components/Header";
+import SEO from "@/components/SEO";
 import { Sparkles, Check, X, RotateCcw, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTodaysBias, getAllBiases, type CognitiveBias } from "@/data/biases";
@@ -180,6 +181,10 @@ const QuizPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="Cognitive Bias Quiz"
+        description="Test your knowledge of cognitive biases with our interactive quiz. Learn to identify and counteract mental shortcuts."
+      />
       <Header />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-24 right-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[100px]" />

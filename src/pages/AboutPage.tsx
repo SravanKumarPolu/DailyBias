@@ -1,9 +1,14 @@
 import Header from "@/components/Header";
+import SEO from "@/components/SEO";
 import { Brain, Heart, Target } from "lucide-react";
 
 const AboutPage = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="About DebiasDaily"
+        description="Learn about DebiasDaily's mission to help you recognize cognitive biases and make better decisions. One calm, focused lesson at a time."
+      />
       <Header />
 
       <div className="pointer-events-none absolute inset-0">

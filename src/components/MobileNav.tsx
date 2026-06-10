@@ -12,6 +12,7 @@ const MobileNav = () => {
 
   const navItems = [
     { label: "Today", path: "/", icon: Sun },
+    { label: "Biases", path: "/biases", icon: Brain },
     { label: "Saved", path: "/saved", icon: Bookmark },
     { label: "Quiz", path: "/quiz", icon: Brain },
     { label: "Review", path: "/weekly-review", icon: CheckCircle },

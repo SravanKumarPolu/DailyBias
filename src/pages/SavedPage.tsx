@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
+import SEO from "@/components/SEO";
 import { Bookmark, Trash2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBookmarks } from "@/hooks/useBookmarks";
@@ -45,6 +46,10 @@ const SavedPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="Saved Biases"
+        description="View your saved cognitive biases. Build your personal collection of biases to learn and reference."
+      />
       <Header />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/3 left-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[100px]" />
