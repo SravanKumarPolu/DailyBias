@@ -37,7 +37,7 @@ const PageTransition = ({ children }: PageTransitionProps) => {
   return (
     <div
       onTransitionEnd={handleTransitionEnd}
-      className={`transition-all duration-300 ease-out ${
+      className={`transition-all duration-300 ease-out pb-safe md:pb-0 ${
         transitionStage === "enter"
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-2"

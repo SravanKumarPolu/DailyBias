@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import PageTransition from "./components/PageTransition";
+import MobileNav from "./components/MobileNav";
 import Index from "./pages/Index";
 import TodayPage from "./pages/TodayPage";
 import AboutPage from "./pages/AboutPage";
@@ -46,6 +47,7 @@ const App = () => (
       >
         <AnalyticsRouteTracker />
         <AnimatedRoutes />
+        <MobileNav />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

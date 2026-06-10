@@ -30,7 +30,7 @@ const Header = () => {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
