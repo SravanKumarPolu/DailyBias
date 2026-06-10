@@ -28,15 +28,25 @@ const BiasesArchive = () => {
         title="All Cognitive Biases"
         description="Browse the complete archive of cognitive biases. Learn about confirmation bias, anchoring, availability heuristic, and many more mental shortcuts."
       />
+
       <StructuredData type="website" />
       <StructuredData type="organization" />
-
+      <StructuredData
+        type="breadcrumb"
+        data={{
+          items: [
+            { name: 'Home', path: '/' },
+            { name: 'All Biases', path: '/biases' },
+          ]
+        }}
+      />
+ <Header />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/4 right-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[100px]" />
         <div className="absolute bottom-1/4 left-1/3 h-64 w-64 rounded-full bg-accent/8 blur-[90px]" />
       </div>
 
-      <main className="relative pt-28 pb-16 px-4">
+      <main id="main-content" className="relative pt-28 pb-16 px-4">
         <div className="container mx-auto max-w-4xl space-y-8">
           <div className="text-center space-y-4 animate-fade-up">
             <div className="gradient-bg inline-flex rounded-2xl p-3">

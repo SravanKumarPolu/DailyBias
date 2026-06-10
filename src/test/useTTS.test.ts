@@ -336,7 +336,7 @@ describe("useTTS", () => {
     await waitFor(() => expect(result.current.state).toBe("playing"));
 
     // Simulate boundary event with invalid charIndex
-    const utterance = (synth as any)._currentUtterance;
+    const utterance = (synth as typeof synth & { _currentUtterance?: SpeechSynthesisUtterance })._currentUtterance;
     if (utterance && utterance.onboundary) {
       act(() => {
         utterance.onboundary({ charIndex: -1 } as SpeechSynthesisEvent);

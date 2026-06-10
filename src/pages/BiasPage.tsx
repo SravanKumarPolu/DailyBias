@@ -41,6 +41,16 @@ const BiasPage = () => {
               description: bias.definition,
             }}
           />
+          <StructuredData
+            type="breadcrumb"
+            data={{
+              items: [
+                { name: 'Home', path: '/' },
+                { name: 'Biases', path: '/biases' },
+                { name: bias.title, path: `/bias/${bias.id}` },
+              ]
+            }}
+          />
         </>
       )}
       <Header />
@@ -49,7 +59,7 @@ const BiasPage = () => {
         <div className="absolute bottom-20 left-1/3 h-64 w-64 rounded-full bg-accent/8 blur-[90px]" />
       </div>
 
-      <main className="relative pt-24 pb-16 px-4">
+      <main id="main-content" className="relative pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-2xl space-y-6">
           <div className="animate-fade-up">
             <Link to="/saved">

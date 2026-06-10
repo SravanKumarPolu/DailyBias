@@ -33,7 +33,7 @@ const LandingPage = () => {
       </div>
 
       {/* Hero */}
-      <main className="relative pt-32 pb-20 px-4">
+      <main id="main-content" className="relative pt-32 pb-20 px-4">
         <div className="container mx-auto max-w-3xl text-center space-y-8">
           <div className="animate-fade-up" style={{ animationDelay: "0.1s" }}>
             <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">

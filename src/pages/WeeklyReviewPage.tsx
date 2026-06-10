@@ -79,7 +79,7 @@ const WeeklyReviewPage = () => {
         <div className="absolute bottom-1/4 left-1/3 h-64 w-64 rounded-full bg-accent/8 blur-[90px]" />
       </div>
 
-      <main className="relative pt-28 pb-16 px-4">
+      <main id="main-content" className="relative pt-28 pb-16 px-4">
         <div className="container mx-auto max-w-2xl space-y-6">
           <div className="text-center space-y-3 animate-fade-up">
             <div className="gradient-bg inline-flex rounded-2xl p-3">

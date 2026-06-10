@@ -48,7 +48,7 @@ describe("isIOSSafari", () => {
       configurable: true,
     });
     // Remove ontouchend to simulate desktop without touch
-    delete (document as any).ontouchend;
+    delete (document as Document & { ontouchend?: unknown }).ontouchend;
     expect(isIOSSafari()).toBe(false);
   });
 
@@ -62,7 +62,7 @@ describe("isIOSSafari", () => {
       configurable: true,
     });
     // Remove ontouchend to simulate desktop without touch
-    delete (document as any).ontouchend;
+    delete (document as Document & { ontouchend?: unknown }).ontouchend;
     expect(isIOSSafari()).toBe(false);
   });
 
@@ -129,7 +129,7 @@ describe("isMobileBrowser", () => {
       value: 0,
       configurable: true,
     });
-    delete (document as any).ontouchend;
+    delete (document as Document & { ontouchend?: unknown }).ontouchend;
     expect(isMobileBrowser()).toBe(false);
   });
 });
@@ -180,7 +180,7 @@ describe("waitForVoices", () => {
   });
 
   it("uses default 3000ms timeout", async () => {
-    let voices: SpeechSynthesisVoice[] = [];
+    const voices: SpeechSynthesisVoice[] = [];
     const listeners: Record<string, () => void> = {};
 
     Object.defineProperty(window, "speechSynthesis", {

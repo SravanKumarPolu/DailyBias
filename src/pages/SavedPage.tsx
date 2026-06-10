@@ -54,7 +54,7 @@ const SavedPage = () => {
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/3 left-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[100px]" />
       </div>
-      <main className="relative pt-28 pb-16 px-4">
+      <main id="main-content" className="relative pt-28 pb-16 px-4">
         <div className="container mx-auto max-w-2xl space-y-6">
           <div className="text-center space-y-3 animate-fade-up">
             <div className="gradient-bg inline-flex rounded-2xl p-3">

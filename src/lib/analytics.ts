@@ -4,7 +4,13 @@
  */
 
 function getMeasurementId(): string {
-  return import.meta.env.VITE_GA_MEASUREMENT_ID ?? "";
+  const id = import.meta.env.VITE_GA_MEASUREMENT_ID ?? "";
+  // Validate GA measurement ID format (starts with G- followed by alphanumeric)
+  if (id && !/^G-[A-Z0-9]+$/.test(id)) {
+    console.error("Invalid GA measurement ID format. Expected format: G-XXXXXXXX");
+    return "";
+  }
+  return id;
 }
 
 type GtagCommand = "js" | "config" | "event" | "set";

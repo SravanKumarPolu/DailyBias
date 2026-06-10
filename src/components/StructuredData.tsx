@@ -2,7 +2,12 @@ import { useLocation } from "react-router-dom";
 
 interface StructuredDataProps {
   type: "website" | "organization" | "article" | "breadcrumb";
-  data?: any;
+  data?: Record<string, unknown>;
+}
+
+interface BreadcrumbItem {
+  name: string;
+  path: string;
 }
 
 const SITE_URL = "https://debiasdaily.com";
@@ -31,12 +36,14 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
           logo: `${SITE_URL}/logo.png`,
         };
 
-      case "article":
+      case "article": {
+        const title = data?.title as string | undefined;
+        const description = data?.description as string | undefined;
         return {
           "@context": "https://schema.org",
           "@type": "Article",
-          headline: data?.title,
-          description: data?.description,
+          headline: title,
+          description: description,
           url: `${SITE_URL}${location.pathname}`,
           author: {
             "@type": "Organization",
@@ -51,18 +58,21 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
             },
           },
         };
+      }
 
-      case "breadcrumb":
+      case "breadcrumb": {
+        const items = data?.items as BreadcrumbItem[] | undefined;
         return {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
-          itemListElement: data?.items?.map((item: any, index: number) => ({
+          itemListElement: items?.map((item, index) => ({
             "@type": "ListItem",
             position: index + 1,
             name: item.name,
             item: `${SITE_URL}${item.path}`,
           })),
         };
+      }
 
       default:
         return null;

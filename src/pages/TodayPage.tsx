@@ -60,6 +60,15 @@ const TodayPage = () => {
           description: bias.definition,
         }}
       />
+      <StructuredData
+        type="breadcrumb"
+        data={{
+          items: [
+            { name: 'Home', path: '/' },
+            { name: 'Today', path: '/today' },
+          ]
+        }}
+      />
       <Header />
 
       <div className="pointer-events-none absolute inset-0">
@@ -67,7 +76,7 @@ const TodayPage = () => {
         <div className="absolute bottom-20 left-1/3 h-64 w-64 rounded-full bg-accent/8 blur-[90px]" />
       </div>
 
-      <main className="relative pt-24 pb-16 px-4">
+      <main id="main-content" className="relative pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-2xl space-y-6">
           <div className="flex justify-center animate-fade-up" style={{ animationDelay: "0.05s" }}>
             <BiasProgress seenCount={seenCount} totalBiases={totalBiases} cycle={cycle} />

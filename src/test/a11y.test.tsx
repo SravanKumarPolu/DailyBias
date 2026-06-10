@@ -38,6 +38,8 @@ describe("Header accessibility", () => {
     await user.tab(); // first nav link → Today
     expect(screen.getByRole("link", { name: /today/i })).toHaveFocus();
     await user.tab();
+    expect(screen.getByRole("link", { name: /biases/i })).toHaveFocus();
+    await user.tab();
     expect(screen.getByRole("link", { name: /saved/i })).toHaveFocus();
     await user.tab();
     expect(screen.getByRole("link", { name: /quiz/i })).toHaveFocus();

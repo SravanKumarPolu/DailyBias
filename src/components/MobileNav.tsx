@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Brain, Bookmark, Settings, Info, CheckCircle, Sun } from "lucide-react";
+import { Brain, Bookmark, Settings, GraduationCap,Info, CheckCircle, Sun } from "lucide-react";
 import { useQuizCompletion } from "@/hooks/useQuizCompletion";
 import { getTodaysBias } from "@/data/biases";
 import { useMemo } from "react";
@@ -14,7 +14,7 @@ const MobileNav = () => {
     { label: "Today", path: "/", icon: Sun },
     { label: "Biases", path: "/biases", icon: Brain },
     { label: "Saved", path: "/saved", icon: Bookmark },
-    { label: "Quiz", path: "/quiz", icon: Brain },
+    { label: "Quiz", path: "/quiz", icon: GraduationCap },
     { label: "Review", path: "/weekly-review", icon: CheckCircle },
     { label: "Settings", path: "/settings", icon: Settings },
     { label: "About", path: "/about", icon: Info },
