@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useTTS } from "@/hooks/useTTS";
+import { isMobileBrowser } from "@/lib/ttsPlatform";
 
 const mockVoice = {
   name: "Test Voice",
@@ -77,6 +78,7 @@ function createSpeechMock() {
 }
 
 const isTTSSupportedMock = vi.fn(() => true);
+const isMobileBrowserMock = vi.fn(() => false);
 
 vi.mock("@/hooks/useTTSSettings", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/hooks/useTTSSettings")>();
@@ -90,6 +92,7 @@ vi.mock("@/lib/ttsPlatform", () => ({
   shouldUseKeepAlive: () => false,
   waitForVoices: vi.fn(async () => [mockVoice]),
   isIOSSafari: () => false,
+  isMobileBrowser: () => isMobileBrowserMock(),
 }));
 
 vi.mock("sonner", () => ({
@@ -489,5 +492,35 @@ describe("useTTS", () => {
 
     await waitFor(() => expect(toast.error).toHaveBeenCalled());
     expect(result.current.state).toBe("idle");
+  });
+
+  it("shows mobile-specific error message on mobile", async () => {
+    const { toast } = await import("sonner");
+    isMobileBrowserMock.mockReturnValue(true);
+    isTTSSupportedMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Trigger error
+    act(() => {
+      synth.speak = vi.fn(() => {
+        throw new Error("Mobile error");
+      });
+      result.current.play("Error test.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("idle"));
+    expect(toast.error).toHaveBeenCalledWith(
+      "Playback interrupted",
+      expect.objectContaining({
+        description: expect.stringContaining("Mobile browser"),
+      })
+    );
   });
 });

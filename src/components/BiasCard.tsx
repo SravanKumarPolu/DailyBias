@@ -4,6 +4,7 @@ import { useTTS } from "@/hooks/useTTS";
 import { splitSentences, sentenceIndexAt } from "@/lib/sentences";
 import type { CognitiveBias } from "@/data/biases";
 import { cn } from "@/lib/utils";
+import { isMobileBrowser } from "@/lib/ttsPlatform";
 
 interface BiasCardProps {
   bias: CognitiveBias;
@@ -135,6 +136,7 @@ const HighlightedParagraph = ({
 
 const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
   const tts = useTTS();
+  const isMobile = isMobileBrowser();
 
   const handlePlaySection = (sectionId: string) => {
     // Simplified: always stop current speech and play the section
@@ -170,6 +172,9 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
   const lastScrolledRef = useRef<Element | null>(null);
   const scrollRafRef = useRef<number | null>(null);
   useEffect(() => {
+    // Disable auto-scroll on mobile to prevent performance issues
+    if (isMobile) return;
+    
     if (tts.state === "idle" || !tts.activeSection) {
       lastScrolledRef.current = null;
       if (scrollRafRef.current !== null) {
@@ -205,7 +210,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
       }
     };
   }, [tts.state, tts.activeSection, tts.activeCharIndex,
-      activeExampleIdx, activeCounterIdx, activeTipIdx]);
+      activeExampleIdx, activeCounterIdx, activeTipIdx, isMobile]);
 
   const listItemClass = (active: boolean, baseDimmed: string) =>
     cn(
@@ -224,8 +229,13 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
 
         {/* Listen All controls — separate touch-friendly buttons */}
         <div className="flex flex-col items-center gap-2 pt-2">
+          {isMobile && tts.state === "idle" && (
+            <p className="text-xs text-muted-foreground/70 max-w-xs text-center">
+              On mobile, tap a section speaker to listen.
+            </p>
+          )}
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {tts.state === "idle" && (
+            {!isMobile && tts.state === "idle" && (
               <button
                 type="button"
                 onClick={handleListenAll}

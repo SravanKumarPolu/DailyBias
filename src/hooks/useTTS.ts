@@ -8,7 +8,7 @@ import {
   readStoredVolume,
   VOICE_KEY,
 } from "@/hooks/useTTSSettings";
-import { shouldUseKeepAlive, waitForVoices } from "@/lib/ttsPlatform";
+import { shouldUseKeepAlive, waitForVoices, isMobileBrowser } from "@/lib/ttsPlatform";
 
 export type TTSState = "idle" | "playing" | "paused";
 
@@ -195,6 +195,16 @@ export function useTTS(): TTSControls {
       setState("idle");
       setActiveSection(null);
       setActiveCharIndex(0);
+      setIsQueue(false);
+      setQueueProgress(0);
+      queueRef.current = [];
+      queueIndexRef.current = 0;
+      // Show mobile-specific error message
+      if (isMobileBrowser()) {
+        toast.error("Playback interrupted", {
+          description: "Mobile browser interrupted playback. Try a shorter section.",
+        });
+      }
       onError?.();
     };
 
@@ -210,9 +220,16 @@ export function useTTS(): TTSControls {
       cleanup();
       setState("idle");
       setActiveSection(null);
-      toast.error("Speech playback failed", {
-        description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
-      });
+      // Show mobile-specific error message
+      if (isMobileBrowser()) {
+        toast.error("Playback interrupted", {
+          description: "Mobile browser interrupted playback. Try a shorter section.",
+        });
+      } else {
+        toast.error("Speech playback failed", {
+          description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
+        });
+      }
       console.error("TTS speak() error:", error);
     } finally {
       releaseLock();

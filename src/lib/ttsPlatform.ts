@@ -19,6 +19,22 @@ export function isIOSSafari(): boolean {
   return false;
 }
 
+export function isMobileBrowser(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  
+  // iOS detection
+  if (isIOSSafari()) return true;
+  
+  // Android detection
+  if (/Android/i.test(ua)) return true;
+  
+  // Other mobile detection (Windows Phone, BlackBerry, etc.)
+  if (/Mobile/i.test(ua) && !/iPad/i.test(ua)) return true;
+  
+  return false;
+}
+
 export function shouldUseKeepAlive(): boolean {
   // Chrome desktop bug only — disable on iOS and most mobile browsers.
   if (isIOSSafari()) return false;
