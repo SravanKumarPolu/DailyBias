@@ -142,7 +142,14 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
     // Simplified: always stop current speech and play the section
     // Use top/global controls for pause/resume/stop
     tts.stop();
-    tts.play(getSectionText(bias, sectionId), sectionId);
+    // On mobile, add brief delay after cancel to prevent instability
+    if (isMobile) {
+      setTimeout(() => {
+        tts.play(getSectionText(bias, sectionId), sectionId);
+      }, 100);
+    } else {
+      tts.play(getSectionText(bias, sectionId), sectionId);
+    }
   };
 
   const handleListenAll = () => {
@@ -253,19 +260,21 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
             )}
             {tts.state === "playing" && (
               <>
-                <button
-                  type="button"
-                  onClick={tts.pause}
-                  aria-label="Pause playback"
-                  className={cn(
-                    "inline-flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-full text-sm font-medium touch-manipulation",
-                    "bg-gradient-to-r from-primary/20 to-accent/20 text-foreground",
-                    "border border-primary/30 shadow-[0_0_24px_hsl(258_60%_60%_/_0.18)] transition-all duration-500",
-                  )}
-                >
-                  <Pause className="h-4 w-4" />
-                  Pause
-                </button>
+                {!isMobile && (
+                  <button
+                    type="button"
+                    onClick={tts.pause}
+                    aria-label="Pause playback"
+                    className={cn(
+                      "inline-flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-full text-sm font-medium touch-manipulation",
+                      "bg-gradient-to-r from-primary/20 to-accent/20 text-foreground",
+                      "border border-primary/30 shadow-[0_0_24px_hsl(258_60%_60%_/_0.18)] transition-all duration-500",
+                    )}
+                  >
+                    <Pause className="h-4 w-4" />
+                    Pause
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={tts.stop}
@@ -280,7 +289,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
                 </button>
               </>
             )}
-            {tts.state === "paused" && (
+            {!isMobile && tts.state === "paused" && (
               <>
                 <button
                   type="button"

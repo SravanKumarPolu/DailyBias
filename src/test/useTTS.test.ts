@@ -523,4 +523,78 @@ describe("useTTS", () => {
       })
     );
   });
+
+  it("prevents duplicate error toasts", async () => {
+    const { toast } = await import("sonner");
+    isMobileBrowserMock.mockReturnValue(true);
+    isTTSSupportedMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    // Trigger error twice
+    act(() => {
+      synth.speak = vi.fn(() => {
+        throw new Error("Mobile error");
+      });
+      result.current.play("Error test.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("idle"));
+
+    // Try to trigger another error immediately (should be prevented)
+    act(() => {
+      result.current.play("Another error.", "definition");
+    });
+
+    // Should only show one toast due to deduplication
+    expect(toast.error).toHaveBeenCalledTimes(1);
+  });
+
+  it("Stop resets state on mobile", async () => {
+    isMobileBrowserMock.mockReturnValue(true);
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.stop();
+    });
+
+    expect(result.current.state).toBe("idle");
+    expect(result.current.activeSection).toBeNull();
+    expect(result.current.activeCharIndex).toBe(0);
+  });
+
+  it("desktop controls still work", async () => {
+    isMobileBrowserMock.mockReturnValue(false);
+    const { result } = renderHook(() => useTTS());
+
+    act(() => {
+      result.current.play("Hello.", "definition");
+    });
+
+    await waitFor(() => expect(result.current.state).toBe("playing"));
+
+    act(() => {
+      result.current.pause();
+    });
+
+    expect(result.current.state).toBe("paused");
+
+    act(() => {
+      result.current.resume();
+    });
+
+    expect(result.current.state).toBe("playing");
+  });
 });

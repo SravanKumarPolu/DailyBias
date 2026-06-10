@@ -48,6 +48,7 @@ export function useTTS(): TTSControls {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const keepAliveRef = useRef<number | null>(null);
   const startLockRef = useRef(false);
+  const lastErrorToastRef = useRef<number>(0);
 
   // Chrome on desktop silently pauses speech after ~15 seconds. Periodically
   // nudging pause/resume keeps long sections playing smoothly.
@@ -199,11 +200,13 @@ export function useTTS(): TTSControls {
       setQueueProgress(0);
       queueRef.current = [];
       queueIndexRef.current = 0;
-      // Show mobile-specific error message
-      if (isMobileBrowser()) {
+      // Show mobile-specific error message, prevent duplicate toasts
+      const now = Date.now();
+      if (isMobileBrowser() && now - lastErrorToastRef.current > 2000) {
         toast.error("Playback interrupted", {
           description: "Mobile browser interrupted playback. Try a shorter section.",
         });
+        lastErrorToastRef.current = now;
       }
       onError?.();
     };
@@ -220,15 +223,18 @@ export function useTTS(): TTSControls {
       cleanup();
       setState("idle");
       setActiveSection(null);
-      // Show mobile-specific error message
-      if (isMobileBrowser()) {
+      // Show mobile-specific error message, prevent duplicate toasts
+      const now = Date.now();
+      if (isMobileBrowser() && now - lastErrorToastRef.current > 2000) {
         toast.error("Playback interrupted", {
           description: "Mobile browser interrupted playback. Try a shorter section.",
         });
-      } else {
+        lastErrorToastRef.current = now;
+      } else if (!isMobileBrowser() && now - lastErrorToastRef.current > 2000) {
         toast.error("Speech playback failed", {
           description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
         });
+        lastErrorToastRef.current = now;
       }
       console.error("TTS speak() error:", error);
     } finally {
