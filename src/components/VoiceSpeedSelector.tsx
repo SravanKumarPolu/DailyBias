@@ -184,7 +184,7 @@ const VoiceSpeedSelector = () => {
                   disabled={disabled}
                   className={cn(
                     "flex-1 rounded-lg text-xs sm:text-[11px] font-medium transition-all duration-300",
-                    "min-h-[40px] sm:min-h-0 px-2 py-2 sm:py-1.5",
+                    "min-h-[44px] sm:min-h-0 px-2 py-2 sm:py-1.5",
                     "border",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
                     active

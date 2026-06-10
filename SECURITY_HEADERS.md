@@ -119,3 +119,70 @@ After implementing security headers, test them using:
 - `unsafe-inline` is required for inline scripts/styles but should be minimized where possible
 - HSTS header should only be added once HTTPS is properly configured
 - Regularly review and update these headers as security best practices evolve
+
+## Dependency Scanning
+
+Automated dependency scanning helps identify security vulnerabilities in third-party packages.
+
+### npm audit (Built-in)
+```bash
+# Run basic audit
+npm audit
+
+# Audit with fix (development only)
+npm audit fix
+
+# Audit for production vulnerabilities only
+npm audit --production
+
+# Set audit level in package.json
+"scripts": {
+  "audit": "npm audit --audit-level=moderate"
+}
+```
+
+### Snyk (Recommended for CI/CD)
+```bash
+# Install Snyk CLI
+npm install -g snyk
+
+# Authenticate
+snyk auth
+
+# Test for vulnerabilities
+snyk test
+
+# Monitor for ongoing vulnerability detection
+snyk monitor
+```
+
+### GitHub Dependabot
+Add `.github/dependabot.yml`:
+```yaml
+version: 2
+dependabot:
+  package-ecosystem: "npm"
+  directory: "/"
+  schedule:
+    interval: "weekly"
+  open-pull-requests-limit: 10
+```
+
+### CI/CD Integration
+Add to CI pipeline:
+```yaml
+- name: Run security audit
+  run: npm audit --audit-level=moderate
+
+- name: Run Snyk security scan
+  uses: snyk/actions/node@master
+  env:
+    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+### Best Practices
+- Run dependency scanning before every deployment
+- Review and update dependencies regularly
+- Prioritize critical and high severity vulnerabilities
+- Test compatibility before updating dependencies
+- Keep development and production dependencies aligned

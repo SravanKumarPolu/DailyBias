@@ -13,6 +13,8 @@ const BiasProgress = ({ seenCount, totalBiases, cycle }: BiasProgressProps) => {
     <div
       className="glass rounded-2xl px-5 py-4 space-y-3 w-full max-w-md animate-fade-up"
       aria-label={`Bias journey progress: ${seenCount} of ${totalBiases} biases seen in cycle ${cycle}`}
+      role="status"
+      aria-live="polite"
     >
       <div className="flex items-center justify-between gap-3">
         <div>

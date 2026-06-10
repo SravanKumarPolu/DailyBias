@@ -5,11 +5,19 @@ import type { CognitiveBias } from "@/data/biases";
 
 let biasCatalog: CognitiveBias[] = [];
 
-/** Called once from biases.ts after the catalog is defined. */
+/**
+ * Registers the complete bias catalog for use in rotation logic.
+ * This should be called once during application initialization after the bias data is loaded.
+ * @param biases - Array of all cognitive biases available in the application
+ */
 export function registerBiasCatalog(biases: CognitiveBias[]): void {
   biasCatalog = biases;
 }
 
+/**
+ * Retrieves the complete catalog of registered cognitive biases.
+ * @returns Array of all cognitive biases
+ */
 function getAllBiases(): CognitiveBias[] {
   return biasCatalog;
 }
@@ -26,6 +34,12 @@ interface LegacyDailyProgress {
   lastSeenIndex: number;
 }
 
+/**
+ * Creates the default rotation state for first-time users.
+ * Initializes the user on their first bias with basic progress tracking.
+ * @param today - The current date in local date string format
+ * @returns Initial rotation state with first bias
+ */
 function defaultState(today: string): RotationState {
   const all = getAllBiases();
   const first = all[0];
@@ -169,8 +183,14 @@ function isCycleComplete(state: RotationState): boolean {
 }
 
 /**
- * Resolves today's bias, advances rotation on new days, and updates progress.
- * Preserves the original sequential index-based rotation behavior.
+ * Resolves today's bias based on date and user progress.
+ * Advances the rotation on new days and updates progress tracking.
+ * This function handles both first-time users and returning users with saved progress.
+ * 
+ * @returns Object containing:
+ * - bias: The cognitive bias for today
+ * - state: Current rotation state with progress information
+ * - cycleJustCompleted: Boolean indicating if the current cycle just completed
  */
 export function resolveTodaysBias(): RotationResult {
   const all = getAllBiases();

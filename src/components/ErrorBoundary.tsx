@@ -13,16 +13,27 @@ interface ErrorBoundaryState {
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false };
+  error: Error | null = null;
 
   static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    this.error = error;
     console.error("DebiasDaily render error:", error, info.componentStack);
+    console.error("Error context:", {
+      message: error.message,
+      stack: error.stack,
+      componentStack: info.componentStack,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+    });
   }
 
   handleRetry = () => {
+    this.error = null;
     this.setState({ hasError: false });
   };
 
@@ -44,9 +55,15 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             <div className="space-y-2">
               <h1 className="text-xl font-semibold text-foreground">Something went wrong</h1>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                DebiasDaily hit an unexpected error. You can try again or return to today&apos;s
-                bias.
+                DebiasDaily encountered an unexpected error. This has been logged for investigation.
+                You can try again or return to today&apos;s bias.
               </p>
+              {this.error?.message && (
+                <p className="text-xs text-muted-foreground/70 font-mono">
+                  Error: {this.error.message.slice(0, 100)}
+                  {this.error.message.length > 100 ? "..." : ""}
+                </p>
+              )}
             </div>
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <Button onClick={this.handleRetry} variant="hero" className="rounded-xl gap-2">

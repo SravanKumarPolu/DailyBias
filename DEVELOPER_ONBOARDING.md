@@ -27,14 +27,32 @@ debiasdaily/
 │   │   ├── BiasActions.tsx # Bookmark/share/save actions
 │   │   ├── Header.tsx      # App navigation header
 │   │   ├── MobileNav.tsx   # Bottom navigation for mobile
+│   │   ├── SEO.tsx         # Dynamic SEO meta tags component
+│   │   ├── StructuredData.tsx # JSON-LD structured data component
+│   │   ├── AnalyticsRouteTracker.tsx # Route-based analytics tracking
+│   │   ├── ErrorBoundary.tsx # Error boundary for error handling
+│   │   ├── ListenControls.tsx # Global TTS playback controls
+│   │   ├── VoiceSpeedSelector.tsx # TTS voice and rate selection
+│   │   ├── BiasProgress.tsx # Learning cycle progress display
+│   │   ├── ReflectionPrompt.tsx # Reflection input component
+│   │   ├── BiasFeedback.tsx # Feedback submission form
+│   │   ├── CycleCompletionModal.tsx # Cycle completion modal
+│   │   ├── PageTransition.tsx # Page transition animations
 │   │   └── ...             # Other feature components
 │   ├── hooks/              # Custom React hooks
 │   │   ├── useTTS.ts       # Text-to-speech functionality
+│   │   ├── useTTSSettings.ts # TTS voice and speed settings
 │   │   ├── useBiasProgress.ts # Learning cycle progress
 │   │   ├── useBookmarks.ts # Bookmark management
 │   │   ├── useStreak.ts    # Daily streak tracking
 │   │   ├── useReflection.ts # Reflection text management
-│   │   └── ...             # Other feature hooks
+│   │   ├── useQuizCompletion.ts # Quiz completion tracking
+│   │   ├── useShareBias.ts # Share functionality
+│   │   ├── useBiasFeedback.ts # Feedback submission
+│   │   ├── useTrackBiasViewed.ts # Analytics tracking
+│   │   ├── useWeeklyReview.ts # Weekly review calculations
+│   │   ├── use-mobile.tsx # Mobile detection hook
+│   │   └── use-toast.ts # Toast notification hook
 │   ├── lib/                # Utility libraries and core logic
 │   │   ├── analytics.ts    # GA4 integration
 │   │   ├── biasRotation.ts # Daily bias selection algorithm
@@ -43,6 +61,8 @@ debiasdaily/
 │   │   ├── ttsPlatform.ts  # Platform-specific TTS helpers
 │   │   ├── weeklyReview.ts # Weekly review calculations
 │   │   ├── dates.ts        # Date utilities (timezone-safe)
+│   │   ├── sentences.ts    # Sentence splitting for TTS highlighting
+│   │   ├── share.ts        # Share functionality
 │   │   └── utils.ts        # General utilities
 │   ├── data/               # Static data
 │   │   ├── biases.ts       # 60 cognitive bias definitions
@@ -99,6 +119,8 @@ debiasdaily/
 - **Analytics Tracking:** `AnalyticsRouteTracker` sends GA4 page_view events on route changes
 - **Mobile Navigation:** `MobileNav` component provides bottom navigation on mobile devices
 - **Route Parameters:** Dynamic routes for bias details (`/bias/:id`)
+- **SEO Optimization:** Dynamic SEO meta tags and structured data on all pages
+- **Accessibility:** Semantic HTML with `id="main-content"` landmarks and ARIA labels
 
 ### Route Guards
 No authentication guards (app is fully public). All routes are accessible to all users.
@@ -516,6 +538,56 @@ const review = buildWeeklyReview();
 
 ---
 
+## SEO Architecture
+
+### Technology: Dynamic Client-Side SEO
+
+### Implementation
+```typescript
+// SEO component - Dynamic meta tag updates
+<SEO
+  title="Today's Cognitive Bias"
+  description="Learn about Confirmation Bias today."
+/>
+
+// StructuredData component - JSON-LD schemas
+<StructuredData type="website" />
+<StructuredData type="organization" />
+<StructuredData type="article" data={{ title, description }} />
+<StructuredData type="breadcrumb" data={{ items: [...] }} />
+```
+
+### SEO Features
+- **Dynamic Page Titles:** Unique titles per route (Today, Bias Detail, Quiz, etc.)
+- **Dynamic Meta Descriptions:** Meaningful descriptions for each page
+- **Dynamic Canonical URLs:** Proper canonical tags for all pages
+- **Open Graph Tags:** og:title, og:description, og:url, og:image with dimensions
+- **Twitter Cards:** twitter:card, twitter:title, twitter:description, twitter:image
+- **Structured Data:** JSON-LD schemas for Website, Organization, Article, Breadcrumb
+- **Sitemap.xml:** Comprehensive sitemap with all routes and bias pages
+- **Robots.txt:** Allows crawling with sitemap reference
+
+### Implementation Pattern
+```typescript
+// SEO component uses DOM manipulation in useEffect
+useEffect(() => {
+  document.title = fullTitle;
+  // Update meta tags dynamically
+  // Update canonical URL
+  // Update Open Graph and Twitter tags
+}, [fullTitle, fullDescription, canonicalUrl]);
+```
+
+### Accessibility Enhancements
+- **Semantic HTML:** Proper use of `<main>`, `<nav>`, `<header>`, `<footer>`
+- **ARIA Labels:** Descriptive labels on interactive elements
+- **Landmarks:** `id="main-content"` on main elements for screen readers
+- **Focus Management:** Proper focus states and keyboard navigation
+- **Resource Hints:** preconnect, dns-prefetch for performance
+- **Noscript Content:** Fallback content for JavaScript-disabled browsers
+
+---
+
 ## Development Workflow
 
 ### Getting Started
@@ -612,8 +684,11 @@ VITE_GA_MEASUREMENT_ID=G-QMF2Q394SC  # Leave empty to disable analytics locally
 ### Adding a New Page
 1. Create component in `src/pages/`
 2. Add route in `src/App.tsx`
-3. Add analytics page name in `src/lib/analytics.ts`
-4. Update navigation if needed
+3. Add SEO component with title and description
+4. Add StructuredData component if needed
+5. Add analytics page name in `src/lib/analytics.ts`
+6. Update navigation if needed
+7. Add to sitemap.xml if public page
 
 ### Modifying TTS Behavior
 1. Edit `src/hooks/useTTS.ts` for core logic
