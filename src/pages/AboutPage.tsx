@@ -36,7 +36,7 @@ const AboutPage = () => {
                 style={{ animationDelay: `${0.2 + i * 0.1}s` }}
               >
                 <div className="gradient-bg rounded-xl p-2 w-fit">
-                  <item.icon className="h-5 w-5 text-primary-foreground" />
+                  <item.icon className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
                 </div>
                 <h3 className="font-semibold text-foreground">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.text}</p>

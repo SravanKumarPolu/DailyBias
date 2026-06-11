@@ -51,11 +51,11 @@ const ListenControls = ({ text }: ListenControlsProps) => {
       <span className="text-sm text-muted-foreground mr-auto">Listen</span>
 
       {state === "playing" ? (
-        <Button variant="glass" size="icon" onClick={handlePause} className="rounded-xl h-9 w-9">
+        <Button variant="glass" size="icon" onClick={handlePause} className="rounded-xl h-9 w-9" aria-label="Pause playback">
           <Pause className="h-4 w-4" />
         </Button>
       ) : (
-        <Button variant="glass" size="icon" onClick={handlePlay} className="rounded-xl h-9 w-9">
+        <Button variant="glass" size="icon" onClick={handlePlay} className="rounded-xl h-9 w-9" aria-label="Start playback">
           <Play className="h-4 w-4" />
         </Button>
       )}
@@ -66,6 +66,7 @@ const ListenControls = ({ text }: ListenControlsProps) => {
         onClick={handleReset}
         disabled={state === "idle"}
         className="rounded-xl h-9 w-9"
+        aria-label="Stop playback"
       >
         <RotateCcw className="h-4 w-4" />
       </Button>
