@@ -33,7 +33,7 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
           name: "DebiasDaily",
           url: SITE_URL,
           description: "DebiasDaily helps you recognize cognitive biases and make better decisions through daily learning.",
-          logo: `${SITE_URL}/logo.png`,
+          logo: `${SITE_URL}/app-icon.png`,
         };
 
       case "article": {
@@ -54,7 +54,7 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
             name: "DebiasDaily",
             logo: {
               "@type": "ImageObject",
-              url: `${SITE_URL}/logo.png`,
+              url: `${SITE_URL}/app-icon.png`,
             },
           },
         };

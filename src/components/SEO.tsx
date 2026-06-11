@@ -11,7 +11,7 @@ interface SEOProps {
 const SITE_URL = "https://debiasdaily.com";
 const DEFAULT_TITLE = "DebiasDaily — Think Better, One Bias at a Time";
 const DEFAULT_DESCRIPTION = "Learn one cognitive bias per day. Build awareness of mental shortcuts and make smarter decisions with DebiasDaily.";
-const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.webp`;
 
 const SEO = ({ title, description, image, noindex }: SEOProps) => {
   const location = useLocation();
