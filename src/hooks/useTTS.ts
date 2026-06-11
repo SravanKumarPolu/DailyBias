@@ -11,9 +11,11 @@ import {
 import { shouldUseKeepAlive, waitForVoices, isMobileBrowser } from "@/lib/ttsPlatform";
 
 export type TTSState = "idle" | "playing" | "paused";
+export type PlaybackMode = "all" | "section" | null;
 
 export interface TTSControls {
   state: TTSState;
+  playbackMode: PlaybackMode;
   activeSection: string | null;
   /**
    * Character index within the *original section text* that is currently
@@ -39,6 +41,7 @@ interface QueueItem {
 
 export function useTTS(): TTSControls {
   const [state, setState] = useState<TTSState>("idle");
+  const [playbackMode, setPlaybackMode] = useState<PlaybackMode>(null);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [activeCharIndex, setActiveCharIndex] = useState(0);
   const [queueProgress, setQueueProgress] = useState(0);
@@ -139,6 +142,7 @@ export function useTTS(): TTSControls {
 
     const synth = window.speechSynthesis;
     intentionalCancelRef.current = true;
+    console.log('[TTS] Canceling previous speech before starting new speech');
     synth.cancel();
     utteranceRef.current = null;
 
@@ -183,14 +187,19 @@ export function useTTS(): TTSControls {
     };
 
     utterance.onstart = () => {
+      console.log('[TTS] Speech started for section:', sectionId);
       startKeepAlive();
+      // Reset intentional cancel flag after speech successfully starts
+      intentionalCancelRef.current = false;
     };
     utterance.onend = () => {
+      console.log('[TTS] Speech ended for section:', sectionId);
       cleanup();
       onProgress?.(1);
       onEnd?.();
     };
     utterance.onerror = (e: SpeechSynthesisErrorEvent) => {
+      console.log('[TTS] Speech error for section:', sectionId, 'error:', e.error, 'intentionalCancel:', intentionalCancelRef.current);
       cleanup();
       const errorType = e.error;
 
@@ -202,6 +211,7 @@ export function useTTS(): TTSControls {
           console.warn("TTS interrupted unexpectedly:", errorType);
         }
         setState("idle");
+        setPlaybackMode(null);
         setActiveSection(null);
         setActiveCharIndex(0);
         setIsQueue(false);
@@ -215,6 +225,7 @@ export function useTTS(): TTSControls {
       // Real errors - log and show toast
       console.warn("TTS error:", errorType);
       setState("idle");
+      setPlaybackMode(null);
       setActiveSection(null);
       setActiveCharIndex(0);
       setIsQueue(false);
@@ -244,17 +255,15 @@ export function useTTS(): TTSControls {
     setActiveCharIndex(0);
     setState("playing");
 
-    // Reset intentional cancel flag after starting new speech
-    intentionalCancelRef.current = false;
-
     // Speak synchronously — setTimeout breaks iOS user-gesture requirement.
     try {
+      console.log('[TTS] Starting speech for section:', sectionId);
       synth.speak(utterance);
     } catch (error) {
+      console.error("TTS speak() error:", error);
       cleanup();
       setState("idle");
       setActiveSection(null);
-      console.error("TTS speak() error:", error);
       // Show toast for real errors, prevent duplicate toasts
       const now = Date.now();
       if (now - lastErrorToastRef.current > 2000) {
@@ -277,8 +286,11 @@ export function useTTS(): TTSControls {
   const playNextInQueue = useCallback(() => {
     const queue = queueRef.current;
     const idx = queueIndexRef.current;
+    console.log('[TTS] playNextInQueue called, index:', idx, 'of', queue.length);
     if (idx >= queue.length) {
+      console.log('[TTS] Queue completed');
       setState("idle");
+      setPlaybackMode(null);
       setActiveSection(null);
       setActiveCharIndex(0);
       setIsQueue(false);
@@ -292,14 +304,32 @@ export function useTTS(): TTSControls {
     const base = queue.length > 0 ? idx / queue.length : 0;
     const slice = queue.length > 0 ? 1 / queue.length : 0;
     setQueueProgress(base);
+    console.log('[TTS] Playing queue item:', item.id, 'at index:', idx);
     void speakText(item.text, item.id, {
       onEnd: () => {
+        console.log('[TTS] Queue item onEnd:', item.id);
         setQueueProgress(base + slice);
         playNextInQueue();
       },
       onError: () => {
-        // If an utterance fails in the queue, stop cleanly and show error
+        console.log('[TTS] Queue item onError:', item.id, 'intentionalCancel:', intentionalCancelRef.current);
+        // If this was an intentional cancel (section switch), stop cleanly without toast
+        if (intentionalCancelRef.current) {
+          console.log('[TTS] Queue error was intentional, skipping toast');
+          setState("idle");
+          setPlaybackMode(null);
+          setActiveSection(null);
+          setActiveCharIndex(0);
+          setIsQueue(false);
+          setQueueProgress(0);
+          queueRef.current = [];
+          queueIndexRef.current = 0;
+          return;
+        }
+        // Real error - show toast
+        console.log('[TTS] Queue error was unexpected, showing toast');
         setState("idle");
+        setPlaybackMode(null);
         setActiveSection(null);
         setActiveCharIndex(0);
         setIsQueue(false);
@@ -318,13 +348,17 @@ export function useTTS(): TTSControls {
   }, [speakText]);
 
   const play = useCallback((text: string, sectionId: string) => {
+    console.log('[TTS] Play called for section:', sectionId);
     queueRef.current = [];
     queueIndexRef.current = 0;
     setIsQueue(false);
     setQueueProgress(0);
+    setPlaybackMode("section");
     void speakText(text, sectionId, {
       onEnd: () => {
+        console.log('[TTS] Play onEnd for section:', sectionId);
         setState("idle");
+        setPlaybackMode(null);
         setActiveSection(null);
         setActiveCharIndex(0);
       },
@@ -332,14 +366,17 @@ export function useTTS(): TTSControls {
   }, [speakText]);
 
   const playAll = useCallback((sections: QueueItem[]) => {
+    console.log('[TTS] PlayAll called with', sections.length, 'sections');
     queueRef.current = sections;
     queueIndexRef.current = 0;
     setIsQueue(true);
     setQueueProgress(0);
+    setPlaybackMode("all");
     playNextInQueue();
   }, [playNextInQueue]);
 
   const pause = useCallback(() => {
+    console.log('[TTS] Pause called');
     const synth = window.speechSynthesis;
     // Don't pause if not speaking or if initialization is in progress
     if (!synth.speaking || startLockRef.current) return;
@@ -348,6 +385,7 @@ export function useTTS(): TTSControls {
   }, []);
 
   const resume = useCallback(() => {
+    console.log('[TTS] Resume called');
     const synth = window.speechSynthesis;
     // Don't resume if not paused or if initialization is in progress
     if (!synth.paused || !synth.speaking || startLockRef.current) return;
@@ -356,6 +394,7 @@ export function useTTS(): TTSControls {
   }, []);
 
   const stop = useCallback(() => {
+    console.log('[TTS] Stop called');
     stopKeepAlive();
     intentionalCancelRef.current = true;
     window.speechSynthesis.cancel();
@@ -365,6 +404,7 @@ export function useTTS(): TTSControls {
     queueRef.current = [];
     queueIndexRef.current = 0;
     setState("idle");
+    setPlaybackMode(null);
     setActiveSection(null);
     setActiveCharIndex(0);
     setIsQueue(false);
@@ -375,5 +415,5 @@ export function useTTS(): TTSControls {
     }, 100);
   }, [stopKeepAlive]);
 
-  return { state, activeSection, activeCharIndex, queueProgress, isQueue, play, playAll, pause, resume, stop };
+  return { state, playbackMode, activeSection, activeCharIndex, queueProgress, isQueue, play, playAll, pause, resume, stop };
 }

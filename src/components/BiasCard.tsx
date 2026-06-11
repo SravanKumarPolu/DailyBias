@@ -67,18 +67,20 @@ const SectionTitle = ({
   label,
   isActive,
   onPlay,
+  onStop,
 }: {
   icon: React.ElementType;
   label: string;
   isActive: boolean;
   onPlay: () => void;
+  onStop: () => void;
 }) => (
   <div className="flex items-center gap-2 mb-2.5">
     <Icon className="h-4 w-4 text-primary/70" />
     <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</h3>
     <button
       type="button"
-      onClick={(e) => { e.stopPropagation(); onPlay(); }}
+      onClick={(e) => { e.stopPropagation(); isActive ? onStop() : onPlay(); }}
       className={cn(
         "ml-auto inline-flex items-center justify-center rounded-full touch-manipulation transition-all duration-500",
         "min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8",
@@ -86,10 +88,14 @@ const SectionTitle = ({
         "sm:opacity-0 sm:group-hover/section:opacity-100",
         isActive && "!opacity-100 text-primary",
       )}
-      aria-label={`Listen to ${label}`}
+      aria-label={isActive ? `Stop listening to ${label}` : `Listen to ${label}`}
       aria-pressed={isActive}
     >
-      <Volume2 className={cn("h-4 w-4 sm:h-3.5 sm:w-3.5 transition-all duration-500", isActive && "animate-pulse")} />
+      {isActive ? (
+        <Square className={cn("h-4 w-4 sm:h-3.5 sm:w-3.5 transition-all duration-500")} />
+      ) : (
+        <Volume2 className={cn("h-4 w-4 sm:h-3.5 sm:w-3.5 transition-all duration-500", isActive && "animate-pulse")} />
+      )}
     </button>
   </div>
 );
@@ -236,13 +242,8 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
 
         {/* Listen All controls — separate touch-friendly buttons */}
         <div className="flex flex-col items-center gap-2 pt-2">
-          {isMobile && tts.state === "idle" && (
-            <p className="text-xs text-muted-foreground/70 max-w-xs text-center">
-              On mobile, tap a section speaker to listen.
-            </p>
-          )}
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {!isMobile && tts.state === "idle" && (
+            {tts.state === "idle" && (
               <button
                 type="button"
                 onClick={handleListenAll}
@@ -258,23 +259,21 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
                 Listen All
               </button>
             )}
-            {tts.state === "playing" && (
+            {tts.playbackMode === "all" && tts.state === "playing" && (
               <>
-                {!isMobile && (
-                  <button
-                    type="button"
-                    onClick={tts.pause}
-                    aria-label="Pause playback"
-                    className={cn(
-                      "inline-flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-full text-sm font-medium touch-manipulation",
-                      "bg-gradient-to-r from-primary/20 to-accent/20 text-foreground",
-                      "border border-primary/30 shadow-[0_0_24px_hsl(258_60%_60%_/_0.18)] transition-all duration-500",
-                    )}
-                  >
-                    <Pause className="h-4 w-4" />
-                    Pause
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={tts.pause}
+                  aria-label="Pause playback"
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-full text-sm font-medium touch-manipulation",
+                    "bg-gradient-to-r from-primary/20 to-accent/20 text-foreground",
+                    "border border-primary/30 shadow-[0_0_24px_hsl(258_60%_60%_/_0.18)] transition-all duration-500",
+                  )}
+                >
+                  <Pause className="h-4 w-4" />
+                  Pause
+                </button>
                 <button
                   type="button"
                   onClick={tts.stop}
@@ -289,7 +288,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
                 </button>
               </>
             )}
-            {!isMobile && tts.state === "paused" && (
+            {tts.playbackMode === "all" && tts.state === "paused" && (
               <>
                 <button
                   type="button"
@@ -348,7 +347,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
         "group/section rounded-2xl px-4 py-3 -mx-1 transition-all duration-500",
         isActive("definition") && "bg-primary/[0.04] ring-1 ring-primary/10"
       )}>
-        <SectionTitle icon={Brain} label="Definition" isActive={isActive("definition")} onPlay={() => handlePlaySection("definition")} />
+        <SectionTitle icon={Brain} label="Definition" isActive={isActive("definition")} onPlay={() => handlePlaySection("definition")} onStop={() => tts.stop()} />
         <HighlightedParagraph text={bias.definition} isActiveSection={isActive("definition")} charIndex={charIndex} />
       </div>
 
@@ -357,7 +356,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
         "group/section rounded-2xl px-4 py-3 -mx-1 transition-all duration-500",
         isActive("whyItHappens") && "bg-primary/[0.04] ring-1 ring-primary/10"
       )}>
-        <SectionTitle icon={Lightbulb} label="Why it happens" isActive={isActive("whyItHappens")} onPlay={() => handlePlaySection("whyItHappens")} />
+        <SectionTitle icon={Lightbulb} label="Why it happens" isActive={isActive("whyItHappens")} onPlay={() => handlePlaySection("whyItHappens")} onStop={() => tts.stop()} />
         <HighlightedParagraph text={bias.whyItHappens} isActiveSection={isActive("whyItHappens")} charIndex={charIndex} />
       </div>
 
@@ -366,7 +365,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
         "group/section rounded-2xl px-4 py-3 -mx-1 transition-all duration-500",
         isActive("examples") && "bg-primary/[0.04] ring-1 ring-primary/10"
       )}>
-        <SectionTitle icon={Eye} label="Real-life examples" isActive={isActive("examples")} onPlay={() => handlePlaySection("examples")} />
+        <SectionTitle icon={Eye} label="Real-life examples" isActive={isActive("examples")} onPlay={() => handlePlaySection("examples")} onStop={() => tts.stop()} />
         <ul className="space-y-2">
           {bias.examples.map((ex, i) => {
             const active = i === activeExampleIdx;
@@ -391,7 +390,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
         "group/section rounded-2xl border border-primary/10 bg-primary/[0.03] p-5 sm:p-6 transition-all duration-500",
         isActive("counterSteps") && "border-primary/20 shadow-[0_0_24px_hsl(258_60%_60%_/_0.08)]"
       )}>
-        <SectionTitle icon={Shield} label="How to counter it" isActive={isActive("counterSteps")} onPlay={() => handlePlaySection("counterSteps")} />
+        <SectionTitle icon={Shield} label="How to counter it" isActive={isActive("counterSteps")} onPlay={() => handlePlaySection("counterSteps")} onStop={() => tts.stop()} />
         <ol className="space-y-3 mt-3">
           {bias.counterSteps.map((step, i) => {
             const active = i === activeCounterIdx;
@@ -418,7 +417,7 @@ const BiasCard = ({ bias, headingLabel = "Today's Bias" }: BiasCardProps) => {
         "group/section rounded-2xl px-4 py-3 -mx-1 transition-all duration-500",
         isActive("tips") && "bg-primary/[0.04] ring-1 ring-primary/10"
       )}>
-        <SectionTitle icon={Sparkles} label="Quick tips" isActive={isActive("tips")} onPlay={() => handlePlaySection("tips")} />
+        <SectionTitle icon={Sparkles} label="Quick tips" isActive={isActive("tips")} onPlay={() => handlePlaySection("tips")} onStop={() => tts.stop()} />
         <ul className="space-y-2">
           {bias.tips.map((tip, i) => {
             const active = i === activeTipIdx;

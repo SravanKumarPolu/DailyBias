@@ -35,12 +35,24 @@ export function readStoredVolume(): number {
 
 /**
  * Curated list of premium / natural-sounding voices, ordered by preference.
- * Soft female voices first, then high-quality neutral fallbacks. Matched as
- * case-insensitive substrings against `voice.name`.
+ * Prioritizes US English natural voices first, then other English voices.
  */
 const PREMIUM_VOICE_PATTERNS: string[] = [
-  // Apple (iOS / macOS) — Siri / enhanced female voices
+  // US English - Google (highest priority)
+  "google us english",
+  // US English - Microsoft Neural voices
+  "microsoft aria",
+  "microsoft jenny",
+  "microsoft guy",
+  // US English - Apple/macOS
   "samantha",
+  // Other high-quality English voices
+  "google uk english female",
+  "google english female",
+  "microsoft libby",
+  "microsoft sonia",
+  "microsoft michelle",
+  "microsoft natasha",
   "ava",
   "allison",
   "serena",
@@ -48,17 +60,6 @@ const PREMIUM_VOICE_PATTERNS: string[] = [
   "moira",
   "tessa",
   "fiona",
-  // Google (Android / Chrome) — natural female voices
-  "google uk english female",
-  "google us english",
-  "google english female",
-  // Microsoft (Edge / Windows) — Neural female voices
-  "aria",
-  "jenny",
-  "libby",
-  "sonia",
-  "michelle",
-  "natasha",
   // Generic markers of higher-quality engines
   "neural",
   "natural",
@@ -86,15 +87,16 @@ function scoreVoice(v: SpeechSynthesisVoice): number {
   if (ROBOTIC_VOICE_PATTERNS.some((p) => name.includes(p))) return -100;
 
   let score = 0;
-  // Prefer English first, then en-US/en-GB specifically.
-  if (isEnglish(v)) score += 20;
-  if (/en[-_](us|gb)/i.test(v.lang)) score += 5;
+  // Strong preference for US English
+  if (/en[-_]us/i.test(v.lang)) score += 100;
+  // Moderate preference for other English variants
+  else if (isEnglish(v)) score += 50;
 
   // Curated premium voices — earlier in the list = bigger boost.
   const idx = PREMIUM_VOICE_PATTERNS.findIndex((p) => name.includes(p));
-  if (idx >= 0) score += 60 - idx;
+  if (idx >= 0) score += 40 - idx;
 
-  if (looksFemale(v)) score += 15;
+  if (looksFemale(v)) score += 10;
   // Local voices tend to be higher fidelity on Apple / Windows.
   if (v.localService) score += 3;
   if (v.default) score += 2;
