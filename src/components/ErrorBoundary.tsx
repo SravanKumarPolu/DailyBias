@@ -2,6 +2,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Brain, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackErrorOccurred } from "@/lib/analytics";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -29,6 +30,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
       url: window.location.href,
+    });
+    // Track error in analytics (privacy-preserving - no PII)
+    trackErrorOccurred({
+      error_message: error.message.slice(0, 200), // Limit length
+      error_type: error.name,
+      component_stack: info.componentStack.slice(0, 500), // Limit length
     });
   }
 

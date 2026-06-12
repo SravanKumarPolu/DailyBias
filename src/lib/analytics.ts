@@ -54,7 +54,12 @@ export function initAnalytics(): void {
 
 function sendEvent(eventName: string, params?: Record<string, string | number | boolean>) {
   if (!isAnalyticsEnabled() || !window.gtag) return;
-  window.gtag("event", eventName, params);
+  try {
+    window.gtag("event", eventName, params);
+  } catch (error) {
+    console.error("Analytics error:", error);
+    // Silently fail to avoid breaking app functionality
+  }
 }
 
 /** Map SPA paths to human-readable page names for reporting. */
@@ -132,6 +137,64 @@ export function trackBiasFeedbackSubmitted(params: {
   useful: boolean;
 }) {
   sendEvent("bias_feedback_submitted", params);
+}
+
+export function trackTTSPlaybackStarted(params: {
+  playback_mode: "all" | "section";
+  bias_id?: string;
+}) {
+  sendEvent("tts_playback_started", params);
+}
+
+export function trackTTSPlaybackPaused(params: {
+  playback_mode: "all" | "section";
+}) {
+  sendEvent("tts_playback_paused", params);
+}
+
+export function trackTTSPlaybackResumed(params: {
+  playback_mode: "all" | "section";
+}) {
+  sendEvent("tts_playback_resumed", params);
+}
+
+export function trackTTSPlaybackStopped(params: {
+  playback_mode: "all" | "section";
+}) {
+  sendEvent("tts_playback_stopped", params);
+}
+
+export function trackTTSPlaybackCompleted(params: {
+  playback_mode: "all" | "section";
+  bias_id?: string;
+}) {
+  sendEvent("tts_playback_completed", params);
+}
+
+export function trackErrorOccurred(params: {
+  error_message: string;
+  error_type?: string;
+  component_stack?: string;
+}) {
+  sendEvent("error_occurred", params);
+}
+
+export function trackSettingsVoiceChanged(params: {
+  voice_uri?: string | null;
+}) {
+  sendEvent("settings_voice_changed", params);
+}
+
+export function trackSettingsRateChanged(params: {
+  rate: number;
+}) {
+  sendEvent("settings_rate_changed", params);
+}
+
+export function trackSettingsVolumeChanged(params: {
+  volume: number;
+}) {
+  sendEvent("settings_volume_changed", params);
 }
 
 /** Test helper — reset module state between unit tests. */

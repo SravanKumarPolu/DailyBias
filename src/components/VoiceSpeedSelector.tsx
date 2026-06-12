@@ -22,6 +22,11 @@ import {
   clampVolume,
 } from "@/hooks/useTTSSettings";
 import { cn } from "@/lib/utils";
+import {
+  trackSettingsVoiceChanged,
+  trackSettingsRateChanged,
+  trackSettingsVolumeChanged,
+} from "@/lib/analytics";
 
 const AUTO_VALUE = "__auto__";
 
@@ -123,7 +128,11 @@ const VoiceSpeedSelector = () => {
           </label>
           <Select
             value={voiceURI ?? AUTO_VALUE}
-            onValueChange={(v) => setVoiceURI(v === AUTO_VALUE ? null : v)}
+            onValueChange={(v) => {
+              const newVoiceURI = v === AUTO_VALUE ? null : v;
+              setVoiceURI(newVoiceURI);
+              trackSettingsVoiceChanged({ voice_uri: newVoiceURI });
+            }}
             disabled={disabled}
           >
             <SelectTrigger
@@ -180,7 +189,10 @@ const VoiceSpeedSelector = () => {
                   role="radio"
                   aria-checked={active}
                   aria-label={`${r} times speed`}
-                  onClick={() => setRate(r)}
+                  onClick={() => {
+                    setRate(r);
+                    trackSettingsRateChanged({ rate: r });
+                  }}
                   disabled={disabled}
                   className={cn(
                     "flex-1 rounded-lg text-xs sm:text-[11px] font-medium transition-all duration-300",
@@ -222,7 +234,11 @@ const VoiceSpeedSelector = () => {
               type="button"
               aria-label="Decrease volume by 10 percent"
               disabled={disabled || volume <= 0}
-              onClick={() => setVolume(clampVolume(volume - VOLUME_STEP))}
+              onClick={() => {
+                const newVolume = clampVolume(volume - VOLUME_STEP);
+                setVolume(newVolume);
+                trackSettingsVolumeChanged({ volume: newVolume });
+              }}
               className={cn(
                 "inline-flex items-center justify-center rounded-lg border border-primary/10 bg-primary/5",
                 "h-10 w-10 sm:h-9 sm:w-9 shrink-0",
@@ -241,14 +257,22 @@ const VoiceSpeedSelector = () => {
               disabled={disabled}
               aria-labelledby="tts-volume-label"
               aria-valuetext={`${volumePercent} percent`}
-              onValueChange={([next]) => setVolume(next / 100)}
+              onValueChange={([next]) => {
+                const newVolume = next / 100;
+                setVolume(newVolume);
+                trackSettingsVolumeChanged({ volume: newVolume });
+              }}
               className="flex-1"
             />
             <button
               type="button"
               aria-label="Increase volume by 10 percent"
               disabled={disabled || volume >= 1}
-              onClick={() => setVolume(clampVolume(volume + VOLUME_STEP))}
+              onClick={() => {
+                const newVolume = clampVolume(volume + VOLUME_STEP);
+                setVolume(newVolume);
+                trackSettingsVolumeChanged({ volume: newVolume });
+              }}
               className={cn(
                 "inline-flex items-center justify-center rounded-lg border border-primary/10 bg-primary/5",
                 "h-10 w-10 sm:h-9 sm:w-9 shrink-0",
