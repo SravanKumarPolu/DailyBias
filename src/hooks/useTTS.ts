@@ -271,7 +271,7 @@ export function useTTS(): TTSControls {
       }
 
       // Expected lifecycle events - ignore and don't show toast
-      if (errorType === "interrupted" || errorType === "canceled" || errorType === "aborted") {
+      if (errorType === "interrupted" || errorType === "canceled") {
         // If this was an intentional cancel (stop, section switch), ignore silently
         // If it was unexpected, log but don't show toast
         if (!intentionalCancelRef.current) {
