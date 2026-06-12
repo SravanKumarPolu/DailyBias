@@ -80,7 +80,7 @@ const SectionTitle = ({
     <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</h3>
     <button
       type="button"
-      onClick={(e) => { e.stopPropagation(); isActive ? onStop() : onPlay(); }}
+      onClick={(e) => { e.stopPropagation(); if (isActive) { onStop(); } else { onPlay(); } }}
       className={cn(
         "ml-auto inline-flex items-center justify-center rounded-full touch-manipulation transition-all duration-500",
         "min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8",
