@@ -4,7 +4,8 @@ import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import { initAnalytics } from "./lib/analytics.ts";
 import "./index.css";
 
-initAnalytics();
+// Initialize analytics (async but don't block app render)
+initAnalytics().catch(console.error);
 
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>

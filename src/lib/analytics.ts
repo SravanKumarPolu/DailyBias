@@ -25,34 +25,64 @@ declare global {
 }
 
 let initialized = false;
+let initializationPromise: Promise<void> | null = null;
+
+// Queue for page_view calls before initialization completes
+const pageViewQueue: Array<() => void> = [];
 
 export function isAnalyticsEnabled(): boolean {
   const id = getMeasurementId();
   return id.length > 0;
 }
 
-/** Load gtag.js and configure GA4 (call once at app startup). */
-export function initAnalytics(): void {
-  if (!isAnalyticsEnabled() || initialized || typeof window === "undefined") return;
+export function isAnalyticsReady(): boolean {
+  return initialized && !!window.gtag;
+}
 
-  window.dataLayer = window.dataLayer ?? [];
-  window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer!.push(args);
-  };
+/** Load gtag.js and configure GA4 (call once at app startup). */
+export function initAnalytics(): Promise<void> {
+  if (!isAnalyticsEnabled() || initialized || typeof window === "undefined") {
+    return Promise.resolve();
+  }
+
+  if (initializationPromise) {
+    return initializationPromise;
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
 
   const script = document.createElement("script");
   script.async = true;
   const measurementId = getMeasurementId();
   script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
 
-  // Wait for script to load before calling gtag
-  script.onload = () => {
-    window.gtag("js", new Date());
-    window.gtag("config", measurementId, { send_page_view: false });
-    initialized = true;
-  };
+  initializationPromise = new Promise((resolve, reject) => {
+    // Wait for script to load before calling gtag
+    script.onload = () => {
+      window.gtag("js", new Date());
+      window.gtag("config", measurementId);
+      initialized = true;
 
-  document.head.appendChild(script);
+      // Process queued page_view calls
+      pageViewQueue.forEach(callback => callback());
+      pageViewQueue.length = 0;
+
+      resolve();
+    };
+
+    script.onerror = () => {
+      console.error("Failed to load gtag.js");
+      reject(new Error("Failed to load gtag.js"));
+    };
+
+    document.head.appendChild(script);
+  });
+
+  return initializationPromise;
 }
 
 function sendEvent(eventName: string, params?: Record<string, string | number | boolean>) {
@@ -83,6 +113,20 @@ export function trackPageView(pathname: string, search = "") {
   if (!pageName) return;
 
   const pagePath = `${pathname}${search}`;
+
+  // Queue page_view if analytics not yet initialized
+  if (!isAnalyticsReady()) {
+    pageViewQueue.push(() => {
+      sendEvent("page_view", {
+        page_title: pageName,
+        page_path: pagePath,
+        page_location: typeof window !== "undefined" ? window.location.href : pagePath,
+      });
+    });
+    return;
+  }
+
+  // Send immediately if analytics is ready
   sendEvent("page_view", {
     page_title: pageName,
     page_path: pagePath,
@@ -203,4 +247,6 @@ export function trackSettingsVolumeChanged(params: {
 /** Test helper — reset module state between unit tests. */
 export function _resetAnalyticsForTests() {
   initialized = false;
+  initializationPromise = null;
+  pageViewQueue.length = 0;
 }
