@@ -11,7 +11,10 @@ export function useBiasProgress() {
   const [state, setState] = useState<RotationState | null>(() => loadRotationState());
 
   useEffect(() => {
-    const sync = () => setState(loadRotationState());
+    const sync = () => {
+      // Defer setState to avoid calling it during render of other components
+      setTimeout(() => setState(loadRotationState()), 0);
+    };
     window.addEventListener(ROTATION_CHANGED_EVENT, sync);
     return () => window.removeEventListener(ROTATION_CHANGED_EVENT, sync);
   }, []);

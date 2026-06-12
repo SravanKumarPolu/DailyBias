@@ -197,6 +197,10 @@ export function useTTS(): TTSControls {
 
     const total = text.length;
     utterance.onboundary = (e: SpeechSynthesisEvent) => {
+      // Skip setState if component is unmounting to avoid render-phase warnings
+      if (isUnmountingRef.current) {
+        return;
+      }
       // Validate charIndex to prevent invalid/negative values
       // Allow values up to total length (SpeechSynthesis may send index at end)
       if (!Number.isFinite(e.charIndex) || e.charIndex < 0) {
@@ -255,17 +259,11 @@ export function useTTS(): TTSControls {
       console.log('[TTS] Speech error for section:', sectionId, 'error:', errorType, 'intentionalCancel:', intentionalCancelRef.current, 'isUnmounting:', isUnmountingRef.current);
       cleanup();
 
-      // If component is unmounting, ignore all errors silently
+      // If component is unmounting, ignore all errors silently without setState
+      // setState during unmounting can cause "Cannot update a component while rendering" warnings
       if (isUnmountingRef.current) {
         console.log('[TTS] Component is unmounting, ignoring error:', errorType);
-        setState("idle");
-        setPlaybackMode(null);
-        setActiveSection(null);
-        setActiveCharIndex(0);
-        setIsQueue(false);
-        setQueueProgress(0);
-        queueRef.current = [];
-        queueIndexRef.current = 0;
+        cleanup();
         onError?.();
         return;
       }
@@ -277,6 +275,25 @@ export function useTTS(): TTSControls {
         if (!intentionalCancelRef.current) {
           console.warn("TTS interrupted unexpectedly:", errorType);
         }
+        // Skip setState if component is unmounting to avoid render-phase warnings
+        if (!isUnmountingRef.current) {
+          setState("idle");
+          setPlaybackMode(null);
+          setActiveSection(null);
+          setActiveCharIndex(0);
+          setIsQueue(false);
+          setQueueProgress(0);
+          queueRef.current = [];
+          queueIndexRef.current = 0;
+        }
+        onError?.();
+        return;
+      }
+
+      // Real errors - log and show toast
+      console.warn("[TTS] Real error, showing toast:", errorType);
+      // Skip setState if component is unmounting to avoid render-phase warnings
+      if (!isUnmountingRef.current) {
         setState("idle");
         setPlaybackMode(null);
         setActiveSection(null);
@@ -285,34 +302,21 @@ export function useTTS(): TTSControls {
         setQueueProgress(0);
         queueRef.current = [];
         queueIndexRef.current = 0;
-        onError?.();
-        return;
-      }
 
-      // Real errors - log and show toast
-      console.warn("[TTS] Real error, showing toast:", errorType);
-      setState("idle");
-      setPlaybackMode(null);
-      setActiveSection(null);
-      setActiveCharIndex(0);
-      setIsQueue(false);
-      setQueueProgress(0);
-      queueRef.current = [];
-      queueIndexRef.current = 0;
-
-      // Show toast only for real errors, prevent duplicate toasts
-      const now = Date.now();
-      if (now - lastErrorToastRef.current > 2000) {
-        if (isMobileBrowser()) {
-          toast.error("Playback interrupted", {
-            description: "Mobile browser interrupted playback. Try a shorter section.",
-          });
-        } else {
-          toast.error("Speech playback failed", {
-            description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
-          });
+        // Show toast only for real errors, prevent duplicate toasts
+        const now = Date.now();
+        if (now - lastErrorToastRef.current > 2000) {
+          if (isMobileBrowser()) {
+            toast.error("Playback interrupted", {
+              description: "Mobile browser interrupted playback. Try a shorter section.",
+            });
+          } else {
+            toast.error("Speech playback failed", {
+              description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
+            });
+          }
+          lastErrorToastRef.current = now;
         }
-        lastErrorToastRef.current = now;
       }
       onError?.();
     };
@@ -359,42 +363,43 @@ export function useTTS(): TTSControls {
     console.log('[TTS] playNextInQueue called, index:', idx, 'of', queue.length);
     if (idx >= queue.length) {
       console.log('[TTS] Queue completed');
-      setState("idle");
-      setPlaybackMode(null);
-      setActiveSection(null);
-      setActiveCharIndex(0);
-      setIsQueue(false);
-      setQueueProgress(1);
-      queueRef.current = [];
-      queueIndexRef.current = 0;
-      trackTTSPlaybackCompleted({ playback_mode: "all" });
+      // Skip setState if component is unmounting to avoid render-phase warnings
+      if (!isUnmountingRef.current) {
+        setState("idle");
+        setPlaybackMode(null);
+        setActiveSection(null);
+        setActiveCharIndex(0);
+        setIsQueue(false);
+        setQueueProgress(1);
+        queueRef.current = [];
+        queueIndexRef.current = 0;
+        trackTTSPlaybackCompleted({ playback_mode: "all" });
+      }
       return;
     }
     const item = queue[idx];
     queueIndexRef.current = idx + 1;
     const base = queue.length > 0 ? idx / queue.length : 0;
     const slice = queue.length > 0 ? 1 / queue.length : 0;
-    setQueueProgress(base);
+    // Skip setState if component is unmounting to avoid render-phase warnings
+    if (!isUnmountingRef.current) {
+      setQueueProgress(base);
+    }
     console.log('[TTS] Playing queue item:', item.id, 'at index:', idx);
     void speakText(item.text, item.id, {
       onEnd: () => {
         console.log('[TTS] Queue item onEnd:', item.id);
-        setQueueProgress(base + slice);
-        playNextInQueue();
+        // Skip setState if component is unmounting to avoid render-phase warnings
+        if (!isUnmountingRef.current) {
+          setQueueProgress(base + slice);
+          playNextInQueue();
+        }
       },
       onError: () => {
         console.log('[TTS] Queue item onError:', item.id, 'intentionalCancel:', intentionalCancelRef.current, 'isUnmounting:', isUnmountingRef.current);
-        // If component is unmounting, ignore all errors silently
+        // If component is unmounting, ignore all errors silently without setState
         if (isUnmountingRef.current) {
           console.log('[TTS] Component is unmounting, ignoring queue error');
-          setState("idle");
-          setPlaybackMode(null);
-          setActiveSection(null);
-          setActiveCharIndex(0);
-          setIsQueue(false);
-          setQueueProgress(0);
-          queueRef.current = [];
-          queueIndexRef.current = 0;
           return;
         }
         // If this was an intentional cancel (section switch), stop cleanly without toast
@@ -425,7 +430,10 @@ export function useTTS(): TTSControls {
         });
       },
       onProgress: (ratio) => {
-        setQueueProgress(base + slice * ratio);
+        // Skip setState if component is unmounting to avoid render-phase warnings
+        if (!isUnmountingRef.current) {
+          setQueueProgress(base + slice * ratio);
+        }
       },
       charIndexOffset: item.spokenPrefix?.length ?? 0,
     });
@@ -450,11 +458,14 @@ export function useTTS(): TTSControls {
       sessionId,
       onEnd: () => {
         console.log('[TTS] Play onEnd for section:', sectionId);
-        setState("idle");
-        setPlaybackMode(null);
-        setActiveSection(null);
-        setActiveCharIndex(0);
-        trackTTSPlaybackCompleted({ playback_mode: "section", bias_id: sectionId });
+        // Skip setState if component is unmounting to avoid render-phase warnings
+        if (!isUnmountingRef.current) {
+          setState("idle");
+          setPlaybackMode(null);
+          setActiveSection(null);
+          setActiveCharIndex(0);
+          trackTTSPlaybackCompleted({ playback_mode: "section", bias_id: sectionId });
+        }
       },
     });
   }, [cancelAndWait, speakText]);
