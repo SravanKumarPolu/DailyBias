@@ -44,12 +44,15 @@ export function initAnalytics(): void {
   script.async = true;
   const measurementId = getMeasurementId();
   script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+
+  // Wait for script to load before calling gtag
+  script.onload = () => {
+    window.gtag("js", new Date());
+    window.gtag("config", measurementId, { send_page_view: false });
+    initialized = true;
+  };
+
   document.head.appendChild(script);
-
-  window.gtag("js", new Date());
-  window.gtag("config", measurementId, { send_page_view: false });
-
-  initialized = true;
 }
 
 function sendEvent(eventName: string, params?: Record<string, string | number | boolean>) {
