@@ -61,6 +61,8 @@ export function useTTS(): TTSControls {
   const lastErrorToastRef = useRef<number>(0);
   const intentionalCancelRef = useRef(false);
   const playbackSessionIdRef = useRef(0);
+  // Track if component is unmounting to prevent error toasts during cleanup
+  const isUnmountingRef = useRef(false);
   // Store current text for mobile resume fallback
   const currentTextRef = useRef<string>("");
   // Store resume context for mobile fallback
@@ -94,6 +96,9 @@ export function useTTS(): TTSControls {
 
   useEffect(() => {
     return () => {
+      console.log('[TTS] Component unmounting, cleaning up speech');
+      isUnmountingRef.current = true;
+      intentionalCancelRef.current = true;
       stopKeepAlive();
       if (isTTSSupported()) {
         window.speechSynthesis.cancel();
@@ -246,12 +251,27 @@ export function useTTS(): TTSControls {
         console.log('[TTS] Ignoring stale onerror callback from old session');
         return;
       }
-      console.log('[TTS] Speech error for section:', sectionId, 'error:', e.error, 'intentionalCancel:', intentionalCancelRef.current);
-      cleanup();
       const errorType = e.error;
+      console.log('[TTS] Speech error for section:', sectionId, 'error:', errorType, 'intentionalCancel:', intentionalCancelRef.current, 'isUnmounting:', isUnmountingRef.current);
+      cleanup();
+
+      // If component is unmounting, ignore all errors silently
+      if (isUnmountingRef.current) {
+        console.log('[TTS] Component is unmounting, ignoring error:', errorType);
+        setState("idle");
+        setPlaybackMode(null);
+        setActiveSection(null);
+        setActiveCharIndex(0);
+        setIsQueue(false);
+        setQueueProgress(0);
+        queueRef.current = [];
+        queueIndexRef.current = 0;
+        onError?.();
+        return;
+      }
 
       // Expected lifecycle events - ignore and don't show toast
-      if (errorType === "interrupted" || errorType === "canceled") {
+      if (errorType === "interrupted" || errorType === "canceled" || errorType === "aborted") {
         // If this was an intentional cancel (stop, section switch), ignore silently
         // If it was unexpected, log but don't show toast
         if (!intentionalCancelRef.current) {
@@ -270,7 +290,7 @@ export function useTTS(): TTSControls {
       }
 
       // Real errors - log and show toast
-      console.warn("TTS error:", errorType);
+      console.warn("[TTS] Real error, showing toast:", errorType);
       setState("idle");
       setPlaybackMode(null);
       setActiveSection(null);
@@ -307,23 +327,26 @@ export function useTTS(): TTSControls {
       console.log('[TTS] Starting speech for section:', sectionId);
       synth.speak(utterance);
     } catch (error) {
-      console.error("TTS speak() error:", error);
+      console.error("TTS speak() error:", error, 'isUnmounting:', isUnmountingRef.current);
       cleanup();
       setState("idle");
       setActiveSection(null);
-      // Show toast for real errors, prevent duplicate toasts
-      const now = Date.now();
-      if (now - lastErrorToastRef.current > 2000) {
-        if (isMobileBrowser()) {
-          toast.error("Playback interrupted", {
-            description: "Mobile browser interrupted playback. Try a shorter section.",
-          });
-        } else {
-          toast.error("Speech playback failed", {
-            description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
-          });
+      // If component is unmounting, don't show toast
+      if (!isUnmountingRef.current) {
+        // Show toast for real errors, prevent duplicate toasts
+        const now = Date.now();
+        if (now - lastErrorToastRef.current > 2000) {
+          if (isMobileBrowser()) {
+            toast.error("Playback interrupted", {
+              description: "Mobile browser interrupted playback. Try a shorter section.",
+            });
+          } else {
+            toast.error("Speech playback failed", {
+              description: "Please try again. If the problem persists, your browser may not support text-to-speech.",
+            });
+          }
+          lastErrorToastRef.current = now;
         }
-        lastErrorToastRef.current = now;
       }
     } finally {
       releaseLock();
@@ -360,7 +383,20 @@ export function useTTS(): TTSControls {
         playNextInQueue();
       },
       onError: () => {
-        console.log('[TTS] Queue item onError:', item.id, 'intentionalCancel:', intentionalCancelRef.current);
+        console.log('[TTS] Queue item onError:', item.id, 'intentionalCancel:', intentionalCancelRef.current, 'isUnmounting:', isUnmountingRef.current);
+        // If component is unmounting, ignore all errors silently
+        if (isUnmountingRef.current) {
+          console.log('[TTS] Component is unmounting, ignoring queue error');
+          setState("idle");
+          setPlaybackMode(null);
+          setActiveSection(null);
+          setActiveCharIndex(0);
+          setIsQueue(false);
+          setQueueProgress(0);
+          queueRef.current = [];
+          queueIndexRef.current = 0;
+          return;
+        }
         // If this was an intentional cancel (section switch), stop cleanly without toast
         if (intentionalCancelRef.current) {
           console.log('[TTS] Queue error was intentional, skipping toast');
