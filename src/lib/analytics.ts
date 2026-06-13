@@ -50,10 +50,10 @@ export function initAnalytics(): Promise<void> {
   }
 
   window.dataLayer = window.dataLayer || [];
-  function gtag(...args: unknown[]) {
-    window.dataLayer!.push(args);
+  // eslint-disable-next-line prefer-rest-params -- Google's official gtag pattern requires arguments
+  function gtag() {
+    window.dataLayer.push(arguments);
   }
-
   window.gtag = gtag;
 
   const script = document.createElement("script");
