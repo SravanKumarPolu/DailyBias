@@ -9,7 +9,7 @@ interface SEOProps {
 }
 
 const SITE_URL = "https://debiasdaily.com";
-const DEFAULT_TITLE = "DebiasDaily — Think Better, One Bias at a Time";
+const DEFAULT_TITLE = "Think Better, One Bias at a Time | DebiasDaily";
 const DEFAULT_DESCRIPTION = "Learn one cognitive bias per day. Build awareness of mental shortcuts and make smarter decisions with DebiasDaily.";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.webp`;
 
@@ -31,6 +31,15 @@ const SEO = ({ title, description, image, noindex }: SEOProps) => {
       document.head.appendChild(metaDescription);
     }
     metaDescription.setAttribute('content', fullDescription);
+
+    // Update or create application-name meta
+    let applicationName = document.querySelector('meta[name="application-name"]');
+    if (!applicationName) {
+      applicationName = document.createElement('meta');
+      applicationName.setAttribute('name', 'application-name');
+      document.head.appendChild(applicationName);
+    }
+    applicationName.setAttribute('content', 'DebiasDaily');
 
     // Update or create canonical link
     let canonicalLink = document.querySelector('link[rel="canonical"]');

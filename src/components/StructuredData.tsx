@@ -23,7 +23,6 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
           "@type": "WebSite",
           name: "DebiasDaily",
           url: SITE_URL,
-          description: "Learn one cognitive bias per day. Build awareness of mental shortcuts and make smarter decisions with DebiasDaily.",
         };
 
       case "organization":
@@ -32,8 +31,6 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
           "@type": "Organization",
           name: "DebiasDaily",
           url: SITE_URL,
-          description: "DebiasDaily helps you recognize cognitive biases and make better decisions through daily learning.",
-          logo: `${SITE_URL}/app-icon.png`,
         };
 
       case "article": {

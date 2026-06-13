@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Brain, Sparkles, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
+import SEO from "@/components/SEO";
 
 const features = [
   {
@@ -24,6 +25,10 @@ const features = [
 const LandingPage = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEO
+        title="Master Your Mind"
+        description="Discover one cognitive bias every day. Understand why your brain tricks you — and learn how to think more clearly with DebiasDaily."
+      />
       <Header />
 
       {/* Background orbs */}
