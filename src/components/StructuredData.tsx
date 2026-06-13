@@ -31,6 +31,10 @@ const StructuredData = ({ type, data }: StructuredDataProps) => {
           "@type": "Organization",
           name: "DebiasDaily",
           url: SITE_URL,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE_URL}/app-icon.png`,
+          },
         };
 
       case "article": {

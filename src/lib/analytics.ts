@@ -51,8 +51,9 @@ export function initAnalytics(): Promise<void> {
 
   window.dataLayer = window.dataLayer || [];
   function gtag(...args: unknown[]) {
-    window.dataLayer.push(args);
+    window.dataLayer!.push(args);
   }
+
   window.gtag = gtag;
 
   const script = document.createElement("script");
@@ -99,6 +100,7 @@ function sendEvent(eventName: string, params?: Record<string, string | number | 
 export function getAnalyticsPageName(pathname: string): string | null {
   if (pathname === "/" || pathname === "/today") return "Today";
   if (pathname === "/welcome") return "Home";
+  if (pathname === "/biases") return "Biases Archive";
   if (pathname.startsWith("/bias/")) return "Bias Detail";
   if (pathname === "/quiz") return "Quiz";
   if (pathname === "/weekly-review") return "Weekly Review";
