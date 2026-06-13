@@ -50,8 +50,8 @@ export function initAnalytics(): Promise<void> {
   }
 
   window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    window.dataLayer.push(arguments);
+  function gtag(...args: unknown[]) {
+    window.dataLayer.push(args);
   }
   window.gtag = gtag;
 
