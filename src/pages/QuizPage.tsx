@@ -124,6 +124,7 @@ const QuizPage = () => {
   const [selected, setSelected] = useState<number | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
   const [finished, setFinished] = useState(false);
+  const [retakeMode, setRetakeMode] = useState(false);
   const quizTrackedRef = useRef(false);
 
   const total = questions.length;
@@ -172,6 +173,7 @@ const QuizPage = () => {
     setSelected(null);
     setAnswers([]);
     setFinished(false);
+    setRetakeMode(true);
   };
 
 
@@ -204,7 +206,7 @@ const QuizPage = () => {
             </p>
           </div>
 
-          {isDoneToday && !finished && answers.length === 0 && (
+          {isDoneToday && !finished && answers.length === 0 && !retakeMode && (
             <div
               className="glass rounded-2xl p-6 sm:p-8 space-y-5 animate-fade-up text-center"
               style={{ animationDelay: "0.1s" }}
@@ -237,7 +239,7 @@ const QuizPage = () => {
             </div>
           )}
 
-          {!finished && !(isDoneToday && answers.length === 0) && (
+          {!finished && !(isDoneToday && answers.length === 0 && !retakeMode) && (
             <div
               className="glass rounded-2xl p-6 sm:p-8 space-y-6 animate-fade-up"
               style={{ animationDelay: "0.1s" }}
